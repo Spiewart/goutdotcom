@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Patient List</h1>
+  {% if patient_list %}
+  <ul>
+    {% for patient in patient_list %}
+      <li><a href="">{{ patient.first_name }}</a>{{ patient.last_name }}</li>
+      <li><a href="">{{ patient.provider_or_not }}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There aren't any patients in the database.</p>
+  {% endif %}
+{% endblock %}

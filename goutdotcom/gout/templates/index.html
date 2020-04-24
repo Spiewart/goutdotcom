@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Gout_dot_com</h1>
+  <p>Welcome to gout_dot_com developed by: <em>Urate Monster</em>!</p>
+  <h2>Dynamic content</h2>
+  <p>The dot_com contains the following followers:</p>
+  <ul>
+    <li><strong>Patients:</strong> {{ patient_directory }}</li>
+    <li><strong>Patient count:</strong> {{ patient_count }}</li>
+    <li><strong>Flares:</strong> {{ flare_directory }}</li>
+    <li><strong>Flare count:</strong> {{ flare_count }}</li>
+    <li><strong>Info:</strong> {{ info_directory }}</li>
+    <li><strong>High uric acids:</strong> {{ high_urate }}</li>
+  </ul>
+  <p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p>
+{% endblock %}

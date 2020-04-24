@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Flare date: {{ flare.date }}</h1>
+
+  <p><strong>Patient:</strong><a href="#">{{ flare.patient }}</a></p>
+  <p><strong>Location:</strong><a href="#">{{ flare.location }}</a></p>
+  <p><strong>Duration:</strong><a href="#">{{ flare.duration }}</a></p>
+  <p><strong>Urate at flare:</strong><a href="#">{{ flare.urate_at_flare }}</a></p>
+  <p><strong>Treated with:</strong><a href="#">{{ flare.treated_with }}</a></p>
+{% endblock %}
