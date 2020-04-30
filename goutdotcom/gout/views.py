@@ -1,11 +1,15 @@
 from django.shortcuts import render
-from gout.models import Patient, Flare, Info
 from django.views import generic
-
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.contrib.auth.decorators import permission_required, login_required
-
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
+from gout.models import Patient, Flare, Info
+from gout.forms import CreatePatientForm
 # Create your views here.
 
 @login_required()
@@ -42,6 +46,9 @@ class PatientListView(LoginRequiredMixin, generic.ListView):
 class FlareDetailView(LoginRequiredMixin, generic.DetailView):
     model = Flare
 
+class PatientDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Patient
+
 class FlareListView(LoginRequiredMixin, generic.ListView):
     model = Flare
 
@@ -54,3 +61,37 @@ class PatientOwnerView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Patient.objects.order_by('age').filter(owner=self.request.user)
         #return Patient.objects.filter(owner=self.request.user)
+
+def new_patient(request):
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+        # Create a form instance and populate it with data from the request (binding):
+        form = CreatePatientForm(request.POST)
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            form.cleaned_data
+            form.save()
+            # redirect to a new URL:
+            return HttpResponseRedirect('/')
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = CreatePatientForm()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'gout/new_patient.html', context)
+
+class PatientCreate(CreateView):
+    model = Patient
+    fields = '__all__'
+
+class PatientUpdate(UpdateView):
+    model = Patient
+    fields = '__all__'
+
+class PatientDelete(DeleteView):
+    model = Patient
+    success_url = reverse_lazy('patients')

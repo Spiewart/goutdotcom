@@ -5,7 +5,7 @@
 {% if flare_list %}
   {% for flare in flare_list %}
     <ul>
-      <li>{{ flare.patient }}</li>
+      <li><a href="{% url 'flare_detail' pk=flare.pk %}">{{ flare.patient }}<a/></li>
     </ul>
   {% endfor %}
 {% endif %}

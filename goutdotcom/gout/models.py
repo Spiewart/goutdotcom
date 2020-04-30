@@ -28,12 +28,13 @@ class Patient(models.Model):
 
     class Meta:
         ordering = ['last_name', 'first_name']
+        permissions = (("can_create_new_patient", "Creates new patient"),)
 
     def __str__(self):
         return f'{str(self.last_name), str(self.first_name)}'
 
     def get_absolute_url(self):
-        return reverse('patient-detail', args=[str(self.mrn)])
+        return reverse('patient_detail', args=[str(self.mrn)])
 
 class Flare(models.Model):
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
@@ -56,6 +57,10 @@ class Flare(models.Model):
 
     def get_absolute_url(self):
         return reverse('flare-detail', args=[str(self.date)])
+
+class Urate(models.Model):
+    uric_acid = models.DecimalField(max_digits=3, decimal_places=1, help_text="What was the uric acid?")
+
 
 class Info(models.Model):
     urate = models.FloatField()
