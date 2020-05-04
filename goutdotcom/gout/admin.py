@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Patient, Flare, Info
+from .models import Patient, Flare, Info, Urate, Creatinine
 from django.contrib.auth.models import User, Group
 
 admin.site.site_url = 'http://127.0.0.1:8000/gout/'
@@ -7,6 +7,8 @@ admin.site.site_url = 'http://127.0.0.1:8000/gout/'
 
 admin.site.register(Flare)
 admin.site.register(Info)
+admin.site.register(Urate)
+admin.site.register(Creatinine)
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):

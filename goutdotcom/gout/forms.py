@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from gout.models import Flare, Patient
+from gout.models import Flare, Patient, Info, Urate, Creatinine
 
 class CreatePatientForm(ModelForm):
     class Meta:

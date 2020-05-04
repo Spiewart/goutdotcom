@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
+import datetime
 
 # Create your models here.
 class Patient(models.Model):
@@ -59,8 +60,45 @@ class Flare(models.Model):
         return reverse('flare-detail', args=[str(self.date)])
 
 class Urate(models.Model):
-    uric_acid = models.DecimalField(max_digits=3, decimal_places=1, help_text="What was the uric acid?")
+    uric_acid = models.DecimalField(max_digits=3, decimal_places=1, help_text="uric acid?")
+    date = models.DateField(auto_now=True)
+    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.uric_acid)
+
+class Creatinine(models.Model):
+    creatinine = models.DecimalField(max_digits=4, decimal_places=2, help_text="creatinine")
+    date = models.DateField(auto_now=True)
+    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
+
+    def eGFR_calculator(self):
+        kappa = 0
+        alpha = 0
+        def sex_vars(self):
+            if patient.gender == 'male':
+                kappa = 0.9
+                alpha = -0.411
+            elif patient.gender == 'female':
+                kappa = 0.7
+                alpha = -0.329
+            else:
+                return "Can't calculate eGFR without gender."
+        def race_modifier(self):
+            if patient.race == 'black':
+                return 1.159
+            else:
+                return 1
+        def sex_modifier(self):
+            if patient.gender == 'female':
+                return 1.018
+            else:
+                return 1
+
+        eGFR = 141 * min(self.creatinine / kappa, 1) * max(self.creatinine / kappa, 1) ** -1.209 * 0.993 ** patient.age ** race_modifier() ** sex_modifier()
+
+    def __str__(self):
+        return str(self.creatinine)
 
 class Info(models.Model):
     urate = models.FloatField()
