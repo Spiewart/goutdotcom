@@ -1,3 +1,6 @@
+body {
+  background-color: yellow; }
+
 .alert-debug {
   background-color: #fff;
   border-color: #d6e9c6;

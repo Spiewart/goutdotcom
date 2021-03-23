@@ -16,6 +16,8 @@ urlpatterns = [
     path("users/", include("goutdotcom.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    # Reference for app URLs with Cookiecutter-Django: https://stackoverflow.com/questions/39838290/is-there-a-command-for-creating-an-app-using-cookiecutter-django
+    #path("profiles/", include(("goutdotcom.profiles.urls", "goutdotcom.profiles"), namespace="profiles")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -13,6 +13,9 @@
       {% if object.name %}
         <p>{{ object.name }}</p>
       {% endif %}
+      {% if object.patientprofile.picture %}
+        <img src="{{ object.patientprofile.picture.url }}">
+      {% endif %}
     </div>
   </div>
 
