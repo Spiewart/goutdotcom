@@ -19,7 +19,7 @@ certificatesResolvers:
   letsencrypt:
     # https://docs.traefik.io/master/https/acme/#lets-encrypt
     acme:
-      email: "spiewart@gout.com"
+      email: "spiewart@gouthelper.com"
       storage: /etc/traefik/acme/acme.json
       # https://docs.traefik.io/master/https/acme/#httpchallenge
       httpChallenge:
@@ -28,7 +28,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: "Host(`gout.com`) || Host(`www.gout.com`)"
+      rule: "Host(`gouthelper.com`) || Host(`www.gouthelper.com`)"
 
       entryPoints:
         - web-secure
