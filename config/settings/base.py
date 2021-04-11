@@ -73,7 +73,8 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "goutdotcom.users.apps.UsersConfig",
     "goutdotcom.profiles.apps.ProfilesConfig",
-    # Your stuff: custom apps go here
+    "goutdotcom.lab.apps.LabConfig",
+    "goutdotcom.flare.apps.FlareConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
