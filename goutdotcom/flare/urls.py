@@ -1,9 +1,9 @@
 from django.urls import path
+from django.views.generic import TemplateView
 
-from .views import *
+from . import views
 
 app_name = "flare"
 urlpatterns = [
-    path("ULT/create/", view=ULTCreate.as_view(), name="ult-create"),
-    path("ULT/<int:pk>/", view=ULTdetail.as_view(), name="ult-detail"),
+    path("", TemplateView.as_view(template_name="flare/index.html"), name="index"),
 ]

@@ -20,6 +20,7 @@ urlpatterns = [
     #path("profiles/", include(("goutdotcom.profiles.urls", "goutdotcom.profiles"), namespace="profiles")),
     path("lab/", include(("goutdotcom.lab.urls"), namespace="lab")),
     path("flare/", include(("goutdotcom.flare.urls"), namespace="flare")),
+    path("ult/", include(("goutdotcom.ult.urls"), namespace="ult")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

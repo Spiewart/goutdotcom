@@ -13,3 +13,5 @@ class UrateDetail(DetailView):
 
 class UrateList(ListView):
     model = Urate
+
+

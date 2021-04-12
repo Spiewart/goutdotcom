@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="jumbotron ult-index-jumbotron">
+  <h1 class="display-4">Urate-lowering therapy (ULT)</h1>
+  <p class="lead">Urate-lowering therapy is the cornerstone of chronic management of gout. For people with persistent gout, it can literally be life-changing.</p>
+  <hr class="my-4">
+  <p>Not everyone who has gout needs chronic management and there is some nuance to starting ULT, particularly in the first 12 months of therapy.</p>
+  <p class="lead">
+    <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">Do you need ULT?</a>
+  </p>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg flare-index-column">
+      One of three columns
+    </div>
+  </div>
+</div>
+{% endblock content %}
