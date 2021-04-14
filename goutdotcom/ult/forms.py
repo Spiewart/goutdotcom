@@ -6,6 +6,10 @@ from .models import ULT
 from django import forms
 
 class ULTForm(forms.ModelForm):
+    class Meta:
+        model = ULT
+        fields = ('first_flare', 'num_flares', 'freq_flares', 'erosions', 'tophi', 'stones', 'ckd', 'uric_acid')
+    
     def __init__(self, *args, **kwargs):
         super(ULTForm, self).__init__(*args, **kwargs)
 
@@ -15,7 +19,7 @@ class ULTForm(forms.ModelForm):
 
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
-            MultiField(
+            Fieldset(
                 'Answer this to sort it out',
                 'first_flare', 
                 'num_flares', 
@@ -31,8 +35,6 @@ class ULTForm(forms.ModelForm):
                 )
         )
         
-    class Meta:
-        model = ULT
-        fields = ('first_flare', 'num_flares', 'freq_flares', 'erosions', 'tophi', 'stones', 'ckd', 'uric_acid')
+    
         
     
