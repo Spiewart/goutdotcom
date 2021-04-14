@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main role="main" class="container"></main>
+<div class="container" id="home-map">
+    <div class="row">
+      <div class="col">
+        <div class="media exercise-list">
+            <div class="media-body">
+              <h3><a class="home-link" href="{% url 'treatment:flare' %}">Flare Treatment</a></h3>
+            </div>
+            <div class="column post-picture">
+              <img src="static/images/default_thumbnail.png" alt="" class="img-fluid media home-picture">
+            </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="media exercise-list">
+            <div class="media-body">
+              <h3><a class="home-link" href="{% url 'treatment:prevention' %}">Preventative Therapy</a></h3>
+            </div>
+            <div class="column post-picture">
+              <img src="static/images/default_thumbnail.png" alt="" class="img-fluid media home-picture">
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </main>
+{% endblock content %}

@@ -29,20 +29,20 @@ class ULT(TimeStampedModel):
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
 
-    first_flare = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Is this your first flare?", help_text="If so, disregard the rest of the questions.")
+    first_flare = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Is this your first flare?", help_text="If so, disregard the rest of the questions.", default=False)
     num_flares = models.CharField(max_length=30, choices=ULT_CHOICES, verbose_name="Approximately how many gout flares have you had?",
-                                  help_text="An estimate is fine!")
+                                  help_text="An estimate is fine!", default=ONE)
     freq_flares = models.CharField(max_length=30, choices=FREQ_CHOICES, verbose_name="Approximately how many flares do you have per year?",
-                                   help_text="An estimate is fine!")
+                                   help_text="An estimate is fine!", default=UNDER_TWO)
     erosions = models.BooleanField(
-        choices=BOOL_CHOICES, verbose_name="Do you have erosions on your x-rays?", help_text="If you don't know, that's OK!")
-    tophi = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Do you have tophi?", help_text="If you don't know, that's OK!")
+        choices=BOOL_CHOICES, verbose_name="Do you have erosions on your x-rays?", help_text="If you don't know, that's OK!", default=False)
+    tophi = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Do you have tophi?", help_text="If you don't know, that's OK!", default=False)
     stones = models.BooleanField(
-        choices=BOOL_CHOICES, verbose_name="Have you ever had kidney stones made of uric acid?", help_text="If you don't know, that's OK!")
+        choices=BOOL_CHOICES, verbose_name="Have you ever had kidney stones made of uric acid?", help_text="If you don't know, that's OK!", default=False)
     ckd = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Do you have chronic kidney disease (CKD)?",
-                              help_text="If you don't know, that's OK!")
+                              help_text="If you don't know, that's OK!", default=False)
     uric_acid = models.BooleanField(
-        choices=BOOL_CHOICES, verbose_name="Is your uric acid over 9.0?", help_text="If you don't know, that's OK!")
+        choices=BOOL_CHOICES, verbose_name="Is your uric acid over 9.0?", help_text="If you don't know, that's OK!", default=False)
 
     def calculator(self):
         go_forth = "Urate lowering therapy is recommended for your gout."

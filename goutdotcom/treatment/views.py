@@ -1,3 +1,19 @@
 from django.shortcuts import render
+from django.views.generic import CreateView, DetailView, ListView
+from .models import Allopurinol, Febuxostat
 
-# Create your views here.
+class AllopurinolDetail(DetailView):
+    model = Allopurinol
+
+class FebuxostatDetail(DetailView):
+    model = Febuxostat
+
+def index(request):
+    return render(request, 'treatment/index.html')
+
+def flare(request):
+    return render(request, 'treatment/flare.html')
+
+def prevention(request):
+    return render(request, 'prevention/flare.html')
+
