@@ -16,26 +16,13 @@
 
 {% block inline_javascript %}
 <script>
-  function check_first_flare(new_val) {
-    if (new_val == true) {
-        // #id_field_four should be actually the id of the HTML element
-        // that surrounds everything you want to hide.  Since you did
-        // not post your HTML I can't finish this part for you.
-        alert("Hello\nHow are you?");
-        $('#div_id_num_flares').addClass('hidden');
-    } else {
-        $( '#div_id_num_flares' ).addClass( 'hidden' );
-        alert("Fuck");
-    }   
-  }
     // this is executed once when the page loads
-  $( document ).ready(function() {
+  $(document).ready(function() {
     // set things up so my function will be called when first_flare
-    alert($( '#id_first_flare' ).length)
-    $( '#id_first_flare' ).change( function() {
-      check_first_flare( this.value );
+    $('#id_first_flare').change(check_first_flare);
+      check_first_flare.call($('#id_first_flare').get(0));
+      alert($('#id_first_flare').get(0).value)
       alert("Hi");
     });
-  });
 </script>
 {% endblock inline_javascript %}
