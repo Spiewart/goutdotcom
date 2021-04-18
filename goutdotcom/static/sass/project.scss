@@ -7,6 +7,7 @@
   border-width: medium;
   border-color: rgb(1, 14,20);
   padding: 5px;
+  background-color: $mint-green;
 }
 
 .ult-index-jumbotron {
@@ -16,6 +17,12 @@
   padding: 5px;
 }
 
+.treatment-index {
+  border-style: solid;
+  border-width: medium;
+  border-color: rgb(1, 14,20);
+  padding: 5px;
+}
 // project specific CSS goes here
 body {
   background-color: yellow;

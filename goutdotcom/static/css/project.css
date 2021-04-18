@@ -13,6 +13,12 @@
   border-color: #010e14;
   padding: 5px; }
 
+.treatment-index {
+  border-style: solid;
+  border-width: medium;
+  border-color: #010e14;
+  padding: 5px; }
+
 body {
   background-color: yellow; }
 
