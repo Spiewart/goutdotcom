@@ -2,30 +2,18 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container"></main>
-<div class="container" id="home-map">
-    <div class="row">
-      <div class="col">
-        <div class="media treatment-index">
-            <div class="media-body">
-              <h3><a class="home-link" href="{% url 'treatment:flare' %}">Flare Treatment</a></h3>
-            </div>
-            <div class="column post-picture">
-              <img src="static/images/default_thumbnail.png" alt="" class="img-fluid media home-picture">
-            </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="media treatment-index">
-            <div class="media-body">
-              <h3><a class="home-link" href="{% url 'treatment:prevention' %}">Preventative Therapy</a></h3>
-            </div>
-            <div class="column post-picture">
-              <img src="static/images/default_thumbnail.png" alt="" class="img-fluid media home-picture">
-            </div>
-        </div>
-      </div>
-    </div>
+<main role="main" class="container-fluid treatment-index">
+  <div class="jumbotron treatment-index">
+    <h1 class="display-4">Gout Treatment</h1>
+    <h3 class="lead">Managing gout is broken down into two parts:</h3>
+    <p><br>1. Managing the symptoms of your gout flares.</p>
+    <p><br>2. Long-term treatment to prevent and even eliminate gout flares.</p>
+    <hr class="my-4">
+    <p>Not everyone needs long-term treatment of their gout, but most who do take daily medication to prevent gout no longer have to worry about flares.</p>
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="{% url 'treatment:flare' %}" role="button">Flare Treatment</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Preventative Therapy</a>
+    </p>
   </div>
-  </main>
+</main>
 {% endblock content %}

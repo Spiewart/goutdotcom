@@ -2,7 +2,6 @@
 
 // function that hides/shows subsequent fields based upon first_flare value
 function check_first_flare() {
-  alert("Function Start");
   if ($('#id_first_flare').val() == 'True') {
       $('#div_id_num_flares').hide();
       $('#div_id_freq_flares').hide();
