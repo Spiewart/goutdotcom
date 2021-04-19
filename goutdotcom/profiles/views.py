@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
-from . models import PatientProfile
+from .models import PatientProfile
 
 # Create your views here.
 

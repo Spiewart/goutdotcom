@@ -7,6 +7,14 @@ class PatientProfileAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'picture',
+        'date_of_birth',
+        'age',
+        'gender',
+        'race',
+        'weight',
+        'height',
+        'BMI_calculator',
+        'drinks_per_week',
     )
 
 admin.site.register(PatientProfile, PatientProfileAdmin)

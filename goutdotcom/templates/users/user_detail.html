@@ -6,18 +6,47 @@
 {% block content %}
 <div class="container">
 
-  <div class="row">
-    <div class="col-sm-12">
-
+  <div class="media user-profile-media">
+    <div class="media-body">
       <h2>{{ object.username }}</h2>
-      {% if object.name %}
-        <p>{{ object.name }}</p>
+      {% if object.username %}
+        {% if object.name %}
+          <p>{{ object.name }}</p>
+        {% endif %}
+          <p>{{ object.role|lower}}</p>
       {% endif %}
+      </div>
       {% if object.patientprofile.picture %}
-        <img src="{{ object.patientprofile.picture.url }}">
+        <div class="media">
+        <img src="{{ object.patientprofile.picture.url }}" width="250" height="250">
+        </div>
       {% endif %}
-    </div>
   </div>
+
+  <br>
+{% if object == request.user %}
+  {% if object.patientprofile.age %}
+    <p>Age: {{ object.patientprofile.age }}
+  {% endif %}
+  {% if object.patientprofile.gender %}
+    <p>Gender: {{ object.patientprofile.gender }}
+  {% endif %}
+  {% if object.patientprofile.race %}
+    <p>Race: {{ object.patientprofile.race }}
+  {% endif %}
+  {% if object.patientprofile.weight %}
+    <p>Weight: {{ object.patientprofile.weight }}
+  {% endif %}
+  {% if object.patientprofile.height %}
+    <p>height: {{ object.patientprofile.height }}
+  {% endif %}
+  {% if object.patientprofile.BMI_calculator %}
+    <p>BMI: {{ object.patientprofile.BMI_calculator }}
+  {% endif %}
+  {% if object.patientprofile.drinks_per_week %}
+    <p>Drinks per Week: {{ object.patientprofile.drinks_per_week }}
+  {% endif %}
+{% endif %}
 
 {% if object == request.user %}
 <!-- Action buttons -->
@@ -26,6 +55,7 @@
   <div class="col-sm-12">
     <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
     <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+    <a class="btn btn-primary" href="{% url 'profiles:update' request.user.profile.slug %}" role="button">Profile</a>
     <!-- Your Stuff: Custom user template urls -->
   </div>
 

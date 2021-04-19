@@ -17,7 +17,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     # Reference for app URLs with Cookiecutter-Django: https://stackoverflow.com/questions/39838290/is-there-a-command-for-creating-an-app-using-cookiecutter-django
-    #path("profiles/", include(("goutdotcom.profiles.urls", "goutdotcom.profiles"), namespace="profiles")),
+    path("profiles/", include(("goutdotcom.profiles.urls"), namespace="profiles")),
     path("lab/", include(("goutdotcom.lab.urls"), namespace="lab")),
     path("flare/", include(("goutdotcom.flare.urls"), namespace="flare")),
     path("ult/", include(("goutdotcom.ult.urls"), namespace="ult")),

@@ -5,9 +5,16 @@
   border-style: solid;
   border-width: medium;
   border-color: #010e14;
-  padding: 5px; }
+  padding: 5px;
+  background-color: green; }
 
 .ult-index-jumbotron {
+  border-style: solid;
+  border-width: medium;
+  border-color: #010e14;
+  padding: 5px; }
+
+.user-profile-media {
   border-style: solid;
   border-width: medium;
   border-color: #010e14;
@@ -17,7 +24,8 @@
   border-style: solid;
   border-width: medium;
   border-color: #010e14;
-  padding: 5px; }
+  padding: 5px;
+  background-color: #093b09; }
 
 body {
   background-color: yellow; }
