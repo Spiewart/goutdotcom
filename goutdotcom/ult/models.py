@@ -68,4 +68,4 @@ class ULT(TimeStampedModel):
         return self.calculator()
 
     def get_absolute_url(self):
-        return reverse("ult:detail", kwargs={"pk": self.pk})
+        return reverse("ult:detail", kwargs={"pk":self.pk})

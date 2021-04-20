@@ -24,7 +24,11 @@
   </div>
 
   <br>
+
 {% if object == request.user %}
+  {% if object.patientprofile.date_of_birth %}
+  <p>Age: {{ object.patientprofile.date_of_birth }}
+  {% endif %}
   {% if object.patientprofile.age %}
     <p>Age: {{ object.patientprofile.age }}
   {% endif %}
@@ -41,12 +45,15 @@
     <p>height: {{ object.patientprofile.height }}
   {% endif %}
   {% if object.patientprofile.BMI_calculator %}
-    <p>BMI: {{ object.patientprofile.BMI_calculator }}
+    <p>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}
   {% endif %}
   {% if object.patientprofile.drinks_per_week %}
     <p>Drinks per Week: {{ object.patientprofile.drinks_per_week }}
   {% endif %}
+  <h6>Profile created on: {{ object.patientprofile.created }}</h6>
 {% endif %}
+
+<br>
 
 {% if object == request.user %}
 <!-- Action buttons -->
@@ -55,7 +62,7 @@
   <div class="col-sm-12">
     <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
     <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
-    <a class="btn btn-primary" href="{% url 'profiles:update' request.user.profile.slug %}" role="button">Profile</a>
+    <a class="btn btn-primary" href="{% url 'profiles:update' request.user.patientprofile.slug %}" role="button">Profile</a>
     <!-- Your Stuff: Custom user template urls -->
   </div>
 

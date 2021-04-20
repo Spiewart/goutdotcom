@@ -6,5 +6,5 @@ from .views import (
 
 app_name = "profiles"
 urlpatterns = [
-    path("<int:pk>/update", view=PatientProfileUpdate, name="update"),
+    path("<slug:slug>/update", view=PatientProfileUpdate.as_view(), name="update"),
 ]

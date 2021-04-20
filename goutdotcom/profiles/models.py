@@ -2,6 +2,7 @@ from autoslug import AutoSlugField
 from django.conf import settings
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+from django.urls import reverse
 
 import datetime
 
@@ -18,7 +19,7 @@ class PatientProfile(TimeStampedModel):
     )
 
     slug = AutoSlugField(
-        "User Profile", unique=True, always_update=True, populate_from="username"
+        "User Profile", unique=True, always_update=False, populate_from="user__username"
     )
     picture = models.ImageField(default="default_image.jpg", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -64,5 +65,6 @@ class PatientProfile(TimeStampedModel):
     def __str__(self):
         return self.user.username
 
-
+    def get_absolute_url(self):
+        return reverse("profiles:detail", kwargs={"slug":self.slug})
 
