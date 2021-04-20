@@ -17,3 +17,8 @@ def flare(request):
 def prevention(request):
     return render(request, 'prevention/flare.html')
 
+class AllopurinolDetailView(DetailView):
+    model = Allopurinol
+
+
+

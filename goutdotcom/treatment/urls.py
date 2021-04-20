@@ -11,6 +11,6 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="treatment/index.html"), name="index"),
     path("flare/", TemplateView.as_view(template_name="treatment/flare.html"), name="flare"),
     path("prevention/", TemplateView.as_view(template_name="treatment/prevention.html"), name="prevention"),
-    path("allopurinol/<int:pk>/", view=AllopurinolDetail.as_view(), name="allopurinol-detail"),
+    path("allopurinol/<slug:slug>/<slug:med_slug>/", view=AllopurinolDetail.as_view(), name="allopurinol-detail"),
     path("febuxostat/<int:pk>/", view=FebuxostatDetail.as_view(), name="febuxostat-detail"),
 ]
