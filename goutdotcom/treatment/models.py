@@ -153,10 +153,6 @@ class Medication(TimeStampedModel):
     date_ended = models.DateField(null=True, blank=True)
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
-    
-    slug = AutoSlugField(
-        "Patient", unique=True, always_update=False, populate_from="user__username"
-    )
 
     class Meta:
         abstract = True
@@ -170,7 +166,7 @@ class Medication(TimeStampedModel):
 class Allopurinol(Medication):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=ALLOPURINOL)
     med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
+        "Medication Name", unique_with="user", always_update=False, populate_from="generic_name"
     )
     brand_names = ["Xyloprim", "Aloprim"]
     dose = models.IntegerField(choices=ALLOPURINOL_DOSE_CHOICES)

@@ -1,9 +1,11 @@
 from autoslug import AutoSlugField
 from django.conf import settings
+from django.dispatch import receiver
 from django.db import models
+from django.db.models.signals import post_save
 from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
-
+from django.utils.crypto import get_random_string
 import datetime
 
 from goutdotcom.users.models import models
@@ -18,8 +20,12 @@ class PatientProfile(TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
+    def get_id_num(self):
+        id_num = get_random_string(length=12)
+        return id_num
+
     slug = AutoSlugField(
-        "User Profile", unique=True, always_update=False, populate_from="user__username"
+        "User Profile", unique_with="user", always_update=False, populate_from="get_id_num"
     )
     picture = models.ImageField(default="default_image.jpg", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -66,5 +72,5 @@ class PatientProfile(TimeStampedModel):
         return self.user.username
 
     def get_absolute_url(self):
-        return reverse("profiles:detail", kwargs={"slug":self.slug})
+        return reverse("users:detail", kwargs={"username": self.user_username})
 

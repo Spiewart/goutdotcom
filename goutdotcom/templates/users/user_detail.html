@@ -62,7 +62,11 @@
   <div class="col-sm-12">
     <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
     <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+    {% if request.user.patientprofile %}
     <a class="btn btn-primary" href="{% url 'profiles:update' request.user.patientprofile.slug %}" role="button">Profile</a>
+    {% else %}
+    <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
+    {% endif %}
     <!-- Your Stuff: Custom user template urls -->
   </div>
 
