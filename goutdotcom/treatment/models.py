@@ -169,7 +169,7 @@ class Allopurinol(TimeStampedModel):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
     
     def get_absolute_url(self):
-        return reverse("treatment:allopurinol-detail", kwargs={"slug":self.med_slug})
+        return reverse("treatment:allopurinol-detail", kwargs={"pk":self.pk})
 
 class Febuxostat(TimeStampedModel):
     user = models.ForeignKey(
