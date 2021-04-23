@@ -80,7 +80,7 @@ for x in range(1, 19):
     ALLOPURINOL_DOSE_CHOICES += (y, z),
 
 COLCHICINE_DOSE_CHOICES = (
-    (Decimal('0.6'), '0.6 mg'),
+    ('0.6', '0.6 mg'),
 )
 
 PROBENACID_DOSE_CHOICES = (
@@ -161,13 +161,13 @@ class Allopurinol(TimeStampedModel):
     side_effects = models.CharField(max_length=100, choices=ALLOPURINOL_SIDE_EFFECT_CHOICES, null=True, blank=True, help_text="Have you had any side effects?")
     de_sensitized = models.BooleanField(null=True, blank=True, help_text="Have you been de-sensitized to allopurinol?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
-    
+
     class Meta:
         pass
 
     def __str__(self):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
-    
+
     def get_absolute_url(self):
         return reverse("treatment:allopurinol-detail", kwargs={"pk":self.pk})
 
@@ -175,7 +175,7 @@ class Febuxostat(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-    ) 
+    )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=FEBUXOSTAT)
     med_slug = AutoSlugField(
         "Medication Name", unique_with="user", always_update=False, populate_from="generic_name"
@@ -193,7 +193,7 @@ class Febuxostat(TimeStampedModel):
 
     def __str__(self):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
-    
+
     def get_absolute_url(self):
         return reverse("treatment:detail", kwargs={"slug":self.med_slug})
 
@@ -219,7 +219,7 @@ class Colchicine(TimeStampedModel):
 
     def __str__(self):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
-    
+
     def get_absolute_url(self):
         return reverse("treatment:detail", kwargs={"slug":self.med_slug})
 
@@ -245,7 +245,7 @@ class Ibuprofen(TimeStampedModel):
 
     def __str__(self):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
-    
+
     def get_absolute_url(self):
         return reverse("treatment:detail", kwargs={"slug":self.med_slug})
 
@@ -253,7 +253,7 @@ class Naproxen(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-    )    
+    )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=NAPROXEN)
     med_slug = AutoSlugField(
         "Medication Name", unique=True, always_update=False, populate_from="generic_name"
@@ -271,7 +271,7 @@ class Naproxen(TimeStampedModel):
 
     def __str__(self):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
-    
+
     def get_absolute_url(self):
         return reverse("treatment:detail", kwargs={"slug":self.med_slug})
 
@@ -297,7 +297,7 @@ class Meloxicam(TimeStampedModel):
 
     def __str__(self):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
-    
+
     def get_absolute_url(self):
         return reverse("treatment:detail", kwargs={"slug":self.med_slug})
 
@@ -305,11 +305,11 @@ class Celecoxib(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-    )    
+    )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=CELECOXIB)
     med_slug = AutoSlugField(
         "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )   
+    )
     brand_names = ["Aleve"]
     dose = models.IntegerField(choices=CELECOXIB_DOSE_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
@@ -323,6 +323,6 @@ class Celecoxib(TimeStampedModel):
 
     def __str__(self):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
-    
+
     def get_absolute_url(self):
         return reverse("treatment:detail", kwargs={"slug":self.med_slug})
