@@ -57,9 +57,6 @@
 
 {% if object == request.user %}
 <!-- Action buttons -->
-<div class="row">
-
-  <div class="col-sm-12">
     <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
     <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
     {% if request.user.patientprofile %}
@@ -69,19 +66,22 @@
     {% endif %}
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
       <div class="btn-group" role="group">
-        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
           Medications
         </button>
-        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
           <li><a class="dropdown-item" href="{% url 'treatment:allopurinol-create' %}">Allopurinol</a></li>
           <li><a class="dropdown-item" href="{% url 'treatment:febuxostat-create' %}">Febuxostat</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:colchicine-create' %}">Colchicine</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:ibuprofen-create' %}">Ibuprofen</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:naproxen-create' %}">Naproxen</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
         </ul>
       </div>
     </div>
     <!-- Your Stuff: Custom user template urls -->
-  </div>
 
-</div>
 <!-- End Action buttons -->
 {% endif %}
 

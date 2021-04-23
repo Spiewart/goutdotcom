@@ -195,7 +195,7 @@ class Febuxostat(TimeStampedModel):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
 
     def get_absolute_url(self):
-        return reverse("treatment:detail", kwargs={"slug":self.med_slug})
+        return reverse("treatment:febuxostat-detail",  kwargs={"pk": self.pk})
 
 class Colchicine(TimeStampedModel):
     user = models.ForeignKey(
@@ -221,7 +221,7 @@ class Colchicine(TimeStampedModel):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
 
     def get_absolute_url(self):
-        return reverse("treatment:detail", kwargs={"slug":self.med_slug})
+        return reverse("treatment:colchicine-detail",  kwargs={"pk": self.pk})
 
 class Ibuprofen(TimeStampedModel):
     user = models.ForeignKey(
@@ -247,7 +247,7 @@ class Ibuprofen(TimeStampedModel):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
 
     def get_absolute_url(self):
-        return reverse("treatment:detail", kwargs={"slug":self.med_slug})
+        return reverse("treatment:ibuprofen-detail",  kwargs={"pk": self.pk})
 
 class Naproxen(TimeStampedModel):
     user = models.ForeignKey(
@@ -273,7 +273,7 @@ class Naproxen(TimeStampedModel):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
 
     def get_absolute_url(self):
-        return reverse("treatment:detail", kwargs={"slug":self.med_slug})
+        return reverse("treatment:naproxen-detail",  kwargs={"pk": self.pk})
 
 class Meloxicam(TimeStampedModel):
     user = models.ForeignKey(
@@ -299,7 +299,7 @@ class Meloxicam(TimeStampedModel):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
 
     def get_absolute_url(self):
-        return reverse("treatment:detail", kwargs={"slug":self.med_slug})
+        return reverse("treatment:meloxicam-detail",  kwargs={"pk": self.pk})
 
 class Celecoxib(TimeStampedModel):
     user = models.ForeignKey(
@@ -325,4 +325,32 @@ class Celecoxib(TimeStampedModel):
         return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
 
     def get_absolute_url(self):
-        return reverse("treatment:detail", kwargs={"slug":self.med_slug})
+        return reverse("treatment:celecoxib-detail",  kwargs={"pk": self.pk})
+
+
+class Prednisone(TimeStampedModel):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PREDNISONE)
+    med_slug = AutoSlugField(
+        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
+    )
+    brand_names = ["Prednisone"]
+    dose = models.IntegerField()
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY)
+    date_started = models.DateField(default=datetime.datetime.now)
+    date_ended = models.DateField(null=True, blank=True)
+    side_effects = models.CharField(max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES,
+                                    null=True, blank=True, help_text="Have you had any side effects?")
+    drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=SYSSTEROID)
+
+    class Meta:
+        pass
+
+    def __str__(self):
+        return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
+
+    def get_absolute_url(self):
+        return reverse("treatment:prednisone-detail",  kwargs={"pk": self.pk})
