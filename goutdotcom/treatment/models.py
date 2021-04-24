@@ -17,6 +17,7 @@ IBUPROFEN = 'ibuprofen'
 NAPROXEN = 'naproxen'
 MELOXICAM = 'meloxicam'
 CELECOXIB = 'celecoxib'
+METHYLPREDNISOLONE = 'methylprednisolone'
 
 ULT = 'urate-lowering therapy'
 SYSSTEROID = 'systemic steroid'
@@ -32,6 +33,7 @@ TID = 'tid'
 QDAYPRN = 'qday prn'
 BIDPRN = 'bid prn'
 QTWOWEEK = 'q2weeks'
+ONCE = 'once'
 
 MEDICATION_CHOICES = (
     (ALLOPURINOL, 'Allopurinol'),
@@ -44,6 +46,7 @@ MEDICATION_CHOICES = (
     (NAPROXEN, 'Naproxen'),
     (MELOXICAM, 'Meloxicam'),
     (CELECOXIB, 'Celecoxib'),
+    (METHYLPREDNISOLONE, 'Methylprednisolone'),
 )
 
 DRUG_CLASS_CHOICES = (
@@ -63,6 +66,7 @@ FREQ_CHOICES = (
     (QDAYPRN, 'Once daily as needed'),
     (BIDPRN, 'Twice daily as needed'),
     (QTWOWEEK, 'Every 2 weeks'),
+    (ONCE, 'Once'),
 )
 
 ALLOPURINOL_DOSE_CHOICES = ()
@@ -80,38 +84,44 @@ for x in range(1, 19):
     ALLOPURINOL_DOSE_CHOICES += (y, z),
 
 COLCHICINE_DOSE_CHOICES = (
-    ('0.6', '0.6 mg'),
+    (.6, '0.6 mg'),
 )
 
 PROBENACID_DOSE_CHOICES = (
-    ('250', '250 mg'),
-    ('500', '500 mg'),
-    ('750', '750 mg'),
-    ('1000', '1000 mg'),
+    (250, '250 mg'),
+    (500, '500 mg'),
+    (750, '750 mg'),
+    (1000, '1000 mg'),
 )
 
 IBUPROFEN_DOSE_CHOICES = (
-    ('200', '200 mg'),
-    ('400', '400 mg'),
-    ('600', '600 mg'),
-    ('800', '800 mg'),
+    (200, '200 mg'),
+    (400, '400 mg'),
+    (600, '600 mg'),
+    (800, '800 mg'),
 )
 
 NAPROXEN_DOSE_CHOICES = (
-    ('220', '220 mg'),
-    ('250', '250 mg'),
-    ('440', '440 mg'),
-    ('500', '500 mg'),
+    (220, '220 mg'),
+    (250, '250 mg'),
+    (440, '440 mg'),
+    (500, '500 mg'),
 )
 
 MELOXICAM_DOSE_CHOICES = (
-    ('7.5', '7.5 mg'),
-    ('15', '15 mg'),
+    (7.5, '7.5 mg'),
+    (15, '15 mg'),
 )
 
 CELECOXIB_DOSE_CHOICES = (
-    ('200', '200 mg'),
-    ('400', '400 mg'),
+    (200, '200 mg'),
+    (400, '400 mg'),
+)
+
+METHYLPREDNISOLONE_DOSE_CHOICES = (
+    (20, '20 mg'),
+    (40, '40 mg'),
+    (80, '80 mg'),
 )
 
 ALLOPURINOL_SIDE_EFFECT_CHOICES = (
@@ -141,6 +151,23 @@ NSAID_SIDE_EFFECT_CHOICES = (
     ('Stomach ulcer', 'Stomach ulcer'),
     ('GI upset', 'GI upset'),
     ('Medication interaction', 'Medication interaction'),
+)
+
+PREDNISONE_SIDE_EFFECT_CHOICES = (
+    ('Insomnia', 'Insomnia'),
+    ('Weight gain', 'Weight gain'),
+    ('Anxiety', 'Anxiety'),
+    ('Hyperglycemia', 'Hyperglycemia'),
+    ('Weakness', 'Weakness'),
+    ('Easy bruising', 'Easy bruising'),
+    ('Osteoporosis', 'Osteoporosis'),
+    ('Cataract', 'Cataract'),
+    ('Infection', 'Infection'),
+)
+
+INJECTION_SIDE_EFFECT_CHOICES = (
+    ('Bleeding', 'Bleeding'),
+    ('Infection', 'Infection'),
 )
 
 # Create your models here.
@@ -207,7 +234,7 @@ class Colchicine(TimeStampedModel):
         "Medication Name", unique=True, always_update=False, populate_from="generic_name"
     )
     brand_names = ["Colcrys"]
-    dose = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES)
+    dose = models.DecimalField(decimal_places=1, max_digits=2, default=0.6)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
     date_started = models.DateField(default=datetime.datetime.now)
     date_ended = models.DateField(null=True, blank=True)
@@ -342,7 +369,7 @@ class Prednisone(TimeStampedModel):
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY)
     date_started = models.DateField(default=datetime.datetime.now)
     date_ended = models.DateField(null=True, blank=True)
-    side_effects = models.CharField(max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES,
+    side_effects = models.CharField(max_length=100, choices=PREDNISONE_SIDE_EFFECT_CHOICES,
                                     null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=SYSSTEROID)
 
@@ -354,3 +381,30 @@ class Prednisone(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("treatment:prednisone-detail",  kwargs={"pk": self.pk})
+
+class Methylprednisolone(TimeStampedModel):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=METHYLPREDNISOLONE)
+    med_slug = AutoSlugField(
+        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
+    )
+    brand_names = ["Depomedrol"]
+    dose = dose = models.IntegerField(choices=METHYLPREDNISOLONE_DOSE_CHOICES)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY)
+    date_started = models.DateField(default=datetime.datetime.now)
+    date_ended = models.DateField(null=True, blank=True)
+    side_effects = models.CharField(max_length=100, choices=INJECTION_SIDE_EFFECT_CHOICES,
+                                    null=True, blank=True, help_text="Have you had any side effects?")
+    drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=LOCSTEROID)
+
+    class Meta:
+        pass
+
+    def __str__(self):
+        return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
+
+    def get_absolute_url(self):
+        return reverse("treatment:methylprednisolone-detail",  kwargs={"pk": self.pk})

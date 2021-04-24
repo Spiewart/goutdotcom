@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen
+from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Methylprednisolone
 
 def index(request):
     return render(request, 'treatment/index.html')
@@ -115,4 +115,34 @@ class CelecoxibCreate(LoginRequiredMixin, CreateView):
 
 class CelecoxibUpdate(LoginRequiredMixin, UpdateView):
     model = Celecoxib
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+
+class PrednisoneDetail(DetailView):
+    model = Prednisone
+
+class PrednisoneCreate(LoginRequiredMixin, CreateView):
+    model = Prednisone
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class PrednisoneUpdate(LoginRequiredMixin, UpdateView):
+    model = Prednisone
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+
+class MethylprednisoloneDetail(DetailView):
+    model = Methylprednisolone
+
+class MethylprednisoloneCreate(LoginRequiredMixin, CreateView):
+    model = Methylprednisolone
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class MethylprednisoloneUpdate(LoginRequiredMixin, UpdateView):
+    model = Methylprednisolone
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]

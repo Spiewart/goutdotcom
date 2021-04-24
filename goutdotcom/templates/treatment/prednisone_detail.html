@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>{{ object.generic_name }}</h2>
+      <h3>{{ object.dose }} {{ object.freq }}</h3>
+    </div>
+  </div>
+</div>
+<a class="btn btn-primary btn-lg" href="{% url 'treatment:prednisone-update' object.pk %}" role="button">Update</a>
+{% endblock content %}

@@ -23,6 +23,12 @@ from .views import (
     MeloxicamCreate,
     MeloxicamDetail,
     MeloxicamUpdate,
+    PrednisoneCreate,
+    PrednisoneDetail,
+    PrednisoneUpdate,
+    MethylprednisoloneDetail,
+    MethylprednisoloneCreate,
+    MethylprednisoloneUpdate,
 )
 
 app_name = "treatment"
@@ -51,4 +57,10 @@ urlpatterns = [
     path("meloxicam/<int:pk>/", view=MeloxicamDetail.as_view(), name="meloxicam-detail"),
     path("meloxicam/create/", view=MeloxicamCreate.as_view(), name="meloxicam-create"),
     path("meloxicam/<int:pk>/update/", view=MeloxicamUpdate.as_view(), name="meloxicam-update"),
+    path("prednisone/<int:pk>/", view=PrednisoneDetail.as_view(), name="prednisone-detail"),
+    path("prednisone/create/", view=PrednisoneCreate.as_view(), name="prednisone-create"),
+    path("prednisone/<int:pk>/update/", view=PrednisoneUpdate.as_view(), name="prednisone-update"),
+    path("methylprednisolone/<int:pk>/", view=MethylprednisoloneDetail.as_view(), name="methylprednisolone-detail"),
+    path("methylprednisolone/create/", view=MethylprednisoloneCreate.as_view(), name="methylprednisolone-create"),
+    path("methylprednisolone/<int:pk>/update/", view=MethylprednisoloneUpdate.as_view(), name="methylprednisolone-update"),
 ]

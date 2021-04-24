@@ -24,35 +24,52 @@
   </div>
 
   <br>
-
-{% if object == request.user %}
-  {% if object.patientprofile.date_of_birth %}
-  <p>Age: {{ object.patientprofile.date_of_birth }}
-  {% endif %}
-  {% if object.patientprofile.age %}
-    <p>Age: {{ object.patientprofile.age }}
-  {% endif %}
-  {% if object.patientprofile.gender %}
-    <p>Gender: {{ object.patientprofile.gender }}
-  {% endif %}
-  {% if object.patientprofile.race %}
-    <p>Race: {{ object.patientprofile.race }}
-  {% endif %}
-  {% if object.patientprofile.weight %}
-    <p>Weight: {{ object.patientprofile.weight }}
-  {% endif %}
-  {% if object.patientprofile.height %}
-    <p>height: {{ object.patientprofile.height }}
-  {% endif %}
-  {% if object.patientprofile.BMI_calculator %}
-    <p>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}
-  {% endif %}
-  {% if object.patientprofile.drinks_per_week %}
-    <p>Drinks per Week: {{ object.patientprofile.drinks_per_week }}
-  {% endif %}
-  <h6>Profile created on: {{ object.patientprofile.created }}</h6>
-{% endif %}
-
+  <div class="container">
+    <div class="row">
+      <div class="col-sm">
+        {% if object == request.user %}
+          {% if object.patientprofile.date_of_birth %}
+          <p>Age: {{ object.patientprofile.date_of_birth }}
+          {% endif %}
+          {% if object.patientprofile.age %}
+            <p>Age: {{ object.patientprofile.age }}
+          {% endif %}
+          {% if object.patientprofile.gender %}
+            <p>Gender: {{ object.patientprofile.gender }}
+          {% endif %}
+          {% if object.patientprofile.race %}
+            <p>Race: {{ object.patientprofile.race }}
+          {% endif %}
+          {% if object.patientprofile.weight %}
+            <p>Weight: {{ object.patientprofile.weight }}
+          {% endif %}
+          {% if object.patientprofile.height %}
+            <p>height: {{ object.patientprofile.height }}
+          {% endif %}
+          {% if object.patientprofile.BMI_calculator %}
+            <p>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}
+          {% endif %}
+          {% if object.patientprofile.drinks_per_week %}
+            <p>Drinks per Week: {{ object.patientprofile.drinks_per_week }}
+          {% endif %}
+          <h6>Profile created on: {{ object.patientprofile.created }}</h6>
+        {% endif %}
+      </div>
+      <div class="col-sm">
+        {% if object == request.user %}
+          {% if object.allopurinol %}
+          <p>Age: {{ object.allopurinol.dose }}
+          {% endif %}
+          {% if object.febuxostat %}
+            <p>Age: {{ object.febuxostat.dose }}
+          {% endif %}
+          {% if object.patientprofile.gender %}
+            <p>Gender: {{ object.patientprofile.gender }}
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
 <br>
 
 {% if object == request.user %}
@@ -77,6 +94,8 @@
           <li><a class="dropdown-item" href="{% url 'treatment:naproxen-create' %}">Naproxen</a></li>
           <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
           <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:prednisone-create' %}">Prednisone</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:methylprednisolone-create' %}">Methylprednisolone</a></li>
         </ul>
       </div>
     </div>
