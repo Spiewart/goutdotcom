@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container-fluid treatment-index">
+<main role="main" class="container-fluid">
   <div class="jumbotron treatment-index">
     <h1 class="display-4">Gout Treatment</h1>
     <h3 class="lead">Managing gout is broken down into two parts:</h3>
@@ -15,5 +15,16 @@
       <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Preventative Therapy</a>
     </p>
   </div>
+
+  {% if user.is_authenticated %}
+  ss
+    {% if user_treatment_list %}
+    ss
+      {% for allopurinol in allopurinol_list %}
+      ss
+      {{ allopurinol.dose }}
+      {% endfor %}
+    {% endif %}
+  {% endif %}
 </main>
 {% endblock content %}

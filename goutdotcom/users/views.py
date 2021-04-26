@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from . forms import UserCreationForm
-
+from ..treatment.models import Allopurinol
 User = get_user_model()
 
 
@@ -15,6 +15,8 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     slug_field = "username"
     slug_url_kwarg = "username"
 
+    #def get_queryset(self):
+        #return Allopurinol.objects.filter(user_username=self.request.user.get_username())
 
 user_detail_view = UserDetailView.as_view()
 

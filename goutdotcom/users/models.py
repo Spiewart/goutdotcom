@@ -4,6 +4,12 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from ..treatment.models import Allopurinol
+
+class TreatmentManager(models.Manager):
+    def treatments(self, user):
+        allopurinol = Allopurinol.objects.filter(user=User)
+        return allopurinol
 
 class User(AbstractUser):
     """Default user for goutdotcom."""
@@ -25,6 +31,8 @@ class User(AbstractUser):
         _("Role"), max_length=50, choices=Roles.choices, default=Roles.PATIENT
     )
 
+    treatments = TreatmentManager()
+
     def save(self, *args, **kwargs):
         # If a new user, set the user's role based off the base_role property
         if not self.pk:
@@ -33,6 +41,7 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         """Get url for user's detail view.
+
 
         Returns:
             str: URL for user detail.
@@ -55,7 +64,7 @@ class Patient(User):
     # Setting proxy to "True" means a table will not be created for this record
     class Meta:
         proxy=True
-    
+
     # Custom methods for Patient Role go here...
     @property
     def extra(self):

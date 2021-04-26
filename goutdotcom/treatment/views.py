@@ -3,8 +3,20 @@ from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Methylprednisolone
 
-def index(request):
-    return render(request, 'treatment/index.html')
+class IndexView(ListView):
+    template_name = 'treatment/index.html'
+    context_object_name = 'user_treatment_list'
+    model = Allopurinol
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context.update({
+            'allopurinol_list': Allopurinol.objects.all(), #filter(user=self.request.user)
+        })
+        return context
+
+    def get_queryset(self):
+        return Allopurinol.objects.all()
 
 def flare(request):
     return render(request, 'treatment/flare.html')
