@@ -4,11 +4,11 @@
 {% block content %}
 <div class="container">
   {% if object_list %}
-    {% for ALT in object_list %}
+    {% for platelet in object_list %}
       <div class="row">
         <div class="col-sm-12">
-          <h2>{{ ALT.alt_sgpt }}</h2><a class="btn btn-primary" href="{% url 'lab:ALT-detail' ALT.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'lab:ALT-update' ALT.pk %}" role="button">Update</a>
-          <h4>{{ ALT.created }}</h4>
+          <h2>{{ platelet.platelets }}</h2><a class="btn btn-primary" href="{% url 'lab:platelet-detail' platelet.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'lab:platelet-update' platelet.pk %}" role="button">Update</a>
+          <h4>{{ platelet.created }}</h4>
         </div>
       </div>
     {% endfor %}

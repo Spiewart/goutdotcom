@@ -43,7 +43,7 @@ class ALT(Lab):
         return reverse("lab:ALT-detail", kwargs={"pk":self.pk})
 
 class AST(Lab):
-    ast_sgot = models.IntegerField(help_text="ALT / SGOT")
+    ast_sgot = models.IntegerField(help_text="AST / SGOT")
     name = "AST"
 
     def __str__(self):
@@ -86,52 +86,55 @@ class Creatinine(Lab):
     creatinine = models.DecimalField(max_digits=4, decimal_places=2, help_text="creatinine")
     name = "creatinine"
 
-    ###def eGFR_calculator(self):
-        #kappa = 0
-        #alpha = 0
+    def eGFR_calculator(self):
+        kappa = 0
+        alpha = 0
 
-        #if self.user.race == True & self.user.gender == True & self.user.age == True:
-            #def sex_vars_kappa(self):
-                #if self.user.gender == 'male':
-                 #   return Decimal(0.9)
-                #elif self.user.gender == 'female':
-                 #   return Decimal(0.7)
-                #else:
-                    #return "Can't calculate eGFR without gender."
+        def sex_vars_kappa(self):
+            if self.user.patientprofile.gender == 'male':
+                return Decimal(0.9)
+            elif self.user.patientprofile.gender == 'female':
+                return Decimal(0.7)
+            else:
+                return "Can't calculate eGFR without biologic gender."
 
-            #def sex_vars_alpha(self):
-                #if self.user.gender == 'male':
-                    #return Decimal(float(-0.411))
-                #elif self.user.gender == 'female':
-                    #return Decimal(-0.329)
-                #else:
-                    #return "Can't calculate eGFR without gender."
+        def sex_vars_alpha(self):
+            if self.user.patientprofile.gender == 'male':
+                return Decimal(float(-0.411))
+            elif self.user.patientprofile.gender == 'female':
+                return Decimal(-0.329)
+            else:
+                return "Can't calculate eGFR without biologic gender."
 
-            #kappa = sex_vars_kappa(self)
-            #alpha = sex_vars_alpha(self)
+        kappa = sex_vars_kappa(self)
+        alpha = sex_vars_alpha(self)
 
-            #def race_modifier(self):
-                #if self.user.race == 'black':
-                    #return Decimal(1.159)
-                #else:
-                    #return Decimal(1.00)
+        def race_modifier(self):
+            if self.user.patientprofile.race == 'black':
+                return Decimal(1.159)
+            elif self.user.patientprofile.race == False:
+                return "Race is needed to calculate eGFR."
+            else:
+                return Decimal(1.00)
 
-            #def sex_modifier(self):
-                #if self.user.gender == 'female':
-                    #return Decimal(1.018)
-                #else:
-                    #return Decimal(1.00)
+        def sex_modifier(self):
+            if self.user.patientprofile.gender == 'female':
+                return Decimal(1.018)
+            elif self.user.patientprofile.gender == 'female':
+                return Decimal(1.00)
+            else: 
+                return "Biological gender is needed to calculate eGFR."
 
-            #race_modifier(self)
-            #sex_modifier(self)
-
-            #eGFR = Decimal(141) * min(self.creatinine / kappa, Decimal(1.00)) * max(self.creatinine / kappa, Decimal(1.00)                                                                 ) ** Decimal(-1.209) * Decimal(0.993) ** self.user.age ** race_modifier(self) ** sex_modifier(self)
-            #return eGFR
-        #else:
-            #return "Can't calculate eGFR"
+        if race_modifier(self).type() == Decimal & sex_modifier(self).type() == Decimal):
+            race_modifier(self)
+            sex_modifier(self)
+            eGFR = Decimal(141) * min(self.creatinine / kappa, Decimal(1.00)) * max(self.creatinine / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.age ** race_modifier(self) ** sex_modifier(self)
+            return eGFR
+        else: 
+            return "Something went wrong with eGFR calculation"
 
     def __str__(self):
-        return (str(self.creatinine) + " " + str(self.created))# + " " + "GFR: " + str(self.eGFR_calculator()))
+        return (str(self.creatinine) + " " + str(self.created) + " " + "GFR: " + str(self.eGFR_calculator()))
 
     def get_absolute_url(self):
         return reverse("lab:creatinine-detail", kwargs={"pk":self.pk})

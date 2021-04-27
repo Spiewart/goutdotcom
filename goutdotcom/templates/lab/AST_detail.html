@@ -5,11 +5,14 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h1>ALT</h1>
+      <h1>AST</h1>
       <ul>
         <li>{{ object.ast_sgot }} mg/dL</li>
         <li>Logged: {{ object.created }}</li>
       </ul>
+      <a class="btn btn-primary" href="{% url 'lab:AST-update' object.pk %}" role="button">Update</a>
+      <a class="btn btn-primary" href="{% url 'lab:AST-list' %}" role="button">List</a>
+      <a class="btn btn-primary" href="{% url 'lab:log' %}" role="button">Lab Home</a>
     </div>
   </div>
 </div>

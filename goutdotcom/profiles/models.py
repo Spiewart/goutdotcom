@@ -34,8 +34,8 @@ class PatientProfile(TimeStampedModel):
     sexes = (('male', 'male'), ('female', 'female'), ('non-binary', 'non-binary'))
     races = (('white', 'white'), ('black', 'black'), ('asian', 'asian'), ('native american', 'native american'), ('hispanic', 'hispanic'))
 
-    gender = models.CharField(max_length=20, choices=sexes, help_text='Enter gender', null=True, blank=True)
-    race = models.CharField(max_length=40, choices=races, help_text='Enter race', null=True, blank=True)
+    gender = models.CharField(max_length=20, choices=sexes, help_text='Enter gender', null=False, blank=True, default='male')
+    race = models.CharField(max_length=40, choices=races, help_text='Enter race', null=False, blank=True, default='white')
     weight = models.IntegerField(help_text="How much do you weight in pounds?", null=True, blank=True)
     height = models.IntegerField(help_text="How tall are you in feet/inches?", null=True, blank=True)
 

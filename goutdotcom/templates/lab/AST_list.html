@@ -4,15 +4,15 @@
 {% block content %}
 <div class="container">
   {% if object_list %}
-    {% for urate in object_list %}
+    {% for AST in object_list %}
       <div class="row">
         <div class="col-sm-12">
-          <h2>{{ AST.ast_sgot }}</h2>
+          <h2>{{ AST.ast_sgot }}</h2><a class="btn btn-primary" href="{% url 'lab:AST-detail' AST.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'lab:AST-update' AST.pk %}" role="button">Update</a>
           <h4>{{ AST.created }}</h4>
         </div>
       </div>
     {% endfor %}
   {% endif %}
 </div>
-<a class="btn btn-primary" href="{% url 'lab:AST-update' %}" role="button">Update</a>
+<a class="btn btn-primary" href="{% url 'lab:log' %}" role="button">Lab Home</a>
 {% endblock content %}

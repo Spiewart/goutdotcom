@@ -7,11 +7,12 @@
     {% for urate in object_list %}
       <div class="row">
         <div class="col-sm-12">
-          <h2>{{ urate.uric_acid }}</h2>
+          <h2>{{ urate.uric_acid }}</h2><a class="btn btn-primary" href="{% url 'lab:urate-detail' urate.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'lab:urate-update' urate.pk %}" role="button">Update</a>
           <h4>{{ urate.created }}</h4>
         </div>
       </div>
     {% endfor %}
   {% endif %}
 </div>
+<a class="btn btn-primary" href="{% url 'lab:log' %}" role="button">Lab Home</a>
 {% endblock content %}

@@ -5,15 +5,15 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h1>Uric Acid</h1>
+      <h1>WBC</h1>
       <ul>
-        <li>{{ object.uric_acid }} mg/dL</li>
+        <li>{{ object.white_blood_cells }} mg/dL</li>
         <li>Logged: {{ object.created }}</li>
       </ul>
     </div>
   </div>
-  <a class="btn btn-primary" href="{% url 'lab:urate-update' urate.pk %}" role="button">Update</a>
-  <a class="btn btn-primary" href="{% url 'lab:urate-list' %}" role="button">List</a>
+  <a class="btn btn-primary" href="{% url 'lab:WBC-update' object.pk %}" role="button">Update</a>
+  <a class="btn btn-primary" href="{% url 'lab:WBC-list' %}" role="button">List</a>
   <a class="btn btn-primary" href="{% url 'lab:log' %}" role="button">Lab Home</a>
 </div>
 {% endblock content %}
