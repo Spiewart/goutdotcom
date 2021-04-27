@@ -11,7 +11,7 @@ ALLOPURINOL = 'allopurinol'
 FEBUXOSTAT = 'febuxostat'
 PREDNISONE = 'prednisone'
 COLCHICINE = 'colchicine'
-PROBENACID = 'probenacid'
+PROBENECID = 'probenecid'
 PEGLOTICASE = 'pegloticase'
 IBUPROFEN = 'ibuprofen'
 NAPROXEN = 'naproxen'
@@ -40,7 +40,7 @@ MEDICATION_CHOICES = (
     (FEBUXOSTAT, 'Febuxostat'),
     (PREDNISONE, 'Prednisone'),
     (COLCHICINE, 'Colchicine'),
-    (PROBENACID, 'Probenacid'),
+    (PROBENECID, 'Probenecid'),
     (PEGLOTICASE, 'Pegloticase'),
     (IBUPROFEN, 'Ibuprofen'),
     (NAPROXEN, 'Naproxen'),
@@ -87,7 +87,7 @@ COLCHICINE_DOSE_CHOICES = (
     (.6, '0.6 mg'),
 )
 
-PROBENACID_DOSE_CHOICES = (
+PROBENECID_DOSE_CHOICES = (
     (250, '250 mg'),
     (500, '500 mg'),
     (750, '750 mg'),
@@ -168,6 +168,11 @@ PREDNISONE_SIDE_EFFECT_CHOICES = (
 INJECTION_SIDE_EFFECT_CHOICES = (
     ('Bleeding', 'Bleeding'),
     ('Infection', 'Infection'),
+)
+
+PROBENECID_SIDE_EFFECT_CHOICES = (
+    ('Flushing', 'Flushing'),
+    ('Headache', 'Headache'),
 )
 
 # Create your models here.
@@ -408,3 +413,30 @@ class Methylprednisolone(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("treatment:methylprednisolone-detail",  kwargs={"pk": self.pk})
+
+class Probenecid(TimeStampedModel):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PROBENECID)
+    med_slug = AutoSlugField(
+        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
+    )
+    brand_names = ["Depomedrol"]
+    dose = dose = models.IntegerField(choices=PROBENECID_DOSE_CHOICES)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=BID)
+    date_started = models.DateField(default=datetime.datetime.now)
+    date_ended = models.DateField(null=True, blank=True)
+    side_effects = models.CharField(max_length=100, choices=PROBENECID_SIDE_EFFECT_CHOICES,
+                                    null=True, blank=True, help_text="Have you had any side effects?")
+    drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=URATEEXCRETAGOGUE)
+
+    class Meta:
+        pass
+
+    def __str__(self):
+        return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
+
+    def get_absolute_url(self):
+        return reverse("treatment:probenecid-detail",  kwargs={"pk": self.pk})

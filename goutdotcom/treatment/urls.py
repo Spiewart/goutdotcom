@@ -14,6 +14,7 @@ from .views import (
     IbuprofenCreate,
     IbuprofenDetail,
     IbuprofenUpdate,
+    IndexView,
     CelecoxibCreate,
     CelecoxibDetail,
     CelecoxibUpdate,
@@ -29,11 +30,14 @@ from .views import (
     MethylprednisoloneDetail,
     MethylprednisoloneCreate,
     MethylprednisoloneUpdate,
+    ProbenecidDetail,
+    ProbenecidCreate,
+    ProbenecidUpdate,
 )
 
 app_name = "treatment"
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="treatment/index.html"), name="index"),
+    path("", view=IndexView.as_view(), name="index"),
     path("flare/", TemplateView.as_view(template_name="treatment/flare.html"), name="flare"),
     path("prevention/", TemplateView.as_view(template_name="treatment/prevention.html"), name="prevention"),
     path("allopurinol/<int:pk>/", view=AllopurinolDetail.as_view(), name="allopurinol-detail"),
@@ -60,6 +64,9 @@ urlpatterns = [
     path("prednisone/<int:pk>/", view=PrednisoneDetail.as_view(), name="prednisone-detail"),
     path("prednisone/create/", view=PrednisoneCreate.as_view(), name="prednisone-create"),
     path("prednisone/<int:pk>/update/", view=PrednisoneUpdate.as_view(), name="prednisone-update"),
+    path("probenecid/<int:pk>/", view=ProbenecidDetail.as_view(), name="probenecid-detail"),
+    path("probenecid/create/", view=ProbenecidCreate.as_view(), name="probenecid-create"),
+    path("probenecid/<int:pk>/update/", view=ProbenecidUpdate.as_view(), name="probenecid-update"),
     path("methylprednisolone/<int:pk>/", view=MethylprednisoloneDetail.as_view(), name="methylprednisolone-detail"),
     path("methylprednisolone/create/", view=MethylprednisoloneCreate.as_view(), name="methylprednisolone-create"),
     path("methylprednisolone/<int:pk>/update/", view=MethylprednisoloneUpdate.as_view(), name="methylprednisolone-update"),

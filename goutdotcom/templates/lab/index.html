@@ -16,26 +16,5 @@
     </p>
   </div>
 
-  {% if user.is_authenticated %}
-  <h3>Your Medications</h3>
-    {% if allopurinol_list %}
-      {% for allopurinol in allopurinol_list %}
-      <h5><a href="{% url 'treatment:allopurinol-update' allopurinol.pk %}">{{ allopurinol.generic_name }}</a></h5>
-        <ul>
-          <li>{{ allopurinol.dose }} mg</li>
-          <li>{{ allopurinol.user }}</li>
-        </ul>
-      {% endfor %}
-    {% endif %}
-    {% if febuxostat_list %}
-    {% for febuxostat in febuxostat_list %}
-    <h5><a href="{% url 'treatment:febuxostat-update' febuxostat.pk %}">{{ febuxostat.generic_name }}</a></h5>
-      <ul>
-        <li>{{ febuxostat.dose }} mg</li>  
-        <li>{{ febuxostat.user }}</li>  
-      </ul>
-      {% endfor %}
-    {% endif %}
-  {% endif %}
 </main>
 {% endblock content %}

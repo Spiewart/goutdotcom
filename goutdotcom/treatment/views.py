@@ -1,22 +1,23 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Methylprednisolone
+from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone
 
 class IndexView(ListView):
     template_name = 'treatment/index.html'
-    context_object_name = 'user_treatment_list'
     model = Allopurinol
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-            'allopurinol_list': Allopurinol.objects.all(), #filter(user=self.request.user)
+            'allopurinol_list': Allopurinol.objects.filter(user=self.request.user),
+            'febuxostat_list': Febuxostat.objects.filter(user=self.request.user), 
         })
         return context
 
     def get_queryset(self):
-        return Allopurinol.objects.all()
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
 
 def flare(request):
     return render(request, 'treatment/flare.html')
@@ -157,4 +158,19 @@ class MethylprednisoloneCreate(LoginRequiredMixin, CreateView):
 
 class MethylprednisoloneUpdate(LoginRequiredMixin, UpdateView):
     model = Methylprednisolone
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+
+class ProbenecidDetail(DetailView):
+    model = Probenecid
+
+class ProbenecidCreate(LoginRequiredMixin, CreateView):
+    model = Probenecid
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class ProbenecidUpdate(LoginRequiredMixin, UpdateView):
+    model = Probenecid
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]

@@ -55,19 +55,6 @@
           <h6>Profile created on: {{ object.patientprofile.created }}</h6>
         {% endif %}
       </div>
-      <div class="col-sm">
-        {% if object == request.user %}
-          {% if object.allopurinol %}
-          <p>Age: {{ object.allopurinol.dose }}
-          {% endif %}
-          {% if object.febuxostat %}
-            <p>Age: {{ object.febuxostat.dose }}
-          {% endif %}
-          {% if object.patientprofile.gender %}
-            <p>Gender: {{ object.patientprofile.gender }}
-          {% endif %}
-        {% endif %}
-      </div>
     </div>
   </div>
 <br>
@@ -95,6 +82,7 @@
           <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
           <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
           <li><a class="dropdown-item" href="{% url 'treatment:prednisone-create' %}">Prednisone</a></li>
+          <li><a class="dropdown-item" href="{% url 'treatment:probenecid-create' %}">Probenecid</a></li>
           <li><a class="dropdown-item" href="{% url 'treatment:methylprednisolone-create' %}">Methylprednisolone</a></li>
         </ul>
       </div>

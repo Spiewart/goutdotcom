@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django_extensions.db.models import TimeStampedModel
+from django.urls import reverse
 from decimal import *
 
 # Create your models here.
@@ -28,6 +29,8 @@ class Urate(Lab):
     def __str__(self):
         return str(self.uric_acid)
 
+    def get_absolute_url(self):
+        return reverse("lab:urate-detail", kwargs={"pk":self.pk})
 
 class ALT(Lab):
     alt_sgpt = models.IntegerField(help_text="ALT / SGPT")
@@ -36,6 +39,8 @@ class ALT(Lab):
     def __str__(self):
         return str(self.alt_sgpt)
 
+    def get_absolute_url(self):
+        return reverse("lab:ALT-detail", kwargs={"pk":self.pk})
 
 class AST(Lab):
     ast_sgot = models.IntegerField(help_text="ALT / SGOT")
@@ -44,6 +49,8 @@ class AST(Lab):
     def __str__(self):
         return str(self.ast_sgot)
 
+    def get_absolute_url(self):
+        return reverse("lab:AST-detail", kwargs={"pk":self.pk})
 
 class Platelet(Lab):
     platelets = models.IntegerField(help_text="PLT / platelets")
@@ -52,6 +59,8 @@ class Platelet(Lab):
     def __str__(self):
         return str(self.platelets)
 
+    def get_absolute_url(self):
+        return reverse("lab:platelet-detail", kwargs={"pk":self.pk})
 
 class WBC(Lab):
     white_blood_cells = models.DecimalField(max_digits=3, decimal_places=1, help_text="WBC")
@@ -60,6 +69,8 @@ class WBC(Lab):
     def __str__(self):
         return str(self.white_blood_cells)
 
+    def get_absolute_url(self):
+        return reverse("lab:WBC-detail", kwargs={"pk":self.pk})
 
 class Hemoglobin(Lab):
     hemoglobin = models.DecimalField(max_digits=3, decimal_places=1, help_text="HGB")
@@ -68,6 +79,8 @@ class Hemoglobin(Lab):
     def __str__(self):
         return str(self.hemoglobin)
 
+    def get_absolute_url(self):
+        return reverse("lab:hemoglobin-detail", kwargs={"pk":self.pk})
 
 class Creatinine(Lab):
     creatinine = models.DecimalField(max_digits=4, decimal_places=2, help_text="creatinine")
@@ -119,3 +132,6 @@ class Creatinine(Lab):
 
     def __str__(self):
         return (str(self.creatinine) + " " + str(self.created))# + " " + "GFR: " + str(self.eGFR_calculator()))
+
+    def get_absolute_url(self):
+        return reverse("lab:creatinine-detail", kwargs={"pk":self.pk})

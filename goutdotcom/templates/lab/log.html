@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<a class="btn btn-primary" href="{% url 'lab:urate-create' %}" role="button">Uric Acid</a>
+<a class="btn btn-primary" href="{% url 'lab:ALT-create' %}" role="button">ALT</a>
+<a class="btn btn-primary" href="{% url 'lab:AST-create' %}" role="button">AST</a>
+{% endblock content %}
