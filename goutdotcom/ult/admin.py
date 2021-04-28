@@ -5,6 +5,7 @@ from .models import *
 
 class ULTAdmin(admin.ModelAdmin):
     list_display = (
+        "user",
         "num_flares",
         "freq_flares",
         "first_flare",

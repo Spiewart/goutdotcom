@@ -17,6 +17,25 @@
   </div>
 
   {% if user.is_authenticated %}
+  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    <div class="btn-group" role="group">
+      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        Medications
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+        <li><a class="dropdown-item" href="{% url 'treatment:allopurinol-create' %}">Allopurinol</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:febuxostat-create' %}">Febuxostat</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:colchicine-create' %}">Colchicine</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:ibuprofen-create' %}">Ibuprofen</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:naproxen-create' %}">Naproxen</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:prednisone-create' %}">Prednisone</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:probenecid-create' %}">Probenecid</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:methylprednisolone-create' %}">Methylprednisolone</a></li>
+      </ul>
+    </div>
+  </div>
   <h3>Your Medications</h3>
     {% if allopurinol_list %}
       {% for allopurinol in allopurinol_list %}
@@ -31,37 +50,66 @@
     {% for febuxostat in febuxostat_list %}
     <h5><a href="{% url 'treatment:febuxostat-update' febuxostat.pk %}">{{ febuxostat.generic_name }}</a></h5>
       <ul>
-        <li>{{ febuxostat.dose }} mg</li>  
-        <li>{{ febuxostat.user }}</li>  
+        <li>{{ febuxostat.dose }} mg</li>
+        <li>{{ febuxostat.user }}</li>
+      </ul>
+      {% endfor %}
+    {% endif %}
+    {% if colchicine_list %}
+      {% for colchicine in colchicine_list %}
+        <h5><a href="{% url 'treatment:colchicine-update' colchicine.pk %}">{{ colchicine.generic_name }}</a></h5>
+        <ul>
+          <li>{{ colchicine.dose }} mg</li>
+          <li>{{ colchicine.user }}</li>
+        </ul>
+      {% endfor %}
+    {% endif %}
+    {% if celecoxib_list %}
+      {% for celecoxib in celecoxib_list %}
+      <h5><a href="{% url 'treatment:celecoxib-update' celecoxib.pk %}">{{ celecoxib.generic_name }}</a></h5>
+      <ul>
+        <li>{{ celecoxib.dose }} mg</li>
+        <li>{{ celecoxib.user }}</li>
+      </ul>
+      {% endfor %}
+    {% endif %}
+    {% if ibuprofen_list %}
+      {% for ibuprofen in ibuprofen_list %}
+      <h5><a href="{% url 'treatment:ibuprofen-update' ibuprofen.pk %}">{{ ibuprofen.generic_name }}</a></h5>
+      <ul>
+        <li>{{ ibuprofen.dose }} mg</li>
+        <li>{{ ibuprofen.user }}</li>
+      </ul>
+      {% endfor %}
+    {% endif %}
+    {% if naproxen_list %}
+      {% for naproxen in naproxen_list %}
+      <h5><a href="{% url 'treatment:naproxen-update' naproxen.pk %}">{{ naproxen.generic_name }}</a></h5>
+      <ul>
+        <li>{{ naproxen.dose }} mg</li>
+        <li>{{ naproxen.user }}</li>
+      </ul>
+      {% endfor %}
+    {% endif %}
+    {% if meloxicam_list %}
+      {% for meloxicam in meloxicam_list %}
+      <h5><a href="{% url 'treatment:meloxicam-update' meloxicam.pk %}">{{ meloxicam.generic_name }}</a></h5>
+      <ul>
+        <li>{{ meloxicam.dose }} mg</li>
+        <li>{{ meloxicam.user }}</li>
+      </ul>
+      {% endfor %}
+    {% endif %}
+    {% if probenecid_list %}
+      {% for probenecid in probenecid_list %}
+      <h5><a href="{% url 'treatment:probenecid-update' probenecid.pk %}">{{ probenecid.generic_name }}</a></h5>
+      <ul>
+        <li>{{ probenecid.dose }} mg</li>
+        <li>{{ probenecid.user }}</li>
       </ul>
       {% endfor %}
     {% endif %}
   {% endif %}
-  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-    <div class="btn-group" role="group">
-      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-        Medications
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-        {% if allopurinol_list %}
-          {% for allopurinol in allopurinol_list %}
-            <li><a class="dropdown-item" href="{% url 'treatment:allopurinol-update' allopurinol.pk %}">Allopurinol</a></li>
-          {% endfor %}
-        {% else %}
-        <li><a class="dropdown-item" href="{% url 'treatment:allopurinol-create' %}">Allopurinol</a></li>
-        {% endif %}
-        <li><a class="dropdown-item" href="{% url 'treatment:febuxostat-create' %}">Febuxostat</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:colchicine-create' %}">Colchicine</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:ibuprofen-create' %}">Ibuprofen</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:naproxen-create' %}">Naproxen</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:prednisone-create' %}">Prednisone</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:probenecid-create' %}">Probenecid</a></li>
-        <li><a class="dropdown-item" href="{% url 'treatment:methylprednisolone-create' %}">Methylprednisolone</a></li>
-      </ul>
-    </div>
-  </div>
 <br>
 </main>
 {% endblock content %}

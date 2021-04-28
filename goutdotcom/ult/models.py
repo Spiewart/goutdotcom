@@ -1,10 +1,9 @@
+from django.conf import settings
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 
 # Create your models here.
-
-
 class ULT(TimeStampedModel):
     ONE = 'one'
     FEW = '1-3'
@@ -28,7 +27,11 @@ class ULT(TimeStampedModel):
 
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
-
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True
+    )
     first_flare = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Is this your first flare?", help_text="If so, disregard the rest of the questions.", default=False)
     num_flares = models.CharField(max_length=30, choices=ULT_CHOICES, verbose_name="Approximately how many gout flares have you had?",
                                   help_text="An estimate is fine!", default=ONE)

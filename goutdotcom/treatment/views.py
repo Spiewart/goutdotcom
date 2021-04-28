@@ -11,7 +11,15 @@ class IndexView(ListView):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
             'allopurinol_list': Allopurinol.objects.filter(user=self.request.user),
-            'febuxostat_list': Febuxostat.objects.filter(user=self.request.user), 
+            'febuxostat_list': Febuxostat.objects.filter(user=self.request.user),
+            'colchicine_list': Colchicine.objects.filter(user=self.request.user),
+            'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user),
+            'celecoxib_list': Celecoxib.objects.filter(user=self.request.user),
+            'meloxicam_list': Meloxicam.objects.filter(user=self.request.user),
+            'naproxen_list': Naproxen.objects.filter(user=self.request.user),
+            'prednisone_list': Prednisone.objects.filter(user=self.request.user),
+            'probenecid_list': Probenecid.objects.filter(user=self.request.user),
+            'methylprednisolone_list': Methylprednisolone.objects.filter(user=self.request.user),
         })
         return context
 
@@ -37,7 +45,11 @@ class AllopurinolCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get(self, *args, **kwargs):
-        if self.model.objects.get(user=self.request.user):
+        try:
+            user_allopurinol = self.model.objects.get(user=self.request.user)
+        except Allopurinol.DoesNotExist:
+            user_allopurinol = None
+        if user_allopurinol:
             return redirect("treatment:allopurinol-update", pk=self.model.objects.get(user=self.request.user).pk)
         else:
             return super(AllopurinolCreate, self).get(*args, **kwargs)
@@ -57,6 +69,16 @@ class FebuxostatCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get(self, *args, **kwargs):
+        try:
+            user_febuxostat = self.model.objects.get(user=self.request.user)
+        except Febuxostat.DoesNotExist:
+            user_febuxostat = None
+        if user_febuxostat:
+            return redirect("treatment:febuxostat-update", pk=self.model.objects.get(user=self.request.user).pk)
+        else:
+            return super(FebuxostatCreate, self).get(*args, **kwargs)
 
 class FebuxostatUpdate(LoginRequiredMixin, UpdateView):
     model = Febuxostat
@@ -185,6 +207,16 @@ class ProbenecidCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get(self, *args, **kwargs):
+        try:
+            user_probenecid = self.model.objects.get(user=self.request.user)
+        except Probenecid.DoesNotExist:
+            user_probenecid = None
+        if user_probenecid:
+            return redirect("treatment:probenecid-update", pk=self.model.objects.get(user=self.request.user).pk)
+        else:
+            return super(ProbenecidCreate, self).get(*args, **kwargs)
 
 class ProbenecidUpdate(LoginRequiredMixin, UpdateView):
     model = Probenecid
