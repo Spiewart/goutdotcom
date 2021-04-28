@@ -177,7 +177,7 @@ PROBENECID_SIDE_EFFECT_CHOICES = (
 
 # Create your models here.
 class Allopurinol(TimeStampedModel):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
@@ -204,7 +204,7 @@ class Allopurinol(TimeStampedModel):
         return reverse("treatment:allopurinol-detail", kwargs={"pk":self.pk})
 
 class Febuxostat(TimeStampedModel):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )

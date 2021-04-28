@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone
 
@@ -36,9 +36,16 @@ class AllopurinolCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def get(self, *args, **kwargs):
+        if self.model.objects.get(user=self.request.user):
+            return redirect("treatment:allopurinol-update", pk=self.model.objects.get(user=self.request.user).pk)
+        else:
+            return super(AllopurinolCreate, self).get(*args, **kwargs)
+
 class AllopurinolUpdate(LoginRequiredMixin, UpdateView):
     model = Allopurinol
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'de_sensitized',]
+    template_name = 'treatment/allopurinol_update.html'
 
 class FebuxostatDetail(DetailView):
     model = Febuxostat
@@ -54,6 +61,7 @@ class FebuxostatCreate(LoginRequiredMixin, CreateView):
 class FebuxostatUpdate(LoginRequiredMixin, UpdateView):
     model = Febuxostat
     fields = ['dose', 'date_started', 'date_ended', 'side_effects',]
+    template_name = 'treatment/febuxostat_update.html'
 
 class ColchicineDetail(DetailView):
     model = Colchicine
@@ -69,6 +77,7 @@ class ColchicineCreate(LoginRequiredMixin, CreateView):
 class ColchicineUpdate(LoginRequiredMixin, UpdateView):
     model = Colchicine
     fields = ['dose', 'date_started', 'date_ended', 'side_effects',]
+    template_name = 'treatment/colchicine_update.html'
 
 class IbuprofenDetail(DetailView):
     model = Ibuprofen
@@ -84,6 +93,7 @@ class IbuprofenCreate(LoginRequiredMixin, CreateView):
 class IbuprofenUpdate(LoginRequiredMixin, UpdateView):
     model = Ibuprofen
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    template_name = 'treatment/ibuprofen_update.html'
 
 class NaproxenDetail(DetailView):
     model = Naproxen
@@ -99,6 +109,7 @@ class NaproxenCreate(LoginRequiredMixin, CreateView):
 class NaproxenUpdate(LoginRequiredMixin, UpdateView):
     model = Naproxen
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    template_name = 'treatment/naproxen_update.html'
 
 class MeloxicamDetail(DetailView):
     model = Meloxicam
@@ -114,6 +125,7 @@ class MeloxicamCreate(LoginRequiredMixin, CreateView):
 class MeloxicamUpdate(LoginRequiredMixin, UpdateView):
     model = Meloxicam
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    template_name = 'treatment/meloxicam_update.html'
 
 class CelecoxibDetail(DetailView):
     model = Celecoxib
@@ -129,6 +141,7 @@ class CelecoxibCreate(LoginRequiredMixin, CreateView):
 class CelecoxibUpdate(LoginRequiredMixin, UpdateView):
     model = Celecoxib
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    template_name = 'treatment/celecoxib_update.html'
 
 class PrednisoneDetail(DetailView):
     model = Prednisone
@@ -144,6 +157,7 @@ class PrednisoneCreate(LoginRequiredMixin, CreateView):
 class PrednisoneUpdate(LoginRequiredMixin, UpdateView):
     model = Prednisone
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    template_name = 'treatment/prednisone_update.html'
 
 class MethylprednisoloneDetail(DetailView):
     model = Methylprednisolone
@@ -159,6 +173,7 @@ class MethylprednisoloneCreate(LoginRequiredMixin, CreateView):
 class MethylprednisoloneUpdate(LoginRequiredMixin, UpdateView):
     model = Methylprednisolone
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    template_name = 'treatment/methylprednisolone_update.html'
 
 class ProbenecidDetail(DetailView):
     model = Probenecid
@@ -174,3 +189,4 @@ class ProbenecidCreate(LoginRequiredMixin, CreateView):
 class ProbenecidUpdate(LoginRequiredMixin, UpdateView):
     model = Probenecid
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    template_name = 'treatment/probenacid_update.html'

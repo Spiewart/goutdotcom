@@ -96,7 +96,7 @@ class Creatinine(Lab):
             elif self.user.patientprofile.gender == 'female':
                 return Decimal(0.7)
             else:
-                return "Can't calculate eGFR without biologic gender."
+                return False
 
         def sex_vars_alpha(self):
             if self.user.patientprofile.gender == 'male':
@@ -104,7 +104,7 @@ class Creatinine(Lab):
             elif self.user.patientprofile.gender == 'female':
                 return Decimal(-0.329)
             else:
-                return "Can't calculate eGFR without biologic gender."
+                return False
 
         kappa = sex_vars_kappa(self)
         alpha = sex_vars_alpha(self)
@@ -112,24 +112,27 @@ class Creatinine(Lab):
         def race_modifier(self):
             if self.user.patientprofile.race == 'black':
                 return Decimal(1.159)
-            elif self.user.patientprofile.race == False:
-                return "Race is needed to calculate eGFR."
-            else:
-                return Decimal(1.00)
-
-        def sex_modifier(self):
-            if self.user.patientprofile.gender == 'female':
-                return Decimal(1.018)
-            elif self.user.patientprofile.gender == 'female':
+            elif self.user.patientprofile.race == 'white' or self.user.patientprofile.race == 'asian' or self.user.patientprofile.race == 'native american' or self.user.patientprofile.race == 'hispanic':
                 return Decimal(1.00)
             else: 
-                return "Biological gender is needed to calculate eGFR."
+                return False
 
-        if race_modifier(self).type() == Decimal & sex_modifier(self).type() == Decimal):
-            race_modifier(self)
-            sex_modifier(self)
-            eGFR = Decimal(141) * min(self.creatinine / kappa, Decimal(1.00)) * max(self.creatinine / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.age ** race_modifier(self) ** sex_modifier(self)
-            return eGFR
+        def sex_modifier(self):
+            if self.user.patientprofile.gender == 'male':
+                return Decimal(1.018)
+            elif self.user.patientprofile.gender == 'female' or self.user.patientprofile.gender == 'non-binary':
+                return Decimal(1.00)
+            else: 
+                return False
+
+        if race_modifier(self) != False:
+            if sex_modifier(self) != False:
+                race_modifier(self)
+                sex_modifier(self)
+                eGFR = Decimal(141) * min(self.creatinine / kappa, Decimal(1.00)) * max(self.creatinine / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.age ** race_modifier(self) ** sex_modifier(self)
+                return eGFR
+            else:
+                return "Something went wrong with eGFR calculation"
         else: 
             return "Something went wrong with eGFR calculation"
 

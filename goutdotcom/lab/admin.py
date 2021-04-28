@@ -56,7 +56,7 @@ class CreatinineAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "creatinine",
-        #"eGFR_calculator",
+        "eGFR_calculator",
         "created",
     )
 
