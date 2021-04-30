@@ -1,12 +1,21 @@
 from autoslug import AutoSlugField
 from django.db import models
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import fields
 from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 
-from ..treatment.models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone
+from ..lab.models import Urate
+from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone,  Methylprednisolone
+
+TinctureofTime = 'Tincture of time'
+Other = 'Other'
+Colcrys = 'Colcrys'
+Advil = 'Advil'
+Aleve = 'Aleve'
+Celebrex = 'Celebrex'
+Mobic = 'Mobic'
+Pred = 'Pred'
+Methylpred = 'Methylpred'
 
 TOER1 = 'Right great toe'
 TOER2 = 'Right second toe'
@@ -77,11 +86,18 @@ JOINT_CHOICES = (
 )
 
 TREATMENT_CHOICES = (
-    (Allopurinol, 'Allopurinol'),
-    (Febuxostat, 'Febuxostat'),
-    (Colchicine, 'Colchicine'),
-    (Ibuprofen, 'Ibuprofen'),
+    (Colcrys, 'Colchicine'),
+    (Advil, 'Ibuprofen'),
+    (Aleve, 'Naproxen'),
+    (Celebrex, 'Celecoxib'),
+    (Mobic, 'Meloxicam'),
+    (Pred, 'Prednisone'),
+    (Methylpred, 'Methylprednisolone'),
+    (TinctureofTime, 'Tincture of time'),
+    (Other, 'Other'),
 )
+
+BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
 class Flare(TimeStampedModel):
     user = models.ForeignKey(
@@ -89,24 +105,32 @@ class Flare(TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
-    slug = AutoSlugField(
-            "Flare Detail", unique=True, always_update=False, populate_from="created_at"
-        )
-
     location = models.CharField(max_length=60, choices=JOINT_CHOICES, blank=True,
                                 help_text="What joint did the flare occur in?")
 
-    treatement = models.ForeignKey(TREATMENT_CHOICES, max_length=50, choices=TREATMENT_CHOICES,
-                                   help_text="What was the flare treated with?", on_delete=models.CASCADE)
+
+    treatment = models.CharField(max_length=60, choices=TREATMENT_CHOICES,
+                                   help_text="What was the flare treated with?")
+
+    colchicine = models.OneToOneField(Colchicine, null=True, blank=True, on_delete=models.CASCADE)
+    ibuprofen = models.OneToOneField(Ibuprofen, null=True, blank=True, on_delete=models.CASCADE)
+    naproxen = models.OneToOneField(Naproxen, null=True, blank=True, on_delete=models.CASCADE)
+    celecoxib = models.OneToOneField(Celecoxib, null=True, blank=True, on_delete=models.CASCADE)
+    meloxicam = models.OneToOneField(Meloxicam, null=True, blank=True, on_delete=models.CASCADE)
+    prednisone = models.OneToOneField(Prednisone, null=True, blank=True, on_delete=models.CASCADE)
+    methylprednisolone = models.OneToOneField(Methylprednisolone, null=True, blank=True, on_delete=models.CASCADE)
 
     duration = models.IntegerField(help_text="How long did it last? (days)")
-    urate = models.OneToOneField('Urate', on_delete=models.CASCADE, help_text="What was the uric acid at the time of the flare?", blank=True, null=True)
+    
+    urate_draw = models.BooleanField(choices=BOOL_CHOICES, help_text="Did you get your uric acid checked during your flare?", default=False)
+    urate = models.OneToOneField(Urate, on_delete=models.CASCADE, help_text="What was the uric acid at the time of the flare?", blank=True, null=True)
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ['created']
 
     def __str__(self):
-        return f'{(str(self.date), str(self.user), str(self.location))}'
+        return f'{(str(self.user), str(self.location))}'
 
     def get_absolute_url(self):
-        return reverse('flare:detail', args=[str(self.created)])
+        return reverse('flare:detail', kwargs={"pk":self.pk})
+        
