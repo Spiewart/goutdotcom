@@ -17,6 +17,8 @@ class FlareForm(forms.ModelForm):
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
 
+        FormHelper.form_tag = False
+
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
