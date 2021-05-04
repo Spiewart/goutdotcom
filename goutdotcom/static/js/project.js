@@ -92,9 +92,26 @@ function check_treatment() {
 
 function check_urate_draw() {
   if ($('#id_urate_draw').val() == 'True') {
-      $('#div_id_urate').show();
+      $('#div_id_urate_log').show();
 } 
   else {
+    $('#div_id_urate_log').hide();
     $('#div_id_urate').hide();
+    $('#div_id_uric_acid').hide();
   }   
+}
+
+function check_urate_desire() {
+  if ($('#id_urate_log').val() == "Already logged it") {
+    $('#div_id_urate').show();
+    $('#div_id_uric_acid').hide();
+  }   
+  else if ($('#id_urate_log').val() == "Will log it now") {
+    $('#div_id_urate').hide();
+    $('#div_id_uric_acid').show();
+  } 
+  else {
+    $('#div_id_urate').hide();
+    $('#div_id_uric_acid').hide();
+  } 
 }

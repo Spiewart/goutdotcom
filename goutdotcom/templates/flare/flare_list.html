@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+<a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button">Log a Flare</a>
+  {% if object_list %}
+    {% for flare in object_list %}
+      <div class="row">
+        <div class="col-sm-12">
+          <h2>{{ flare.created }}</h2><a class="btn btn-primary" href="{% url 'flare:detail' flare.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'flare:update' flare.pk %}" role="button">Update</a>
+          <h4>{{ flare.location }}</h4>
+          <h4>{{ flare.duration }}</h4>
+          <h4>{{ flare.treatment}}</h4>
+          <h4>{{ flare.urate}}</h4>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock content %}

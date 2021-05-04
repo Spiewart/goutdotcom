@@ -10,19 +10,17 @@ class UrateForm(forms.ModelForm):
         model = Urate
         fields = ('uric_acid',)
 
-    FormHelper.form_tag = False
-
     def __init__(self, *args, **kwargs):
         super(UrateForm, self).__init__(*args, **kwargs)
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
-
+        self.helper.form_tag = False
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                'Log your flare',
+                'Log a uric acid',
                 'uric_acid', 
                 ),
                 ButtonHolder(

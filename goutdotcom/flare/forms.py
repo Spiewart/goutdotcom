@@ -8,7 +8,7 @@ from django import forms
 class FlareForm(forms.ModelForm):
     class Meta:
         model = Flare
-        fields = ('location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate_draw', 'urate')
+        fields = ('location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate_draw', 'urate_log', 'urate')
     
     def __init__(self, *args, **kwargs):
         super(FlareForm, self).__init__(*args, **kwargs)
@@ -16,8 +16,7 @@ class FlareForm(forms.ModelForm):
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
-
-        FormHelper.form_tag = False
+        self.helper.form_tag = False
 
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
@@ -34,6 +33,7 @@ class FlareForm(forms.ModelForm):
                 Field('methylprednisolone'),
                 'duration',
                 'urate_draw',
+                'urate_log',
                 'urate',
                 ),
                 ButtonHolder(

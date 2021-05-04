@@ -57,7 +57,7 @@ JOINT_CHOICES = (
     (TOER4, 'Right fourth toe'),
     (TOER5, 'Right little toe'),
     (TOEL1, 'Left great toe'),
-    (TOEL2, 'Left secont toe'),
+    (TOEL2, 'Left second toe'),
     (TOEL3, 'Left third toe'),
     (TOEL4, 'Left fourth toe'),
     (TOEL5, 'Left little toe'),
@@ -99,6 +99,12 @@ TREATMENT_CHOICES = (
 
 BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
+NO = "No"
+LOGGED = "Already logged it"
+TOLOG = "Will log it now"
+
+LOG_CHOICES = ((NO, 'No'), (LOGGED, 'Already logged it'), (TOLOG, 'Will log it now'))
+
 class Flare(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -111,7 +117,8 @@ class Flare(TimeStampedModel):
 
     treatment = models.CharField(max_length=60, choices=TREATMENT_CHOICES,
                                    help_text="What was the flare treated with?")
-
+    treatment_log = models.CharField(max_length=60, choices=LOG_CHOICES, help_text="Do you want to or have you already logged you treatment?")
+    
     colchicine = models.OneToOneField(Colchicine, null=True, blank=True, on_delete=models.CASCADE)
     ibuprofen = models.OneToOneField(Ibuprofen, null=True, blank=True, on_delete=models.CASCADE)
     naproxen = models.OneToOneField(Naproxen, null=True, blank=True, on_delete=models.CASCADE)
@@ -123,6 +130,7 @@ class Flare(TimeStampedModel):
     duration = models.IntegerField(help_text="How long did it last? (days)")
     
     urate_draw = models.BooleanField(choices=BOOL_CHOICES, help_text="Did you get your uric acid checked during your flare?", default=False)
+    urate_log = models.CharField(max_length=60, choices=LOG_CHOICES, help_text="Do you want to log or have you already logged your uric acid?")
     urate = models.OneToOneField(Urate, on_delete=models.CASCADE, help_text="What was the uric acid at the time of the flare?", blank=True, null=True)
 
     class Meta:
