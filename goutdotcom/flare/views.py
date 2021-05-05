@@ -20,8 +20,12 @@ def index(request):
 
 class FlareCreate(LoginRequiredMixin, CreateView):
     model = Flare
-    fields = ['location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate_draw', 'urate']
+    fields = ['location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate']
     template_name = 'flare/flare_form.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 class FlareDetail(LoginRequiredMixin, DetailView):
     model = Flare
@@ -53,6 +57,7 @@ def FlareUrateCreate(request):
         if flare_form.is_valid() and urate_form.is_valid():
             urate=urate_form
             urate_new = Urate.objects.create(uric_acid=urate.instance.uric_acid, user=request.user)
+            urate_new.save()
             flare=flare_form.save(commit=False)
             flare.urate=urate_new
             flare.user=request.user

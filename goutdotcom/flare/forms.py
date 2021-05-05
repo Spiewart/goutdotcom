@@ -9,7 +9,7 @@ class FlareForm(forms.ModelForm):
     class Meta:
         model = Flare
         fields = ('location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate_draw', 'urate_log', 'urate')
-    
+
     def __init__(self, *args, **kwargs):
         super(FlareForm, self).__init__(*args, **kwargs)
 
@@ -22,18 +22,16 @@ class FlareForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Log your flare',
-                'location', 
-                'treatment', 
+                'location',
+                'treatment',
                 Field('colchicine',),
                 Field('ibuprofen'),
-                Field('naproxen'), 
+                Field('naproxen'),
                 Field('celecoxib'),
                 Field('meloxicam'),
                 Field('prednisone'),
                 Field('methylprednisolone'),
                 'duration',
-                'urate_draw',
-                'urate_log',
                 'urate',
                 ),
                 ButtonHolder(

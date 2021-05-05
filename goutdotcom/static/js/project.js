@@ -18,7 +18,7 @@ function check_first_flare() {
       $('#div_id_stones').show();
       $('#div_id_ckd').show();
       $('#div_id_uric_acid').show();
-  }   
+  }
 }
 
 function check_treatment() {
@@ -78,7 +78,7 @@ function check_treatment() {
     $('#div_id_celecoxib').hide();
     $('#div_id_meloxicam').hide();
     $('#div_id_prednisone').hide();
-} 
+}
   else {
     $('#div_id_colchicine').hide();
     $('#div_id_ibuprofen').hide();
@@ -87,100 +87,74 @@ function check_treatment() {
     $('#div_id_meloxicam').hide();
     $('#div_id_prednisone').hide();
     $('#div_id_methylprednisolone').hide();
-  }   
-}
-
-function check_urate_draw() {
-  if ($('#id_urate_draw').val() == 'True') {
-      $('#div_id_urate_log').show();
-} 
-  else {
-    $('#div_id_urate_log').hide();
-    $('#div_id_urate').hide();
-    $('#div_id_uric_acid').hide();
-  }   
-}
-
-function check_urate_desire() {
-  if ($('#id_urate_log').val() == "Already logged it") {
-    $('#div_id_urate').show();
-    $('#div_id_uric_acid').hide();
-  }   
-  else if ($('#id_urate_log').val() == "Will log it now") {
-    $('#div_id_urate').hide();
-    $('#div_id_uric_acid').show();
-  } 
-  else {
-    $('#div_id_urate').hide();
-    $('#div_id_uric_acid').hide();
-  } 
+  }
 }
 
 function flare_base() {
-  $('#urate-logged').hide();
-  $('#urate-desire').hide();
-  $('#treatment-logged').hide();
-  $('#treatment-desire').hide();
+  $('#urate-logged-div').hide();
+  $('#urate-desire-div').hide();
+  $('#treatment-logged-div').hide();
+  $('#treatment-desire-div').hide();
   $('#flare-no-urate-button').hide();
   $('#flare-with-urate-button').hide();
 }
 
 function urate_decider() {
   if ($('#urate-decision').val() == "No") {
-    $('#urate-decision').hide();
-    $('#urate-logged').hide();
-    $('#urate-desire').hide();
+    $('#urate-decision-div').hide();
+    $('#urate-logged-div').hide();
+    $('#urate-desire-div').hide();
     $('#flare-no-urate-button').show();
-  } 
+  }
   else if ($('#urate-decision').val() == "Yes") {
     if ($('#urate-logged').val() == "Yes") {
-      $('#urate-logged').hide();
+      $('#urate-logged-div').hide();
       $('#flare-no-urate-button').show();
       $('#flare-with-urate-button').hide();
-      $('#urate-desire').hide();
+      $('#urate-desire-div').hide();
     }
     else if ($('#urate-logged').val() == "No") {
       if ($('#urate-desire').val() == "No") {
-        $('#urate-desire').hide();
+        $('#urate-desire-div').hide();
         $('#flare-no-urate-button').show();
         $('#flare-with-urate-button').hide();
       }
       else if ($('#urate-desire').val() == "Yes") {
-        $('#urate-desire').hide();
+        $('#urate-desire-div').hide();
         $('#flare-no-urate-button').hide();
         $('#flare-with-urate-button').show();
       }
       else {
-        $('#urate-logged').hide();
-        $('#urate-desire').show();
+        $('#urate-logged-div').hide();
+        $('#urate-desire-div').show();
         $('#flare-no-urate-button').hide();
         $('#flare-with-urate-button').hide();
       }
     }
     else {
-      $('#urate-decision').hide();
-      $('#urate-logged').show();
+      $('#urate-decision-div').hide();
+      $('#urate-logged-div').show();
       $('#flare-no-urate-button').hide();
       $('#flare-with-urate-button').hide();
     }
   }
   else {
-    $('#urate-logged').hide();
-    $('#urate-desire').hide();
-  } 
+    $('#urate-logged-div').hide();
+    $('#urate-desire-div').hide();
+  }
 }
 
 function treatment_log() {
   if ($('#treatment-decision').val() == "Yes") {
     $('#treatment-logged').show();
-  } 
+  }
   else if ($('#treatment-decision').val() == "No") {
     $('#treatment-logged').hide();
   }
   else {
     $('#treatment-logged').hide();
     $('#treatment-desire').hide();
-  } 
+  }
 }
 
 function treatment_decider() {

@@ -6,55 +6,68 @@
 <div class="container flare-index-column">
   <div class="row">
     <div class="col-lg">
-        <p>Did you get your uric acid checked during your flare?</p>
-        <select name="treatments" id="urate-decision">
-            <option value=""></option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
+        <div id="urate-decision-div">
+          <p>Did you get your uric acid checked during your flare?</p>
+          <select name="urate" id="urate-decision">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+          </select>
+        </div>
         <br>
-        <p>Have you already logged it?</p>
-        <select name="treatments" id="urate-logged">
-            <option value=""></option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
+        <div id="urate-logged-div">
+          <p>Have you already logged it?</p>
+          <select name="treatments" id="urate-logged">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+          </select>
+        </div>
         <br>
-        <p>Do you want to?</p>
-        <select name="treatments" id="urate-desire">
-            <option value=""></option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
+        <div id="urate-desire-div">
+          <p>Do you want to?</p>
+          <select name="treatments" id="urate-desire">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+          </select>
+        </div>
     </div>
-    <div class="col-lg">
-        <div>
+    <div class="row">
+      <div class="col-lg">
+        <div id="treatment-decision">
         <p>Did you treat your flare?</p>
-        <select name="treatments" id="treatment-decision">
+        <select name="treatments" id="">
             <option value=""></option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
         </select>
+        </div>
         <br>
+        </div id="treatment-logged">
         <p>Have you already logged it?</p>
-        <select name="treatments" id="treatment-logged">
+        <select name="treatments" id="">
             <option value=""></option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
         </select>
+        </div>
         <br>
+        <div id="treatment-desire">
         <p>Do you want to?</p>
-        <select name="treatments" id="treatment-desire">
+        <select name="treatments" id="">
             <option value=""></option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
         </select>
         </div>
     </div>
-  </div>
-</div>
-<a class="btn btn-primary btn-lg" id="flare-no-urate-button" href="{% url 'flare:create' %}" role="button">Log your Flare</a>
+
+    </div>
+  <a class="btn btn-primary btn-lg" id="flare-no-urate-button" href="{% url 'flare:create' %}" role="button">Log your Flare</a>
 <a class="btn btn-primary btn-lg" id="flare-with-urate-button" href="{% url 'flare:flareuratecreate' %}" role="button">Log your Flare</a>
+</div>
+
 {% endblock content %}
 
 {% block inline_javascript %}
