@@ -18,6 +18,11 @@ from ..lab.forms import UrateForm
 def index(request):
     return render(request, 'flare/index.html')
 
+class FlareCreate(LoginRequiredMixin, CreateView):
+    model = Flare
+    fields = ['location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate_draw', 'urate']
+    template_name = 'flare/flare_form.html'
+
 class FlareDetail(LoginRequiredMixin, DetailView):
     model = Flare
 
@@ -41,7 +46,7 @@ class FlareList(LoginRequiredMixin, ListView):
         return queryset.filter(user=self.request.user)
 
 @login_required
-def FlareCreate(request):
+def FlareUrateCreate(request):
     if request.method == "POST":
         flare_form = FlareForm(request.POST)
         urate_form = UrateForm(request.POST)
@@ -60,4 +65,7 @@ def FlareCreate(request):
         urate_form.user = request.user
 
     context = {'urate_form':urate_form, 'flare_form':flare_form,}
-    return render(request, "flare/flare_form.html", context)
+    return render(request, "flare/flareurate_form.html", context)
+
+def Landing(request):
+    return render(request, 'flare/landing.html')

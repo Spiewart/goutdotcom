@@ -141,4 +141,5 @@ class Flare(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('flare:detail', kwargs={"pk":self.pk})
+  
         

@@ -115,3 +115,79 @@ function check_urate_desire() {
     $('#div_id_uric_acid').hide();
   } 
 }
+
+function flare_base() {
+  $('#urate-logged').hide();
+  $('#urate-desire').hide();
+  $('#treatment-logged').hide();
+  $('#treatment-desire').hide();
+  $('#flare-no-urate-button').hide();
+  $('#flare-with-urate-button').hide();
+}
+
+function urate_decider() {
+  if ($('#urate-decision').val() == "No") {
+    $('#urate-decision').hide();
+    $('#urate-logged').hide();
+    $('#urate-desire').hide();
+    $('#flare-no-urate-button').show();
+  } 
+  else if ($('#urate-decision').val() == "Yes") {
+    if ($('#urate-logged').val() == "Yes") {
+      $('#urate-logged').hide();
+      $('#flare-no-urate-button').show();
+      $('#flare-with-urate-button').hide();
+      $('#urate-desire').hide();
+    }
+    else if ($('#urate-logged').val() == "No") {
+      if ($('#urate-desire').val() == "No") {
+        $('#urate-desire').hide();
+        $('#flare-no-urate-button').show();
+        $('#flare-with-urate-button').hide();
+      }
+      else if ($('#urate-desire').val() == "Yes") {
+        $('#urate-desire').hide();
+        $('#flare-no-urate-button').hide();
+        $('#flare-with-urate-button').show();
+      }
+      else {
+        $('#urate-logged').hide();
+        $('#urate-desire').show();
+        $('#flare-no-urate-button').hide();
+        $('#flare-with-urate-button').hide();
+      }
+    }
+    else {
+      $('#urate-decision').hide();
+      $('#urate-logged').show();
+      $('#flare-no-urate-button').hide();
+      $('#flare-with-urate-button').hide();
+    }
+  }
+  else {
+    $('#urate-logged').hide();
+    $('#urate-desire').hide();
+  } 
+}
+
+function treatment_log() {
+  if ($('#treatment-decision').val() == "Yes") {
+    $('#treatment-logged').show();
+  } 
+  else if ($('#treatment-decision').val() == "No") {
+    $('#treatment-logged').hide();
+  }
+  else {
+    $('#treatment-logged').hide();
+    $('#treatment-desire').hide();
+  } 
+}
+
+function treatment_decider() {
+  if ($('#treatment-logged').val() == "Yes") {
+    $('#treatment-desire').show();
+  }
+  else if ($('#treatment-logged').val() == "No") {
+    $('#treatment-desire').hide();
+  }
+}
