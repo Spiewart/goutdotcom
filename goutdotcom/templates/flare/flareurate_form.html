@@ -6,10 +6,11 @@
 
 {% block content %}
   <h2>Log a Flare</h2>
-    <form class="form-horizontal" method="post" action="{% url 'flare:create' %}">
+    <form class="form-horizontal" method="post" action="{% url 'flare:flareuratecreate' %}">
     {% csrf_token %}
+        {% crispy urate_form %}
     {% crispy flare_form %}
-    {% crispy urate_form %}
+
     </form>
   <p></p>
 {% endblock content %}

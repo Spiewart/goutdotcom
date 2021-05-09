@@ -52,14 +52,14 @@ class FlareList(LoginRequiredMixin, ListView):
 @login_required
 def FlareUrateCreate(request):
     if request.method == "POST":
-        flare_form = FlareForm(request.POST)
-        urate_form = UrateForm(request.POST)
+        flare_form = FlareForm(request.POST, instance=Flare())
+        urate_form = UrateForm(request.POST, instance=Urate())
         if flare_form.is_valid() and urate_form.is_valid():
-            urate=urate_form
-            urate_new = Urate.objects.create(uric_acid=urate.instance.uric_acid, user=request.user)
-            urate_new.save()
+            urate_for_flare = urate_form.save(commit=False)
+            urate_for_flare.user=request.user
+            urate_for_flare.save()
             flare=flare_form.save(commit=False)
-            flare.urate=urate_new
+            flare.urate = urate_for_flare
             flare.user=request.user
             flare.save()
             return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
