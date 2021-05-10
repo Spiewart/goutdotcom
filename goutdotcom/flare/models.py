@@ -117,8 +117,7 @@ class Flare(TimeStampedModel):
 
     treatment = models.CharField(max_length=60, choices=TREATMENT_CHOICES,
                                    help_text="What was the flare treated with?")
-    treatment_log = models.CharField(max_length=60, choices=LOG_CHOICES, help_text="Do you want to or have you already logged you treatment?")
-    
+
     colchicine = models.OneToOneField(Colchicine, null=True, blank=True, on_delete=models.CASCADE)
     ibuprofen = models.OneToOneField(Ibuprofen, null=True, blank=True, on_delete=models.CASCADE)
     naproxen = models.OneToOneField(Naproxen, null=True, blank=True, on_delete=models.CASCADE)
@@ -128,9 +127,7 @@ class Flare(TimeStampedModel):
     methylprednisolone = models.OneToOneField(Methylprednisolone, null=True, blank=True, on_delete=models.CASCADE)
 
     duration = models.IntegerField(help_text="How long did it last? (days)")
-    
-    urate_draw = models.BooleanField(choices=BOOL_CHOICES, help_text="Did you get your uric acid checked during your flare?", default=False)
-    urate_log = models.CharField(max_length=60, choices=LOG_CHOICES, help_text="Do you want to log or have you already logged your uric acid?")
+
     urate = models.OneToOneField(Urate, on_delete=models.CASCADE, help_text="What was the uric acid at the time of the flare?", blank=True, null=True)
 
     class Meta:
@@ -141,5 +138,4 @@ class Flare(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('flare:detail', kwargs={"pk":self.pk})
-  
-        
+

@@ -7,6 +7,8 @@ from django.urls import reverse
 import datetime
 from decimal import *
 
+BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
+
 ALLOPURINOL = 'allopurinol'
 FEBUXOSTAT = 'febuxostat'
 PREDNISONE = 'prednisone'
@@ -182,9 +184,6 @@ class Allopurinol(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=ALLOPURINOL)
-    med_slug = AutoSlugField(
-        "Medication Name", unique_with="user", always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Xyloprim", "Aloprim"]
     dose = models.IntegerField(choices=ALLOPURINOL_DOSE_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
@@ -209,9 +208,6 @@ class Febuxostat(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=FEBUXOSTAT)
-    med_slug = AutoSlugField(
-        "Medication Name", unique_with="user", always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Uloric"]
     dose = models.IntegerField(choices=FEBUXOSTAT_DOSE_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
@@ -235,9 +231,6 @@ class Colchicine(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=COLCHICINE)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Colcrys"]
     dose = models.DecimalField(decimal_places=1, max_digits=2, default=0.6)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
@@ -245,7 +238,8 @@ class Colchicine(TimeStampedModel):
     date_ended = models.DateField(null=True, blank=True)
     side_effects = models.CharField(max_length=100, choices=COLCHICINE_SIDE_EFFECT_CHOICES, null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
-
+    as_prophylaxis = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Flare prophylaxis?",
+                                         help_text="Is this for flare prophylaxis while initiating ULT?", default=False)
     class Meta:
         pass
 
@@ -261,9 +255,6 @@ class Ibuprofen(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=IBUPROFEN)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Advil"]
     dose = models.IntegerField(choices=IBUPROFEN_DOSE_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
@@ -271,6 +262,8 @@ class Ibuprofen(TimeStampedModel):
     date_ended = models.DateField(null=True, blank=True)
     side_effects = models.CharField(max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    as_prophylaxis = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Flare prophylaxis?",
+                                         help_text="Is this for flare prophylaxis while initiating ULT?", default=False)
 
     class Meta:
         pass
@@ -287,9 +280,6 @@ class Naproxen(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=NAPROXEN)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Aleve"]
     dose = models.IntegerField(choices=NAPROXEN_DOSE_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
@@ -297,6 +287,8 @@ class Naproxen(TimeStampedModel):
     date_ended = models.DateField(null=True, blank=True)
     side_effects = models.CharField(max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    as_prophylaxis = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Flare prophylaxis?",
+                                         help_text="Is this for flare prophylaxis while initiating ULT?", default=False)
 
     class Meta:
         pass
@@ -313,16 +305,15 @@ class Meloxicam(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=MELOXICAM)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
-    brand_names = ["Aleve"]
+    brand_names = ["Mobic"]
     dose = models.IntegerField(choices=MELOXICAM_DOSE_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
     date_started = models.DateField(default=datetime.datetime.now)
     date_ended = models.DateField(null=True, blank=True)
     side_effects = models.CharField(max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    as_prophylaxis = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Flare prophylaxis?",
+                                         help_text="Is this for flare prophylaxis while initiating ULT?", default=False)
 
     class Meta:
         pass
@@ -339,9 +330,6 @@ class Celecoxib(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=CELECOXIB)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Aleve"]
     dose = models.IntegerField(choices=CELECOXIB_DOSE_CHOICES)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY)
@@ -349,6 +337,8 @@ class Celecoxib(TimeStampedModel):
     date_ended = models.DateField(null=True, blank=True)
     side_effects = models.CharField(max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    as_prophylaxis = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Flare prophylaxis?",
+                                         help_text="Is this for flare prophylaxis while initiating ULT?", default=False)
 
     class Meta:
         pass
@@ -366,9 +356,6 @@ class Prednisone(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PREDNISONE)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Prednisone"]
     dose = models.IntegerField()
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY)
@@ -377,6 +364,8 @@ class Prednisone(TimeStampedModel):
     side_effects = models.CharField(max_length=100, choices=PREDNISONE_SIDE_EFFECT_CHOICES,
                                     null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=SYSSTEROID)
+    as_prophylaxis = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Flare prophylaxis?",
+                                         help_text="Is this for flare prophylaxis while initiating ULT?", default=False)
 
     class Meta:
         pass
@@ -393,9 +382,6 @@ class Methylprednisolone(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=METHYLPREDNISOLONE)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
     brand_names = ["Depomedrol"]
     dose = dose = models.IntegerField(choices=METHYLPREDNISOLONE_DOSE_CHOICES)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY)
@@ -404,7 +390,8 @@ class Methylprednisolone(TimeStampedModel):
     side_effects = models.CharField(max_length=100, choices=INJECTION_SIDE_EFFECT_CHOICES,
                                     null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=LOCSTEROID)
-
+    as_injection = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Given by joint injection?",
+                                                        help_text="Was this given by an injection into your joint?", default=False)
     class Meta:
         pass
 
@@ -420,10 +407,7 @@ class Probenecid(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PROBENECID)
-    med_slug = AutoSlugField(
-        "Medication Name", unique=True, always_update=False, populate_from="generic_name"
-    )
-    brand_names = ["Depomedrol"]
+    brand_names = ["Probalan"]
     dose = dose = models.IntegerField(choices=PROBENECID_DOSE_CHOICES)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=BID)
     date_started = models.DateField(default=datetime.datetime.now)

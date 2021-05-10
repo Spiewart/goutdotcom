@@ -6,7 +6,6 @@ class FlareAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
         'treatment',
-        'urate_draw',
         'urate',
     )
 

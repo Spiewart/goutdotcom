@@ -21,7 +21,6 @@ class Lab(TimeStampedModel):
     def __unicode__(self):
         return self.name
 
-
 class Urate(Lab):
     uric_acid = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid")
     name = "Urate"
@@ -114,7 +113,7 @@ class Creatinine(Lab):
                 return Decimal(1.159)
             elif self.user.patientprofile.race == 'white' or self.user.patientprofile.race == 'asian' or self.user.patientprofile.race == 'native american' or self.user.patientprofile.race == 'hispanic':
                 return Decimal(1.00)
-            else: 
+            else:
                 return False
 
         def sex_modifier(self):
@@ -122,7 +121,7 @@ class Creatinine(Lab):
                 return Decimal(1.018)
             elif self.user.patientprofile.gender == 'female' or self.user.patientprofile.gender == 'non-binary':
                 return Decimal(1.00)
-            else: 
+            else:
                 return False
 
         if race_modifier(self) != False:
@@ -133,7 +132,7 @@ class Creatinine(Lab):
                 return eGFR
             else:
                 return "Something went wrong with eGFR calculation"
-        else: 
+        else:
             return "Something went wrong with eGFR calculation"
 
     def __str__(self):

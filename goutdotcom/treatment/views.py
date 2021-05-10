@@ -3,6 +3,37 @@ from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone
 
+
+class DashboardView(ListView):
+    template_name = 'treatment/dashboard.html'
+    model = Allopurinol
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context.update({
+            'allopurinol_list': Allopurinol.objects.filter(user=self.request.user),
+            'febuxostat_list': Febuxostat.objects.filter(user=self.request.user),
+            'colchicine_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'celecoxib_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'meloxicam_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'naproxen_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'prednisone_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'probenecid_list': Probenecid.objects.filter(user=self.request.user),
+            'methylprednisolone_list': Methylprednisolone.objects.filter(user=self.request.user),
+            'colchicine_ppx_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'ibuprofen_ppx_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'celecoxib_ppx_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'meloxicam_ppx_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'naproxen_ppx_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'prednisone_ppx_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
+
 class IndexView(ListView):
     template_name = 'treatment/index.html'
     model = Allopurinol
@@ -27,11 +58,50 @@ class IndexView(ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-def flare(request):
-    return render(request, 'treatment/flare.html')
+class FlareView(ListView):
+    template_name = 'treatment/flare.html'
+    model = Colchicine
 
-def prevention(request):
-    return render(request, 'prevention/flare.html')
+    def get_context_data(self, **kwargs):
+        context = super(FlareView, self).get_context_data(**kwargs)
+        context.update({
+            'colchicine_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'celecoxib_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'meloxicam_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'naproxen_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'prednisone_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'methylprednisolone_list': Methylprednisolone.objects.filter(user=self.request.user, as_injection=True),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
+
+
+class PreventionView(ListView):
+    template_name = 'treatment/prevention.html'
+    model = Allopurinol
+
+    def get_context_data(self, **kwargs):
+        context = super(PreventionView, self).get_context_data(**kwargs)
+        context.update({
+            'allopurinol_list': Allopurinol.objects.filter(user=self.request.user),
+            'febuxostat_list': Febuxostat.objects.filter(user=self.request.user),
+            'probenecid_list': Probenecid.objects.filter(user=self.request.user),
+            'colchicine_ppx_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'ibuprofen_ppx_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'celecoxib_ppx_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'meloxicam_ppx_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'naproxen_ppx_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'prednisone_ppx_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
 
 class AllopurinolDetail(DetailView):
     model = Allopurinol
@@ -90,7 +160,7 @@ class ColchicineDetail(DetailView):
 
 class ColchicineCreate(LoginRequiredMixin, CreateView):
     model = Colchicine
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects',]
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -98,7 +168,7 @@ class ColchicineCreate(LoginRequiredMixin, CreateView):
 
 class ColchicineUpdate(LoginRequiredMixin, UpdateView):
     model = Colchicine
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects',]
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/colchicine_update.html'
 
 class IbuprofenDetail(DetailView):
@@ -106,7 +176,7 @@ class IbuprofenDetail(DetailView):
 
 class IbuprofenCreate(LoginRequiredMixin, CreateView):
     model = Ibuprofen
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -114,7 +184,7 @@ class IbuprofenCreate(LoginRequiredMixin, CreateView):
 
 class IbuprofenUpdate(LoginRequiredMixin, UpdateView):
     model = Ibuprofen
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis' ]
     template_name = 'treatment/ibuprofen_update.html'
 
 class NaproxenDetail(DetailView):
@@ -122,7 +192,7 @@ class NaproxenDetail(DetailView):
 
 class NaproxenCreate(LoginRequiredMixin, CreateView):
     model = Naproxen
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -130,7 +200,7 @@ class NaproxenCreate(LoginRequiredMixin, CreateView):
 
 class NaproxenUpdate(LoginRequiredMixin, UpdateView):
     model = Naproxen
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/naproxen_update.html'
 
 class MeloxicamDetail(DetailView):
@@ -138,7 +208,7 @@ class MeloxicamDetail(DetailView):
 
 class MeloxicamCreate(LoginRequiredMixin, CreateView):
     model = Meloxicam
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -146,7 +216,7 @@ class MeloxicamCreate(LoginRequiredMixin, CreateView):
 
 class MeloxicamUpdate(LoginRequiredMixin, UpdateView):
     model = Meloxicam
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/meloxicam_update.html'
 
 class CelecoxibDetail(DetailView):
@@ -154,7 +224,7 @@ class CelecoxibDetail(DetailView):
 
 class CelecoxibCreate(LoginRequiredMixin, CreateView):
     model = Celecoxib
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -162,7 +232,7 @@ class CelecoxibCreate(LoginRequiredMixin, CreateView):
 
 class CelecoxibUpdate(LoginRequiredMixin, UpdateView):
     model = Celecoxib
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/celecoxib_update.html'
 
 class PrednisoneDetail(DetailView):
@@ -170,7 +240,7 @@ class PrednisoneDetail(DetailView):
 
 class PrednisoneCreate(LoginRequiredMixin, CreateView):
     model = Prednisone
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -178,7 +248,7 @@ class PrednisoneCreate(LoginRequiredMixin, CreateView):
 
 class PrednisoneUpdate(LoginRequiredMixin, UpdateView):
     model = Prednisone
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/prednisone_update.html'
 
 class MethylprednisoloneDetail(DetailView):
@@ -186,7 +256,7 @@ class MethylprednisoloneDetail(DetailView):
 
 class MethylprednisoloneCreate(LoginRequiredMixin, CreateView):
     model = Methylprednisolone
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_injection',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -194,7 +264,7 @@ class MethylprednisoloneCreate(LoginRequiredMixin, CreateView):
 
 class MethylprednisoloneUpdate(LoginRequiredMixin, UpdateView):
     model = Methylprednisolone
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
+    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_injection',]
     template_name = 'treatment/methylprednisolone_update.html'
 
 class ProbenecidDetail(DetailView):

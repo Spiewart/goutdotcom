@@ -20,12 +20,26 @@
   border-color: #010e14;
   padding: 5px; }
 
+.user-flare-list {
+  border-style: solid;
+  border-width: medium;
+  border-color: #010e14;
+  padding: 5px;
+  background-color: #8684e9; }
+
+.user-ULT-list {
+  border-style: solid;
+  border-width: medium;
+  border-color: #010e14;
+  padding: 5px;
+  background-color: #8684e9; }
+
 .treatment-index {
   border-style: solid;
   border-width: medium;
   border-color: #010e14;
   padding: 5px;
-  background-color: #093b09; }
+  background-color: #5fad5f; }
 
 body {
   background-color: yellow; }
