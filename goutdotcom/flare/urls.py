@@ -16,6 +16,7 @@ urlpatterns = [
     path("landing/", TemplateView.as_view(template_name="flare/landing.html"), name="landing"),
     path("<int:pk>/", view=FlareDetail.as_view(), name="detail"),
     path("create/", view=FlareCreate.as_view(), name="create"),
+    path("<int:pk>/flareurateupdate/", views.FlareUrateUpdate, name="flareurateupdate"),
     path("<int:pk>/update/", view=FlareUpdate.as_view(), name="update"),
     path("flareuratecreate/", views.FlareUrateCreate, name="flareuratecreate"),
     path("list", view=FlareList.as_view(), name="list"),

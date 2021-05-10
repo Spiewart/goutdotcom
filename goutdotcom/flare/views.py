@@ -1,7 +1,7 @@
 from goutdotcom.flare.forms import FlareForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -48,6 +48,31 @@ class FlareList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
+
+
+@login_required
+def FlareUrateUpdate(request, pk):
+    context = {}
+    flare_for_flare = get_object_or_404(Flare, pk=pk)
+    #uric_acid_for_flare = get_object_or_404(Urate, id=flare_for_flare.urate.pk)
+
+    flare_form = FlareForm(request.POST, instance=flare_for_flare)
+    urate_form = UrateForm(request.POST)#, instance=uric_acid_for_flare)
+
+    if flare_form.is_valid() and urate_form.is_valid():
+        urate_for_flare = urate_form
+        urate_for_flare.save()
+        flare = flare_form.save(commit=False)
+        flare.urate = urate_for_flare
+        flare.user = request.user
+        flare.save()
+        return HttpResponseRedirect("/"+pk)
+
+    context["flare_form"] = flare_form
+    context["urate_form"] = urate_form
+
+    #return render(request, 'flare:detail', context)
+    return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk': flare_for_flare.pk}))
 
 @login_required
 def FlareUrateCreate(request):
