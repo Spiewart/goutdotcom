@@ -11,12 +11,11 @@
 
     <div class="row">
 
-
-
-      <div class="col" id="user-flare-list">
+      <div class="col">
         <h1>Flare Treatments</h1>
         {% if colchicine_list %}
           {% for colchicine in colchicine_list %}
+          <div class="container user-flare-list">
             <h5><a href="{% url 'treatment:colchicine-update' colchicine.pk %}">{{ colchicine.generic_name|capfirst }}</a>
             {% for brand_name in colchicine.brand_names %}
               ({{ brand_name|capfirst  }}) </h5>
@@ -32,10 +31,12 @@
               <li>Side effects: {{ colchicine.side_effects }}
               {% endif %}
             </ul>
+          </div>
           {% endfor %}
         {% endif %}
         {% if celecoxib_list %}
           {% for celecoxib in celecoxib_list %}
+          <div class="container user-flare-list">
             <h5><a href="{% url 'treatment:celecoxib-update' celecoxib.pk %}">{{ celecoxib.generic_name|capfirst }}</a>
             {% for brand_name in celecoxib.brand_names %}
               ({{ brand_name|capfirst  }}) </h5>
@@ -51,10 +52,12 @@
               <li>Side effects: {{ celecoxib.side_effects }}
               {% endif %}
             </ul>
+          </div>
           {% endfor %}
         {% endif %}
         {% if ibuprofen_list %}
           {% for ibuprofen in ibuprofen_list %}
+          <div class="container user-flare-list">
             <h5><a href="{% url 'treatment:ibuprofen-update' ibuprofen.pk %}">{{ ibuprofen.generic_name|capfirst }}</a>
             {% for brand_name in ibuprofen.brand_names %}
               ({{ brand_name|capfirst  }}) </h5>
@@ -70,10 +73,12 @@
               <li>Side effects: {{ ibuprofen.side_effects }}
               {% endif %}
             </ul>
+          </div>
           {% endfor %}
         {% endif %}
         {% if naproxen_list %}
           {% for naproxen in naproxen_list %}
+          <div class="container user-flare-list">
             <h5><a href="{% url 'treatment:naproxen-update' naproxen.pk %}">{{ naproxen.generic_name|capfirst }}</a>
             {% for brand_name in naproxen.brand_names %}
               ({{ brand_name|capfirst  }}) </h5>
@@ -89,10 +94,12 @@
               <li>Side effects: {{ naproxen.side_effects }}
               {% endif %}
             </ul>
+          </div>
           {% endfor %}
         {% endif %}
         {% if meloxicam_list %}
           {% for meloxicam in meloxicam_list %}
+          <div class="container user-flare-list">
             <h5><a href="{% url 'treatment:meloxicam-update' meloxicam.pk %}">{{ meloxicam.generic_name|capfirst }}</a>
             {% for brand_name in meloxicam.brand_names %}
               ({{ brand_name|capfirst  }}) </h5>
@@ -108,10 +115,12 @@
               <li>Side effects: {{ meloxicam.side_effects }}
               {% endif %}
             </ul>
+          </div>
           {% endfor %}
         {% endif %}
         {% if prednisone_list %}
           {% for prednisone in prednisone_list %}
+          <div class="container user-flare-list">
             <h5><a href="{% url 'treatment:prednisone-update' prednisone.pk %}">{{ prednisone.generic_name|capfirst }}</a>
             {% for brand_name in prednisone.brand_names %}
               ({{ brand_name|capfirst  }}) </h5>
@@ -127,10 +136,12 @@
               <li>Side effects: {{ prednisone.side_effects }}
               {% endif %}
             </ul>
+          </div>
           {% endfor %}
         {% endif %}
         {% if methylprednisolone_list %}
           {% for methylprednisolone in methylprednisolone_list %}
+          <div class="container user-flare-list">
             <h5><a href="{% url 'treatment:methylprednisolone-update' methylprednisolone.pk %}">{{ methylprednisolone.generic_name|capfirst }}</a>
             {% for brand_name in methylprednisolone.brand_names %}
               ({{ brand_name|capfirst  }}) </h5>
@@ -146,14 +157,15 @@
               <li>Side effects: {{ methylprednisolone.side_effects }}
               {% endif %}
             </ul>
+          </div>
           {% endfor %}
         {% endif %}
       </div>
-
-        <div class="column" id="user-ULT-list">
+        <div class="column">
             <h1>ULT(urate-lowering therapy)<h1>
             {% if allopurinol_list %}
               {% for allopurinol in allopurinol_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:allopurinol-update' allopurinol.pk %}">{{ allopurinol.generic_name|capfirst }}</a>
                 {% for brand_name in allopurinol.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -173,10 +185,12 @@
                   <li>Side effects: {{ allopurinol.de_sensitized }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
             {% if febuxostat_list %}
               {% for febuxostat in febuxostat_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:febuxostat-update' febuxostat.pk %}">{{ febuxostat.generic_name|capfirst }}</a>
                 {% for brand_name in febuxostat.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -196,10 +210,12 @@
                   <li>Side effects: {{ febuxostat.de_sensitized }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
             {% if probenecid_list %}
               {% for probenecid in probenecid_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:probenecid-update' probenecid.pk %}">{{ probenecid.generic_name|capfirst }}</a>
                 {% for brand_name in probenecid.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -219,14 +235,16 @@
                   <li>Side effects: {{ probenecid.de_sensitized }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
           </div>
           {% if colchicine_ppx_list or ibuprofen_ppx_list or celecoxib_ppx_list or meloxicam_ppx_list or naproxen_ppx_list or prednisone_ppx_list %}
-          <div class="column" id="user-ULT-list">
-            <h1>Flare Prophylaxis<h1>
+          <div class="col">
+          <h1>Flare Prophylaxis<h1>
             {% if colchicine_ppx_list %}
               {% for colchicine in colchicine_ppx_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:colchicine-update' colchicine.pk %}">{{ colchicine.generic_name|capfirst }}</a>
                 {% for brand_name in colchicine.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -243,10 +261,12 @@
                   <li>Side effects: {{ colchicine.side_effects }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
             {% if ibuprofen_ppx_list %}
               {% for ibuprofen in ibuprofen_ppx_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:ibuprofen-update' ibuprofen.pk %}">{{ ibuprofen.generic_name|capfirst }}</a>
                 {% for brand_name in ibuprofen.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -263,10 +283,12 @@
                   <li>Side effects: {{ ibuprofen.side_effects }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
             {% if celecoxib_ppx_list %}
               {% for celecoxib in celecoxib_ppx_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:celecoxib-update' celecoxib.pk %}">{{ celecoxib.generic_name|capfirst }}</a>
                 {% for brand_name in celecoxib.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -286,10 +308,12 @@
                   <li>Side effects: {{ celecoxib.de_sensitized }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
             {% if meloxicam_ppx_list %}
               {% for meloxicam in meloxicam_ppx_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:meloxicam-update' meloxicam.pk %}">{{ meloxicam.generic_name|capfirst }}</a>
                 {% for brand_name in meloxicam.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -309,10 +333,12 @@
                   <li>Side effects: {{ meloxicam.de_sensitized }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
             {% if naproxen_ppx_list %}
               {% for naproxen in naproxen_ppx_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:naproxen-update' naproxen.pk %}">{{ naproxen.generic_name|capfirst }}</a>
                 {% for brand_name in naproxen.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -332,10 +358,12 @@
                   <li>Side effects: {{ naproxen.de_sensitized }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
             {% if prednisone_ppx_list %}
               {% for prednisone in prednisone_ppx_list %}
+              <div class="container user-ULT-list">
                 <h5><a href="{% url 'treatment:prednisone-update' prednisone.pk %}">{{ prednisone.generic_name|capfirst }}</a>
                 {% for brand_name in prednisone.brand_names %}
                   ({{ brand_name|capfirst  }})
@@ -355,6 +383,7 @@
                   <li>Side effects: {{ prednisone.de_sensitized }}
                   {% endif %}
                 </ul>
+              </div>
               {% endfor %}
             {% endif %}
           </div>
@@ -363,6 +392,7 @@
         </div>
 
       </div>
+      <br>
 <a class="btn btn-primary btn-lg" href="{% url 'treatment:dashboard' %}" role="button">Treatment Home</a>
 <a class="btn btn-primary btn-lg" href="{% url 'treatment:flare' %}" role="button">Treatment: Flares</a>
 <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Treatment: ULT</a>

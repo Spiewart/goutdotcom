@@ -7,7 +7,7 @@
   {% if object_list %}
     {% for flare in object_list %}
       <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12" id="flare-mini-detail-list">
           <h2>{{ flare.created }}</h2><a class="btn btn-primary" href="{% url 'flare:detail' flare.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'flare:update' flare.pk %}" role="button">Update</a>
           <h4>{{ flare.location }}</h4>
           <h4>{{ flare.duration }}</h4>

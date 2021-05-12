@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
@@ -292,3 +293,4 @@ class ProbenecidUpdate(LoginRequiredMixin, UpdateView):
     model = Probenecid
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
     template_name = 'treatment/probenacid_update.html'
+    success_url = reverse_lazy('treatment:dashboard')    

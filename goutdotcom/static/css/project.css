@@ -1,6 +1,13 @@
 .asteriskField {
   display: none; }
 
+.flare-mini-detail-list {
+  border-style: solid;
+  border-width: medium;
+  border-color: #010e14;
+  padding: 5px;
+  background-color: green; }
+
 .flare-index-column {
   border-style: solid;
   border-width: medium;
@@ -18,7 +25,8 @@
   border-style: solid;
   border-width: medium;
   border-color: #010e14;
-  padding: 5px; }
+  padding: 5px;
+  background-color: #8684e9; }
 
 .user-flare-list {
   border-style: solid;

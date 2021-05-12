@@ -7,6 +7,7 @@ class FlareAdmin(admin.ModelAdmin):
         '__str__',
         'treatment',
         'urate',
+        'pk',
     )
 
 admin.site.register(Flare, FlareAdmin)

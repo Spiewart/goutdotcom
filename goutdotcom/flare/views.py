@@ -32,7 +32,7 @@ class FlareDetail(LoginRequiredMixin, DetailView):
 
 class FlareUpdate(LoginRequiredMixin, UpdateView):
     model = Flare
-    fields = ['location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate_draw', 'urate']
+    fields = ['location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate']
     template_name = 'flare/flare_update.html'
 
 class FlareList(LoginRequiredMixin, ListView):
@@ -51,28 +51,35 @@ class FlareList(LoginRequiredMixin, ListView):
 
 
 @login_required
-def FlareUrateUpdate(request, pk):
+def FlareUrateUpdate(request, id):
     context = {}
-    flare_for_flare = get_object_or_404(Flare, pk=pk)
-    #uric_acid_for_flare = get_object_or_404(Urate, id=flare_for_flare.urate.pk)
+    flare_for_flare = get_object_or_404(Flare, id=id)
+    uric_acid_for_flare = get_object_or_404(Urate, pk=flare_for_flare.urate.pk)
+    
+    if request.method == "POST":
+        flare_form = FlareForm(request.POST, instance=flare_for_flare)
+        urate_form = UrateForm(request.POST, instance=uric_acid_for_flare)
+        context["flare_form"] = flare_form
+        context["urate_form"] = urate_form
 
-    flare_form = FlareForm(request.POST, instance=flare_for_flare)
-    urate_form = UrateForm(request.POST)#, instance=uric_acid_for_flare)
+        if flare_form.is_valid() and urate_form.is_valid():
+            urate_for_flare = urate_form
+            urate_for_flare.save()
+            flare = flare_form.save(commit=False)
+            flare.urate = urate_for_flare
+            flare.user = request.user
+            id=flare.id
+            flare.save()
+            return HttpResponseRedirect("/"+id)
 
-    if flare_form.is_valid() and urate_form.is_valid():
-        urate_for_flare = urate_form
-        urate_for_flare.save()
-        flare = flare_form.save(commit=False)
-        flare.urate = urate_for_flare
-        flare.user = request.user
-        flare.save()
-        return HttpResponseRedirect("/"+pk)
+    else:
+        flare_form = FlareForm(request.POST, instance=flare_for_flare)
+        urate_form = UrateForm(request.POST, instance=uric_acid_for_flare)
+        context["flare_form"] = flare_form
+        context["urate_form"] = urate_form
 
-    context["flare_form"] = flare_form
-    context["urate_form"] = urate_form
-
-    #return render(request, 'flare:detail', context)
-    return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk': flare_for_flare.pk}))
+    return render(request, 'flare/flareurate_update.html', context)
+    #return HttpResponseRedirect(reverse('flare:flareurateupdate', kwargs={'pk': flare_for_flare.pk}))
 
 @login_required
 def FlareUrateCreate(request):

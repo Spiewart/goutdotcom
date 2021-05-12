@@ -10,8 +10,10 @@
       <h3>{{ object.location }}</h3>
       <h3>{{ object.treatment }}</h3>
       <h3>{{ object.urate }}</h3>
+      <h3>{{ object.id }}</h3>
+      <h3>{{ object.pk }}</h3>
     </div>
   </div>
 </div>
-<a class="btn btn-primary btn-lg" href="{% url 'flare:flareurateupdate' object.pk %}" role="button">Update</a>
+<a class="btn btn-primary btn-lg" href="{% url 'flare:flareurateupdate' object.id %}" role="button">Update</a>
 {% endblock content %}
