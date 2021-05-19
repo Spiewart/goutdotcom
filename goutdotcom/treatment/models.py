@@ -240,6 +240,13 @@ class Colchicine(TimeStampedModel):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
     as_prophylaxis = models.BooleanField(choices=BOOL_CHOICES, verbose_name="Flare prophylaxis?",
                                          help_text="Is this for flare prophylaxis while initiating ULT?", default=False)
+    
+    def duration_calc(self):
+        if self.date_started:
+            if self.date_ended:
+                duration = self.date_ended - self.date_started
+                return duration
+                
     class Meta:
         pass
 

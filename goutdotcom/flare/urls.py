@@ -8,11 +8,12 @@ from .views import (
     FlareDetail,
     FlareUpdate,
     FlareList,
+    IndexView,
 )
 
 app_name = "flare"
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="flare/index.html"), name="index"),
+    path("", view=IndexView.as_view(), name="index"),
     path("landing/", TemplateView.as_view(template_name="flare/landing.html"), name="landing"),
     path("<int:pk>/", view=FlareDetail.as_view(), name="detail"),
     path("create/", view=FlareCreate.as_view(), name="create"),

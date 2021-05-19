@@ -71,6 +71,8 @@ class ColchicineAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'duration_calc',
+        'pk',
     )
 admin.site.register(Allopurinol, AllopurinolAdmin)
 admin.site.register(Febuxostat, FebuxostatAdmin)
