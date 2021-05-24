@@ -3,16 +3,22 @@
 
 {% block content %}
 <div class="container">
+<h1>Creatinines</h1>
   {% if object_list %}
-    {% for creatinine in object_list %}
-      <div class="row">
-        <div class="col-sm-12">
-          <a class="btn btn-primary" href="{% url 'lab:creatinine-update' creatinine.pk %}" role="button">Update
-          <h2>{{ creatinine.creatinine }}</h2></a>
-          <h4>{{ creatinine.created }}</h4>
+    <div class="row">
+      <div class="col">
+      {% for creatinine in object_list %}
+        <div class="container user-flare-list">
+          <h5>{{ creatinine.creatinine }} mg/dL</h5>
+          <h5>eGFR: {{ creatinine.eGFR_calculator }}</h5>
+          <h6>Date: <a href="{% url 'lab:creatinine-detail' creatinine.pk %}">{{ creatinine.created }}</a></h6>
         </div>
+        <br>
+      {% endfor %}
       </div>
-    {% endfor %}
+    </div>
   {% endif %}
 </div>
+<br>
+<a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
 {% endblock content %}

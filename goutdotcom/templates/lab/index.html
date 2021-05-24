@@ -2,19 +2,144 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container-fluid">
-  <div class="jumbotron treatment-index">
-    <h1 class="display-4">Gout Treatment</h1>
-    <h3 class="lead">Managing gout is broken down into two parts:</h3>
-    <p><br>1. Managing the symptoms of your gout flares.</p>
-    <p><br>2. Long-term treatment to prevent and even eliminate gout flares.</p>
-    <hr class="my-4">
-    <p>Not everyone needs long-term treatment of their gout, but most who do take daily medication to prevent gout no longer have to worry about flares.</p>
-    <p class="lead">
-      <a class="btn btn-primary btn-lg" href="{% url 'treatment:flare' %}" role="button">Flare Treatment</a>
-      <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Preventative Therapy</a>
-    </p>
+<main role="main" class="container">
+<h1>Your Labs</h1><a class="btn btn-primary btn-lg" href="{% url 'lab:log' %}" role="button">Log a Lab</a>
+  <div class="container">
+    <div class="row">
+        {% if urate_list %}
+          <div class="col">
+          <h3><a href="{% url 'lab:urate-list' %}">Uric Acids</a></h3>
+          {% for urate in urate_list %}
+          <div class="container user-flare-list">
+            <h5>{{ urate.uric_acid }} mg/dL
+            <ul>
+              <li>Created on: <a href="{% url 'lab:urate-update' urate.pk %}">{{ urate.created }}</a></li>
+            </ul>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if ALT_list %}
+          <div class="col">
+          <h3><a href="{% url 'lab:ALT-list' %}">ALTs</a></h3>
+          {% for ALT in ALT_list %}
+          <div class="container user-flare-list">
+            <h5>{{ ALT.alt_sgpt }} mg/dL
+            <ul>
+              <li>Created on: <a href="{% url 'lab:ALT-update' ALT.pk %}">{{ ALT.created }}</a></li>
+            </ul>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if AST_list %}
+        <div class="col">
+          <h3><a href="{% url 'lab:AST-list' %}">ASTs</a></h3>
+          {% for AST in AST_list %}
+          <div class="container user-flare-list">
+            <h5>{{ AST.ast_sgot }} mg/dL
+            <ul>
+              <li>Created on: <a href="{% url 'lab:AST-update' AST.pk %}">{{ AST.created }}</a></li>
+            </ul>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if platelet_list %}
+        <div class="col">
+          <h3><a href="{% url 'lab:platelet-list' %}">Platelets</a></h3>
+          {% for platelet in platelet_list %}
+          <div class="container user-flare-list">
+            <h5>{{ platelet.platelets }} platelets / miroliter
+            <ul>
+              <li>Created on: <a href="{% url 'lab:platelet-update' platelet.pk %}">{{ platelet.created }}</a></li>
+            </ul>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if WBC_list %}
+        <div class="col">
+          <h3><a href="{% url 'lab:WBC-list' %}">WBCs</a></h3>
+          {% for WBC in WBC_list %}
+          <div class="container user-flare-list">
+            <h5>{{ WBC.white_blood_cells }} thousand cells per cubic mm
+            <ul>
+              <li>Created on: <a href="{% url 'lab:WBC-update' WBC.pk %}">{{ WBC.created }}</a></li>
+            </ul>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+        {% endif %}
+       {% if hemoglobin_list %}
+       <div class="col">
+          <h3><a href="{% url 'lab:hemoglobin-list' %}">Hemoglobins</a></h3>
+          {% for hemoglobin in hemoglobin_list %}
+          <div class="container user-flare-list">
+            <h5>{{ hemoglobin.hemoglobin }} grams per dL
+            <ul>
+              <li>Created on: <a href="{% url 'lab:hemoglobin-update' hemoglobin.pk %}">{{ hemoglobin.created }}</a></li>
+            </ul>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+        {% endif %}
+       {% if creatinine_list %}
+       <div class="col">
+          <h3><a href="{% url 'lab:creatinine-list' %}">Creatinines</a></h3>
+          {% for creatinine in creatinine_list %}
+          <div class="container user-flare-list">
+            <h5>{{ creatinine.creatinine }} grams per dL
+            <ul>
+              <li>eGFR: {{ creatinine.eGFR_calculator }}</li>
+              <li>Created on: <a href="{% url 'lab:creatinine-update' creatinine.pk %}">{{ creatinine.created }}</a></li>
+            </ul>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
   </div>
-
-</main>
+  <br>
+  <div class="container user-flare-list">
+  {% if user.is_authenticated %}
+<div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h3>Lab lists</h3>
+        <a class="btn btn-primary" href="{% url 'lab:urate-list' %}" role="button">Uric Acid</a>
+        <a class="btn btn-primary" href="{% url 'lab:ALT-list' %}" role="button">ALT</a>
+        <a class="btn btn-primary" href="{% url 'lab:AST-list' %}" role="button">AST</a>
+        <a class="btn btn-primary" href="{% url 'lab:platelet-list' %}" role="button">Platelet</a>
+        <a class="btn btn-primary" href="{% url 'lab:WBC-list' %}" role="button">WBC</a>
+        <a class="btn btn-primary" href="{% url 'lab:hemoglobin-list' %}" role="button">Hemoglobin</a>
+        <a class="btn btn-primary" href="{% url 'lab:creatinine-list' %}" role="button">Creatinine</a>
+      </div>
+    </div>
+  </div>
+<br>
+<div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h3>Log a new lab</h3>
+        <a class="btn btn-primary" href="{% url 'lab:urate-create' %}" role="button">Uric Acid</a>
+        <a class="btn btn-primary" href="{% url 'lab:ALT-create' %}" role="button">ALT</a>
+        <a class="btn btn-primary" href="{% url 'lab:AST-create' %}" role="button">AST</a>
+        <a class="btn btn-primary" href="{% url 'lab:platelet-create' %}" role="button">Platelet</a>
+        <a class="btn btn-primary" href="{% url 'lab:WBC-create' %}" role="button">WBC</a>
+        <a class="btn btn-primary" href="{% url 'lab:hemoglobin-create' %}" role="button">Hemoglobin</a>
+        <a class="btn btn-primary" href="{% url 'lab:creatinine-create' %}" role="button">Creatinine</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  </main>
 {% endblock content %}

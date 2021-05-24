@@ -32,7 +32,7 @@ class ASTFactory(DjangoModelFactory):
 
 
 class PlateletFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
+    user = factory.SubFactory(UserFactory)
     platelets = Faker("pyint", min_value=1, max_value=1300)
 
     class Meta:
@@ -40,15 +40,15 @@ class PlateletFactory(DjangoModelFactory):
 
 
 class WBCFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    white_blood_cells = Faker("pydecimal", left_digits=3, right_digits=1, positive=True, min_value=1, max_value=300)
+    user = factory.SubFactory(UserFactory)
+    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=300)
 
     class Meta:
         model = WBC
 
 
 class HemoglobinFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
+    user = factory.SubFactory(UserFactory)
     hemoglobin = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=5, max_value=20)
 
     class Meta:
@@ -56,7 +56,7 @@ class HemoglobinFactory(DjangoModelFactory):
 
 
 class CreatinineFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
+    user = factory.SubFactory(UserFactory)
     creatinine = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
 
     class Meta:

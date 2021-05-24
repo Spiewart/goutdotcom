@@ -11,8 +11,13 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-            'urate_list': Urate.objects.filter(user=self.request.user),
-            'creatinine_list': Creatinine.objects.filter(user=self.request.user), 
+            'urate_list': Urate.objects.filter(user=self.request.user).order_by('created')[:3],
+            'ALT_list': ALT.objects.filter(user=self.request.user).order_by('created')[:3],
+            'AST_list': AST.objects.filter(user=self.request.user).order_by('created')[:3],
+            'platelet_list': Platelet.objects.filter(user=self.request.user).order_by('created')[:3],
+            'WBC_list': WBC.objects.filter(user=self.request.user).order_by('created')[:3],
+            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user).order_by('created')[:3],
+            'creatinine_list': Creatinine.objects.filter(user=self.request.user).order_by('created')[:3],
         })
         return context
 

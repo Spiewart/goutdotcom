@@ -1,7 +1,6 @@
 import pytest
 
-from ..models import Urate, ALT, AST, Platelet, WBC, Hemoglobin, Creatinine
-from .factories import UrateFactory, ASTFactory, ALTFactory
+from .factories import UrateFactory, ASTFactory, ALTFactory, PlateletFactory, WBCFactory, HemoglobinFactory, CreatinineFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -43,3 +42,45 @@ class TestASTMethods:
     def test_get_absolute_url(self):
         AST = ASTFactory()
         assert AST.get_absolute_url() == f"/lab/AST/{AST.pk}/"
+
+
+class TestPlateletMethods:
+    def test__str__(self):
+        Platelet = PlateletFactory()
+        assert(Platelet.__str__() == str(Platelet.platelets))
+
+    def test__unicode__(self):
+        Platelet = PlateletFactory()
+        assert(Platelet.__unicode__() == str(Platelet.name))
+
+    def test_get_absolute_url(self):
+        Platelet = PlateletFactory()
+        assert Platelet.get_absolute_url() == f"/lab/platelet/{Platelet.pk}/"
+
+
+class TestWBCMethods:
+    def test__str__(self):
+        WBC = WBCFactory()
+        assert(WBC.__str__() == str(WBC.white_blood_cells))
+
+    def test__unicode__(self):
+        WBC = WBCFactory()
+        assert(WBC.__unicode__() == str(WBC.name))
+
+    def test_get_absolute_url(self):
+        WBC = WBCFactory()
+        assert WBC.get_absolute_url() == f"/lab/WBC/{WBC.pk}/"
+
+
+class TestHemoglobinMethods:
+    def test__str__(self):
+        Hemoglobin = HemoglobinFactory()
+        assert(Hemoglobin.__str__() == str(Hemoglobin.hemoglobin))
+
+    def test__unicode__(self):
+        Hemoglobin = HemoglobinFactory()
+        assert(Hemoglobin.__unicode__() == str(Hemoglobin.name))
+
+    def test_get_absolute_url(self):
+        Hemoglobin = HemoglobinFactory()
+        assert Hemoglobin.get_absolute_url() == f"/lab/hemoglobin/{Hemoglobin.pk}/"

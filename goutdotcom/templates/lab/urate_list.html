@@ -3,16 +3,21 @@
 
 {% block content %}
 <div class="container">
+<h1>Uric Acids</h1>
   {% if object_list %}
-    {% for urate in object_list %}
-      <div class="row">
-        <div class="col-sm-12">
-          <h2>{{ urate.uric_acid }}</h2><a class="btn btn-primary" href="{% url 'lab:urate-detail' urate.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'lab:urate-update' urate.pk %}" role="button">Update</a>
-          <h4>{{ urate.created }}</h4>
+    <div class="row">
+      <div class="col">
+      {% for urate in object_list %}
+        <div class="container user-flare-list"
+          <h5>{{ urate.uric_acid }} mg/dL</h5>
+          <h6>Date: <a href="{% url 'lab:urate-detail' urate.pk %}">{{ urate.created }}</a></h6>
         </div>
+        <br>
+      {% endfor %}
       </div>
-    {% endfor %}
+    </div>
   {% endif %}
 </div>
-<a class="btn btn-primary" href="{% url 'lab:log' %}" role="button">Lab Home</a>
+<br>
+<a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
 {% endblock content %}
