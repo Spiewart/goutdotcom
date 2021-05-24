@@ -3,16 +3,21 @@
 
 {% block content %}
 <div class="container">
+<h1>WBCs</h1>
   {% if object_list %}
-    {% for WBC in object_list %}
-      <div class="row">
-        <div class="col-sm-12">
-          <h2>{{ WBC.white_blood_cells }}</h2><a class="btn btn-primary" href="{% url 'lab:WBC-detail' WBC.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'lab:WBC-update' WBC.pk %}" role="button">Update</a>
-          <h4>{{ WBC.created }}</h4>
+    <div class="row">
+      <div class="col">
+      {% for WBC in object_list %}
+        <div class="container user-flare-list">
+          <h5>{{ WBC.white_blood_cells }} thousand cells per cubic mm</h5>
+          <h6>Date: <a href="{% url 'lab:WBC-detail' WBC.pk %}">{{ WBC.created }}</a></h6>
         </div>
+        <br>
+      {% endfor %}
       </div>
-    {% endfor %}
+    </div>
   {% endif %}
 </div>
-<a class="btn btn-primary" href="{% url 'lab:log' %}" role="button">Lab Home</a>
+<br>
+<a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
 {% endblock content %}

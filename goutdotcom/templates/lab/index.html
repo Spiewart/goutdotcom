@@ -97,7 +97,7 @@
           <div class="container user-flare-list">
             <h5>{{ creatinine.creatinine }} grams per dL
             <ul>
-              <li>eGFR: {{ creatinine.eGFR_calculator }}</li>
+              <li>eGFR: {{ creatinine.eGFR_calculator|floatformat:2 }}</li>
               <li>Created on: <a href="{% url 'lab:creatinine-update' creatinine.pk %}">{{ creatinine.created }}</a></li>
             </ul>
           </div>
