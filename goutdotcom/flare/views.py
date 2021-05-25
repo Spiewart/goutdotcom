@@ -23,7 +23,7 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-            'flare_list': Flare.objects.filter(user=self.request.user),
+            'flare_list': Flare.objects.filter(user=self.request.user).order_by('-created')[:5],
             'methylprednisolone_inj_list': Methylprednisolone.objects.filter(user=self.request.user),
             'colchicine_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=False),
             'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=False),
@@ -57,6 +57,7 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('flare:index')
 
 class FlareList(LoginRequiredMixin, ListView):
+    paginate_by = 5
     model = Flare
 
     def get_context_data(self, **kwargs):
@@ -68,7 +69,7 @@ class FlareList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user)
+        return queryset.filter(user=self.request.user).order_by('-created')
 
 
 @login_required

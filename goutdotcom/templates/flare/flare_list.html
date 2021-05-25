@@ -3,19 +3,64 @@
 
 {% block content %}
 <div class="container">
-<a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button">Log a Flare</a>
-  {% if object_list %}
-    {% for flare in object_list %}
-      <div class="row">
-        <div class="col-sm-12" id="flare-mini-detail-list">
-          <h2>{{ flare.created }}</h2><a class="btn btn-primary" href="{% url 'flare:detail' flare.pk %}" role="button">Detail</a> <a class="btn btn-primary" href="{% url 'flare:update' flare.pk %}" role="button">Update</a>
-          <h4>{{ flare.location }}</h4>
-          <h4>{{ flare.duration }}</h4>
-          <h4>{{ flare.treatment}}</h4>
-          <h4>{{ flare.urate}}</h4>
+  <div class="row">
+    <div class="col">
+    <h1>Flares</h1>
+    {% if page_obj %}
+      {% for flare in page_obj %}
+        <div class="container user-flare-list">
+          <a href="{% url 'flare:update' flare.pk %}">Date: {{ flare.created }}</a>
+          <ul>
+            <li>Location: {{ flare.location }}</li>
+            <li>Treatment: {{ flare.treatment }}</li>
+            <li>User: {{ flare.user }}</li>
+            {% if flare.colchicine %}
+              {{ flare.colchicine.dose }} mg {{ flare.colchicine.freq }}
+            {% endif %}
+            {% if flare.meloxicam %}
+              {{ flare.meloxicam.dose }} mg {{ flare.meloxicam.freq }}
+            {% endif %}
+            {% if flare.ibuprofen %}
+              {{ flare.ibuprofen.dose }} mg {{ flare.ibuprofen.freq }}
+            {% endif %}
+            {% if flare.naproxen %}
+              {{ flare.naproxen.dose }} mg {{ flare.naproxen.freq }}
+            {% endif %}
+            {% if flare.celecoxib %}
+              {{ flare.celecoxib.dose }} mg {{ flare.celecoxib.freq }}
+            {% endif %}
+            {% if flare.prednisone %}
+              {{ flare.prednisone.dose }} mg {{ flare.prednisone.freq }}
+            {% endif %}
+            {% if flare.methylprednisolone %}
+              {{ flare.methylprednisolone.dose }} mg {{ flare.methylprednisolone.freq }}
+            {% endif %}
+            </li>
+            <li>Duration: {{ flare.duration }}</li>
+            {% if flare.urate %}
+            <li>Uric acid: {{ flare.urate }}</li>
+            {% endif %}
+          </ul>
         </div>
-      </div>
-    {% endfor %}
-  {% endif %}
-</div>
+        <br>
+      {% endfor %}
+    {% endif %}
+    </div>
+    <div class="pagination">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+          {% endif %}
+  
+          <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
+  
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">next</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+  </div>
 {% endblock content %}

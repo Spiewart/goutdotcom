@@ -12,7 +12,8 @@
           <a href="{% url 'flare:update' flare.pk %}">Date: {{ flare.created }}</a>
           <ul>
             <li>Location: {{ flare.location }}</li>
-            <li>Treatment: {{ flare.treatment }}
+            <li>Treatment: {{ flare.treatment }}</li>
+            <li>User: {{ flare.user }}</li>
             {% if flare.colchicine %}
               {{ flare.colchicine.dose }} mg {{ flare.colchicine.freq }}
             {% endif %}
