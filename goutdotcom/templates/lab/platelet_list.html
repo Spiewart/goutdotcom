@@ -4,10 +4,10 @@
 {% block content %}
 <div class="container">
 <h1>Platelets</h1>
-  {% if object_list %}
+  {% if page_obj %}
     <div class="row">
       <div class="col">
-      {% for platelet in object_list %}
+      {% for platelet in page_obj %}
         <div class="container user-flare-list">
           <h5>{{ platelet.platelets }} platelets / miroliter</h5>
           <h6>Date: <a href="{% url 'lab:platelet-detail' platelet.pk %}">{{ platelet.created }}</a></h6>
@@ -17,7 +17,26 @@
       </div>
     </div>
   {% endif %}
-</div>
+  <br>
+  <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+  
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+  
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+
 <br>
 <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
+</div>
 {% endblock content %}

@@ -99,7 +99,7 @@ class PlateletUserFactory(DjangoModelFactory):
 
 class WBCFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=300)
+    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
 
     class Meta:
         model = WBC
@@ -107,14 +107,14 @@ class WBCFactory(DjangoModelFactory):
 
 class WBCSpiewFactory(DjangoModelFactory):
     user = User.objects.get(username="spiew")
-    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=300)
+    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
 
     class Meta:
         model = WBC
 
 class WBCUserFactory(DjangoModelFactory):
     user = factory.Iterator(User.objects.all())
-    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=300)
+    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
 
     class Meta:
         model = WBC

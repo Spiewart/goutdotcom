@@ -11,13 +11,13 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-            'urate_list': Urate.objects.filter(user=self.request.user).order_by('created')[:3],
-            'ALT_list': ALT.objects.filter(user=self.request.user).order_by('created')[:3],
-            'AST_list': AST.objects.filter(user=self.request.user).order_by('created')[:3],
-            'platelet_list': Platelet.objects.filter(user=self.request.user).order_by('created')[:3],
-            'WBC_list': WBC.objects.filter(user=self.request.user).order_by('created')[:3],
-            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user).order_by('created')[:3],
-            'creatinine_list': Creatinine.objects.filter(user=self.request.user).order_by('created')[:3],
+            'urate_list': Urate.objects.filter(user=self.request.user).order_by('-created')[:3],
+            'ALT_list': ALT.objects.filter(user=self.request.user).order_by('-created')[:3],
+            'AST_list': AST.objects.filter(user=self.request.user).order_by('-created')[:3],
+            'platelet_list': Platelet.objects.filter(user=self.request.user).order_by('-created')[:3],
+            'WBC_list': WBC.objects.filter(user=self.request.user).order_by('-created')[:3],
+            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user).order_by('-created')[:3],
+            'creatinine_list': Creatinine.objects.filter(user=self.request.user).order_by('-created')[:3],
         })
         return context
 
@@ -41,6 +41,18 @@ class UrateDetail(LoginRequiredMixin, DetailView):
 
 class UrateList(LoginRequiredMixin, ListView):
     model = Urate
+    paginate_by=5
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'urate_list': Urate.objects.filter(user=self.request.user),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by('-created')
 
 class UrateUpdate(LoginRequiredMixin, UpdateView):
     model = Urate
@@ -60,6 +72,18 @@ class ALTDetail(LoginRequiredMixin, DetailView):
 
 class ALTList(LoginRequiredMixin, ListView):
     model = ALT
+    paginate_by=5
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'ALT_list': ALT.objects.filter(user=self.request.user),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by('-created')
 
 class ALTUpdate(LoginRequiredMixin, UpdateView):
     model = ALT
@@ -79,6 +103,18 @@ class ASTDetail(LoginRequiredMixin, DetailView):
 
 class ASTList(LoginRequiredMixin, ListView):
     model = AST
+    paginate_by=5
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'AST_list': AST.objects.filter(user=self.request.user),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by('-created')
 
 class ASTUpdate(LoginRequiredMixin, UpdateView):
     model = AST
@@ -98,6 +134,18 @@ class PlateletDetail(LoginRequiredMixin, DetailView):
 
 class PlateletList(LoginRequiredMixin, ListView):
     model = Platelet
+    paginate_by=5
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'platelet_list': Platelet.objects.filter(user=self.request.user),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by('-created')
 
 class PlateletUpdate(LoginRequiredMixin, UpdateView):
     model = Platelet
@@ -117,7 +165,19 @@ class WBCDetail(LoginRequiredMixin, DetailView):
 
 class WBCList(LoginRequiredMixin, ListView):
     model = WBC
+    paginate_by=5
 
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'WBC_list': WBC.objects.filter(user=self.request.user),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by('-created')
+        
 class WBCUpdate(LoginRequiredMixin, UpdateView):
     model = WBC
     fields = ['white_blood_cells']
@@ -136,6 +196,18 @@ class HemoglobinDetail(LoginRequiredMixin, DetailView):
 
 class HemoglobinList(LoginRequiredMixin, ListView):
     model = Hemoglobin
+    paginate_by=5
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by('-created')
 
 class HemoglobinUpdate(LoginRequiredMixin, UpdateView):
     model = Hemoglobin
@@ -155,6 +227,18 @@ class CreatinineDetail(LoginRequiredMixin, DetailView):
 
 class CreatinineList(LoginRequiredMixin, ListView):
     model = Creatinine
+    paginate_by=5
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'creatinine_list': Creatinine.objects.filter(user=self.request.user),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by('-created')
 
 class CreatinineUpdate(LoginRequiredMixin, UpdateView):
     model = Creatinine

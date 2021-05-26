@@ -15,9 +15,6 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     slug_field = "username"
     slug_url_kwarg = "username"
 
-    #def get_queryset(self):
-        #return Allopurinol.objects.filter(user_username=self.request.user.get_username())
-
 user_detail_view = UserDetailView.as_view()
 
 
