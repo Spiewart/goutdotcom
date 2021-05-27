@@ -17,19 +17,6 @@ class UrateFactory(DjangoModelFactory):
     class Meta:
         model = Urate
 
-class UrateSpiewFactory(DjangoModelFactory):
-    user = User.objects.get(username="spiew")
-    uric_acid = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
-
-    class Meta:
-        model = Urate
-
-class UrateUserFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    uric_acid = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
-
-    class Meta:
-        model = Urate
 
 class ALTFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
@@ -39,20 +26,6 @@ class ALTFactory(DjangoModelFactory):
         model = ALT
 
 
-class ALTSpiewFactory(DjangoModelFactory):
-    user = User.objects.get(username="spiew")
-    alt_sgpt = Faker("pyint", min_value=1, max_value=9999)
-
-    class Meta:
-        model = ALT
-
-class ALTUserFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    alt_sgpt = Faker("pyint", min_value=1, max_value=9999)
-
-    class Meta:
-        model = ALT
-
 class ASTFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     ast_sgot = Faker("pyint", min_value=1, max_value=9999)
@@ -60,20 +33,6 @@ class ASTFactory(DjangoModelFactory):
     class Meta:
         model = AST
 
-
-class ASTSpiewFactory(DjangoModelFactory):
-    user = User.objects.get(username="spiew")
-    ast_sgot = Faker("pyint", min_value=1, max_value=9999)
-
-    class Meta:
-        model = AST
-
-class ASTUserFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    ast_sgot = Faker("pyint", min_value=1, max_value=9999)
-
-    class Meta:
-        model = AST
 
 class PlateletFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
@@ -83,20 +42,6 @@ class PlateletFactory(DjangoModelFactory):
         model = Platelet
 
 
-class PlateletSpiewFactory(DjangoModelFactory):
-    user = User.objects.get(username="spiew")
-    platelets = Faker("pyint", min_value=1, max_value=1300)
-
-    class Meta:
-        model = Platelet
-
-class PlateletUserFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    platelets = Faker("pyint", min_value=1, max_value=1300)
-
-    class Meta:
-        model = Platelet
-
 class WBCFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
@@ -104,20 +49,6 @@ class WBCFactory(DjangoModelFactory):
     class Meta:
         model = WBC
 
-
-class WBCSpiewFactory(DjangoModelFactory):
-    user = User.objects.get(username="spiew")
-    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
-
-    class Meta:
-        model = WBC
-
-class WBCUserFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
-
-    class Meta:
-        model = WBC
 
 class HemoglobinFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
@@ -127,20 +58,6 @@ class HemoglobinFactory(DjangoModelFactory):
         model = Hemoglobin
 
 
-class HemoglobinSpiewFactory(DjangoModelFactory):
-    user = User.objects.get(username="spiew")
-    hemoglobin = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=5, max_value=20)
-
-    class Meta:
-        model = Hemoglobin
-
-class HemoglobinUserFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    hemoglobin = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=5, max_value=20)
-
-    class Meta:
-        model = Hemoglobin
-
 class CreatinineFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     creatinine = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
@@ -149,16 +66,4 @@ class CreatinineFactory(DjangoModelFactory):
         model = Creatinine
 
 
-class CreatinineSpiewFactory(DjangoModelFactory):
-    user = User.objects.get(username="spiew")
-    creatinine = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
 
-    class Meta:
-        model = Creatinine
-
-class CreatinineUserFactory(DjangoModelFactory):
-    user = factory.Iterator(User.objects.all())
-    creatinine = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
-
-    class Meta:
-        model = Creatinine
