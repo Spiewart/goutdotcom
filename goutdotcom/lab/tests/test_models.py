@@ -84,3 +84,17 @@ class TestHemoglobinMethods:
     def test_get_absolute_url(self):
         Hemoglobin = HemoglobinFactory()
         assert Hemoglobin.get_absolute_url() == f"/lab/hemoglobin/{Hemoglobin.pk}/"
+
+
+class TestCreatinineMethods:
+    def test__str__(self):
+        Creatinine = CreatinineFactory()
+        assert(Creatinine.__str__() == str(Creatinine.creatinine))
+
+    def test__unicode__(self):
+        Creatinine = CreatinineFactory()
+        assert(Creatinine.__unicode__() == str(Creatinine.name))
+
+    def test_get_absolute_url(self):
+        Creatinine = CreatinineFactory()
+        assert Creatinine.get_absolute_url() == f"/lab/creatinine/{Creatinine.pk}/"

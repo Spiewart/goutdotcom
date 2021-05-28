@@ -24,12 +24,12 @@ class FlareForm(forms.ModelForm):
                 'Log your flare',
                 'location',
                 'treatment',
-                'colchicine', 
-                'ibuprofen', 
-                'celecoxib', 
-                'meloxicam', 
-                'prednisone', 
-                'methylprednisolone'
+                'colchicine',
+                'ibuprofen',
+                'celecoxib',
+                'meloxicam',
+                'prednisone',
+                'methylprednisolone',
                 'duration',
                 ),
                 ButtonHolder(

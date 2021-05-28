@@ -4,7 +4,9 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import ALT, AST, Creatinine, Hemoglobin, Platelet, Urate, WBC
 
 # Create your views here.
-class IndexView(ListView):
+
+
+class IndexView(LoginRequiredMixin, ListView):
     template_name = 'lab/index.html'
     model = Urate
 
@@ -177,7 +179,7 @@ class WBCList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user).order_by('-created')
-        
+
 class WBCUpdate(LoginRequiredMixin, UpdateView):
     model = WBC
     fields = ['white_blood_cells']
