@@ -20,5 +20,6 @@ urlpatterns = [
     path("<int:id>/flareurateupdate/", views.FlareUrateUpdate, name="flareurateupdate"),
     path("<int:pk>/update/", view=FlareUpdate.as_view(), name="update"),
     path("flareuratecreate/", views.FlareUrateCreate, name="flareuratecreate"),
+    path("flaremeduratecreate/", views.FlareMedUrateCreate, name="flaremeduratecreate"),
     path("list", view=FlareList.as_view(), name="list"),
 ]

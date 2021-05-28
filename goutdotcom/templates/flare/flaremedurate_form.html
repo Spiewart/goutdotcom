@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% crispy flareform flareform.helper %}
+{% crispy urateform urateform.helper %}
+{% crispy colchicineform colchicineform.helper %}
+{% crispy ibuprofenform ibuprofenform.helper %}
+{% crispy naproxenform naproxenform.helper %}
+{% crispy celecoxibform celecoxibform.helper %}
+{% crispy meloxicamform meloxicamform.helper %}
+{% crispy prednisoneform prednisoneform.helper %}
+{% crispy methylprednisoloneform methylprednisoloneform.helper %}
+
+{% block content %}
+  <h2>Log a Flare</h2>
+    <form class="form-horizontal" method="post" action="{% url 'flare:flaremeduratecreate' %}">
+    {% csrf_token %}
+    {% crispy urate_form %}
+    {% crispy colchicine_form %}
+    {% crispy ibuprofen_form %}
+    {% crispy naproxen_form %}
+    {% crispy celecoxib_form %}
+    {% crispy meloxicam_form %}
+    {% crispy prednisone_form %}
+    {% crispy methylprednisolone_form %}
+    {% crispy flare_form %}
+    </form>
+  <p></p>
+{% endblock content %}
+
+{% block inline_javascript %}
+<script>
+    // this is executed once when the page loads
+  $(document).ready(function() {
+    // set things up so my function will be called when treatment changes
+    $('#id_treatment').change(check_treatment);
+      check_treatment.call($('#id_treatment').get(0));
+    ;
+    $('#id_urate_draw').change(check_urate_draw);
+      check_urate_draw.call($('#id_urate_draw').get(0));
+    ;
+    $('#id_urate_log').change(check_urate_desire);
+      check_urate_desire.call($('#id_urate_log').get(0));
+    });
+</script>
+{% endblock inline_javascript %}
