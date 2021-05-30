@@ -5,12 +5,12 @@
 
 {% block content %}
   <h1>{{ user.username }}</h1>
-  <form class="form-horizontal" method="post" action="{% url 'treatment:meloxicam-create' %}">
+  <form class="form-horizontal" method="post" action="{% url 'treatment:other-update' other.pk %}">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="control-group">
       <div class="controls">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Update</button>
       </div>
     </div>
   </form>

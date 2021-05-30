@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
 
 
-from .models import Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone
+from .models import Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone, Tinctureoftime, Other
 from django import forms
 
 class ColchicineForm(forms.ModelForm):
@@ -194,6 +194,55 @@ class MethylprednisoloneForm(forms.ModelForm):
                 )
         )
 
+class TinctureoftimeForm(forms.ModelForm):
+    class Meta:
+        model = Tinctureoftime
+        fields = ('duration', 'date_started', 'date_ended',)
+
+    def __init__(self, *args, **kwargs):
+        super(TinctureoftimeForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                'Log a tincture of time',
+                'duration',
+                'date_started',
+                'date_ended',
+
+                ),
+                ButtonHolder(
+                    Submit('submit', 'Submit', css_class='button white')
+                )
+        )
+
+class OtherForm(forms.ModelForm):
+    class Meta:
+        model = Other
+        fields = ('name', 'description',)
+
+    def __init__(self, *args, **kwargs):
+        super(OtherForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                'Log a different treatment',
+                'name',
+                'description',
+                ),
+                ButtonHolder(
+                    Submit('submit', 'Submit', css_class='button white')
+                )
+        )
 
 class ColchicineFlareForm(forms.ModelForm):
     class Meta:
@@ -202,11 +251,6 @@ class ColchicineFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ColchicineFlareForm, self).__init__(*args, **kwargs)
-        self.fields['dose'].required = False
-        self.fields['freq'].required = False
-        self.fields['date_started'].required = False
-        self.fields['date_ended'].required = False
-        self.fields['side_effects'].required = False
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -221,10 +265,8 @@ class ColchicineFlareForm(forms.ModelForm):
                 'date_started',
                 'date_ended',
                 'side_effects',
+                id='colchicine_for_flare',
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
         )
 
 
@@ -235,11 +277,6 @@ class IbuprofenFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(IbuprofenFlareForm, self).__init__(*args, **kwargs)
-        self.fields['dose'].required = False
-        self.fields['freq'].required = False
-        self.fields['date_started'].required = False
-        self.fields['date_ended'].required = False
-        self.fields['side_effects'].required = False
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -254,10 +291,8 @@ class IbuprofenFlareForm(forms.ModelForm):
                 'date_started',
                 'date_ended',
                 'side_effects',
+                id='ibuprofen_for_flare',
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
         )
 
 
@@ -268,11 +303,6 @@ class NaproxenFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NaproxenFlareForm, self).__init__(*args, **kwargs)
-        self.fields['dose'].required = False
-        self.fields['freq'].required = False
-        self.fields['date_started'].required = False
-        self.fields['date_ended'].required = False
-        self.fields['side_effects'].required = False
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -287,10 +317,8 @@ class NaproxenFlareForm(forms.ModelForm):
                 'date_started',
                 'date_ended',
                 'side_effects',
+                id='naproxen_for_flare',
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
         )
 
 
@@ -301,11 +329,6 @@ class MeloxicamFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MeloxicamFlareForm, self).__init__(*args, **kwargs)
-        self.fields['dose'].required = False
-        self.fields['freq'].required = False
-        self.fields['date_started'].required = False
-        self.fields['date_ended'].required = False
-        self.fields['side_effects'].required = False
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -320,10 +343,8 @@ class MeloxicamFlareForm(forms.ModelForm):
                 'date_started',
                 'date_ended',
                 'side_effects',
+                id='meloxicam_for_flare',
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
         )
 
 
@@ -334,11 +355,6 @@ class CelecoxibFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CelecoxibFlareForm, self).__init__(*args, **kwargs)
-        self.fields['dose'].required = False
-        self.fields['freq'].required = False
-        self.fields['date_started'].required = False
-        self.fields['date_ended'].required = False
-        self.fields['side_effects'].required = False
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -353,10 +369,8 @@ class CelecoxibFlareForm(forms.ModelForm):
                 'date_started',
                 'date_ended',
                 'side_effects',
+                id='celecoxib_for_flare',
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
         )
 
 
@@ -367,11 +381,6 @@ class PrednisoneFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PrednisoneFlareForm, self).__init__(*args, **kwargs)
-        self.fields['dose'].required = False
-        self.fields['freq'].required = False
-        self.fields['date_started'].required = False
-        self.fields['date_ended'].required = False
-        self.fields['side_effects'].required = False
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -386,10 +395,8 @@ class PrednisoneFlareForm(forms.ModelForm):
                 'date_started',
                 'date_ended',
                 'side_effects',
+                id='prednisone_for_flare',
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
         )
 
 
@@ -400,11 +407,6 @@ class MethylprednisoloneFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MethylprednisoloneFlareForm, self).__init__(*args, **kwargs)
-        self.fields['dose'].required = False
-        self.fields['freq'].required = False
-        self.fields['date_started'].required = False
-        self.fields['date_ended'].required = False
-        self.fields['side_effects'].required = False
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -419,8 +421,51 @@ class MethylprednisoloneFlareForm(forms.ModelForm):
                 'date_started',
                 'date_ended',
                 'side_effects',
+                id='methylprednisolone_for_flare',
             ),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
+        )
+
+class TinctureoftimeFlareForm(forms.ModelForm):
+    class Meta:
+        model = Tinctureoftime
+        fields = ('duration', 'date_started', 'date_ended',)
+
+    def __init__(self, *args, **kwargs):
+        super(TinctureoftimeFlareForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                'Log a tinctureoftime',
+                'duration',
+                'date_started',
+                'date_ended',
+                id='tinctureoftime_for_flare',
+            ),
+        )
+
+class OtherFlareForm(forms.ModelForm):
+    class Meta:
+        model = Other
+        fields = ('name', 'description', )
+
+    def __init__(self, *args, **kwargs):
+        super(OtherFlareForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                'Log an "other" treatment',
+                'name',
+                'description',
+                id='other_for_flare',
+            ),
         )

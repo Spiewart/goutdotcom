@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone
+from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone, Tinctureoftime, Other
 
 
 class DashboardView(ListView):
@@ -293,4 +293,58 @@ class ProbenecidUpdate(LoginRequiredMixin, UpdateView):
     model = Probenecid
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
     template_name = 'treatment/probenacid_update.html'
+    success_url = reverse_lazy('treatment:dashboard')    
+
+class TinctureoftimeDetail(DetailView):
+    model = Tinctureoftime
+
+class TinctureoftimeCreate(LoginRequiredMixin, CreateView):
+    model = Tinctureoftime
+    fields = ['duration', 'date_started', 'date_ended', ]
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get(self, *args, **kwargs):
+        try:
+            user_tinctureoftime = self.model.objects.get(user=self.request.user)
+        except Tinctureoftime.DoesNotExist:
+            user_tinctureoftime = None
+        if user_tinctureoftime:
+            return redirect("treatment:tinctureoftime-update", pk=self.model.objects.get(user=self.request.user).pk)
+        else:
+            return super(TinctureoftimeCreate, self).get(*args, **kwargs)
+
+class TinctureoftimeUpdate(LoginRequiredMixin, UpdateView):
+    model = Tinctureoftime
+    fields = ['duration', 'date_started', 'date_ended', ]
+    template_name = 'treatment/tinctureoftime_update.html'
+    success_url = reverse_lazy('treatment:dashboard')    
+
+class OtherDetail(DetailView):
+    model = Other
+
+class OtherCreate(LoginRequiredMixin, CreateView):
+    model = Other
+    fields = ['name', 'description', 'created', ]
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get(self, *args, **kwargs):
+        try:
+            user_other = self.model.objects.get(user=self.request.user)
+        except Other.DoesNotExist:
+            user_other = None
+        if user_other:
+            return redirect("treatment:other-update", pk=self.model.objects.get(user=self.request.user).pk)
+        else:
+            return super(OtherCreate, self).get(*args, **kwargs)
+
+class OtherUpdate(LoginRequiredMixin, UpdateView):
+    model = Other
+    fields = ['name', 'description', 'created', ]
+    template_name = 'treatment/other_update.html'
     success_url = reverse_lazy('treatment:dashboard')    

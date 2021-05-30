@@ -74,6 +74,26 @@ class ColchicineAdmin(admin.ModelAdmin):
         'duration_calc',
         'pk',
     )
+
+class TinctureoftimeAdmin(admin.ModelAdmin):
+    list_display = (
+        '__str__',
+        'user',
+        'duration',
+        'date_started',
+        'date_ended',
+        'pk',
+    )
+
+class OtherAdmin(admin.ModelAdmin):
+    list_display = (
+        '__str__',
+        'user',
+        'name',
+        'description',
+        'pk',
+    )
+
 admin.site.register(Allopurinol, AllopurinolAdmin)
 admin.site.register(Febuxostat, FebuxostatAdmin)
 admin.site.register(Ibuprofen, IbuprofenAdmin)
@@ -83,3 +103,5 @@ admin.site.register(Prednisone, PrednisoneAdmin)
 admin.site.register(Methylprednisolone, MethylprednisoloneAdmin)
 admin.site.register(Probenecid, ProbenecidAdmin)
 admin.site.register(Colchicine, ColchicineAdmin)
+admin.site.register(Tinctureoftime, TinctureoftimeAdmin)
+admin.site.register(Other, OtherAdmin)

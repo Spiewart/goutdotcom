@@ -23,70 +23,69 @@ function check_first_flare() {
 
 function check_treatment() {
   if ($('#id_treatment').val() == "Colcrys") {
-    $('#div_id_colchicine').show();
-    $('#div_id_ibuprofen').hide();
-    $('#div_id_naproxen').hide();
-    $('#div_id_celecoxib').hide();
-    $('#div_id_meloxicam').hide();
-    $('#div_id_prednisone').hide();
-    $('#div_id_methylprednisolone').hide();
+    $('#colchicine_for_flare').show();
+    $('#ibuprofen_for_flare').hide();
+    $('#naproxen_for_flare').hide();
+    $('#celecoxib_for_flare').hide();
+    $('#meloxicam_for_flare').hide();
+    $('#prednisone_for_flare').hide();
+    $('#methylprednisolone_for_flare').hide();
 } else if ($('#id_treatment').val() == "Advil") {
-    $('#div_id_ibuprofen').show();
-    $('#div_id_colchicine').hide();
-    $('#div_id_naproxen').hide();
-    $('#div_id_celecoxib').hide();
-    $('#div_id_meloxicam').hide();
-    $('#div_id_prednisone').hide();
-    $('#div_id_methylprednisolone').hide();
+    $('#colchicine_for_flare').hide();
+    $('#ibuprofen_for_flare').show();
+    $('#naproxen_for_flare').hide();
+    $('#celecoxib_for_flare').hide();
+    $('#meloxicam_for_flare').hide();
+    $('#prednisone_for_flare').hide();
+    $('#methylprednisolone_for_flare').hide();
 } else if ($('#id_treatment').val() == "Aleve") {
-    $('#div_id_naproxen').show();
-    $('#div_id_ibuprofen').hide();
-    $('#div_id_colchicine').hide();
-    $('#div_id_celecoxib').hide();
-    $('#div_id_meloxicam').hide();
-    $('#div_id_prednisone').hide();
-    $('#div_id_methylprednisolone').hide();
+    $('#colchicine_for_flare').hide();
+    $('#ibuprofen_for_flare').hide();
+    $('#naproxen_for_flare').show();
+    $('#celecoxib_for_flare').hide();
+    $('#meloxicam_for_flare').hide();
+    $('#prednisone_for_flare').hide();
+    $('#methylprednisolone_for_flare').hide();
 } else if ($('#id_treatment').val() == "Celebrex") {
-    $('#div_id_celecoxib').show();
-    $('#div_id_ibuprofen').hide();
-    $('#div_id_colchicine').hide();
-    $('#div_id_naproxen').hide();
-    $('#div_id_meloxicam').hide();
-    $('#div_id_prednisone').hide();
-    $('#div_id_methylprednisolone').hide();
+    $('#colchicine_for_flare').hide();
+    $('#ibuprofen_for_flare').hide();
+    $('#naproxen_for_flare').hide();
+    $('#celecoxib_for_flare').show();
+    $('#meloxicam_for_flare').hide();
+    $('#prednisone_for_flare').hide();
+    $('#methylprednisolone_for_flare').hide();
 } else if ($('#id_treatment').val() == "Mobic") {
-    $('#div_id_meloxicam').show();
-    $('#div_id_ibuprofen').hide();
-    $('#div_id_colchicine').hide();
-    $('#div_id_naproxen').hide();
-    $('#div_id_celecoxib').hide();
-    $('#div_id_prednisone').hide();
-    $('#div_id_methylprednisolone').hide();
+    $('#colchicine_for_flare').hide();
+    $('#ibuprofen_for_flare').hide();
+    $('#naproxen_for_flare').hide();
+    $('#celecoxib_for_flare').hide();
+    $('#meloxicam_for_flare').show();
+    $('#prednisone_for_flare').hide();
+    $('#methylprednisolone_for_flare').hide();
 } else if ($('#id_treatment').val() == "Pred") {
-    $('#div_id_prednisone').show();
-    $('#div_id_ibuprofen').hide();
-    $('#div_id_colchicine').hide();
-    $('#div_id_naproxen').hide();
-    $('#div_id_celecoxib').hide();
-    $('#div_id_meloxicam').hide();
-    $('#div_id_methylprednisolone').hide();
+    $('#colchicine_for_flare').hide();
+    $('#ibuprofen_for_flare').hide();
+    $('#naproxen_for_flare').hide();
+    $('#celecoxib_for_flare').hide();
+    $('#meloxicam_for_flare').hide();
+    $('#prednisone_for_flare').show();
+    $('#methylprednisolone_for_flare').hide();
 } else if ($('#id_treatment').val() == "Methylpred") {
-    $('#div_id_methylprednisolone').show();
-    $('#div_id_ibuprofen').hide();
-    $('#div_id_colchicine').hide();
-    $('#div_id_naproxen').hide();
-    $('#div_id_celecoxib').hide();
-    $('#div_id_meloxicam').hide();
-    $('#div_id_prednisone').hide();
-}
-  else {
-    $('#div_id_colchicine').hide();
-    $('#div_id_ibuprofen').hide();
-    $('#div_id_naproxen').hide();
-    $('#div_id_celecoxib').hide();
-    $('#div_id_meloxicam').hide();
-    $('#div_id_prednisone').hide();
-    $('#div_id_methylprednisolone').hide();
+    $('#colchicine_for_flare').hide();
+    $('#ibuprofen_for_flare').hide();
+    $('#naproxen_for_flare').hide();
+    $('#celecoxib_for_flare').hide();
+    $('#meloxicam_for_flare').hide();
+    $('#prednisone_for_flare').hide();
+    $('#methylprednisolone_for_flare').show();
+} else {
+    $('#colchicine_for_flare').hide();
+    $('#ibuprofen_for_flare').hide();
+    $('#naproxen_for_flare').hide();
+    $('#celecoxib_for_flare').hide();
+    $('#meloxicam_for_flare').hide();
+    $('#prednisone_for_flare').hide();
+    $('#methylprednisolone_for_flare').hide();
   }
 }
 

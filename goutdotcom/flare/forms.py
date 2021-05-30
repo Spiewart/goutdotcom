@@ -8,7 +8,7 @@ from django import forms
 class FlareForm(forms.ModelForm):
     class Meta:
         model = Flare
-        fields = ('location', 'treatment', 'colchicine', 'ibuprofen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration',)
+        fields = ('location', 'treatment', 'duration',)
 
     def __init__(self, *args, **kwargs):
         super(FlareForm, self).__init__(*args, **kwargs)
@@ -24,15 +24,6 @@ class FlareForm(forms.ModelForm):
                 'Log your flare',
                 'location',
                 'treatment',
-                'colchicine',
-                'ibuprofen',
-                'celecoxib',
-                'meloxicam',
-                'prednisone',
-                'methylprednisolone',
                 'duration',
                 ),
-                ButtonHolder(
-                    Submit('submit', 'Submit', css_class='button white')
-                )
         )

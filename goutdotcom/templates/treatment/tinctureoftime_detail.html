@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>{{ object.duration }} days</h2>
+      {% if object.date_started %}
+      <h3>Started on: {{ object.date_started }}
+          {% if objectd.date_ended %} Ended on: {{ object.date_ended }}</h3>
+          {% endif %}
+          {% endif %}
+    </div>
+  </div>
+</div>
+<a class="btn btn-primary btn-lg" href="{% url 'treatment:tinctureoftime-update' object.pk %}" role="button">Update</a>
+{% endblock content %}

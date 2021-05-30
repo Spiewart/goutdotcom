@@ -139,20 +139,99 @@ def FlareMedUrateCreate(request):
         meloxicam_form = MeloxicamFlareForm(request.POST, instance=Meloxicam())
         prednisone_form = PrednisoneFlareForm(request.POST, instance=Prednisone())
         methylprednisolone_form = MethylprednisoloneFlareForm(request.POST, instance=Methylprednisolone())
-
-        if flare_form.is_valid() and urate_form.is_valid() and colchicine_form.is_valid():
-            urate_for_flare = urate_form.save(commit=False)
-            urate_for_flare.user=request.user
-            urate_for_flare.save()
-            colchicine_for_flare = colchicine_form.save(commit=False)
-            colchicine_for_flare.user=request.user
-            colchicine_for_flare.save()
+        if flare_form.is_valid():
             flare=flare_form.save(commit=False)
-            flare.urate = urate_for_flare
-            flare.colchicine = colchicine_for_flare
-            flare.user=request.user
-            flare.save()
-            return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+            if flare.treatment == "Colcrys" and urate_form.is_valid() and colchicine_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                colchicine_for_flare = colchicine_form.save(commit=False)
+                colchicine_for_flare.user=request.user
+                colchicine_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.colchicine = colchicine_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+            
+            elif flare.treatment == "Advil" and urate_form.is_valid() and ibuprofen_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                ibuprofen_for_flare = ibuprofen_form.save(commit=False)
+                ibuprofen_for_flare.user=request.user
+                ibuprofen_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.ibuprofen = ibuprofen_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+            
+            elif flare.treatment == "Aleve" and urate_form.is_valid() and naproxen_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                naproxen_for_flare = naproxen_form.save(commit=False)
+                naproxen_for_flare.user=request.user
+                naproxen_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.naproxen = naproxen_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+        
+            elif flare.treatment == "Celebrex" and urate_form.is_valid() and celecoxib_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                celecoxib_for_flare = celecoxib_form.save(commit=False)
+                celecoxib_for_flare.user=request.user
+                celecoxib_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.celecoxib = celecoxib_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+
+            elif flare.treatment == "Mobic" and urate_form.is_valid() and meloxicam_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                meloxicam_for_flare = meloxicam_form.save(commit=False)
+                meloxicam_for_flare.user=request.user
+                meloxicam_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.meloxicam = meloxicam_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+
+            elif flare.treatment == "Pred" and urate_form.is_valid() and prednisone_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                prednisone_for_flare = prednisone_form.save(commit=False)
+                prednisone_for_flare.user=request.user
+                prednisone_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.prednisone = prednisone_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+
+            elif flare.treatment == "Methylpred" and urate_form.is_valid() and methylprednisolone_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                methylprednisolone_for_flare = methylprednisolone_form.save(commit=False)
+                methylprednisolone_for_flare.user=request.user
+                methylprednisolone_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.methylprednisolone = methylprednisolone_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+
     else:
         flare_form = FlareForm()
         flare_form.user = request.user

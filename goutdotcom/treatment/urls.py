@@ -26,6 +26,9 @@ from .views import (
     MeloxicamCreate,
     MeloxicamDetail,
     MeloxicamUpdate,
+    OtherCreate,
+    OtherDetail,
+    OtherUpdate,
     PrednisoneCreate,
     PrednisoneDetail,
     PrednisoneUpdate,
@@ -36,6 +39,9 @@ from .views import (
     ProbenecidDetail,
     ProbenecidCreate,
     ProbenecidUpdate,
+    TinctureoftimeDetail,
+    TinctureoftimeCreate,
+    TinctureoftimeUpdate,
 )
 
 app_name = "treatment"
@@ -65,6 +71,9 @@ urlpatterns = [
     path("meloxicam/<int:pk>/", view=MeloxicamDetail.as_view(), name="meloxicam-detail"),
     path("meloxicam/create/", view=MeloxicamCreate.as_view(), name="meloxicam-create"),
     path("meloxicam/<int:pk>/update/", view=MeloxicamUpdate.as_view(), name="meloxicam-update"),
+    path("other/<int:pk>/", view=OtherDetail.as_view(), name="other-detail"),
+    path("other/create/", view=OtherCreate.as_view(), name="other-create"),
+    path("other/<int:pk>/update/", view=OtherUpdate.as_view(), name="other-update"),
     path("prednisone/<int:pk>/", view=PrednisoneDetail.as_view(), name="prednisone-detail"),
     path("prednisone/create/", view=PrednisoneCreate.as_view(), name="prednisone-create"),
     path("prednisone/<int:pk>/update/", view=PrednisoneUpdate.as_view(), name="prednisone-update"),
@@ -74,4 +83,7 @@ urlpatterns = [
     path("methylprednisolone/<int:pk>/", view=MethylprednisoloneDetail.as_view(), name="methylprednisolone-detail"),
     path("methylprednisolone/create/", view=MethylprednisoloneCreate.as_view(), name="methylprednisolone-create"),
     path("methylprednisolone/<int:pk>/update/", view=MethylprednisoloneUpdate.as_view(), name="methylprednisolone-update"),
+    path("tinctureoftime/<int:pk>/", view=TinctureoftimeDetail.as_view(), name="tinctureoftime-detail"),
+    path("tinctureoftime/create/", view=TinctureoftimeCreate.as_view(), name="tinctureoftime-create"),
+    path("tinctureoftime/<int:pk>/update/", view=TinctureoftimeUpdate.as_view(), name="tinctureoftime-update"),
 ]
