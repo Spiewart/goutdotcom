@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
 
 
-from .models import Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone, Tinctureoftime, Other
+from .models import Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
 from django import forms
 
 class ColchicineForm(forms.ModelForm):
@@ -220,13 +220,13 @@ class TinctureoftimeForm(forms.ModelForm):
                 )
         )
 
-class OtherForm(forms.ModelForm):
+class OthertreatForm(forms.ModelForm):
     class Meta:
-        model = Other
+        model = Othertreat
         fields = ('name', 'description',)
 
     def __init__(self, *args, **kwargs):
-        super(OtherForm, self).__init__(*args, **kwargs)
+        super(OthertreatForm, self).__init__(*args, **kwargs)
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -448,13 +448,13 @@ class TinctureoftimeFlareForm(forms.ModelForm):
             ),
         )
 
-class OtherFlareForm(forms.ModelForm):
+class OthertreatFlareForm(forms.ModelForm):
     class Meta:
-        model = Other
+        model = Othertreat
         fields = ('name', 'description', )
 
     def __init__(self, *args, **kwargs):
-        super(OtherFlareForm, self).__init__(*args, **kwargs)
+        super(OthertreatFlareForm, self).__init__(*args, **kwargs)
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -463,9 +463,9 @@ class OtherFlareForm(forms.ModelForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                'Log an "other" treatment',
+                'Log a different treatment',
                 'name',
                 'description',
-                id='other_for_flare',
+                id='othertreat_for_flare',
             ),
         )

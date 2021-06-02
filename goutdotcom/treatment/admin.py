@@ -85,7 +85,7 @@ class TinctureoftimeAdmin(admin.ModelAdmin):
         'pk',
     )
 
-class OtherAdmin(admin.ModelAdmin):
+class OthertreatAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
         'user',
@@ -104,4 +104,4 @@ admin.site.register(Methylprednisolone, MethylprednisoloneAdmin)
 admin.site.register(Probenecid, ProbenecidAdmin)
 admin.site.register(Colchicine, ColchicineAdmin)
 admin.site.register(Tinctureoftime, TinctureoftimeAdmin)
-admin.site.register(Other, OtherAdmin)
+admin.site.register(Othertreat, OthertreatAdmin)

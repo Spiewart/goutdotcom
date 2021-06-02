@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone, Tinctureoftime, Other
+from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone, Tinctureoftime, Othertreat
 
 
 class DashboardView(ListView):
@@ -322,11 +322,11 @@ class TinctureoftimeUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'treatment/tinctureoftime_update.html'
     success_url = reverse_lazy('treatment:dashboard')    
 
-class OtherDetail(DetailView):
-    model = Other
+class OthertreatDetail(DetailView):
+    model = Othertreat
 
-class OtherCreate(LoginRequiredMixin, CreateView):
-    model = Other
+class OthertreatCreate(LoginRequiredMixin, CreateView):
+    model = Othertreat
     fields = ['name', 'description', 'created', ]
 
     def form_valid(self, form):
@@ -336,15 +336,15 @@ class OtherCreate(LoginRequiredMixin, CreateView):
     def get(self, *args, **kwargs):
         try:
             user_other = self.model.objects.get(user=self.request.user)
-        except Other.DoesNotExist:
+        except Othertreat.DoesNotExist:
             user_other = None
         if user_other:
-            return redirect("treatment:other-update", pk=self.model.objects.get(user=self.request.user).pk)
+            return redirect("treatment:othertreat-update", pk=self.model.objects.get(user=self.request.user).pk)
         else:
-            return super(OtherCreate, self).get(*args, **kwargs)
+            return super(OthertreatCreate, self).get(*args, **kwargs)
 
-class OtherUpdate(LoginRequiredMixin, UpdateView):
-    model = Other
+class OthertreatUpdate(LoginRequiredMixin, UpdateView):
+    model = Othertreat
     fields = ['name', 'description', 'created', ]
-    template_name = 'treatment/other_update.html'
+    template_name = 'treatment/othertreat_update.html'
     success_url = reverse_lazy('treatment:dashboard')    

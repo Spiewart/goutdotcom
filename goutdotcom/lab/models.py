@@ -22,7 +22,7 @@ class Lab(TimeStampedModel):
         return self.name
 
 class Urate(Lab):
-    uric_acid = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid")
+    uric_acid = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid", null=True, blank=True)
     name = "Urate"
 
     def __str__(self):

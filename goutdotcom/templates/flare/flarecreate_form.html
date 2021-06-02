@@ -13,7 +13,7 @@
 
 {% block content %}
   <h2>Log a Flare</h2>
-    <form class="form-horizontal" method="post" action="{% url 'flare:flaremeduratecreate' %}">
+    <form class="form-horizontal" method="post" action="{% url 'flare:flarecreate' %}">
     {% csrf_token %}
     {% crispy flare_form %}
     {% crispy colchicine_form %}

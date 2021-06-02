@@ -5,10 +5,10 @@ from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 
 from ..lab.models import Urate
-from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone,  Methylprednisolone
+from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone,  Methylprednisolone, Tinctureoftime, Othertreat
 
 TinctureofTime = 'Tincture of time'
-Other = 'Other'
+Othertreatment = 'Other treatment'
 Colcrys = 'Colcrys'
 Advil = 'Advil'
 Aleve = 'Aleve'
@@ -94,7 +94,7 @@ TREATMENT_CHOICES = (
     (Pred, 'Prednisone'),
     (Methylpred, 'Methylprednisolone'),
     (TinctureofTime, 'Tincture of time'),
-    (Other, 'Other'),
+    (Othertreatment, 'Other treatment'),
 )
 
 BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
@@ -125,6 +125,8 @@ class Flare(TimeStampedModel):
     meloxicam = models.OneToOneField(Meloxicam, null=True, blank=True, on_delete=models.CASCADE)
     prednisone = models.OneToOneField(Prednisone, null=True, blank=True, on_delete=models.CASCADE)
     methylprednisolone = models.OneToOneField(Methylprednisolone, null=True, blank=True, on_delete=models.CASCADE)
+    tinctureoftime = models.OneToOneField(Tinctureoftime, null=True, blank=True, on_delete=models.CASCADE)
+    othertreat = models.OneToOneField(Othertreat, null=True, blank=True, on_delete=models.CASCADE)
 
     duration = models.IntegerField(help_text="How long did it last? (days)")
 

@@ -458,9 +458,10 @@ class Tinctureoftime(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("treatment:probenecid-detail",  kwargs={"pk": self.pk})
 
-class Other(TimeStampedModel):
+class Othertreat(TimeStampedModel):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
+        
         on_delete=models.CASCADE,
     )
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -475,4 +476,4 @@ class Other(TimeStampedModel):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("treatment:other-detail",  kwargs={"pk": self.pk})
+        return reverse("treatment:othertreat-detail",  kwargs={"pk": self.pk})

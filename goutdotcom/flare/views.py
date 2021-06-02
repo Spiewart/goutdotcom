@@ -13,8 +13,8 @@ from .models import Flare
 from ..lab.models import Urate
 from .forms import FlareForm
 from ..lab.forms import UrateForm
-from ..treatment.forms import ColchicineForm, IbuprofenForm, NaproxenForm, CelecoxibForm, MeloxicamForm, PrednisoneForm, MethylprednisoloneForm, ColchicineFlareForm, IbuprofenFlareForm, NaproxenFlareForm, CelecoxibFlareForm, MeloxicamFlareForm, PrednisoneFlareForm, MethylprednisoloneFlareForm
-from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Methylprednisolone
+from ..treatment.forms import ColchicineForm, IbuprofenForm, NaproxenForm, CelecoxibForm, MeloxicamForm, PrednisoneForm, MethylprednisoloneForm, ColchicineFlareForm, IbuprofenFlareForm, NaproxenFlareForm, CelecoxibFlareForm, MeloxicamFlareForm, PrednisoneFlareForm, MethylprednisoloneFlareForm, TinctureoftimeFlareForm, OthertreatFlareForm
+from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
 
 # Create your views here.
 class IndexView(LoginRequiredMixin, ListView):
@@ -38,15 +38,6 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
-
-class FlareCreate(LoginRequiredMixin, CreateView):
-    model = Flare
-    fields = ['location', 'treatment', 'colchicine', 'ibuprofen', 'naproxen', 'celecoxib', 'meloxicam', 'prednisone', 'methylprednisolone', 'duration', 'urate']
-    template_name = 'flare/flare_form.html'
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
 
 class FlareDetail(LoginRequiredMixin, DetailView):
     model = Flare
@@ -105,30 +96,7 @@ def FlareUrateUpdate(request, id):
     #return HttpResponseRedirect(reverse('flare:flareurateupdate', kwargs={'pk': flare_for_flare.pk}))
 
 @login_required
-def FlareUrateCreate(request):
-    if request.method == "POST":
-        flare_form = FlareForm(request.POST, instance=Flare())
-        urate_form = UrateForm(request.POST, instance=Urate())
-        if flare_form.is_valid() and urate_form.is_valid():
-            urate_for_flare = urate_form.save(commit=False)
-            urate_for_flare.user=request.user
-            urate_for_flare.save()
-            flare=flare_form.save(commit=False)
-            flare.urate = urate_for_flare
-            flare.user=request.user
-            flare.save()
-            return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
-    else:
-        flare_form = FlareForm()
-        flare_form.user = request.user
-        urate_form = UrateForm()
-        urate_form.user = request.user
-
-    context = {'urate_form':urate_form, 'flare_form':flare_form,}
-    return render(request, "flare/flareurate_form.html", context)
-
-@login_required
-def FlareMedUrateCreate(request):
+def FlareCreate(request):
     if request.method == "POST":
         flare_form = FlareForm(request.POST, instance=Flare())
         urate_form = UrateForm(request.POST, instance=Urate())
@@ -139,6 +107,9 @@ def FlareMedUrateCreate(request):
         meloxicam_form = MeloxicamFlareForm(request.POST, instance=Meloxicam())
         prednisone_form = PrednisoneFlareForm(request.POST, instance=Prednisone())
         methylprednisolone_form = MethylprednisoloneFlareForm(request.POST, instance=Methylprednisolone())
+        tinctureoftime_form = TinctureoftimeFlareForm(request.POST, instance=Tinctureoftime())
+        othertreat_form = OthertreatFlareForm(request.POST, instance=Othertreat())
+        
         if flare_form.is_valid():
             flare=flare_form.save(commit=False)
             if flare.treatment == "Colcrys" and urate_form.is_valid() and colchicine_form.is_valid():
@@ -232,28 +203,44 @@ def FlareMedUrateCreate(request):
                 flare.save()
                 return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
 
+            elif flare.treatment == "Tincture of time" and urate_form.is_valid() and tinctureoftime_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                tinctureoftime_for_flare = methylprednisolone_form.save(commit=False)
+                tinctureoftime_for_flare.user=request.user
+                tinctureoftime_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.tinctureoftime = tinctureoftime_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+
+            elif flare.treatment == "Other treatment" and urate_form.is_valid() and othertreat_form.is_valid():
+                urate_for_flare = urate_form.save(commit=False)
+                urate_for_flare.user=request.user
+                urate_for_flare.save()
+                othertreat_for_flare = othertreat_form.save(commit=False)
+                othertreat_for_flare.user=request.user
+                othertreat_for_flare.save()
+                flare.urate = urate_for_flare
+                flare.othertreat = othertreat_for_flare
+                flare.user=request.user
+                flare.save()
+                return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
+
     else:
         flare_form = FlareForm()
-        flare_form.user = request.user
         urate_form = UrateForm()
-        urate_form.user = request.user
         colchicine_form = ColchicineFlareForm()
-        colchicine_form.user = request.user
         ibuprofen_form = IbuprofenFlareForm()
-        ibuprofen_form.user = request.user
         naproxen_form = NaproxenFlareForm()
-        naproxen_form.user = request.user
         meloxicam_form = MeloxicamFlareForm()
-        meloxicam_form.user = request.user
         celecoxib_form = CelecoxibFlareForm()
-        celecoxib_form.user = request.user
         prednisone_form = PrednisoneFlareForm()
-        prednisone_form.user = request.user
         methylprednisolone_form = MethylprednisoloneFlareForm()
-        methylprednisolone_form.user = request.user
+        tinctureoftime_form = TinctureoftimeFlareForm()
+        othertreat_form = OthertreatFlareForm()
 
-    context = {'urate_form':urate_form, 'flare_form':flare_form, 'colchicine_form':colchicine_form, 'ibuprofen_form':ibuprofen_form, 'naproxen_form':naproxen_form, 'meloxicam_form':meloxicam_form, 'celecoxib_form':celecoxib_form, 'prednisone_form':prednisone_form, 'methylprednisolone_form':methylprednisolone_form,}
-    return render(request, "flare/flaremedurate_form.html", context)
-
-def Landing(request):
-    return render(request, 'flare/landing.html')
+    context = {'urate_form':urate_form, 'flare_form':flare_form, 'colchicine_form':colchicine_form, 'ibuprofen_form':ibuprofen_form, 'naproxen_form':naproxen_form, 'meloxicam_form':meloxicam_form, 'celecoxib_form':celecoxib_form, 'prednisone_form':prednisone_form, 'methylprednisolone_form':methylprednisolone_form, 'tinctureoftime_form':tinctureoftime_form, 'othertreat_form':othertreat_form,}
+    return render(request, "flare/flarecreate_form.html", context)
