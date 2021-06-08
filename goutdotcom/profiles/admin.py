@@ -8,7 +8,7 @@ class PatientProfileAdmin(admin.ModelAdmin):
         'user',
         'picture',
         'date_of_birth',
-        'age',
+        'get_age',
         'gender',
         'race',
         'weight',

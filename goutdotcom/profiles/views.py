@@ -1,3 +1,4 @@
+from goutdotcom.profiles.forms import PatientProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.views.generic import CreateView, UpdateView
@@ -9,7 +10,7 @@ from .models import PatientProfile
 class PatientProfileCreate(LoginRequiredMixin, CreateView):
 
     model = PatientProfile
-    fields = ['picture', 'date_of_birth', 'age', 'gender', 'race', 'weight', 'height', 'drinks_per_week',]
+    fields = ['picture', 'date_of_birth', 'gender', 'race', 'weight', 'height', 'drinks_per_week',]
     template_name = "profiles/patientprofile_createform.html"
 
     def form_valid(self, form):
@@ -22,6 +23,7 @@ class PatientProfileCreate(LoginRequiredMixin, CreateView):
 class PatientProfileUpdate(LoginRequiredMixin, UpdateView):
 
     model = PatientProfile
-    fields = ['picture', 'date_of_birth', 'age', 'gender', 'race', 'weight', 'height', 'drinks_per_week',]
+    form_class = PatientProfileForm
+    
     def get_success_url(self):
         return self.request.user.get_absolute_url()

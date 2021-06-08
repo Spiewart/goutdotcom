@@ -29,10 +29,8 @@
       <div class="col-sm">
         {% if object == request.user %}
           {% if object.patientprofile.date_of_birth %}
-          <p>Age: {{ object.patientprofile.date_of_birth }}
-          {% endif %}
-          {% if object.patientprofile.age %}
-            <p>Age: {{ object.patientprofile.age }}
+          <p>Date of birth: {{ object.patientprofile.date_of_birth }}</p>
+          <p>Age: {{ object.patientprofile.get_age }}</p>            
           {% endif %}
           {% if object.patientprofile.gender %}
             <p>Gender: {{ object.patientprofile.gender }}
@@ -52,7 +50,11 @@
           {% if object.patientprofile.drinks_per_week %}
             <p>Drinks per Week: {{ object.patientprofile.drinks_per_week }}
           {% endif %}
+          {% if object.patientprofile %}
           <h6>Profile created on: {{ object.patientprofile.created }}</h6>
+          {% else %}
+          <h6>Want to complete your profile? <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a></h6>
+          {% endif %}
         {% endif %}
       </div>
     </div>
@@ -65,8 +67,6 @@
     <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
     {% if request.user.patientprofile %}
     <a class="btn btn-primary" href="{% url 'profiles:update' request.user.patientprofile.slug %}" role="button">Profile</a>
-    {% else %}
-    <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
     {% endif %}
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
       <div class="btn-group" role="group">

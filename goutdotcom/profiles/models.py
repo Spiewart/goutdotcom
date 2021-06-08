@@ -1,4 +1,5 @@
 from autoslug import AutoSlugField
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.dispatch import receiver
 from django.db import models
@@ -29,7 +30,13 @@ class PatientProfile(TimeStampedModel):
     )
     picture = models.ImageField(default="default_image.jpg", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    age = models.IntegerField(help_text='Enter age', default=35, null=True, blank=True)
+
+    def get_age(self):
+        if self.date_of_birth:
+            age = datetime.date.today().year - self.date_of_birth.year
+            return age
+        else:
+            pass
 
     sexes = (('male', 'male'), ('female', 'female'), ('non-binary', 'non-binary'))
     races = (('white', 'white'), ('black', 'black'), ('asian', 'asian'), ('native american', 'native american'), ('hispanic', 'hispanic'))
