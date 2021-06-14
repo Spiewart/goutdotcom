@@ -128,7 +128,7 @@ class Creatinine(Lab):
             if sex_modifier(self) != False:
                 race_modifier(self)
                 sex_modifier(self)
-                eGFR = Decimal(141) * min(self.creatinine / kappa, Decimal(1.00)) * max(self.creatinine / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.age ** race_modifier(self) ** sex_modifier(self)
+                eGFR = Decimal(141) * min(self.creatinine / kappa, Decimal(1.00)) * max(self.creatinine / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.get_age() ** race_modifier(self) ** sex_modifier(self)
                 return eGFR
             else:
                 return "Something went wrong with eGFR calculation"

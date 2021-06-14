@@ -5,7 +5,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone, Tinctureoftime, Othertreat
 
 
-class DashboardView(ListView):
+class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'treatment/dashboard.html'
     model = Allopurinol
 
@@ -35,7 +35,7 @@ class DashboardView(ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-class IndexView(ListView):
+class IndexView(LoginRequiredMixin, ListView):
     template_name = 'treatment/index.html'
     model = Allopurinol
 
@@ -59,7 +59,7 @@ class IndexView(ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-class FlareView(ListView):
+class FlareView(LoginRequiredMixin, ListView):
     template_name = 'treatment/flare.html'
     model = Colchicine
 
@@ -81,7 +81,7 @@ class FlareView(ListView):
         return queryset.filter(user=self.request.user)
 
 
-class PreventionView(ListView):
+class PreventionView(LoginRequiredMixin, ListView):
     template_name = 'treatment/prevention.html'
     model = Allopurinol
 
@@ -104,7 +104,7 @@ class PreventionView(ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-class AllopurinolDetail(DetailView):
+class AllopurinolDetail(LoginRequiredMixin, DetailView):
     model = Allopurinol
 
 class AllopurinolCreate(LoginRequiredMixin, CreateView):
@@ -130,7 +130,7 @@ class AllopurinolUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'de_sensitized',]
     template_name = 'treatment/allopurinol_update.html'
 
-class FebuxostatDetail(DetailView):
+class FebuxostatDetail(LoginRequiredMixin, DetailView):
     model = Febuxostat
 
 class FebuxostatCreate(LoginRequiredMixin, CreateView):
@@ -156,7 +156,7 @@ class FebuxostatUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects',]
     template_name = 'treatment/febuxostat_update.html'
 
-class ColchicineDetail(DetailView):
+class ColchicineDetail(LoginRequiredMixin, DetailView):
     model = Colchicine
 
 class ColchicineCreate(LoginRequiredMixin, CreateView):
@@ -172,7 +172,7 @@ class ColchicineUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/colchicine_update.html'
 
-class IbuprofenDetail(DetailView):
+class IbuprofenDetail(LoginRequiredMixin, DetailView):
     model = Ibuprofen
 
 class IbuprofenCreate(LoginRequiredMixin, CreateView):
@@ -188,7 +188,7 @@ class IbuprofenUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis' ]
     template_name = 'treatment/ibuprofen_update.html'
 
-class NaproxenDetail(DetailView):
+class NaproxenDetail(LoginRequiredMixin, DetailView):
     model = Naproxen
 
 class NaproxenCreate(LoginRequiredMixin, CreateView):
@@ -204,7 +204,7 @@ class NaproxenUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/naproxen_update.html'
 
-class MeloxicamDetail(DetailView):
+class MeloxicamDetail(LoginRequiredMixin, DetailView):
     model = Meloxicam
 
 class MeloxicamCreate(LoginRequiredMixin, CreateView):
@@ -220,7 +220,7 @@ class MeloxicamUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/meloxicam_update.html'
 
-class CelecoxibDetail(DetailView):
+class CelecoxibDetail(LoginRequiredMixin, DetailView):
     model = Celecoxib
 
 class CelecoxibCreate(LoginRequiredMixin, CreateView):
@@ -236,7 +236,7 @@ class CelecoxibUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/celecoxib_update.html'
 
-class PrednisoneDetail(DetailView):
+class PrednisoneDetail(LoginRequiredMixin, DetailView):
     model = Prednisone
 
 class PrednisoneCreate(LoginRequiredMixin, CreateView):
@@ -252,7 +252,7 @@ class PrednisoneUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
     template_name = 'treatment/prednisone_update.html'
 
-class MethylprednisoloneDetail(DetailView):
+class MethylprednisoloneDetail(LoginRequiredMixin, DetailView):
     model = Methylprednisolone
 
 class MethylprednisoloneCreate(LoginRequiredMixin, CreateView):
@@ -268,7 +268,7 @@ class MethylprednisoloneUpdate(LoginRequiredMixin, UpdateView):
     fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_injection',]
     template_name = 'treatment/methylprednisolone_update.html'
 
-class ProbenecidDetail(DetailView):
+class ProbenecidDetail(LoginRequiredMixin, DetailView):
     model = Probenecid
 
 class ProbenecidCreate(LoginRequiredMixin, CreateView):
@@ -295,7 +295,7 @@ class ProbenecidUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'treatment/probenacid_update.html'
     success_url = reverse_lazy('treatment:dashboard')    
 
-class TinctureoftimeDetail(DetailView):
+class TinctureoftimeDetail(LoginRequiredMixin, DetailView):
     model = Tinctureoftime
 
 class TinctureoftimeCreate(LoginRequiredMixin, CreateView):
@@ -322,7 +322,7 @@ class TinctureoftimeUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'treatment/tinctureoftime_update.html'
     success_url = reverse_lazy('treatment:dashboard')    
 
-class OthertreatDetail(DetailView):
+class OthertreatDetail(LoginRequiredMixin, DetailView):
     model = Othertreat
 
 class OthertreatCreate(LoginRequiredMixin, CreateView):

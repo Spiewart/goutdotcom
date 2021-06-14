@@ -4,7 +4,8 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import ALT, AST, Creatinine, Hemoglobin, Platelet, Urate, WBC
 
 # Create your views here.
-
+def LabAbout(request):
+    return render(request, 'lab/about.html')
 
 class IndexView(LoginRequiredMixin, ListView):
     template_name = 'lab/index.html'
@@ -26,9 +27,6 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
-
-def log(request):
-    return render(request, 'log.html')
 
 class UrateCreate(LoginRequiredMixin, CreateView):
     model = Urate

@@ -10,7 +10,7 @@ from .models import PatientProfile
 class PatientProfileCreate(LoginRequiredMixin, CreateView):
 
     model = PatientProfile
-    fields = ['picture', 'date_of_birth', 'gender', 'race', 'weight', 'height', 'drinks_per_week',]
+    form_class = PatientProfileForm
     template_name = "profiles/patientprofile_createform.html"
 
     def form_valid(self, form):

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="jumbotron gdc-default-list">
+        <h1 class="display-4">Lab Testing and Gout</h1>
+        <p class="lead">Lab testing is important in gout!</p>
+        <hr class="my-4">
+        <p>Labs are important in several gouty situations:</p>
+            <ul>
+                <li>Diagnosis of gout, particularly the initial diagnosis</li>
+                <li>Medical management of gout</li>
+                    <ul>
+                        <li>Determining which medictions are best for your gout</li>
+                        <li>Monitoring for side effects of gout medications</li>
+                    </ul>
+            </ul>
+    </div>
+    </div class="container-fluid gdc-default-list">
+        {% if request.user.is_authenticated %}
+        <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Your Labs</a>
+        {% else %}
+        <p class="lead">
+          <p>Already a member and want to see your labs??</p>
+          <a id="log-in-link" class="btn btn-primary" href="{% url 'account_login' %}" role="button">Log In</a>
+        </p>
+        {% endif %}
+    </div>
+    <div class="row">
+      <div class="col-sm">
+        <div class="container gdc-default-list">
+            One of three columns
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="container gdc-default-list">
+            One of three columns
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="container gdc-default-list">
+            One of three columns
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock content %}

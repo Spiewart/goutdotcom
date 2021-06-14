@@ -3,7 +3,7 @@
 
 {% block content %}
 <main role="main" class="container">
-<h1>Your Labs</h1><a class="btn btn-primary btn-lg" href="{% url 'lab:log' %}" role="button">Log a Lab</a>
+<h1>Your Labs<a class="btn btn-primary" href="{% url 'lab:lab-about' %}" role="button" style="float: right;">About Gout Labs</a></h1>
   <div class="container">
     <div class="row">
         {% if urate_list %}

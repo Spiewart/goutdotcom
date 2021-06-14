@@ -2,6 +2,7 @@ from factory import Faker
 from factory.django import DjangoModelFactory
 import factory
 import pytest
+
 from goutdotcom.users.models import User
 
 from goutdotcom.lab.models import Urate, AST, ALT, Platelet, Hemoglobin, WBC, Creatinine

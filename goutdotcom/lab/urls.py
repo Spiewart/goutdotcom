@@ -1,9 +1,10 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
+from . import views
+
 from .views import (
     IndexView,
-    log,
     ALTCreate,
     ALTDetail,
     ALTList,
@@ -37,7 +38,7 @@ from .views import (
 app_name = "lab"
 urlpatterns = [
     path("", view=IndexView.as_view(), name="index"),
-    path("log/", TemplateView.as_view(template_name='lab/log.html'), name="log"),
+    path("about/", views.LabAbout, name="lab-about"),
     path("urate/<int:pk>/update/", view=UrateUpdate.as_view(), name="urate-update"),    
     path("urate/", view=UrateList.as_view(), name="urate-list"),
     path("urate/create/", view=UrateCreate.as_view(), name="urate-create"),
