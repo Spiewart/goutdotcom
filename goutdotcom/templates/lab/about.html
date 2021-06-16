@@ -19,7 +19,23 @@
     </div>
     </div class="container-fluid gdc-default-list">
         {% if request.user.is_authenticated %}
-        <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Your Labs</a>
+        <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button" style="float: right;">Your Labs</a>
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Log a Lab
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+              <li><a class="dropdown-item" href="{% url 'lab:urate-create' %}">Uric Acid</a></li>
+              <li><a class="dropdown-item" href="{% url 'lab:ALT-create' %}">ALT</a></li>
+              <li><a class="dropdown-item" href="{% url 'lab:AST-create' %}">AST</a></li>
+              <li><a class="dropdown-item" href="{% url 'lab:WBC-create' %}">WBC</a></li>
+              <li><a class="dropdown-item" href="{% url 'lab:hemoglobin-create' %}">Hemoglobin</a></li>
+              <li><a class="dropdown-item" href="{% url 'lab:platelet-create' %}">Platelets</a></li>
+              <li><a class="dropdown-item" href="{% url 'lab:creatinine-create' %}">Creatinine</a></li>
+            </ul>
+          </div>
+        </div>
         {% else %}
         <p class="lead">
           <p>Already a member and want to see your labs??</p>

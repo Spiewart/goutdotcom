@@ -3,8 +3,28 @@
 
 {% block content %}
 <main role="main" class="container">
-<h1>Your Labs<a class="btn btn-primary" href="{% url 'lab:lab-about' %}" role="button" style="float: right;">About Gout Labs</a></h1>
+
   <div class="container">
+    <h1>Your Labs<a class="btn btn-primary" href="{% url 'lab:lab-about' %}" role="button" style="float: right;">About Gout Labs</a> 
+    {% if request.user.is_authenticated %}
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+      <div class="btn-group" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          Log a Lab
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+          <li><a class="dropdown-item" href="{% url 'lab:urate-create' %}">Uric Acid</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:ALT-create' %}">ALT</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:AST-create' %}">AST</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:WBC-create' %}">WBC</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:hemoglobin-create' %}">Hemoglobin</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:platelet-create' %}">Platelets</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:creatinine-create' %}">Creatinine</a></li>
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+    </h1>
     <div class="row">
         {% if urate_list %}
           <div class="col">
@@ -108,38 +128,5 @@
       </div>
     </div>
   </div>
-  <br>
-  <div class="container user-flare-list">
-  {% if user.is_authenticated %}
-<div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <h3>Lab lists</h3>
-        <a class="btn btn-primary" href="{% url 'lab:urate-list' %}" role="button">Uric Acid</a>
-        <a class="btn btn-primary" href="{% url 'lab:ALT-list' %}" role="button">ALT</a>
-        <a class="btn btn-primary" href="{% url 'lab:AST-list' %}" role="button">AST</a>
-        <a class="btn btn-primary" href="{% url 'lab:platelet-list' %}" role="button">Platelet</a>
-        <a class="btn btn-primary" href="{% url 'lab:WBC-list' %}" role="button">WBC</a>
-        <a class="btn btn-primary" href="{% url 'lab:hemoglobin-list' %}" role="button">Hemoglobin</a>
-        <a class="btn btn-primary" href="{% url 'lab:creatinine-list' %}" role="button">Creatinine</a>
-      </div>
-    </div>
-  </div>
-<br>
-<div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <h3>Log a new lab</h3>
-        <a class="btn btn-primary" href="{% url 'lab:urate-create' %}" role="button">Uric Acid</a>
-        <a class="btn btn-primary" href="{% url 'lab:ALT-create' %}" role="button">ALT</a>
-        <a class="btn btn-primary" href="{% url 'lab:AST-create' %}" role="button">AST</a>
-        <a class="btn btn-primary" href="{% url 'lab:platelet-create' %}" role="button">Platelet</a>
-        <a class="btn btn-primary" href="{% url 'lab:WBC-create' %}" role="button">WBC</a>
-        <a class="btn btn-primary" href="{% url 'lab:hemoglobin-create' %}" role="button">Hemoglobin</a>
-        <a class="btn btn-primary" href="{% url 'lab:creatinine-create' %}" role="button">Creatinine</a>
-      </div>
-    </div>
-  </div>
-  {% endif %}
   </main>
 {% endblock content %}
