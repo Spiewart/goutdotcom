@@ -1,30 +1,8 @@
-{% extends "base.html" %}
+{% extends "lab/lab_detail_base.html" %}
 {% load static %}
 
-{% block content %}
-
-<div class="container">
-  <main></main>
-    <div class="row">
-      <div class="col">
-        <div class="container gdc-default">
-          <h1 class="gdc-legend">Uric Acid</h1>
-          <ul>
-            <li class="gdc-legend">{{ object.uric_acid }} mg/dL</li>
-            <br>
-            <li class="gdc-legend">Drawn on: {{ object.date_drawn }}</li>
-            <br>
-            <li class="gdc-legend">Logged: {{ object.created }}</li>
-            <br>
-            <li class="gdc-legend">Last modified: {{ object.modified }}</li>
-          </ul>
-      </div>
-      </div>
-    </div>
-  </main>
-  <br>
+{% block buttons %}
   <a class="btn btn-primary" href="{% url 'lab:urate-update' urate.pk %}" role="button">Update</a>
   <a class="btn btn-primary" href="{% url 'lab:urate-list' %}" role="button">List</a>
   <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
-</div>
-{% endblock content %}
+{% endblock buttons %}

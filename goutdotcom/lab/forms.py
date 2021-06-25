@@ -9,7 +9,7 @@ from django import forms
 class UrateForm(forms.ModelForm):
     class Meta:
         model = Urate
-        fields = ('uric_acid', 'date_drawn',)
+        fields = ('value', 'date_drawn',)
         widgets = {
             #Use localization and bootstrap 3
             'date_drawn': DateTimeWidget(attrs={'id':"date_drawn.pk"}, usel10n = True, bootstrap_version=3)
@@ -26,7 +26,7 @@ class UrateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Log a uric acid',
-                'uric_acid', 
+                'value', 
                 'date_drawn',
                 ),
                 ButtonHolder(

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% block lab_title %}{% endblock lab_title %}
+        </div>
+        {% if page_obj %}
+        <div class="col" \>
+            <div class="pagination pull-right">
+                <span class="step-links pull-right" >
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1" style="float: right;">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}" style="float: right;">previous</a>
+                    {% endif %}
+            
+                    <span class="current" style="float: right;">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" style="float: right;">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" style="float: right;">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col">
+      {% for lab in page_obj %}
+        <div class="container gdc-default">
+          <h5 class="gdc-legend">{{ lab.value }} {{ lab.units }}</h5>
+          <h6 class="gdc-legend">Date: <a href="{{ lab.get_absolute_url }}">{{ lab.date_drawn.date }}</a></h6>
+        </div>
+        <br>
+      {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% block buttons %}{% endblock buttons %}
+</div>
+<br>
+{% endblock content %}

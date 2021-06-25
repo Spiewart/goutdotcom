@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+  <main></main>
+    <div class="row">
+      <div class="col">
+        <div class="container gdc-default">
+          <h1 class="gdc-legend">Uric Acid</h1>
+          <ul>
+            <li class="gdc-list">{{ object.value }} {{ object.units }}</li>
+            <li class="gdc-list">Drawn on: {{ object.date_drawn }}</li>
+            <li class="gdc-list">Logged: {{ object.created }}</li>
+            <li class="gdc-list">Last modified: {{ object.modified }}</li>
+          </ul>
+      </div>
+      </div>
+    </div>
+  </main>
+  <br>
+  {% block buttons %} {% endblock buttons %}
+</div>
+{% endblock content %}

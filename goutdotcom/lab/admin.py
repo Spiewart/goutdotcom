@@ -8,14 +8,16 @@ from .models import *
 class UrateAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "uric_acid",
+        "value",
+        "date_drawn",
         "created",
     )
 
 class ALTAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "alt_sgpt",
+        "value",
+        "date_drawn",
         "created",
     )
 
@@ -23,7 +25,8 @@ class ALTAdmin(admin.ModelAdmin):
 class ASTAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "ast_sgot",
+        "value",
+        "date_drawn",
         "created",
     )
 
@@ -31,7 +34,8 @@ class ASTAdmin(admin.ModelAdmin):
 class PlateletAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "platelets",
+        "value",
+        "date_drawn",
         "created",
     )
 
@@ -39,7 +43,8 @@ class PlateletAdmin(admin.ModelAdmin):
 class WBCAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "white_blood_cells",
+        "value",
+        "date_drawn",
         "created",
     )
 
@@ -47,7 +52,8 @@ class WBCAdmin(admin.ModelAdmin):
 class HemoglobinAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "hemoglobin",
+        "value",
+        "date_drawn",
         "created",
     )
 
@@ -55,8 +61,9 @@ class HemoglobinAdmin(admin.ModelAdmin):
 class CreatinineAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "creatinine",
+        "value",
         "eGFR_calculator",
+        "date_drawn",
         "created",
     )
 

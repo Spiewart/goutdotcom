@@ -1,46 +1,8 @@
-{% extends "base.html" %}
+{% extends "lab/lab_list_base.html" %}
 {% load static %}
-
-{% block content %}
-<div class="container">
-<h1 class="gdc-legend">Uric Acids</h1>
-  {% if page_obj %}
-    <div class="row">
-      <div class="col">
-      {% for urate in page_obj %}
-        <div class="container gdc-default">
-          <h5 class="gdc-legend">{{ urate.uric_acid }} mg/dL</h5>
-          <h6 class="gdc-legend">Date: <a href="{% url 'lab:urate-detail' urate.pk %}">{{ urate.date_drawn.date }}</a></h6>
-        </div>
-        <br>
-      {% endfor %}
-      </div>
-    </div>
-  {% endif %}
-
-<br>
-
-<div class="pagination">
-  <span class="step-links">
-      {% if page_obj.has_previous %}
-          <a href="?page=1">&laquo; first</a>
-          <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-      {% endif %}
-
-      <span class="current">
-          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
-
-      {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}">next</a>
-          <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-      {% endif %}
-  </span>
-</div>
-
-<br>
-
-<a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
-<a class="btn btn-primary" href="{% url 'lab:urate-create' %}" role="button">Log a Urate</a>
-</div>
-{% endblock content %}
+{% block lab_title %}
+<h1>Uric Acids</h1>
+{% endblock lab_title %}
+{% block buttons %}
+  <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
+{% endblock buttons %}

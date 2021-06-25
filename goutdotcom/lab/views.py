@@ -33,7 +33,7 @@ class UrateAbout(TemplateView):
 
 class UrateCreate(LoginRequiredMixin, CreateView):
     model = Urate
-    fields = ['uric_acid', 'date_drawn',]
+    fields = ['value', 'date_drawn',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -59,7 +59,7 @@ class UrateList(LoginRequiredMixin, ListView):
 
 class UrateUpdate(LoginRequiredMixin, UpdateView):
     model = Urate
-    fields = ['uric_acid', 'date_drawn',]
+    fields = ['value', 'date_drawn',]
     template_name = 'lab/urate_update.html'
 
 class ALTAbout(TemplateView):
@@ -67,7 +67,7 @@ class ALTAbout(TemplateView):
 
 class ALTCreate(LoginRequiredMixin, CreateView):
     model = ALT
-    fields = ['alt_sgpt']
+    fields = ['value', 'date_drawn']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -93,7 +93,7 @@ class ALTList(LoginRequiredMixin, ListView):
 
 class ALTUpdate(LoginRequiredMixin, UpdateView):
     model = ALT
-    fields = ['alt_sgpt']
+    fields = ['value', 'date_drawn']
     template_name = 'lab/ALT_update.html'
 
 class ASTAbout(TemplateView):
@@ -101,7 +101,7 @@ class ASTAbout(TemplateView):
 
 class ASTCreate(LoginRequiredMixin, CreateView):
     model = AST
-    fields = ['ast_sgot']
+    fields = ['value', 'date_drawn']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -127,7 +127,7 @@ class ASTList(LoginRequiredMixin, ListView):
 
 class ASTUpdate(LoginRequiredMixin, UpdateView):
     model = AST
-    fields = ['ast_sgot']
+    fields = ['value', 'date_drawn']
     template_name = 'lab/AST_update.html'
 
 class PlateletAbout(TemplateView):
@@ -135,7 +135,7 @@ class PlateletAbout(TemplateView):
 
 class PlateletCreate(LoginRequiredMixin, CreateView):
     model = Platelet
-    fields = ['platelets']
+    fields = ['value', 'date_drawn']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -161,7 +161,7 @@ class PlateletList(LoginRequiredMixin, ListView):
 
 class PlateletUpdate(LoginRequiredMixin, UpdateView):
     model = Platelet
-    fields = ['platelets']
+    fields = ['value', 'date_drawn']
     template_name = 'lab/platelet_update.html'
 
 class WBCAbout(TemplateView):
@@ -169,7 +169,7 @@ class WBCAbout(TemplateView):
 
 class WBCCreate(LoginRequiredMixin, CreateView):
     model = WBC
-    fields = ['white_blood_cells']
+    fields = ['value', 'date_drawn']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -195,7 +195,7 @@ class WBCList(LoginRequiredMixin, ListView):
 
 class WBCUpdate(LoginRequiredMixin, UpdateView):
     model = WBC
-    fields = ['white_blood_cells']
+    fields = ['value', 'date_drawn']
     template_name = 'lab/WBC_update.html'
 
 class HemoglobinAbout(TemplateView):
@@ -203,7 +203,7 @@ class HemoglobinAbout(TemplateView):
 
 class HemoglobinCreate(LoginRequiredMixin, CreateView):
     model = Hemoglobin
-    fields = ['hemoglobin']
+    fields = ['value', 'date_drawn']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -229,7 +229,7 @@ class HemoglobinList(LoginRequiredMixin, ListView):
 
 class HemoglobinUpdate(LoginRequiredMixin, UpdateView):
     model = Hemoglobin
-    fields = ['hemoglobin']
+    fields = ['value', 'date_drawn']
     template_name = 'lab/hemoglobin_update.html'
 
 class CreatinineAbout(TemplateView):
@@ -237,7 +237,7 @@ class CreatinineAbout(TemplateView):
 
 class CreatinineCreate(LoginRequiredMixin, CreateView):
     model = Creatinine
-    fields = ['creatinine']
+    fields = ['value', 'date_drawn']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -263,5 +263,5 @@ class CreatinineList(LoginRequiredMixin, ListView):
 
 class CreatinineUpdate(LoginRequiredMixin, UpdateView):
     model = Creatinine
-    fields = ['creatinine']
+    fields = ['value', 'date_drawn']
     template_name = 'lab/creatinine_update.html'
