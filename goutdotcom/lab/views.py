@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView, TemplateView
 from .models import ALT, AST, Creatinine, Hemoglobin, Platelet, Urate, WBC
 
 # Create your views here.
@@ -28,9 +28,12 @@ class IndexView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
+class UrateAbout(TemplateView):
+    template_name = 'lab/urate_about.html'
+
 class UrateCreate(LoginRequiredMixin, CreateView):
     model = Urate
-    fields = ['uric_acid']
+    fields = ['uric_acid', 'date_drawn',]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -56,8 +59,11 @@ class UrateList(LoginRequiredMixin, ListView):
 
 class UrateUpdate(LoginRequiredMixin, UpdateView):
     model = Urate
-    fields = ['uric_acid']
+    fields = ['uric_acid', 'date_drawn',]
     template_name = 'lab/urate_update.html'
+
+class ALTAbout(TemplateView):
+    template_name = 'lab/ALT_about.html'
 
 class ALTCreate(LoginRequiredMixin, CreateView):
     model = ALT
@@ -90,6 +96,9 @@ class ALTUpdate(LoginRequiredMixin, UpdateView):
     fields = ['alt_sgpt']
     template_name = 'lab/ALT_update.html'
 
+class ASTAbout(TemplateView):
+    template_name = 'lab/AST_about.html'
+
 class ASTCreate(LoginRequiredMixin, CreateView):
     model = AST
     fields = ['ast_sgot']
@@ -120,6 +129,9 @@ class ASTUpdate(LoginRequiredMixin, UpdateView):
     model = AST
     fields = ['ast_sgot']
     template_name = 'lab/AST_update.html'
+
+class PlateletAbout(TemplateView):
+    template_name = 'lab/platelet_about.html'
 
 class PlateletCreate(LoginRequiredMixin, CreateView):
     model = Platelet
@@ -152,6 +164,9 @@ class PlateletUpdate(LoginRequiredMixin, UpdateView):
     fields = ['platelets']
     template_name = 'lab/platelet_update.html'
 
+class WBCAbout(TemplateView):
+    template_name = 'lab/WBC_about.html'
+
 class WBCCreate(LoginRequiredMixin, CreateView):
     model = WBC
     fields = ['white_blood_cells']
@@ -183,6 +198,9 @@ class WBCUpdate(LoginRequiredMixin, UpdateView):
     fields = ['white_blood_cells']
     template_name = 'lab/WBC_update.html'
 
+class HemoglobinAbout(TemplateView):
+    template_name = 'lab/hemoglobin_about.html'
+
 class HemoglobinCreate(LoginRequiredMixin, CreateView):
     model = Hemoglobin
     fields = ['hemoglobin']
@@ -213,6 +231,9 @@ class HemoglobinUpdate(LoginRequiredMixin, UpdateView):
     model = Hemoglobin
     fields = ['hemoglobin']
     template_name = 'lab/hemoglobin_update.html'
+
+class CreatinineAbout(TemplateView):
+    template_name = 'lab/creatinine_about.html'
 
 class CreatinineCreate(LoginRequiredMixin, CreateView):
     model = Creatinine

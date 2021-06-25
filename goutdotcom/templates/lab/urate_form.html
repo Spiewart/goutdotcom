@@ -4,13 +4,12 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
-  <h1>{{ user.username }}</h1>
-  <form class="form-horizontal" method="post" action="{% url 'lab:urate-create' %}">
+  <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:urate-create' %}">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="control-group">
       <div class="controls">
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary">Create/Update</button>
       </div>
     </div>
   </form>

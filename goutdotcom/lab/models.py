@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
+from django.utils import timezone
 from decimal import *
 
 # Create your models here.
@@ -14,6 +15,8 @@ class Lab(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+
+    date_drawn = models.DateTimeField(help_text="What day was this lab drawn?", default=timezone.now)
 
     class Meta:
         abstract = True

@@ -3,15 +3,14 @@
 
 {% block content %}
 <div class="container">
-<h1>Uric Acids</h1>
+<h1 class="gdc-legend">Uric Acids</h1>
   {% if page_obj %}
     <div class="row">
       <div class="col">
       {% for urate in page_obj %}
-        <div class="container user-flare-list">
-          <h5>{{ urate.uric_acid }} mg/dL</h5>
-          <h6>Date: <a href="{% url 'lab:urate-detail' urate.pk %}">{{ urate.created }}</a></h6>
-          <h6>User: {{ urate.user }}</h6>
+        <div class="container gdc-default">
+          <h5 class="gdc-legend">{{ urate.uric_acid }} mg/dL</h5>
+          <h6 class="gdc-legend">Date: <a href="{% url 'lab:urate-detail' urate.pk %}">{{ urate.date_drawn.date }}</a></h6>
         </div>
         <br>
       {% endfor %}
@@ -42,5 +41,6 @@
 <br>
 
 <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
+<a class="btn btn-primary" href="{% url 'lab:urate-create' %}" role="button">Log a Urate</a>
 </div>
 {% endblock content %}

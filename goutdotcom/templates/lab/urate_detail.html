@@ -2,16 +2,27 @@
 {% load static %}
 
 {% block content %}
+
 <div class="container">
-  <div class="row">
-    <div class="col-sm-12">
-      <h1>Uric Acid</h1>
-      <ul>
-        <li>{{ object.uric_acid }} mg/dL</li>
-        <li>Logged: {{ object.created }}</li>
-      </ul>
+  <main></main>
+    <div class="row">
+      <div class="col">
+        <div class="container gdc-default">
+          <h1 class="gdc-legend">Uric Acid</h1>
+          <ul>
+            <li class="gdc-legend">{{ object.uric_acid }} mg/dL</li>
+            <br>
+            <li class="gdc-legend">Drawn on: {{ object.date_drawn }}</li>
+            <br>
+            <li class="gdc-legend">Logged: {{ object.created }}</li>
+            <br>
+            <li class="gdc-legend">Last modified: {{ object.modified }}</li>
+          </ul>
+      </div>
+      </div>
     </div>
-  </div>
+  </main>
+  <br>
   <a class="btn btn-primary" href="{% url 'lab:urate-update' urate.pk %}" role="button">Update</a>
   <a class="btn btn-primary" href="{% url 'lab:urate-list' %}" role="button">List</a>
   <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
