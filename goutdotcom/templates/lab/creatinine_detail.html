@@ -1,21 +1,8 @@
-{% extends "base.html" %}
+{% extends "lab/lab_detail_base.html" %}
 {% load static %}
 
-{% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-sm-12">
-      <h1>Creatinine</h1>
-      <ul>
-        <li>{{ object.creatinine }} mg/dL</li>
-        <li>{{ object.eGFR_calculator }}</li>
-        <li>Logged: {{ object.created }}</li>
-      </ul>
-    </div>
-  </div>
-
-<a class="btn btn-primary" href="{% url 'lab:creatinine-update' creatinine.pk %}" role="button">Update</a>
-<a class="btn btn-primary" href="{% url 'lab:creatinine-list' %}" role="button">List</a>
-<a class="btn btn-primary" href="{% url 'lab:log' %}" role="button">Lab Home</a>
-</div>
-{% endblock content %}
+{% block buttons %}
+  <a class="btn btn-primary" href="{% url 'lab:creatinine-update' urate.pk %}" role="button">Update</a>
+  <a class="btn btn-primary" href="{% url 'lab:creatinine-list' %}" role="button">List</a>
+  <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
+{% endblock buttons %}

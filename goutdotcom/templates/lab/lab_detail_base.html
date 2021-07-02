@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load lab_extras %}
 
 {% block content %}
 
@@ -8,7 +9,11 @@
     <div class="row">
       <div class="col">
         <div class="container gdc-default">
-          <h1 class="gdc-legend">Uric Acid</h1>
+          {% block lab_title %}
+          <h1>
+            {{ object|to_class_name }} ({{ object.date_drawn.date }})
+          </h1>
+          {% endblock lab_title %}
           <ul>
             <li class="gdc-list">{{ object.value }} {{ object.units }}</li>
             <li class="gdc-list">Drawn on: {{ object.date_drawn }}</li>

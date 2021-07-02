@@ -1,5 +1,20 @@
+:root {
+  --main-background: linear-gradient(35deg, rgb(143, 212, 137), rgb(97, 27, 0));
+  --main-background-color: rgb(143, 212, 137);
+  --main-border-color: rgb(97, 27, 0);
+  --polarized-microscopy-background: repeating-linear-gradient(90deg, yellow 0px, navy 40px,magenta 80px);
+}
+
+body {
+  background: var(--main-background);
+}
+
 .asteriskField {
   display: none;
+}
+
+.hyperlink:hover {
+  color: black;
 }
 
 .flare-mini-detail-list {
@@ -24,6 +39,8 @@
   border-color: yellow;
   padding: 5px;
   background-color: yellow;
+  width: fit-content;
+  height: min-content;
 }
 .gdc-default {
   border-style: solid;
@@ -31,6 +48,7 @@
   border-color: rgb(97, 27, 0);
   padding: 5px;
   background-color: rgb(67, 137, 179);
+  box-shadow: 10px 10px 5px rgba(97, 27, 0, 0.4);
 }
 
 .pagination {
@@ -40,9 +58,9 @@
 .gdc-legend {
   border-style: solid;
   border-width: medium;
-  border-color: rgb(97, 27, 0);
+  border-color: var(--main-border-color);
   padding: 5px;
-  background-color: rgb(143, 212, 137);
+  background: var(--main-background);
 }
 
 .gdc-list {
@@ -104,9 +122,6 @@
 }
 
 // project specific CSS goes here
-body {
-  background-color: yellow;
-}
 
 ////////////////////////////////
 		//Variables//

@@ -1,5 +1,17 @@
+:root {
+  --main-background: linear-gradient(35deg, rgb(143, 212, 137), rgb(97, 27, 0));
+  --main-background-color: rgb(143, 212, 137);
+  --main-border-color: rgb(97, 27, 0);
+  --polarized-microscopy-background: repeating-linear-gradient(90deg, yellow 0px, navy 40px,magenta 80px); }
+
+body {
+  background: var(--main-background); }
+
 .asteriskField {
   display: none; }
+
+.hyperlink:hover {
+  color: black; }
 
 .flare-mini-detail-list {
   border-style: solid;
@@ -20,14 +32,22 @@
   border-width: medium;
   border-color: yellow;
   padding: 5px;
-  background-color: yellow; }
+  background-color: yellow;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -webkit-min-content;
+  height: -moz-min-content;
+  height: min-content; }
 
 .gdc-default {
   border-style: solid;
   border-width: medium;
   border-color: #611b00;
   padding: 5px;
-  background-color: #4389b3; }
+  background-color: #4389b3;
+  -webkit-box-shadow: 10px 10px 5px rgba(97, 27, 0, 0.4);
+          box-shadow: 10px 10px 5px rgba(97, 27, 0, 0.4); }
 
 .pagination {
   margin: 0px !important; }
@@ -35,9 +55,9 @@
 .gdc-legend {
   border-style: solid;
   border-width: medium;
-  border-color: #611b00;
+  border-color: var(--main-border-color);
   padding: 5px;
-  background-color: #8fd489; }
+  background: var(--main-background); }
 
 .gdc-list {
   border-style: solid;
@@ -89,9 +109,6 @@
   border-color: #010e14;
   padding: 5px;
   background-color: #5fad5f; }
-
-body {
-  background-color: yellow; }
 
 .alert-debug {
   background-color: #fff;
