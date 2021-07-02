@@ -3,12 +3,12 @@
 {% load lab_extras %}
 
 {% block content %}
+
 <div class="container">
-    <div class="row">
+    <header class="row">
         <div class="col">
             {% if object_list %}
                 {% block lab_title %}
-                <h1><a href="{% url 'lab:{{ object_list|list_to_name }}-about' %}" class="hyperlink">{{ object_list|list_to_name }}s</a></h1>
                 {% endblock lab_title %}
         </div>
         <div class="col" >
@@ -31,8 +31,8 @@
                     </span>
                 </div>
         </div>
-    </div>
-    <div class="row">
+    </header>
+    <main class="row">
         <div class="col">
             {% for lab in page_obj %}
                 <div class="container gdc-default">
@@ -42,14 +42,16 @@
                 <br>
             {% endfor %}
         </div>
-    </div>
+    </main>
             {% endif %}
             {% else %}
-                <div>
+                <main>
                     <p>{{ object_list|list_to_name }}!</p>
-                </div>
+                </main>
             {% endif %}
-{% block buttons %}{% endblock buttons %}
+    <footer>
+    {% block buttons %}{% endblock buttons %}
+    </footer>
 </div>
 <br>
 {% endblock content %}

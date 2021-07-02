@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -41,7 +42,7 @@
         <div class="column">
             <u><a href="#uricacid">Back to Top</a></u>
             <br>
-            <a class="btn btn-primary" href="{% url 'lab:lab-about' %}" role="button">About All Labs</a>
+            <a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button">About All Labs</a>
             {% if request.user.is_authenticated %}
             <a class="btn btn-primary" href="{% url 'lab:urate-list' %}" role="button">My Urates</a>
             {% else %}

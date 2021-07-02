@@ -9,7 +9,13 @@
     {{ form|crispy }}
     <div class="control-group">
       <div class="controls">
-        <button type="submit" class="btn btn-primary">Create/Update</button>
+        <button type="submit" class="btn btn-primary">
+          {% if form.instance.pk %}
+          Update
+          {% else %}
+          Create
+          {% endif %}
+        </button>
       </div>
     </div>
   </form>
