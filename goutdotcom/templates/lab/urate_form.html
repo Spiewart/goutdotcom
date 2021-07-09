@@ -1,22 +1,5 @@
-{% extends "base.html" %}
+{% extends "lab/lab_form_base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}{{ user.username }}{% endblock %}
 
-{% block content %}
-  <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:urate-create' %}">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="control-group">
-      <div class="controls">
-        <button type="submit" class="btn btn-primary">
-          {% if form.instance.pk %}
-          Update
-          {% else %}
-          Create
-          {% endif %}
-        </button>
-      </div>
-    </div>
-  </form>
-{% endblock %}
+

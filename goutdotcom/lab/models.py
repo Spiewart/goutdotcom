@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.db.models.fields import NullBooleanField
 from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
@@ -8,9 +7,6 @@ from django.utils import timezone
 from decimal import *
 
 # Create your models here.
-def unlogged_user():
-    return get_user_model().objects.get_or_create(username='unlogged')[0]
-
 MGDL = 'mg/dL (milligrams per deciliter)'
 GDL = 'g/dL (grams per decliter)'
 CELLSMM3 = 'cells/mm^3 (cells per cubmic millimeter)'
@@ -32,10 +28,17 @@ class Lab(TimeStampedModel):
     )
     value = NullBooleanField()
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
+    name = "Lab"
     date_drawn = models.DateTimeField(help_text="What day was this lab drawn?", default=timezone.now)
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return str(self.value)
+
+    def get_absolute_url(self):
+        return reverse("lab:lab-detail", kwargs={"pk":self.pk, "lab":self.name})
 
     def __unicode__(self):
         return self.name
@@ -45,67 +48,37 @@ class Urate(Lab):
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "Urate"
 
-    def __str__(self):
-        return str(self.value)
-
-    def get_absolute_url(self):
-        return reverse("lab:urate-detail", kwargs={"pk":self.pk})
-
 class ALT(Lab):
     value = models.IntegerField(help_text="ALT / SGPT")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "ALT"
-
-    def __str__(self):
-        return str(self.value)
-
-    def get_absolute_url(self):
-        return reverse("lab:ALT-detail", kwargs={"pk":self.pk})
 
 class AST(Lab):
     value = models.IntegerField(help_text="AST / SGOT")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "AST"
 
-    def __str__(self):
-        return str(self.value)
-
-    def get_absolute_url(self):
-        return reverse("lab:AST-detail", kwargs={"pk":self.pk})
-
 class Platelet(Lab):
     value = models.IntegerField(help_text="PLT / platelets")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=PLTMICROL)
     name = "platelet"
-
-    def __str__(self):
-        return str(self.value)
-
-    def get_absolute_url(self):
-        return reverse("lab:platelet-detail", kwargs={"pk":self.pk})
 
 class WBC(Lab):
     value = models.DecimalField(max_digits=3, decimal_places=1, help_text="WBC")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=CELLSMM3)
     name = "WBC"
 
-    def __str__(self):
-        return str(self.value)
-
-    def get_absolute_url(self):
-        return reverse("lab:WBC-detail", kwargs={"pk":self.pk})
-
 class Hemoglobin(Lab):
     value = models.DecimalField(max_digits=3, decimal_places=1, help_text="HGB")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=GDL)
     name = "hemoglobin"
 
-    def __str__(self):
-        return str(self.value)
-
-    def get_absolute_url(self):
-        return reverse("lab:hemoglobin-detail", kwargs={"pk":self.pk})
-
+def round_decimal(value, places):
+    if value is not None:
+        # see https://docs.python.org/2/library/decimal.html#decimal.Decimal.quantize for options
+        return value.quantize(Decimal(10) ** -places)
+    return value
+    
 class Creatinine(Lab):
     value = models.DecimalField(max_digits=4, decimal_places=2, help_text="creatinine")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
@@ -155,14 +128,8 @@ class Creatinine(Lab):
                 race_modifier(self)
                 sex_modifier(self)
                 eGFR = Decimal(141) * min(self.value / kappa, Decimal(1.00)) * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.get_age() ** race_modifier(self) ** sex_modifier(self)
-                return eGFR
+                return round_decimal(eGFR, 2)
             else:
                 return "Something went wrong with eGFR calculation"
         else:
             return "Something went wrong with eGFR calculation"
-
-    def __str__(self):
-        return (str(self.value) + " " + str(self.created) + " " + "GFR: " + str(self.eGFR_calculator()))
-
-    def get_absolute_url(self):
-        return reverse("lab:creatinine-detail", kwargs={"pk":self.pk})

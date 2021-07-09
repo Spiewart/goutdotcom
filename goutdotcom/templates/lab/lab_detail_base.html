@@ -3,7 +3,6 @@
 {% load lab_extras %}
 
 {% block content %}
-
 <div class="container">
   <main></main>
     <div class="row">
@@ -16,6 +15,9 @@
           {% endblock lab_title %}
           <ul>
             <li class="gdc-list">{{ object.value }} {{ object.units }}</li>
+            {% if object.name == 'creatinine' %}
+            <li class="gdc-list">eGFR: {{ object.eGFR_calculator }}</li>
+            {% endif %}
             <li class="gdc-list">Drawn on: {{ object.date_drawn }}</li>
             <li class="gdc-list">Logged: {{ object.created }}</li>
             <li class="gdc-list">Last modified: {{ object.modified }}</li>
@@ -25,6 +27,11 @@
     </div>
   </main>
   <br>
-  {% block buttons %} {% endblock buttons %}
+  {% block buttons %}
+  <a class="btn btn-primary" href="{% url 'lab:about' object|to_class_name %}" role="button">About: {{ object|to_class_name }}</a>
+  <a class="btn btn-primary" href="{% url 'lab:lab-list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
+  <a class="btn btn-primary" href="{% url 'lab:lab-create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
+  <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
+  {% endblock buttons %}
 </div>
 {% endblock content %}

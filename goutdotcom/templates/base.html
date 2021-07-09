@@ -95,7 +95,7 @@
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'lab:lab-about' %}">Labs</a>
+              <a class="nav-link" href="{% url 'lab:about' 'alllabs' %}">Labs</a>
             </li>
             {% endif %}
             {% if request.user.is_authenticated %}

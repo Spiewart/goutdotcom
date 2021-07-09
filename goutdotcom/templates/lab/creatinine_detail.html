@@ -1,8 +1,0 @@
-{% extends "lab/lab_detail_base.html" %}
-{% load static %}
-
-{% block buttons %}
-  <a class="btn btn-primary" href="{% url 'lab:creatinine-update' urate.pk %}" role="button">Update</a>
-  <a class="btn btn-primary" href="{% url 'lab:creatinine-list' %}" role="button">List</a>
-  <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
-{% endblock buttons %}

@@ -13,13 +13,13 @@
           Log a Lab
         </button>
         <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-          <li><a class="dropdown-item" href="{% url 'lab:urate-create' %}">Uric Acid</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:ALT-create' %}">ALT</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:AST-create' %}">AST</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:WBC-create' %}">WBC</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:hemoglobin-create' %}">Hemoglobin</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:platelet-create' %}">Platelets</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:creatinine-create' %}">Creatinine</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'urate' %}">Uric Acid</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'ALT' %}">ALT</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'AST' %}">AST</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'WBC' %}">WBC</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'hemoglobin' %}">Hemoglobin</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'platelet' %}">Platelets</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'creatinine' %}">Creatinine</a></li>
         </ul>
       </div>
     </div>
@@ -28,7 +28,7 @@
     <div class="row">
         {% if urate_list %}
           <div class="col">
-          <h3><a href="{% url 'lab:urate-list' %}">Uric Acids</a></h3>
+          <h3><a href="{% url 'lab:lab-list' 'urate' %}">Uric Acids</a></h3>
           {% for urate in urate_list %}
           <div class="container user-flare-list">
             <h5>{{ urate.uric_acid }} mg/dL
@@ -42,7 +42,7 @@
         {% endif %}
         {% if ALT_list %}
           <div class="col">
-          <h3><a href="{% url 'lab:ALT-list' %}">ALTs</a></h3>
+          <h3><a href="{% url 'lab:lab-list' 'ALT' %}">ALTs</a></h3>
           {% for ALT in ALT_list %}
           <div class="container user-flare-list">
             <h5>{{ ALT.alt_sgpt }} mg/dL
@@ -56,7 +56,7 @@
         {% endif %}
         {% if AST_list %}
         <div class="col">
-          <h3><a href="{% url 'lab:AST-list' %}">ASTs</a></h3>
+          <h3><a href="{% url 'lab:lab-list' 'AST' %}">ASTs</a></h3>
           {% for AST in AST_list %}
           <div class="container user-flare-list">
             <h5>{{ AST.ast_sgot }} mg/dL
@@ -70,7 +70,7 @@
         {% endif %}
         {% if platelet_list %}
         <div class="col">
-          <h3><a href="{% url 'lab:platelet-list' %}">Platelets</a></h3>
+          <h3><a href="{% url 'lab:lab-list' 'platelet' %}">Platelets</a></h3>
           {% for platelet in platelet_list %}
           <div class="container user-flare-list">
             <h5>{{ platelet.platelets }} platelets / miroliter
@@ -84,7 +84,7 @@
         {% endif %}
         {% if WBC_list %}
         <div class="col">
-          <h3><a href="{% url 'lab:WBC-list' %}">WBCs</a></h3>
+          <h3><a href="{% url 'lab:lab-list' 'WBC' %}">WBCs</a></h3>
           {% for WBC in WBC_list %}
           <div class="container user-flare-list">
             <h5>{{ WBC.white_blood_cells }} thousand cells per cubic mm
@@ -98,7 +98,7 @@
         {% endif %}
        {% if hemoglobin_list %}
        <div class="col">
-          <h3><a href="{% url 'lab:hemoglobin-list' %}">Hemoglobins</a></h3>
+          <h3><a href="{% url 'lab:lab-list' 'hemoglobin' %}">Hemoglobins</a></h3>
           {% for hemoglobin in hemoglobin_list %}
           <div class="container user-flare-list">
             <h5>{{ hemoglobin.hemoglobin }} grams per dL
@@ -112,7 +112,7 @@
         {% endif %}
        {% if creatinine_list %}
        <div class="col">
-          <h3><a href="{% url 'lab:creatinine-list' %}">Creatinines</a></h3>
+          <h3><a href="{% url 'lab:lab-list' 'creatinine' %}">Creatinines</a></h3>
           {% for creatinine in creatinine_list %}
           <div class="container user-flare-list">
             <h5>{{ creatinine.creatinine }} grams per dL

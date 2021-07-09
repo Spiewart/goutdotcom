@@ -1,56 +1,43 @@
-{% extends "base.html" %}
+{% extends "lab/lab_about_base.html" %}
 {% load static %}
 
+{% block intro %}
+<p>Uric acid is the most important lab for the understanding and management of gout. Elevated levels of uric acid in the blood cause it to deposit in the joints where it can cause inflammation (gout attacks). </p>
+{% endblock intro %}
 
-{% block content %}
-<div class="container">
-    <div class="row">
-        <div class="column">
-            <div class="container gdc-default"> 
-                <h1 class="gdc-legend"><a id="uricacid">Uric Acid</a></h1>
-                <p>Uric acid is the most important lab for the understanding and management of gout. Elevated levels of uric acid in the blood cause it to deposit in the joints where it can cause inflammation (gout attacks). </p>
-                <hr size="6" color="navy">
-                <div class="container gdc-legend">
-                    <h4>Quick Links</h4>
-                    <ol>
-                        <li><a href="#biology">Biology</a></li>
-                        <li><a href="#chemistry">Chemistry</a></li>
-                        <li><a href="#history">History</a></li>
-                        <li><a href="#ingout">In Gout</a></li>
-                        <li><a href="#references">References</a></li>
-                    </ol>    
-                </div>
-                <hr size="6" color="navy">
-                <h3 class="gdc-legend"><a id="biology">Biology</a></h3>
-                <p>Uric acid in the human body is derived from two sources: </p>
-                <ol>
-                    <li>Dietary consumpation</li>
-                    <li>Bodily production as a part of normal cellular metabolism.</li>
-                </ol>
-                <hr size="6" color="navy">
-                <h3 class="gdc-legend"><a id="chemistry">Chemistry</a></h3>
-                <hr size="6" color="navy">
-                <h3 class="gdc-legend"><a id="history">History</a></h3>
-                <hr size="6" color="navy">
-                <h3 class="gdc-legend"><a id="ingout">In Gout</a></h3>
-                <hr size="6" color="navy">
-                <h3 class="gdc-legend"><a id="references">References</a></h3>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="column">
-            <u><a href="#uricacid">Back to Top</a></u>
-            <br>
-            <a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button">About All Labs</a>
-            {% if request.user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'lab:urate-list' %}" role="button">My Urates</a>
-            {% else %}
-            <a id="log-in-link" class="btn btn-primary" href="{% url 'account_login' %}" role="button">Log In</a>
-            {% endif %}
-            <br>
-        </div>
-    </div>
-</div>
-<br>
-{% endblock content %}
+{% block quicklinks %}
+<h2>Quick Links</h2>
+<ol>
+    <li><a href="#biology">Biology</a></li>
+    <li><a href="#chemistry">Chemistry</a></li>
+    <li><a href="#history">History</a></li>
+    <li><a href="#ingout">In Gout</a></li>
+    <li><a href="#references">References</a></li>
+</ol>    
+{% endblock quicklinks %}
+
+{% block biology %}
+<h2 class="gdc-legend"><a id="biology">Biology</a></h2>
+<p>Uric acid in the human body is derived from two sources: </p>
+<ol>
+    <li>Dietary consumpation</li>
+    <li>Bodily production as a part of normal cellular metabolism.</li>
+</ol>
+<hr size="6" color="navy">
+{% endblock biology %}
+{% block chemistry %}
+<h2 class="gdc-legend"><a id="chemistry">Chemistry</a></h2>
+<hr size="6" color="navy">
+{% endblock chemistry %}
+{% block history %}
+<h2 class="gdc-legend"><a id="history">History</a></h2>
+<hr size="6" color="navy">
+{% endblock history %}
+{% block ingout %}
+<h2 class="gdc-legend"><a id="ingout">In Gout</a></h2>
+<hr size="6" color="navy">
+{% endblock ingout %}
+{% block references %}
+<h2 class="gdc-legend"><a id="references">References</a></h2>
+<hr size="6" color="navy">
+{% endblock references %}

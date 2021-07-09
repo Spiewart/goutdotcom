@@ -1,6 +1,39 @@
-{% extends "base.html" %}
+{% extends "lab/lab_about_base.html" %}
 {% load static %}
 
-{% block content %}
-All about AST's
-{% endblock content %}
+{% block quicklinks %}
+<h2>Quick Links</h2>
+<ol>
+    <li><a href="#biology">Biology</a></li>
+    <li><a href="#chemistry">Chemistry</a></li>
+    <li><a href="#history">History</a></li>
+    <li><a href="#ingout">In Gout</a></li>
+    <li><a href="#references">References</a></li>
+</ol>    
+{% endblock quicklinks %}
+
+{% block biology %}
+<h2 class="gdc-legend"><a id="biology">Biology</a></h2>
+<p>AST is a liver enzyme, but is also made in many other parts of the body:</p>
+<ol>
+    <li>Muscle</li>
+    <li>Bone</li>
+</ol>
+<hr size="6" color="navy">
+{% endblock biology %}
+{% block chemistry %}
+<h2 class="gdc-legend"><a id="chemistry">Chemistry</a></h2>
+<hr size="6" color="navy">
+{% endblock chemistry %}
+{% block history %}
+<h2 class="gdc-legend"><a id="history">History</a></h2>
+<hr size="6" color="navy">
+{% endblock history %}
+{% block ingout %}
+<h2 class="gdc-legend"><a id="ingout">In Gout</a></h2>
+<hr size="6" color="navy">
+{% endblock ingout %}
+{% block references %}
+<h2 class="gdc-legend"><a id="references">References</a></h2>
+<hr size="6" color="navy">
+{% endblock references %}

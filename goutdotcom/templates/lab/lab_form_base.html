@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load lab_extras %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block content %}
+  <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:lab-create' lab %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary">
+          {% if form.instance.pk %}
+          Update
+          {% else %}
+          Create
+          {% endif %}
+        </button>
+      </div>
+    </div>
+  </form>
+{% endblock %}
