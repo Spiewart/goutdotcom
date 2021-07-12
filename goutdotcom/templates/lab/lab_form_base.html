@@ -5,19 +5,29 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
-  <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:lab-create' lab %}">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="control-group">
-      <div class="controls">
-        <button type="submit" class="btn btn-primary">
-          {% if form.instance.pk %}
-          Update
-          {% else %}
-          Create
-          {% endif %}
-        </button>
+  {% if form.instance.pk %}
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:lab-update' lab object.pk %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">
+            Update          
+          </button>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  {% else %}
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:lab-create' lab %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">
+            Create          
+          </button>
+        </div>
+      </div>
+    </form>
+  {% endif %}
 {% endblock %}

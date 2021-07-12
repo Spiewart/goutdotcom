@@ -1,11 +1,11 @@
 from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import modelform_factory
 from django.http.response import Http404
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, TemplateView
-from .models import ALT, AST, Creatinine, Hemoglobin, Lab, Platelet, Urate, WBC
+from .models import ALT, AST, Creatinine, Hemoglobin, Platelet, Urate, WBC
 
 # Create your views here.
 class LabAbout(TemplateView):
@@ -54,7 +54,7 @@ class LabCreate(LoginRequiredMixin, CreateView):
     def get_template_names(self, **kwargs):
         kwargs = self.kwargs
         lab = kwargs.get('lab')
-        template = "lab/" + str(lab) + "_form.html"
+        template = "lab/lab_form_base.html"
         return template 
 
     fields = ['value', 'date_drawn',]
@@ -113,7 +113,7 @@ class LabList(LoginRequiredMixin, ListView):
     def get_template_names(self, **kwargs):
         kwargs = self.kwargs
         lab = kwargs.get('lab')
-        template = "lab/" + str(lab) + "_list.html"
+        template = "lab/lab_list_base.html"
         return template 
 
     def get_context_data(self, **kwargs):
@@ -123,6 +123,62 @@ class LabList(LoginRequiredMixin, ListView):
             'lab': self.kwargs['lab'],
         })
         return context
+
+class LabUpdate(LoginRequiredMixin, UpdateView):
+    def get(self, request, *args, **kwargs):
+        self.lab = self.kwargs['lab']
+        return super().get(request, *args, **kwargs)
+
+    def get_form_class(self, **kwargs):
+        self.lab = self.kwargs['lab']
+        if self.fields is not None and self.form_class:
+            raise ImproperlyConfigured(
+                "Specifying both 'fields' and 'form_class' is not permitted."
+            )
+        if self.form_class:
+            return self.form_class
+        else:
+            if self.lab is not None:
+                # Fetch model from URL 'lab' parameter
+                model = apps.get_model('lab', model_name=self.lab)
+            elif getattr(self, 'object', None) is not None:
+                model = self.object.__class__
+            else:
+                model = self.get_queryset().model
+            if self.fields is None:
+                raise ImproperlyConfigured(
+                    "Using ModelFormMixin (base class of %s) without "
+                    "the 'fields' attribute is prohibited." % self.__class__.__name__
+                )
+            return modelform_factory(model, fields=self.fields)
+
+    def get_template_names(self):
+        template = "lab/lab_form_base.html"
+        return template 
+
+    fields = ['value', 'date_drawn',]
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(LabUpdate, self).get_context_data(**kwargs)
+        context.update({
+            'lab': self.kwargs['lab'],
+        })
+        return context
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs['pk']
+        model = apps.get_model('lab', model_name=self.kwargs['lab'])
+        try:
+            queryset = model.objects.filter(user=self.request.user, pk=pk)
+        except ObjectDoesNotExist:
+            raise Http404("No object found matching this query.")
+
+        obj = super(LabUpdate, self).get_object(queryset=queryset)
+        return obj
 
 class IndexView(LoginRequiredMixin, ListView):
     template_name = 'lab/index.html'

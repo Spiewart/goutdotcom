@@ -33,7 +33,7 @@
           <div class="container user-flare-list">
             <h5>{{ urate.uric_acid }} mg/dL
             <ul>
-              <li>Created on: <a href="{% url 'lab:urate-update' urate.pk %}">{{ urate.created }}</a></li>
+              <li>Created on: <a href="{% url 'lab:lab-update' 'lab=urate' urate.pk %}">{{ urate.created }}</a></li>
             </ul>
           </div>
           <br>

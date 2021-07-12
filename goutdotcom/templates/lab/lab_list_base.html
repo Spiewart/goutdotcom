@@ -37,6 +37,9 @@
             {% for lab in object_list %}
                 <div class="container gdc-default">
                     <h5 class="gdc-legend">{{ lab.value }} {{ lab.units }}</h5>
+                    {% if lab.name == 'creatinine' %}
+                    <li class="gdc-list">eGFR: {{ lab.eGFR_calculator }}</li>
+                    {% endif %}
                     <h6 class="gdc-legend">Date: <a href="{{ lab.get_absolute_url }}" class="hyperlink">{{ lab.date_drawn.date }}</a></h6>
                 </div>
                 <br>
@@ -51,8 +54,7 @@
             {% endif %}
     <footer>
     {% block buttons %}
-            <a class="btn btn-primary" href="{% url 'lab:about' lab %}" role="button">About: {{ lab|capfirst }}</a>
-    <a class="btn btn-primary" href="{% url 'lab:lab-list' lab %}" role="button">List: {{ lab|capfirst }}</a>
+    <a class="btn btn-primary" href="{% url 'lab:about' lab %}" role="button">About: {{ lab|capfirst }}</a>
     <a class="btn btn-primary" href="{% url 'lab:lab-create' lab %}" role="button">New: {{ lab|capfirst }}</a>
     <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
     {% endblock buttons %}
