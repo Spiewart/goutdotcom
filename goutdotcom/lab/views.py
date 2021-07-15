@@ -28,7 +28,7 @@ class LabCreate(LoginRequiredMixin, CreateView):
         self.lab = self.kwargs['lab']
         return super().get(request, *args, **kwargs)
 
-    def get_form_class(self, **kwargs):
+    def get_form_class(self):
         self.lab = self.kwargs['lab']
         if self.fields is not None and self.form_class:
             raise ImproperlyConfigured(
@@ -51,9 +51,7 @@ class LabCreate(LoginRequiredMixin, CreateView):
                 )
             return modelform_factory(model, fields=self.fields)
 
-    def get_template_names(self, **kwargs):
-        kwargs = self.kwargs
-        lab = kwargs.get('lab')
+    def get_template_names(self):
         template = "lab/lab_form_base.html"
         return template 
 
@@ -71,7 +69,7 @@ class LabCreate(LoginRequiredMixin, CreateView):
         return context
 
 class LabDetail(LoginRequiredMixin, DetailView):
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
         self.model = apps.get_model('lab', model_name=self.kwargs['lab'])
         if self.queryset is None:
             if self.model:
@@ -87,8 +85,6 @@ class LabDetail(LoginRequiredMixin, DetailView):
         return self.queryset.all()
 
     def get_template_names(self, **kwargs):
-        kwargs = self.kwargs
-        lab = kwargs.get('lab')
         template = "lab/lab_detail_base.html"
         return template 
 
@@ -111,8 +107,6 @@ class LabList(LoginRequiredMixin, ListView):
         return self.queryset.filter(user=self.request.user).order_by('-created')
 
     def get_template_names(self, **kwargs):
-        kwargs = self.kwargs
-        lab = kwargs.get('lab')
         template = "lab/lab_list_base.html"
         return template 
 
@@ -129,7 +123,7 @@ class LabUpdate(LoginRequiredMixin, UpdateView):
         self.lab = self.kwargs['lab']
         return super().get(request, *args, **kwargs)
 
-    def get_form_class(self, **kwargs):
+    def get_form_class(self):
         self.lab = self.kwargs['lab']
         if self.fields is not None and self.form_class:
             raise ImproperlyConfigured(
@@ -187,13 +181,13 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-            'urate_list': Urate.objects.filter(user=self.request.user).order_by('-created')[:3],
-            'ALT_list': ALT.objects.filter(user=self.request.user).order_by('-created')[:3],
-            'AST_list': AST.objects.filter(user=self.request.user).order_by('-created')[:3],
-            'platelet_list': Platelet.objects.filter(user=self.request.user).order_by('-created')[:3],
-            'WBC_list': WBC.objects.filter(user=self.request.user).order_by('-created')[:3],
-            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user).order_by('-created')[:3],
-            'creatinine_list': Creatinine.objects.filter(user=self.request.user).order_by('-created')[:3],
+            'urate_list': Urate.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
+            'ALT_list': ALT.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
+            'AST_list': AST.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
+            'platelet_list': Platelet.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
+            'WBC_list': WBC.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
+            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
+            'creatinine_list': Creatinine.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
         })
         return context
 

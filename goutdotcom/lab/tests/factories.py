@@ -13,7 +13,7 @@ pytestmark = pytest.mark.django_db
 
 class UrateFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    uric_acid = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
+    value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
 
     class Meta:
         model = Urate
@@ -21,7 +21,7 @@ class UrateFactory(DjangoModelFactory):
 
 class ALTFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    alt_sgpt = Faker("pyint", min_value=1, max_value=9999)
+    value = Faker("pyint", min_value=1, max_value=9999)
 
     class Meta:
         model = ALT
@@ -29,7 +29,7 @@ class ALTFactory(DjangoModelFactory):
 
 class ASTFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ast_sgot = Faker("pyint", min_value=1, max_value=9999)
+    value = Faker("pyint", min_value=1, max_value=9999)
 
     class Meta:
         model = AST
@@ -37,7 +37,7 @@ class ASTFactory(DjangoModelFactory):
 
 class PlateletFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    platelets = Faker("pyint", min_value=1, max_value=1300)
+    value = Faker("pyint", min_value=1, max_value=1300)
 
     class Meta:
         model = Platelet
@@ -45,7 +45,7 @@ class PlateletFactory(DjangoModelFactory):
 
 class WBCFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    white_blood_cells = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
+    value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
 
     class Meta:
         model = WBC
@@ -53,7 +53,7 @@ class WBCFactory(DjangoModelFactory):
 
 class HemoglobinFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    hemoglobin = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=5, max_value=20)
+    value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=5, max_value=20)
 
     class Meta:
         model = Hemoglobin
@@ -61,7 +61,7 @@ class HemoglobinFactory(DjangoModelFactory):
 
 class CreatinineFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    creatinine = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
+    value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
 
     class Meta:
         model = Creatinine

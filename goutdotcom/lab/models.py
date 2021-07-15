@@ -46,7 +46,7 @@ class Lab(TimeStampedModel):
 class Urate(Lab):
     value = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid", null=True, blank=True)
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
-    name = "Urate"
+    name = "urate"
 
 class ALT(Lab):
     value = models.IntegerField(help_text="ALT / SGPT")
