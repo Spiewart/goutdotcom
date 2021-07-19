@@ -181,13 +181,13 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-            'urate_list': Urate.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
-            'ALT_list': ALT.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
-            'AST_list': AST.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
-            'platelet_list': Platelet.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
-            'WBC_list': WBC.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
-            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
-            'creatinine_list': Creatinine.objects.filter(user=self.request.user).order_by('-date_drawn')[:3],
+            'urate_list': Urate.objects.filter(user=self.request.user).order_by('-date_drawn')[:1],
+            'ALT_list': ALT.objects.filter(user=self.request.user).order_by('-date_drawn')[:1],
+            'AST_list': AST.objects.filter(user=self.request.user).order_by('-date_drawn')[:1],
+            'platelet_list': Platelet.objects.filter(user=self.request.user).order_by('-date_drawn')[:1],
+            'WBC_list': WBC.objects.filter(user=self.request.user).order_by('-date_drawn')[:1],
+            'hemoglobin_list': Hemoglobin.objects.filter(user=self.request.user).order_by('-date_drawn')[:1],
+            'creatinine_list': Creatinine.objects.filter(user=self.request.user).order_by('-date_drawn')[:1],
         })
         return context
 
@@ -195,37 +195,3 @@ class IndexView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-class UrateUpdate(LoginRequiredMixin, UpdateView):
-    model = Urate
-    fields = ['value', 'date_drawn',]
-    template_name = 'lab/urate_update.html'
-
-class ALTUpdate(LoginRequiredMixin, UpdateView):
-    model = ALT
-    fields = ['value', 'date_drawn']
-    template_name = 'lab/ALT_update.html'
-
-class ASTUpdate(LoginRequiredMixin, UpdateView):
-    model = AST
-    fields = ['value', 'date_drawn']
-    template_name = 'lab/AST_update.html'
-
-class PlateletUpdate(LoginRequiredMixin, UpdateView):
-    model = Platelet
-    fields = ['value', 'date_drawn']
-    template_name = 'lab/platelet_update.html'
-
-class WBCUpdate(LoginRequiredMixin, UpdateView):
-    model = WBC
-    fields = ['value', 'date_drawn']
-    template_name = 'lab/WBC_update.html'
-
-class HemoglobinUpdate(LoginRequiredMixin, UpdateView):
-    model = Hemoglobin
-    fields = ['value', 'date_drawn']
-    template_name = 'lab/hemoglobin_update.html'
-
-class CreatinineUpdate(LoginRequiredMixin, UpdateView):
-    model = Creatinine
-    fields = ['value', 'date_drawn']
-    template_name = 'lab/creatinine_update.html'

@@ -1,4 +1,6 @@
 from goutdotcom.profiles.tests.factories import PatientProfileFactory
+from goutdotcom.users.tests.factories import UserFactory
+from goutdotcom.users.models import User
 import pytest
 
 from decimal import *
@@ -6,6 +8,17 @@ from decimal import *
 from .factories import UrateFactory, ASTFactory, ALTFactory, PlateletFactory, WBCFactory, HemoglobinFactory, CreatinineFactory
 
 pytestmark = pytest.mark.django_db
+
+class TestRoundDecimal:
+    def test_value_return(self):
+        value = Decimal(0.59403423)
+        assert(value.quantize(Decimal(10) ** -2) == Decimal(0.59))
+
+class TestLabMethods:
+    def test_profile_does_not_exist(self):
+        user_without_profile = UserFactory()
+        Creatinine = CreatinineFactory(user=user_without_profile)
+        assert(Creatinine.user.patientprofile, None)
 
 class TestUrateMethods:
     def test__str__(self):
