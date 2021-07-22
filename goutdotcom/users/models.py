@@ -59,4 +59,8 @@ class Patient(User):
     # Custom methods for Patient Role go here...
     @property
     def extra(self):
-        return self.patientprofile
+        try:
+            return self.patientprofile
+        except self.patientprofile.DoesNotExist:
+            return None
+

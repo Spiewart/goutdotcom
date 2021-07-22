@@ -87,7 +87,7 @@ def round_decimal(value, places):
         # see https://docs.python.org/2/library/decimal.html#decimal.Decimal.quantize for options
         return value.quantize(Decimal(10) ** -places)
     return value
-    
+
 class Creatinine(Lab):
     value = models.DecimalField(max_digits=4, decimal_places=2, help_text="creatinine")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
@@ -103,7 +103,7 @@ class Creatinine(Lab):
 
     def sex_vars_alpha(self):
         if self.user.patientprofile.gender == 'male':
-            return Decimal(float(-0.411))
+            return Decimal(-0.411)
         elif self.user.patientprofile.gender == 'female':
             return Decimal(-0.329)
         else:
@@ -133,7 +133,7 @@ class Creatinine(Lab):
                 if self.sex_modifier() != False:
                     self.race_modifier()
                     self.sex_modifier()
-                    eGFR = Decimal(141) * min(self.value / kappa, Decimal(1.00)) * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.get_age() ** self.race_modifier() ** self.sex_modifier()
+                    eGFR = Decimal(141) * min(self.value / kappa, Decimal(1.00)) ** alpha * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.get_age() * self.race_modifier() * self.sex_modifier()
                     return round_decimal(eGFR, 2)
                 else:
                     return "Something went wrong with eGFR calculation"

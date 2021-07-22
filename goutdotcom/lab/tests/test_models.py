@@ -11,8 +11,8 @@ pytestmark = pytest.mark.django_db
 
 class TestRoundDecimal:
     def test_value_return(self):
-        value = Decimal(0.59403423)
-        assert(value.quantize(Decimal(10) ** -2) == Decimal(0.59))
+        value = Decimal(0.59343)
+        assert(value.quantize(Decimal(10) ** -2) == Decimal('0.59'))
 
 class TestLabMethods:
     def test_profile_does_not_exist(self):
@@ -121,8 +121,44 @@ class TestCreatinineMethods:
         Creatinine.user.patientprofile = profile
 
         if profile.gender == 'male':
-            assert Creatinine.eGFR_calculator().sex_vars_kappa() == Decimal(0.9)
+            assert Creatinine.sex_vars_kappa() == Decimal(0.9)
         elif profile.gender == 'female':
-            assert Creatinine.eGFR_calculator().sex_vars_kappa() == Decimal(0.7)
-        else: 
+            assert Creatinine.sex_vars_kappa() == Decimal(0.7)
+        else:
             assert Creatinine.eGFR_calculator().sex_vars_kappa() == False
+
+    def test_sex_vars_alpha(self):
+        profile = PatientProfileFactory()
+        Creatinine = CreatinineFactory()
+        Creatinine.user.patientprofile = profile
+
+        if profile.gender == 'male':
+            assert Creatinine.sex_vars_alpha() == Decimal(-0.411)
+        elif profile.gender == 'female':
+            assert Creatinine.sex_vars_alpha() == Decimal(-0.329)
+        else:
+            assert Creatinine.eGFR_calculator().sex_vars_kappa() == False
+
+    def test_race_modifier(self):
+        profile = PatientProfileFactory()
+        Creatinine = CreatinineFactory()
+        Creatinine.user.patientprofile = profile
+
+        if profile.race == 'black':
+            assert Creatinine.race_modifier() == Decimal(1.159)
+        elif profile.race == 'white' or profile.race == 'asian' or profile.race == 'native american' or profile.race == 'hispanic':
+            assert Creatinine.race_modifier() == Decimal(1.00)
+        else:
+            assert Creatinine.eGFR_calculator() == False
+
+    def test_sex_modifier(self):
+        profile = PatientProfileFactory()
+        Creatinine = CreatinineFactory()
+        Creatinine.user.patientprofile = profile
+
+        if profile.gender == 'male':
+            assert Creatinine.sex_modifier() == Decimal(1.018)
+        elif profile.gender == 'female' or profile.gender == 'non-binary':
+            assert Creatinine.sex_modifier() == Decimal(1.00)
+        else:
+            assert Creatinine.eGFR_calculator() == False
