@@ -4,14 +4,27 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
-  <h1>{{ user.username }}</h1>
-  <form class="form-horizontal" method="post" action="{% url 'profiles:update' object.slug %}">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="control-group">
-      <div class="controls">
-        <button type="submit" class="btn btn-primary">Update</button>
+  {% if form.instance.pk %}
+    <h1>{{ user.username }}</h1>
+    <form class="form-horizontal" method="post" action="{% url 'profiles:update' request.user object.pk %}" enctype='multipart/form-data'>
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  {% else %}
+    <h1>{{ user.username }}</h1>
+    <form class="form-horizontal" method="post" action="{% url 'profiles:create' %}" enctype='multipart/form-data'>
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </form>
+  {% endif %}
 {% endblock %}

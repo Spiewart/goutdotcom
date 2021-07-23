@@ -20,10 +20,10 @@ populate_years()
 class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
-        fields = ('picture', 'date_of_birth', 'gender', 'race', 'weight', 'height',)
+        fields = ('picture', 'bio', 'date_of_birth', 'gender', 'race', 'weight', 'height',)
 
-    date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=YEARS, empty_label=("Choose Year", "Choose Month", "Choose Day")))    
-    
+    date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=YEARS, empty_label=("Choose Year", "Choose Month", "Choose Day")))
+
     def __init__(self, *args, **kwargs):
         super(PatientProfileForm, self).__init__(*args, **kwargs)
 
@@ -36,11 +36,11 @@ class PatientProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Create your profile',
-                'picture', 
-                'date_of_birth', 
-                'gender', 
-                'race', 
-                'weight', 
+                'picture',
+                'date_of_birth',
+                'gender',
+                'race',
+                'weight',
                 'height',
                 ),
         )

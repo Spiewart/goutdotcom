@@ -1,5 +1,7 @@
 from goutdotcom.profiles.tests.factories import PatientProfileFactory
 from goutdotcom.users.tests.factories import UserFactory
+from goutdotcom.lab.models import round_decimal
+from goutdotcom.profiles.models import PatientProfile
 from goutdotcom.users.models import User
 import pytest
 
@@ -18,7 +20,7 @@ class TestLabMethods:
     def test_profile_does_not_exist(self):
         user_without_profile = UserFactory()
         Creatinine = CreatinineFactory(user=user_without_profile)
-        assert(Creatinine.user.patientprofile, None)
+        assert(Creatinine.user.patientprofile, PatientProfile.DoesNotExist)
 
 class TestUrateMethods:
     def test__str__(self):
@@ -162,3 +164,34 @@ class TestCreatinineMethods:
             assert Creatinine.sex_modifier() == Decimal(1.00)
         else:
             assert Creatinine.eGFR_calculator() == False
+
+    def test_eGFR_calculator(self):
+        Creatinine = CreatinineFactory()
+        assert Creatinine.eGFR_calculator() == "Can't calculate eGFR without an age (make a profile)"
+        profile = PatientProfileFactory()
+        Creatinine.user.patientprofile = profile
+        kappa = 0
+        alpha = 0
+        race = 0
+        sex = 0
+        age = profile.get_age()
+
+        if profile.gender == 'male':
+            sex = Decimal(1.018)
+            kappa = Decimal(0.9)
+            alpha = Decimal(-0.411)
+        elif profile.gender == 'female':
+            sex = Decimal(1.00)
+            kappa = Decimal(0.7)
+            alpha = Decimal(-0.329)
+        else:
+            return "Something went wrong with eGFR calculation"
+        if profile.race == 'black':
+            race = Decimal(1.159)
+        elif profile.race == 'white' or profile.race == 'asian' or profile.race == 'native american' or profile.race == 'hispanic':
+            race = Decimal(1.00)
+        else:
+            return "Something went wrong with eGFR calculation"
+        eGFR = Decimal(141) * min(Creatinine.value / kappa, Decimal(1.00)) ** alpha * max(Creatinine.value / kappa, Decimal(1.00)
+                                                                                          ) ** Decimal(-1.209) * Decimal(0.993) ** age * race * sex
+        assert Creatinine.eGFR_calculator() == round_decimal(eGFR, 2)

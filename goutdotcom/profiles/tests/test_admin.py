@@ -22,4 +22,4 @@ class TestPatientProfileAdmin:
                 },
             )
             #assert response.status_code == 302
-            assert PatientProfile.objects.get(user=profile.user).exists()
+            assert PatientProfile.objects.filter(user=profile.user).exists()

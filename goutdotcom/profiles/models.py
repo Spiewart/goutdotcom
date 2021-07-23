@@ -12,6 +12,8 @@ import datetime
 from goutdotcom.users.models import models
 
 # Create your models here.
+sexes = (('male', 'male'), ('female', 'female'), ('non-binary', 'non-binary'))
+races = (('white', 'white'), ('black', 'black'), ('asian', 'asian'), ('native american', 'native american'), ('hispanic', 'hispanic'))
 
 class PatientProfile(TimeStampedModel):
     # Default User profile
@@ -20,31 +22,21 @@ class PatientProfile(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-
-    def get_id_num(self):
-        id_num = get_random_string(length=12)
-        return id_num
-
-    slug = AutoSlugField(
-        "User Profile", unique_with="user", always_update=False, populate_from="get_id_num"
-    )
-    picture = models.ImageField(default="default_image.jpg", null=True, blank=True)
+    picture = models.ImageField(default="default_image.jpg", null=True, blank=True, help_text="Upload a picture for your profile")
+    bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=20, choices=sexes, help_text='Enter gender', null=True, blank=True, default='male')
+    race = models.CharField(max_length=40, choices=races, help_text='Enter race', null=True, blank=True, default='white')
+    weight = models.IntegerField(help_text="How much do you weight in pounds?", null=True, blank=True)
+    height = models.IntegerField(help_text="How tall are you in feet/inches?", null=True, blank=True)
+    drinks_per_week = models.IntegerField(null=True, blank=True)
 
     def get_age(self):
         if self.date_of_birth:
             age = datetime.date.today().year - self.date_of_birth.year
             return age
         else:
-            pass
-
-    sexes = (('male', 'male'), ('female', 'female'), ('non-binary', 'non-binary'))
-    races = (('white', 'white'), ('black', 'black'), ('asian', 'asian'), ('native american', 'native american'), ('hispanic', 'hispanic'))
-
-    gender = models.CharField(max_length=20, choices=sexes, help_text='Enter gender', null=False, blank=True, default='male')
-    race = models.CharField(max_length=40, choices=races, help_text='Enter race', null=False, blank=True, default='white')
-    weight = models.IntegerField(help_text="How much do you weight in pounds?", null=True, blank=True)
-    height = models.IntegerField(help_text="How tall are you in feet/inches?", null=True, blank=True)
+            return "No date of birth recorded"
 
     def BMI_calculator(self):
         def weight_kgs_calc(self):
@@ -73,10 +65,8 @@ class PatientProfile(TimeStampedModel):
             else:
                 return height_meters_calc(self)
 
-    drinks_per_week = models.IntegerField(null=True, blank=True)
-
     def __str__(self):
-        return self.user.username
+        return str(self.user.username + "'s profile")
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})

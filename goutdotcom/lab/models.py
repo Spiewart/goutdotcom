@@ -127,16 +127,19 @@ class Creatinine(Lab):
 
     def eGFR_calculator(self):
         if self.user_has_profile() == True:
-            kappa = self.sex_vars_kappa()
-            alpha = self.sex_vars_alpha()
-            if self.race_modifier() != False:
-                if self.sex_modifier() != False:
-                    self.race_modifier()
-                    self.sex_modifier()
-                    eGFR = Decimal(141) * min(self.value / kappa, Decimal(1.00)) ** alpha * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.get_age() * self.race_modifier() * self.sex_modifier()
-                    return round_decimal(eGFR, 2)
+            if self.user.patientprofile.gender == 'non-binary':
+                return "Need biologic sex to calculate eGFR"
+            else:
+                kappa = self.sex_vars_kappa()
+                alpha = self.sex_vars_alpha()
+                if self.race_modifier() != False:
+                    if self.sex_modifier() != False:
+                        self.race_modifier()
+                        self.sex_modifier()
+                        eGFR = Decimal(141) * min(self.value / kappa, Decimal(1.00)) ** alpha * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.get_age() * self.race_modifier() * self.sex_modifier()
+                        return round_decimal(eGFR, 2)
+                    else:
+                        return "Something went wrong with eGFR calculation"
                 else:
                     return "Something went wrong with eGFR calculation"
-            else:
-                return "Something went wrong with eGFR calculation"
         return "Can't calculate eGFR without an age (make a profile)"

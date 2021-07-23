@@ -13,6 +13,9 @@ body {
 .hyperlink:hover {
   color: black; }
 
+#profilepic {
+  margin-left: 5px; }
+
 .flare-mini-detail-list {
   border-style: solid;
   border-width: medium;

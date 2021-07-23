@@ -4,95 +4,93 @@
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
-<div class="container">
-
-  <div class="media user-profile-media">
-    <div class="media-body">
-      <h2>{{ object.username }}</h2>
-      {% if object.username %}
-        {% if object.name %}
-          <p>{{ object.name }}</p>
-        {% endif %}
-          <p>{{ object.role|lower}}</p>
-      {% endif %}
-      </div>
-      {% if object.patientprofile.picture %}
-        <div class="media">
-        <img src="{{ object.patientprofile.picture.url }}" width="250" height="250">
+  <main>
+    <div class="media gdc-default">
+        <div class="media-body">
+          <h1>{{ object.username|capfirst}}</h1>
+            {% if object.username %}
+              {% if object.name %}
+                <p>{{ object.name }}</p>
+              {% endif %}
+                <p>{{ object.role|capfirst}}</p>
+            {% endif %}
+            {% if object.patientprofile.bio %}
+              <p>{{ object.patientprofile.bio }}</p>
+            {% endif %}
         </div>
-      {% endif %}
-  </div>
-
-  <br>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm">
-        {% if object == request.user %}
-          {% if object.patientprofile.date_of_birth %}
-          <p>Date of birth: {{ object.patientprofile.date_of_birth }}</p>
-          <p>Age: {{ object.patientprofile.get_age }}</p>            
-          {% endif %}
-          {% if object.patientprofile.gender %}
-            <p>Gender: {{ object.patientprofile.gender }}
-          {% endif %}
-          {% if object.patientprofile.race %}
-            <p>Race: {{ object.patientprofile.race }}
-          {% endif %}
-          {% if object.patientprofile.weight %}
-            <p>Weight: {{ object.patientprofile.weight }}
-          {% endif %}
-          {% if object.patientprofile.height %}
-            <p>height: {{ object.patientprofile.height }}
-          {% endif %}
-          {% if object.patientprofile.BMI_calculator %}
-            <p>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}
-          {% endif %}
-          {% if object.patientprofile.drinks_per_week %}
-            <p>Drinks per Week: {{ object.patientprofile.drinks_per_week }}
-          {% endif %}
-          {% if object.patientprofile %}
-          <h6>Profile created on: {{ object.patientprofile.created }}</h6>
-          {% else %}
-          <h6>Want to complete your profile? <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a></h6>
-          {% endif %}
+        {% if object.patientprofile.picture %}
+          <div class="media">
+          <img src="{{ object.patientprofile.picture.url }}" id="profilepic" width="250" height="250" alt="{{ object.username|capfirst }}'s Picture">
+          </div>
         {% endif %}
+    </div>
+
+    <br>
+
+    <div class="container gdc-default">
+      <div class="row">
+        <div class="col-sm">
+          {% if object == request.user %}
+            {% if object.patientprofile.date_of_birth %}
+            <li class ="gdc-list">Date of birth: {{ object.patientprofile.date_of_birth }}</li>
+            <li class ="gdc-list">Age: {{ object.patientprofile.get_age }}</li>
+            {% endif %}
+            {% if object.patientprofile.gender %}
+              <li class ="gdc-list">Gender: {{ object.patientprofile.gender }}</li>
+            {% endif %}
+            {% if object.patientprofile.race %}
+              <li class ="gdc-list">Race: {{ object.patientprofile.race }}</li></li>
+            {% endif %}
+            {% if object.patientprofile.weight %}
+              <li class ="gdc-list">Weight: {{ object.patientprofile.weight }}</li>
+            {% endif %}
+            {% if object.patientprofile.height %}
+              <li class ="gdc-list">height: {{ object.patientprofile.height }}</li>
+            {% endif %}
+            {% if object.patientprofile.BMI_calculator %}
+              <li class ="gdc-list">BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
+            {% endif %}
+            {% if object.patientprofile.drinks_per_week %}
+              <li class ="gdc-list">Drinks per Week: {{ object.patientprofile.drinks_per_week }}</li>
+            {% endif %}
+            {% if object.patientprofile %}
+            <p>Profile created on: {{ object.patientprofile.created }}</p>
+            {% else %}
+            <p>Want to complete your profile?</p>
+            <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
+            {% endif %}
+          {% endif %}
+        </div>
       </div>
     </div>
-  </div>
-<br>
+    <br>
 
-{% if object == request.user %}
-<!-- Action buttons -->
-    <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
-    {% if request.user.patientprofile %}
-    <a class="btn btn-primary" href="{% url 'profiles:update' request.user.patientprofile.slug %}" role="button">Profile</a>
+    {% if object == request.user %}
+        <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
+        <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+        {% if request.user.patientprofile %}
+        <a class="btn btn-primary" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}" role="button">Profile</a>
+        {% endif %}
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Medications
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+
+              <li><a class="dropdown-item" href="{% url 'treatment:allopurinol-create' %}">Allopurinol</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:febuxostat-create' %}">Febuxostat</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:colchicine-create' %}">Colchicine</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:ibuprofen-create' %}">Ibuprofen</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:naproxen-create' %}">Naproxen</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:prednisone-create' %}">Prednisone</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:probenecid-create' %}">Probenecid</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:methylprednisolone-create' %}">Methylprednisolone</a></li>
+            </ul>
+          </div>
+        </div>
     {% endif %}
-    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-      <div class="btn-group" role="group">
-        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-          Medications
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-          
-          <li><a class="dropdown-item" href="{% url 'treatment:allopurinol-create' %}">Allopurinol</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:febuxostat-create' %}">Febuxostat</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:colchicine-create' %}">Colchicine</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:ibuprofen-create' %}">Ibuprofen</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:naproxen-create' %}">Naproxen</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:prednisone-create' %}">Prednisone</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:probenecid-create' %}">Probenecid</a></li>
-          <li><a class="dropdown-item" href="{% url 'treatment:methylprednisolone-create' %}">Methylprednisolone</a></li>
-        </ul>
-      </div>
-    </div>
-    <!-- Your Stuff: Custom user template urls -->
-
-<!-- End Action buttons -->
-{% endif %}
-
-
-</div>
+  </div>
 {% endblock content %}
