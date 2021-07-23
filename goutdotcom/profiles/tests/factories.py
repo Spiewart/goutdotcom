@@ -8,12 +8,12 @@ import pytest
 
 from goutdotcom.users.models import User
 from goutdotcom.users.tests.factories import UserFactory
-from goutdotcom.profiles.models import PatientProfile
+from goutdotcom.profiles.models import PatientProfile, sexes, races
 
 pytestmark = pytest.mark.django_db
 
-GENDER_CHOICES = [x[0] for x in PatientProfile.sexes]
-RACE_CHOICES = [x[0] for x in PatientProfile.races]
+GENDER_CHOICES = [x[0] for x in sexes]
+RACE_CHOICES = [x[0] for x in races]
 
 class PatientProfileFactory(DjangoModelFactory):
 
