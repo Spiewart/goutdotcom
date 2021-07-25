@@ -4,7 +4,7 @@
 {% block content %}
 <main role="main" class="container">
   <div class="container">
-    <h1>Your Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a> 
+    <h1>{{ request.user|capfirst }}'s Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a>
     {% if request.user.is_authenticated %}
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
       <div class="btn-group" role="group">

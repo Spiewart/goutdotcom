@@ -20,7 +20,7 @@ class TestLabMethods:
     def test_profile_does_not_exist(self):
         user_without_profile = UserFactory()
         Creatinine = CreatinineFactory(user=user_without_profile)
-        assert Creatinine.user.patientprofile, PatientProfile.DoesNotExist
+        assert Creatinine.user.patientprofile == PatientProfile.DoesNotExist
 
 class TestUrateMethods:
     def test__str__(self):

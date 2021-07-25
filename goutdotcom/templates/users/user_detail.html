@@ -12,7 +12,7 @@
               {% if object.name %}
                 <p>{{ object.name }}</p>
               {% endif %}
-                <p>{{ object.role|capfirst}}</p>
+                <p>{{ object.get_role_display }}</p>
             {% endif %}
             {% if object.patientprofile.bio %}
               <p>{{ object.patientprofile.bio }}</p>
