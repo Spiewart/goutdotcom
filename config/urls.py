@@ -22,6 +22,7 @@ urlpatterns = [
     path("flare/", include(("goutdotcom.flare.urls"), namespace="flare")),
     path("ult/", include(("goutdotcom.ult.urls"), namespace="ult")),
     path("treatment/", include(("goutdotcom.treatment.urls"), namespace="treatment")),
+    path("vitals/", include(("goutdotcom.vitals.urls"), namespace="vitals")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

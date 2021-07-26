@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load vitals_extras %}
+
+{% block content %}
+<div class="container">
+  <main>
+    <div class="row">
+      <div class="col">
+        <div class="container gdc-default">
+          {% block vital_title %}
+          <h1>
+            {{ object|to_class_name }} ({{ object.date_recorded.date }})
+          </h1>
+          {% endblock vital_title %}
+          <ul>
+            <li class="gdc-list">{{ object.value }} {{ object.units }}</li>
+            <li class="gdc-list">Recorded: {{ object.date_recorded }}</li>
+            <li class="gdc-list">Logged: {{ object.created }}</li>
+            <li class="gdc-list">Last modified: {{ object.modified }}</li>
+          </ul>
+      </div>
+      </div>
+    </div>
+  </main>
+  <br>
+  {% block buttons %}
+  {% endblock buttons %}
+</div>
+{% endblock content %}
