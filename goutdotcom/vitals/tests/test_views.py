@@ -4,6 +4,7 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from goutdotcom.users.tests.factories import UserFactory
+from goutdotcom.vitals.models import Weight
 from goutdotcom.vitals.tests.factories import WeightFactory
 
 from ..views import VitalDetail
@@ -22,3 +23,12 @@ class TestDetailView(TestCase):
         ### response with fake Weight object's name, pk for VitalDetail view
         response = VitalDetail.as_view()(request, vital=self.weight.name, pk=self.weight.pk)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_queryset(self):
+        request = self.factory.get(self.detail_url)
+        request.user = self.user
+        ### response with fake Weight object's name, pk for VitalDetail view
+        view = VitalDetail(kwargs={'vital':self.weight.name, 'pk':self.weight.pk})
+        view.request = request
+        queryset = view.get_queryset()
+        self.assertQuerysetEqual(queryset, Weight.objects.filter(pk=self.weight.pk))
