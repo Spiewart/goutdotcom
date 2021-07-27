@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main role="main" class="container">
+  <div class="container">
+    <h1>{{ request.user|capfirst }}'s Vitals
+    {% if request.user.is_authenticated %}
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+      <div class="btn-group" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          Log a Vital
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+          <li><a class="dropdown-item" href="">Weight</a></li>
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+    </h1>
+    <div class="row">
+      {% if weight_list %}
+        <div class="col">
+          <h2><a href="">Weights</a></h2>
+          {% for weight in weight_list %}
+          <div class="container gdc-default">
+            <p>{{ weight.value }} {{ weight.units }}</p>
+            <p>Date: <a href="{% url 'vitals:detail' 'weight' weight.pk %}">{{ weight.date_recorded }}</a></p>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</main>
+{% endblock content %}

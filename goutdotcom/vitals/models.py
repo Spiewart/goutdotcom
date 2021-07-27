@@ -37,7 +37,7 @@ class Vital(TimeStampedModel):
     value = NullBooleanField()
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     altunit = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
-    name = "Vital"
+    name = "vital"
     date_recorded = models.DateTimeField(help_text="What day was this lab drawn?", default=timezone.now)
 
     class Meta:
