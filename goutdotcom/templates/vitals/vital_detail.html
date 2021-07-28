@@ -14,7 +14,11 @@
           </h1>
           {% endblock vital_title %}
           <ul>
+            {% if object.name == 'height' %}
+              <li class="gdc-list">{{ object.convert_inches_to_feet }}</li>
+            {% else %}
             <li class="gdc-list">{{ object.value }} {{ object.units }}</li>
+            {% endif %}
             <li class="gdc-list">Recorded: {{ object.date_recorded }}</li>
             <li class="gdc-list">Logged: {{ object.created }}</li>
             <li class="gdc-list">Last modified: {{ object.modified }}</li>

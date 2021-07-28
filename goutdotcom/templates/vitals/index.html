@@ -31,6 +31,18 @@
           {% endfor %}
         </div>
       {% endif %}
+      {% if height_list %}
+        <div class="col">
+          <h2><a href="">Heights</a></h2>
+          {% for height in height_list %}
+          <div class="container gdc-default">
+            <p>{{ height.convert_inches_to_feet }}</p>
+            <p>Date: <a href="{% url 'vitals:detail' 'height' height.pk %}">{{ height.date_recorded }}</a></p>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
   </div>
 </main>

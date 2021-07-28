@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import modelform_factory
 from django.http.response import Http404
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, TemplateView
 from .models import ALT, AST, Creatinine, Hemoglobin, Platelet, Urate, WBC
 
@@ -53,7 +53,7 @@ class LabCreate(LoginRequiredMixin, CreateView):
 
     def get_template_names(self):
         template = "lab/lab_form_base.html"
-        return template 
+        return template
 
     fields = ['value', 'date_drawn',]
 
@@ -69,24 +69,14 @@ class LabCreate(LoginRequiredMixin, CreateView):
         return context
 
 class LabDetail(LoginRequiredMixin, DetailView):
-    def get_queryset(self):
+    def get_object(self, queryset=None):
         self.model = apps.get_model('lab', model_name=self.kwargs['lab'])
-        if self.queryset is None:
-            if self.model:
-                return self.model._default_manager.all()
-            else:
-                raise ImproperlyConfigured(
-                    "%(cls)s is missing a QuerySet. Define "
-                    "%(cls)s.model, %(cls)s.queryset, or override "
-                    "%(cls)s.get_queryset()." % {
-                        'cls': self.__class__.__name__
-                    }
-                )
-        return self.queryset.all()
+        lab = get_object_or_404(self.model, pk=self.kwargs['pk'], user=self.request.user)
+        return lab
 
     def get_template_names(self, **kwargs):
         template = "lab/lab_detail_base.html"
-        return template 
+        return template
 
 class LabList(LoginRequiredMixin, ListView):
     paginate_by=5
@@ -108,7 +98,7 @@ class LabList(LoginRequiredMixin, ListView):
 
     def get_template_names(self, **kwargs):
         template = "lab/lab_list_base.html"
-        return template 
+        return template
 
     def get_context_data(self, **kwargs):
         self.model = apps.get_model('lab', model_name=self.kwargs['lab'])
@@ -148,7 +138,7 @@ class LabUpdate(LoginRequiredMixin, UpdateView):
 
     def get_template_names(self):
         template = "lab/lab_form_base.html"
-        return template 
+        return template
 
     fields = ['value', 'date_drawn',]
 

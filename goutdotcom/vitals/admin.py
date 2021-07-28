@@ -12,7 +12,22 @@ class WeightAdmin(admin.ModelAdmin):
         "altunit",
         "date_recorded",
         "created",
+        "pk",
     )
 
 
+class HeightAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "units",
+        "convert_inches_to_meters",
+        "altunit",
+        "convert_inches_to_feet",
+        "date_recorded",
+        "created",
+        "pk",
+    )
+
 admin.site.register(Weight, WeightAdmin)
+admin.site.register(Height, HeightAdmin)

@@ -6,6 +6,8 @@ from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 from django.utils import timezone
 
+from math import floor
+
 # Create your models here.
 INCHES = 'inches'
 METERS = 'meters'
@@ -61,3 +63,19 @@ class Weight(Vital):
 
     def convert_pounds_to_kg(self):
         return round(self.value / 2.205, 1)
+
+
+class Height(Vital):
+    value = models.IntegerField(validators=[MinValueValidator(36), MaxValueValidator(
+        100)], help_text="Enter your height in inches", null=True, blank=True)
+    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=INCHES)
+    altunit = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=METERS)
+    name = "height"
+
+    def convert_inches_to_feet(self):
+        feet = floor(self.value / 12)
+        inches = self.value - feet * 12
+        return str(feet) + " foot " + str(inches) + " inches "
+
+    def convert_inches_to_meters(self):
+        return round(self.value / 39.37, 2)

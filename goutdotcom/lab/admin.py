@@ -11,6 +11,7 @@ class UrateAdmin(admin.ModelAdmin):
         "value",
         "date_drawn",
         "created",
+        "pk",
     )
 
 class ALTAdmin(admin.ModelAdmin):
