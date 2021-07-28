@@ -44,14 +44,17 @@ class TestDetailView(TestCase):
 
 class TestIndexView(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.factory = RequestFactory()
+        self.user = UserFactory()
+        self.weight = WeightFactory(user=self.user)
 
     def test_get_context_data(self):
-        response = self.client.get(reverse('vitals:index'))
-        self.assertIn('weight_list', response.context)
-        """request = self.factory.get('/fake-path')
+        request = self.factory.get('/vitals/index')
         request.user = self.user
-        view = IndexView(template_name="index.html")
-        context = view.get_context_data()
-        self.assertEqual(context['weight'], 'weight')"""
+        response = IndexView.as_view()(request)
+        self.assertIsInstance(response.context_data, dict)
+        self.assertIn('weight_list', response.context_data)
+        self.assertIn('height_list', response.context_data)
+
+
 
