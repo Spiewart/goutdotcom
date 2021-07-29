@@ -12,6 +12,7 @@ class TestDetailView(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = UserFactory()
+        self.user2 = UserFactory()
         self.weight = WeightFactory(user=self.user)
         self.detail_url = reverse('vitals:detail', kwargs={'vital':self.weight.name, 'pk':self.weight.pk})
 
@@ -32,6 +33,16 @@ class TestDetailView(TestCase):
         view.request = request
         queryset = view.get_queryset()
         self.assertQuerysetEqual(queryset, Weight.objects.filter(pk=self.weight.pk), transform=lambda x: x)
+
+    def test_get_404(self):
+        request = self.factory.get(self.detail_url)
+        request.user = self.user2
+        ### response with fake Weight object's name, pk for VitalDetail view
+        view = VitalDetail(kwargs={'vital':self.weight.name, 'pk':self.weight.pk})
+        view.model = apps.get_model('vitals', model_name=view.kwargs['vital'])
+        view.request = request
+        response = VitalDetail.as_view()(request, vital=self.weight.name, pk=self.weight.pk)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_template_names(self):
         request = self.factory.get(self.detail_url)
