@@ -75,7 +75,7 @@ class Height(Vital):
     def convert_inches_to_feet(self):
         feet = floor(self.value / 12)
         inches = self.value - feet * 12
-        return str(feet) + " foot " + str(inches) + " inches "
+        return str(feet) + " foot " + str(inches) + " inches"
 
     def convert_inches_to_meters(self):
         return round(self.value / 39.37, 2)

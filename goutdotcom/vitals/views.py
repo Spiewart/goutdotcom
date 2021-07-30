@@ -20,6 +20,53 @@ class IndexView(LoginRequiredMixin, ListView):
         })
         return context
 
+
+class VitalCreate(LoginRequiredMixin, CreateView):
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        self.vital = self.kwargs['vital']
+        return super().get(request, *args, **kwargs)
+
+    def get_form_class(self):
+        self.vital = self.kwargs['vital']
+        if self.fields is not None and self.form_class:
+            raise ImproperlyConfigured(
+                "Specifying both 'fields' and 'form_class' is not permitted."
+            )
+        if self.form_class:
+            return self.form_class
+        else:
+            if self.vital is not None:
+                # Fetch model from URL 'vital' parameter
+                model = apps.get_model('vitals', model_name=self.vital)
+            elif getattr(self, 'object', None) is not None:
+                model = self.object.__class__
+            else:
+                model = self.get_queryset().model
+            if self.fields is None:
+                raise ImproperlyConfigured(
+                    "Using ModelFormMixin (base class of %s) without "
+                    "the 'fields' attribute is prohibited." % self.__class__.__name__
+                )
+            return modelform_factory(model, fields=self.fields)
+
+    def get_template_names(self):
+        template = "vitals/vital_form.html"
+        return template
+
+    fields = ['value', 'date_recorded', ]
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(VitalCreate, self).get_context_data(**kwargs)
+        context.update({
+            'vital': self.kwargs['vital'],
+        })
+        return context
+
 class VitalDetail(LoginRequiredMixin, DetailView):
     def get_object(self, queryset=None):
         self.model = apps.get_model('vitals', model_name=self.kwargs['vital'])

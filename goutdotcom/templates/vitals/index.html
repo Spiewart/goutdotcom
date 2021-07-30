@@ -12,7 +12,8 @@
           Log a Vital
         </button>
         <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-          <li><a class="dropdown-item" href="">Weight</a></li>
+          <li><a class="dropdown-item" href="{% url 'vitals:create' 'weight' %}">Weight</a></li>
+          <li><a class="dropdown-item" href="{% url 'vitals:create' 'height' %}">Height</a></li>
         </ul>
       </div>
     </div>

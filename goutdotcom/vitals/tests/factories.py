@@ -5,7 +5,7 @@ import pytest
 
 from goutdotcom.users.models import User
 
-from goutdotcom.vitals.models import Weight
+from goutdotcom.vitals.models import Weight, Height
 from goutdotcom.users.models import User
 from goutdotcom.users.tests.factories import UserFactory
 
@@ -17,3 +17,12 @@ class WeightFactory(DjangoModelFactory):
 
     class Meta:
         model = Weight
+
+
+class HeightFactory(DjangoModelFactory):
+    user = factory.SubFactory(UserFactory)
+    value = Faker("pyint", min_value=40, max_value=120)
+
+    class Meta:
+        model = Height
+
