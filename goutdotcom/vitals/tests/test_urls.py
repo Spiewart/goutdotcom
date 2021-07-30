@@ -3,6 +3,14 @@ from django.urls import resolve, reverse
 
 pytestmark = pytest.mark.django_db
 
+
+def test_create():
+    assert (
+        reverse("vitals:create", kwargs={"vital": "weight"})
+        == f"/vitals/create/weight/"
+    )
+
+
 def test_detail():
     assert (
         reverse("vitals:detail", kwargs={"vital": "weight", "pk":1})

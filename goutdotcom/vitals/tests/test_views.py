@@ -92,7 +92,7 @@ class TestVitalCreate(TestCase):
     def test_get_context_data(self):
         request = self.factory.get('/vitals/weight/create')
         request.user = self.user
-        response = VitalCreate.as_view()(request)
+        response = VitalCreate.as_view()(request, vital='weight')
         self.assertIsInstance(response.context_data, dict)
         self.assertIn('vital', response.context_data)
 
