@@ -1,15 +1,11 @@
-from autoslug import AutoSlugField
-from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.dispatch import receiver
 from django.db import models
-from django.db.models.signals import post_save
 from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
-from django.utils.crypto import get_random_string
 import datetime
 
 from goutdotcom.users.models import models
+from goutdotcom.vitals.models import Weight, Height
 
 # Create your models here.
 sexes = (('male', 'male'), ('female', 'female'), ('non-binary', 'non-binary'))
@@ -27,8 +23,8 @@ class PatientProfile(TimeStampedModel):
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=20, choices=sexes, help_text='Enter gender', null=True, blank=True, default='male')
     race = models.CharField(max_length=40, choices=races, help_text='Enter race', null=True, blank=True, default='white')
-    weight = models.IntegerField(help_text="How much do you weight in pounds?", null=True, blank=True)
-    height = models.IntegerField(help_text="How tall are you in feet/inches?", null=True, blank=True)
+    weight = models.OneToOneField(Weight, on_delete=models.CASCADE, help_text="How much do you weight in pounds?", null=True, blank=True)
+    height = models.OneToOneField(Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True)
     drinks_per_week = models.IntegerField(null=True, blank=True)
 
     def get_age(self):
@@ -41,13 +37,13 @@ class PatientProfile(TimeStampedModel):
     def BMI_calculator(self):
         def weight_kgs_calc(self):
             if self.weight != None:
-                return self.weight / 2.205
+                return self.weight.value / 2.205
             else:
                 return "Enter a weight in pounds"
 
         def height_meters_calc(self):
             if self.height:
-                return self.height / 39.37
+                return self.height.value / 39.37
             else:
                 return "Enter a height in inches"
 
