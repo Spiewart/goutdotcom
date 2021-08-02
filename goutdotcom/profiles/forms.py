@@ -20,7 +20,7 @@ populate_years()
 class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
-        fields = ('picture', 'bio', 'date_of_birth', 'gender', 'race', 'weight', 'height',)
+        fields = ('picture', 'bio', 'date_of_birth', 'gender', 'race',)
 
     date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=YEARS, empty_label=("Choose Year", "Choose Month", "Choose Day")))
 
@@ -40,7 +40,5 @@ class PatientProfileForm(forms.ModelForm):
                 'date_of_birth',
                 'gender',
                 'race',
-                'weight',
-                'height',
                 ),
         )

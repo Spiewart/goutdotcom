@@ -6,9 +6,6 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
-
 from .models import Flare
 from ..lab.models import Urate
 from .forms import FlareForm
@@ -109,7 +106,7 @@ def FlareCreate(request):
         methylprednisolone_form = MethylprednisoloneFlareForm(request.POST, instance=Methylprednisolone())
         tinctureoftime_form = TinctureoftimeFlareForm(request.POST, instance=Tinctureoftime())
         othertreat_form = OthertreatFlareForm(request.POST, instance=Othertreat())
-        
+
         if flare_form.is_valid():
             flare=flare_form.save(commit=False)
             if flare.treatment == "Colcrys" and urate_form.is_valid() and colchicine_form.is_valid():
@@ -124,7 +121,7 @@ def FlareCreate(request):
                 flare.user=request.user
                 flare.save()
                 return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
-            
+
             elif flare.treatment == "Advil" and urate_form.is_valid() and ibuprofen_form.is_valid():
                 urate_for_flare = urate_form.save(commit=False)
                 urate_for_flare.user=request.user
@@ -137,7 +134,7 @@ def FlareCreate(request):
                 flare.user=request.user
                 flare.save()
                 return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
-            
+
             elif flare.treatment == "Aleve" and urate_form.is_valid() and naproxen_form.is_valid():
                 urate_for_flare = urate_form.save(commit=False)
                 urate_for_flare.user=request.user
@@ -150,7 +147,7 @@ def FlareCreate(request):
                 flare.user=request.user
                 flare.save()
                 return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk':flare.pk}))
-        
+
             elif flare.treatment == "Celebrex" and urate_form.is_valid() and celecoxib_form.is_valid():
                 urate_for_flare = urate_form.save(commit=False)
                 urate_for_flare.user=request.user
@@ -244,3 +241,4 @@ def FlareCreate(request):
 
     context = {'urate_form':urate_form, 'flare_form':flare_form, 'colchicine_form':colchicine_form, 'ibuprofen_form':ibuprofen_form, 'naproxen_form':naproxen_form, 'meloxicam_form':meloxicam_form, 'celecoxib_form':celecoxib_form, 'prednisone_form':prednisone_form, 'methylprednisolone_form':methylprednisolone_form, 'tinctureoftime_form':tinctureoftime_form, 'othertreat_form':othertreat_form,}
     return render(request, "flare/flarecreate_form.html", context)
+

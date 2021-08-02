@@ -9,6 +9,8 @@
     <form class="form-horizontal" method="post" action="{% url 'profiles:update' request.user object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
+      {{ height_form|crispy }}
+      {{ weight_form|crispy }}
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary">Update</button>
@@ -19,7 +21,9 @@
     <h1>{{ user.username }}</h1>
     <form class="form-horizontal" method="post" action="{% url 'profiles:create' %}" enctype='multipart/form-data'>
       {% csrf_token %}
-      {{ form|crispy }}
+      {{ profile_form|crispy }}
+      {{ height_form|crispy }}
+      {{ weight_form|crispy }}
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary">Create</button>
