@@ -21,7 +21,7 @@
     <h1>{{ user.username }}</h1>
     <form class="form-horizontal" method="post" action="{% url 'profiles:create' %}" enctype='multipart/form-data'>
       {% csrf_token %}
-      {{ profile_form|crispy }}
+      {{ form|crispy }}
       {{ height_form|crispy }}
       {{ weight_form|crispy }}
       <div class="control-group">

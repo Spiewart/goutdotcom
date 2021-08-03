@@ -14,6 +14,8 @@ from goutdotcom.vitals.models import Height, Weight
 class PatientProfileCreate(LoginRequiredMixin, CreateView):
     model = PatientProfile
     form_class = PatientProfileForm
+    height_form_class = HeightForm
+    weight_form_class = WeightForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -21,6 +23,50 @@ class PatientProfileCreate(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return self.request.user.get_absolute_url()
+
+    def get_context_data(self, **kwargs):
+        context = super(PatientProfileCreate, self).get_context_data(**kwargs)
+        context.update({
+            'user': self.request.user
+        })
+        if 'height_form' not in context:
+            context['height_form'] = self.height_form_class(self.request.GET)
+        if 'weight_form' not in context:
+            context['weight_form'] = self.weight_form_class(self.request.GET)
+        return context
+
+    def get_object(self, queryset=None):
+        model = self.model
+        try:
+            queryset = model.objects.filter(user=self.request.user)
+        except ObjectDoesNotExist:
+            raise Http404("No object found matching this query.")
+
+        obj = super(PatientProfileCreate, self).get_object(queryset=queryset)
+        return obj
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=PatientProfile())
+        height_form = self.height_form_class(request.POST, instance=Height())
+        weight_form = self.weight_form_class(request.POST, instance=Weight())
+
+        if form.is_valid() and height_form.is_valid() and weight_form.is_valid():
+            profile_data = form.save(commit=False)
+            profile_data.user = request.user
+            height_data = height_form.save(commit=False)
+            height_data.user = request.user
+            weight_data = weight_form.save(commit=False)
+            weight_data.user = request.user
+            height_data.save()
+            weight_data.save()
+            profile_data.height = height_data
+            profile_data.weight = weight_data
+            profile_data.save()
+            return HttpResponseRedirect(reverse('users:detail', kwargs={'user':request.user}))
+        else:
+            return self.render_to_response(
+                self.get_context_data(form=form, height_form=height_form, weight_form=weight_form))
 
 class PatientProfileUpdate(LoginRequiredMixin, UpdateView):
     model = PatientProfile
