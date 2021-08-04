@@ -1,10 +1,11 @@
 from goutdotcom.profiles.forms import PatientProfileForm
+from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.views.generic import CreateView, UpdateView
-from django.urls import reverse
+from django.urls import reverse_lazy, reverse
 
 from .models import PatientProfile
 from goutdotcom.vitals.forms import HeightForm, WeightForm
@@ -36,14 +37,8 @@ class PatientProfileCreate(LoginRequiredMixin, CreateView):
         return context
 
     def get_object(self, queryset=None):
-        model = self.model
-        try:
-            queryset = model.objects.filter(user=self.request.user)
-        except ObjectDoesNotExist:
-            raise Http404("No object found matching this query.")
-
-        obj = super(PatientProfileCreate, self).get_object(queryset=queryset)
-        return obj
+        object = self.model
+        return object
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -51,19 +46,21 @@ class PatientProfileCreate(LoginRequiredMixin, CreateView):
         height_form = self.height_form_class(request.POST, instance=Height())
         weight_form = self.weight_form_class(request.POST, instance=Weight())
 
-        if form.is_valid() and height_form.is_valid() and weight_form.is_valid():
+        if form.is_valid():
             profile_data = form.save(commit=False)
             profile_data.user = request.user
-            height_data = height_form.save(commit=False)
-            height_data.user = request.user
-            weight_data = weight_form.save(commit=False)
-            weight_data.user = request.user
-            height_data.save()
-            weight_data.save()
-            profile_data.height = height_data
-            profile_data.weight = weight_data
+            if height_form.is_valid():
+                height_data = height_form.save(commit=False)
+                height_data.user = request.user
+                height_data.save()
+                profile_data.height = height_data
+            if weight_form.is_valid():
+                weight_data = weight_form.save(commit=False)
+                weight_data.user = request.user
+                weight_data.save()
+                profile_data.weight = weight_data
             profile_data.save()
-            return HttpResponseRedirect(reverse('users:detail', kwargs={'user':request.user}))
+            return HttpResponseRedirect(reverse('users:detail', kwargs={'user': auth.get_user(request)}))
         else:
             return self.render_to_response(
                 self.get_context_data(form=form, height_form=height_form, weight_form=weight_form))
