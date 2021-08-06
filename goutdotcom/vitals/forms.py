@@ -9,33 +9,12 @@ from django.utils import timezone
 
 ### TO DO: ADD TESTS FOR FORMS ###
 
-### List of years to display to users for filling date fields ###
-YEARS = []
-
-### Recursive function to populate YEARS list ###
-def populate_years(x=0):
-    if 1890 not in YEARS:
-        current = int(datetime.date.today().year) - x
-        YEARS.append(current)
-        x = x+1
-        populate_years(x)
-
-### Call populate_years function ###
-populate_years()
-
-
 class HeightForm(forms.ModelForm):
     prefix = 'height'
+
     class Meta:
         model = Height
-        fields = ('value', 'date_recorded',)
-        error_messages = {
-            'value': {
-                'max_length': ("This writer's name is too long."),
-            },
-        }
-    date_recorded = forms.DateField(widget=forms.SelectDateWidget(
-        years=YEARS, empty_label=("Choose Year", "Choose Month", "Choose Day")), initial=timezone.now())
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(HeightForm, self).__init__(*args, **kwargs)
@@ -50,9 +29,9 @@ class HeightForm(forms.ModelForm):
             Fieldset(
                 'Height in inches',
                 'value',
-                'date_recorded',
             ),
         )
+        self.fields['value'].label = "Height"
 
 
 class WeightForm(forms.ModelForm):
@@ -60,10 +39,7 @@ class WeightForm(forms.ModelForm):
 
     class Meta:
         model = Weight
-        fields = ('value', 'date_recorded',)
-
-    date_recorded = forms.DateField(widget=forms.SelectDateWidget(
-        years=YEARS, empty_label=("Choose Year", "Choose Month", "Choose Day")), initial=timezone.now())
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(WeightForm, self).__init__(*args, **kwargs)
@@ -78,6 +54,6 @@ class WeightForm(forms.ModelForm):
             Fieldset(
                 'Weight in pounds',
                 'value',
-                'date_recorded',
             ),
         )
+        self.fields['value'].label = "Weight"

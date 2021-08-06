@@ -46,28 +46,19 @@ class PatientProfileCreate(LoginRequiredMixin, CreateView):
         height_form = self.height_form_class(request.POST, instance=Height())
         weight_form = self.weight_form_class(request.POST, instance=Weight())
 
-        if form.is_valid():
-            print("all forms valid")
+        if form.is_valid() and height_form.is_valid() and weight_form.is_valid():
             profile_data = form.save(commit=False)
             profile_data.user = request.user
-            if height_form.is_valid():
-                height_data = height_form.save(commit=False)
-                height_data.user = request.user
-                height_data.save()
-                if weight_form.is_valid():
-                    weight_data = weight_form.save(commit=False)
-                    weight_data.user = request.user
-                    weight_data.save()
-                    profile_data.height = height_data
-                    profile_data.weight = weight_data
-                    profile_data.save()
-                    return HttpResponseRedirect(self.request.user.get_absolute_url())
-                else:
-                    return self.render_to_response(
-                        self.get_context_data(form=form, height_form=height_form, weight_form=weight_form))
-            else:
-                return self.render_to_response(
-                    self.get_context_data(form=form, height_form=height_form, weight_form=weight_form))
+            height_data = height_form.save(commit=False)
+            height_data.user = request.user
+            height_data.save()
+            weight_data = weight_form.save(commit=False)
+            weight_data.user = request.user
+            weight_data.save()
+            profile_data.height = height_data
+            profile_data.weight = weight_data
+            profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
         else:
             return self.render_to_response(
                 self.get_context_data(form=form, height_form=height_form, weight_form=weight_form))
