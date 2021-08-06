@@ -25,10 +25,15 @@ populate_years()
 
 
 class HeightForm(forms.ModelForm):
+    prefix = 'height'
     class Meta:
         model = Height
         fields = ('value', 'date_recorded',)
-
+        error_messages = {
+            'value': {
+                'max_length': ("This writer's name is too long."),
+            },
+        }
     date_recorded = forms.DateField(widget=forms.SelectDateWidget(
         years=YEARS, empty_label=("Choose Year", "Choose Month", "Choose Day")), initial=timezone.now())
 
@@ -51,6 +56,8 @@ class HeightForm(forms.ModelForm):
 
 
 class WeightForm(forms.ModelForm):
+    prefix = 'weight'
+
     class Meta:
         model = Weight
         fields = ('value', 'date_recorded',)

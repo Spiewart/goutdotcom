@@ -18,7 +18,7 @@ class PatientProfile(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    picture = models.ImageField(default="default_image.jpg", null=True, blank=True, help_text="Upload a picture for your profile")
+    picture = models.ImageField(default="static/images/default_thumbnail.png", null=True, blank=True, help_text="Upload a picture for your profile")
     bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=20, choices=sexes, help_text='Enter gender', null=True, blank=True, default='male')
