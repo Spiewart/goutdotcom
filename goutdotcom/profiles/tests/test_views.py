@@ -32,7 +32,16 @@ class TestCreateView(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_get_sucess_url(self):
-        request = self.factory.get(self.create_url)
+        request = self.factory.post(PatientProfileCreate, data=self.profile_data)
         request.user = self.user
-        response = PatientProfileCreate.as_view()(request, self.profile_data, user=self.user)
-        self.assertRedirects(response, request.user.get_absolute_url())
+        response = PatientProfileCreate.as_view()(request)
+        self.assertRedirects(response, request.user.get_absolute_url(), fetch_redirect_response=False)
+
+    def test_get_context_data(self):
+        request = self.factory.get('/profiles/create')
+        request.user = self.user
+        response = PatientProfileCreate.as_view()(request)
+        self.assertIsInstance(response.context_data, dict)
+        self.assertIn('height_form', response.context_data)
+        self.assertIn('weight_form', response.context_data)
+
