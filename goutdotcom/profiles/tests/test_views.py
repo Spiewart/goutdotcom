@@ -7,6 +7,7 @@ from django.urls import reverse
 from goutdotcom.profiles.tests.factories import PatientProfileFactory
 from goutdotcom.vitals.tests.factories import HeightFactory, WeightFactory
 from ..forms import PatientProfileForm
+from ..models import PatientProfile
 from ..views import PatientProfileCreate, PatientProfileUpdate
 
 class TestCreateView(TestCase):
@@ -45,3 +46,11 @@ class TestCreateView(TestCase):
         self.assertIn('height_form', response.context_data)
         self.assertIn('weight_form', response.context_data)
 
+    def test_get_object(self):
+        request = self.factory.get('/profiles/create')
+        request.user = self.user
+        view = PatientProfileCreate()
+        self.assertAlmostEquals(view.model, PatientProfile)
+
+    def test_post(self):
+        pass
