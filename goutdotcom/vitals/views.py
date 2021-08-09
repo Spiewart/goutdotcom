@@ -15,8 +15,8 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-            'weight_list': Weight.objects.filter(user=self.request.user).order_by('-date_recorded')[:1],
-            'height_list': Height.objects.filter(user=self.request.user).order_by('-date_recorded')[:1],
+            'weight_list': Weight.objects.filter(user=self.request.user).order_by('-date_recorded')[:5],
+            'height_list': Height.objects.filter(user=self.request.user).order_by('-date_recorded')[:5],
         })
         return context
 
