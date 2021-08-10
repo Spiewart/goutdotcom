@@ -103,10 +103,28 @@ class PatientProfileUpdate(LoginRequiredMixin, UpdateView):
 
         if form.is_valid() and height_form.is_valid() and weight_form.is_valid():
             profile_data = form.save(commit=False)
-            height_data = height_form.save(commit=False)
-            height_data.save()
-            weight_data = weight_form.save(commit=False)
-            weight_data.save()
+            if 'value' in height_form.changed_data:
+                height_data = height_form.save(commit=False)
+                height_data.pk = None
+                height_data.save()
+                weight_data = weight_form.save()
+            elif 'value' in weight_form.changed_data:
+                height_data = height_form.save()
+                weight_data = weight_form.save(commit=False)
+                weight_data.pk = None
+                weight_data.save()
+            elif 'value' in height_form.changed_data and 'value' in weight_form.changed_data:
+                height_data = height_form.save(commit=False)
+                height_data.pk = None
+                height_data.save()
+                weight_data = weight_form.save(commit=False)
+                weight_data.pk = None
+                weight_data.save()
+            else:
+                height_data = height_form.save(commit=False)
+                height_data.save()
+                weight_data = weight_form.save(commit=False)
+                weight_data.save()
             profile_data.height = height_data
             profile_data.weight = weight_data
             profile_data.save()
