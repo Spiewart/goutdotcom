@@ -10,7 +10,7 @@ from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, M
 
 non_prn_models = [Allopurinol, Febuxostat, Probenecid]
 allopurinol_model = [Allopurinol]
-prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat, ]
+prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat]
 injection_models = [Methylprednisolone]
 
 class DashboardView(LoginRequiredMixin, ListView):

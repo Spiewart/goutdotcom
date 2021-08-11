@@ -5,6 +5,7 @@
 <div class="jumbotron ult-index-jumbotron">
   <h2>{{ object.calculator }}</h2>
   <h2>{{ object.created }}</h2>
+  <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">Recalculate Need for ULT</a>
   {% if object.calculator == "abstain" %}
   <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Learn about ULT?</a>
   {% elif object.calculator == "conditional" %}
@@ -12,6 +13,7 @@
   {% else %}
   <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Learn about ULT?</a>
   {% endif %}
+  <a class="btn btn-primary btn-lg" href="{% url 'ult:index' %}" role="button">ULT: Home</a>
 </div>
 
 {% endblock content %}

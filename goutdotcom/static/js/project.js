@@ -2,8 +2,17 @@
 
 // function that hides/shows subsequent fields based upon first_flare value
 function check_first_flare() {
-  if ($('#id_first_flare').val() == 'True') {
+  if ($('#id_first_flare').value.length == 0) {
       $('#div_id_num_flares').hide();
+      $('#div_id_freq_flares').hide();
+      $('#div_id_erosions').hide();
+      $('#div_id_tophi').hide();
+      $('#div_id_stones').hide();
+      $('#div_id_ckd').hide();
+      $('#div_id_uric_acid').hide();
+  elif ($('#id_first_flare').val() == 'True') {
+      $('#div_id_num_flares').hide();
+      $('#div_id_num_flares').setAttribute('value', 'One');
       $('#div_id_freq_flares').hide();
       $('#div_id_erosions').hide();
       $('#div_id_tophi').hide();
