@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% load vitals_extras %}
+
+{% block content %}
+<div class="container">
+    <header class="row">
+        <div class="col">
+            {% if object_list %}
+                {% block vital_title %}
+                   <h1>{{ object_list|list_to_name }}s</h1>
+                {% endblock vital_title %}
+        </div>
+        <div class="col" >
+            {% if page_obj %}
+                <div class="pagination" style="float: right;">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1" class="hyperlink">&laquo; first</a>
+                            <a href="?page={{ page_obj.previous_page_number }}" class="hyperlink">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" class="hyperlink">next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+        </div>
+    </header>
+    <main class="row">
+        <div class="col">
+            {% for vital in object_list %}
+                <div class="container gdc-default">
+                    <h5 class="gdc-legend">{{ vital.value }} {{ vital.units }}</h5>
+                    <h6 class="gdc-legend">Date: <a href="{{ vital.get_absolute_url }}" class="hyperlink">{{ vital.date_recorded.date }}</a></h6>
+                </div>
+                <br>
+            {% endfor %}
+        </div>
+    </main>
+            {% endif %}
+            {% else %}
+                <main>
+                    <p>{{ object_list|list_to_name }}!</p>
+                </main>
+            {% endif %}
+    <footer>
+    {% block buttons %}
+    <a class="btn btn-primary" href="{% url 'vitals:create' vital %}" role="button">New: {{ vital|capfirst }}</a>
+    <a class="btn btn-primary" href="{% url 'vitals:index' %}" role="button">Vitals Home</a>
+    {% endblock buttons %}
+    </footer>
+</div>
+<br>
+{% endblock content %}

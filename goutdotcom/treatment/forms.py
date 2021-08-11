@@ -2,8 +2,34 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
 
 
-from .models import Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
+from .models import Allopurinol, Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
 from django import forms
+
+class AllopurinolForm(forms.ModelForm):
+    class Meta:
+        model = Allopurinol
+        fields = ('dose', 'freq', 'date_started', 'side_effects',)
+
+    def __init__(self, *args, **kwargs):
+        super(AllopurinolForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                'Log a Colcrys',
+                'dose',
+                'freq',
+                'date_started',
+                'side_effects',
+                ),
+                ButtonHolder(
+                    Submit('submit', 'Submit', css_class='button white')
+                )
+        )
 
 class ColchicineForm(forms.ModelForm):
     class Meta:
@@ -197,7 +223,7 @@ class MethylprednisoloneForm(forms.ModelForm):
 class TinctureoftimeForm(forms.ModelForm):
     class Meta:
         model = Tinctureoftime
-        fields = ('duration', 'date_started', 'date_ended',)
+        fields = ('date_started', 'date_ended',)
 
     def __init__(self, *args, **kwargs):
         super(TinctureoftimeForm, self).__init__(*args, **kwargs)
@@ -210,7 +236,6 @@ class TinctureoftimeForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Log a tincture of time',
-                'duration',
                 'date_started',
                 'date_ended',
 
@@ -428,7 +453,7 @@ class MethylprednisoloneFlareForm(forms.ModelForm):
 class TinctureoftimeFlareForm(forms.ModelForm):
     class Meta:
         model = Tinctureoftime
-        fields = ('duration', 'date_started', 'date_ended',)
+        fields = ('date_started', 'date_ended',)
 
     def __init__(self, *args, **kwargs):
         super(TinctureoftimeFlareForm, self).__init__(*args, **kwargs)
@@ -441,7 +466,6 @@ class TinctureoftimeFlareForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Log a tinctureoftime',
-                'duration',
                 'date_started',
                 'date_ended',
                 id='tinctureoftime_for_flare',

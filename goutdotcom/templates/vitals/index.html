@@ -22,7 +22,7 @@
     <div class="row">
       {% if weight_list %}
         <div class="col">
-          <h2><a href="">Weights</a></h2>
+          <h2><a href="{% url 'vitals:list' 'weight' %}">Weights</a></h2>
           {% for weight in weight_list %}
           <div class="container gdc-default">
             <p>{{ weight.value }} {{ weight.units }}</p>
@@ -34,7 +34,7 @@
       {% endif %}
       {% if height_list %}
         <div class="col">
-          <h2><a href="">Heights</a></h2>
+          <h2><a href="{% url 'vitals:list' 'height' %}">Heights</a></h2>
           {% for height in height_list %}
           <div class="container gdc-default">
             <p>{{ height.convert_inches_to_feet }}</p>

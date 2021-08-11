@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load lab_extras %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block content %}
+  {% if form.instance.pk %}
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'treatment:update' treatment object.pk %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">
+            Update
+          </button>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'treatment:create' treatment %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">
+            Create
+          </button>
+        </div>
+      </div>
+    </form>
+  {% endif %}
+{% endblock %}

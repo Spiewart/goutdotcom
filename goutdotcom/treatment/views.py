@@ -1,6 +1,11 @@
+from .forms import *
+from django.apps import apps
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
+from django.forms import modelform_factory
+from django.http.response import Http404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone, Tinctureoftime, Othertreat
 
@@ -104,247 +109,174 @@ class PreventionView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-class AllopurinolDetail(LoginRequiredMixin, DetailView):
-    model = Allopurinol
+class TreatmentCreate(LoginRequiredMixin, CreateView):
+    non_prn_models = [Allopurinol, Febuxostat, Probenecid]
+    allopurinol_model = [Allopurinol]
+    prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone,]
+    fields = ['dose', 'freq', 'side_effects']
 
-class AllopurinolCreate(LoginRequiredMixin, CreateView):
-    model = Allopurinol
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'de_sensitized',]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get(self, *args, **kwargs):
-        try:
-            user_allopurinol = self.model.objects.get(user=self.request.user)
-        except Allopurinol.DoesNotExist:
-            user_allopurinol = None
-        if user_allopurinol:
-            return redirect("treatment:allopurinol-update", pk=self.model.objects.get(user=self.request.user).pk)
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        self.treatment = self.kwargs['treatment']
+        self.model = apps.get_model('treatment', model_name=self.treatment)
+        if self.model in self.non_prn_models:
+            try:
+                user_treatment = self.model.objects.get(user=self.request.user)
+            except self.model.DoesNotExist:
+                user_treatment = None
+            if user_treatment:
+                return redirect("treatment:update", treatment=self.kwargs['treatment'], pk=self.model.objects.get(user=self.request.user).pk)
+            else:
+                return super().get(request, *args, **kwargs)
         else:
-            return super(AllopurinolCreate, self).get(*args, **kwargs)
+            return super().get(request, *args, **kwargs)
 
-class AllopurinolUpdate(LoginRequiredMixin, UpdateView):
-    model = Allopurinol
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'de_sensitized',]
-    template_name = 'treatment/allopurinol_update.html'
-
-class FebuxostatDetail(LoginRequiredMixin, DetailView):
-    model = Febuxostat
-
-class FebuxostatCreate(LoginRequiredMixin, CreateView):
-    model = Febuxostat
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects',]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get(self, *args, **kwargs):
-        try:
-            user_febuxostat = self.model.objects.get(user=self.request.user)
-        except Febuxostat.DoesNotExist:
-            user_febuxostat = None
-        if user_febuxostat:
-            return redirect("treatment:febuxostat-update", pk=self.model.objects.get(user=self.request.user).pk)
+    def get_form_class(self):
+        self.treatment = self.kwargs['treatment']
+        if self.fields is not None and self.form_class:
+            raise ImproperlyConfigured(
+                "Specifying both 'fields' and 'form_class' is not permitted."
+            )
+        if self.form_class:
+            return self.form_class
         else:
-            return super(FebuxostatCreate, self).get(*args, **kwargs)
+            if self.treatment is not None:
+                # Fetch model from URL 'lab' parameter
+                model = apps.get_model('treatment', model_name=self.treatment)
+                if model in self.prn_models:
+                    self.fields.append('prn')
+                    self.fields.append('date_started')
+                    self.fields.append('date_ended')
+                if model in self.allopurinol_model:
+                    self.fields.append('de_sensitized')
+            elif getattr(self, 'object', None) is not None:
+                model = self.object.__class__
+            else:
+                model = self.get_queryset().model
+            if self.fields is None:
+                raise ImproperlyConfigured(
+                    "Using ModelFormMixin (base class of %s) without "
+                    "the 'fields' attribute is prohibited." % self.__class__.__name__
+                )
+            return modelform_factory(model, fields = self.fields)
 
-class FebuxostatUpdate(LoginRequiredMixin, UpdateView):
-    model = Febuxostat
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects',]
-    template_name = 'treatment/febuxostat_update.html'
-
-class ColchicineDetail(LoginRequiredMixin, DetailView):
-    model = Colchicine
-
-class ColchicineCreate(LoginRequiredMixin, CreateView):
-    model = Colchicine
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-class ColchicineUpdate(LoginRequiredMixin, UpdateView):
-    model = Colchicine
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-    template_name = 'treatment/colchicine_update.html'
-
-class IbuprofenDetail(LoginRequiredMixin, DetailView):
-    model = Ibuprofen
-
-class IbuprofenCreate(LoginRequiredMixin, CreateView):
-    model = Ibuprofen
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
+    def get_template_names(self):
+        template = "treatment/treatment_form.html"
+        return template
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class IbuprofenUpdate(LoginRequiredMixin, UpdateView):
-    model = Ibuprofen
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis' ]
-    template_name = 'treatment/ibuprofen_update.html'
+    def get_context_data(self, **kwargs):
+        context = super(TreatmentCreate, self).get_context_data(**kwargs)
+        context.update({
+            'treatment': self.kwargs['treatment'],
+        })
+        return context
 
-class NaproxenDetail(LoginRequiredMixin, DetailView):
-    model = Naproxen
+class TreatmentDetail(LoginRequiredMixin, DetailView):
+    def get_object(self):
+        self.model = apps.get_model('treatment', model_name=self.kwargs['treatment'])
+        treatment = get_object_or_404(self.model, pk=self.kwargs['pk'], user=self.request.user)
+        return treatment
 
-class NaproxenCreate(LoginRequiredMixin, CreateView):
-    model = Naproxen
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
+    def get_template_names(self):
+        template = "treatment/treatment_detail.html"
+        return template
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+class TreatmentList(LoginRequiredMixin, ListView):
+    paginate_by = 5
 
-class NaproxenUpdate(LoginRequiredMixin, UpdateView):
-    model = Naproxen
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-    template_name = 'treatment/naproxen_update.html'
+    def get_queryset(self):
+        self.model = apps.get_model('treatment', model_name=self.kwargs['treatment'])
+        if self.queryset is None:
+            if self.model:
+                return self.model._default_manager.filter(user=self.request.user).order_by('-created')
+            else:
+                raise ImproperlyConfigured(
+                    "%(cls)s is missing a QuerySet. Define "
+                    "%(cls)s.model, %(cls)s.queryset, or override "
+                    "%(cls)s.get_queryset()." % {
+                        'cls': self.__class__.__name__
+                    }
+                )
+        return self.queryset.filter(user=self.request.user).order_by('-created')
 
-class MeloxicamDetail(LoginRequiredMixin, DetailView):
-    model = Meloxicam
+    def get_template_names(self):
+        template = "treatment/treatment_list.html"
+        return template
 
-class MeloxicamCreate(LoginRequiredMixin, CreateView):
-    model = Meloxicam
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
+    def get_context_data(self, **kwargs):
+        self.model = apps.get_model('treatment', model_name=self.kwargs['treatment'])
+        context = super(TreatmentList, self).get_context_data(**kwargs)
+        context.update({
+            'treatment': self.kwargs['treatment'],
+        })
+        return context
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+class TreatmentUpdate(LoginRequiredMixin, UpdateView):
+    non_prn_models = [Allopurinol, Febuxostat, Probenecid]
+    allopurinol_model = [Allopurinol]
+    prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone, ]
+    fields = ['dose', 'freq', 'side_effects']
 
-class MeloxicamUpdate(LoginRequiredMixin, UpdateView):
-    model = Meloxicam
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-    template_name = 'treatment/meloxicam_update.html'
+    def get(self, request, *args, **kwargs):
+        self.treatment = self.kwargs['treatment']
+        return super().get(request, *args, **kwargs)
 
-class CelecoxibDetail(LoginRequiredMixin, DetailView):
-    model = Celecoxib
-
-class CelecoxibCreate(LoginRequiredMixin, CreateView):
-    model = Celecoxib
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-class CelecoxibUpdate(LoginRequiredMixin, UpdateView):
-    model = Celecoxib
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-    template_name = 'treatment/celecoxib_update.html'
-
-class PrednisoneDetail(LoginRequiredMixin, DetailView):
-    model = Prednisone
-
-class PrednisoneCreate(LoginRequiredMixin, CreateView):
-    model = Prednisone
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-class PrednisoneUpdate(LoginRequiredMixin, UpdateView):
-    model = Prednisone
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_prophylaxis',]
-    template_name = 'treatment/prednisone_update.html'
-
-class MethylprednisoloneDetail(LoginRequiredMixin, DetailView):
-    model = Methylprednisolone
-
-class MethylprednisoloneCreate(LoginRequiredMixin, CreateView):
-    model = Methylprednisolone
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', 'as_injection',]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-class MethylprednisoloneUpdate(LoginRequiredMixin, UpdateView):
-    model = Methylprednisolone
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', 'as_injection',]
-    template_name = 'treatment/methylprednisolone_update.html'
-
-class ProbenecidDetail(LoginRequiredMixin, DetailView):
-    model = Probenecid
-
-class ProbenecidCreate(LoginRequiredMixin, CreateView):
-    model = Probenecid
-    fields = ['dose', 'freq', 'date_started', 'date_ended', 'side_effects', ]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get(self, *args, **kwargs):
-        try:
-            user_probenecid = self.model.objects.get(user=self.request.user)
-        except Probenecid.DoesNotExist:
-            user_probenecid = None
-        if user_probenecid:
-            return redirect("treatment:probenecid-update", pk=self.model.objects.get(user=self.request.user).pk)
+    def get_form_class(self):
+        self.treatment = self.kwargs['treatment']
+        if self.fields is not None and self.form_class:
+            raise ImproperlyConfigured(
+                "Specifying both 'fields' and 'form_class' is not permitted."
+            )
+        if self.form_class:
+            return self.form_class
         else:
-            return super(ProbenecidCreate, self).get(*args, **kwargs)
+            if self.treatment is not None:
+                # Fetch model from URL 'treatment' parameter
+                model = apps.get_model('treatment', model_name=self.treatment)
+                if model in self.prn_models:
+                    self.fields.append('prn')
+                    self.fields.append('date_started')
+                    self.fields.append('date_ended')
+                if model in self.allopurinol_model:
+                    self.fields.append('de_sensitized')
+            elif getattr(self, 'object', None) is not None:
+                model = self.object.__class__
+            elif getattr(self, 'object', None) is not None:
+                model = self.object.__class__
+            else:
+                model = self.get_queryset().model
+            if self.fields is None:
+                raise ImproperlyConfigured(
+                    "Using ModelFormMixin (base class of %s) without "
+                    "the 'fields' attribute is prohibited." % self.__class__.__name__
+                )
+            return modelform_factory(model, fields=self.fields)
 
-class ProbenecidUpdate(LoginRequiredMixin, UpdateView):
-    model = Probenecid
-    fields = ['dose', 'date_started', 'date_ended', 'side_effects', ]
-    template_name = 'treatment/probenacid_update.html'
-    success_url = reverse_lazy('treatment:dashboard')    
-
-class TinctureoftimeDetail(LoginRequiredMixin, DetailView):
-    model = Tinctureoftime
-
-class TinctureoftimeCreate(LoginRequiredMixin, CreateView):
-    model = Tinctureoftime
-    fields = ['duration', 'date_started', 'date_ended', ]
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get(self, *args, **kwargs):
-        try:
-            user_tinctureoftime = self.model.objects.get(user=self.request.user)
-        except Tinctureoftime.DoesNotExist:
-            user_tinctureoftime = None
-        if user_tinctureoftime:
-            return redirect("treatment:tinctureoftime-update", pk=self.model.objects.get(user=self.request.user).pk)
-        else:
-            return super(TinctureoftimeCreate, self).get(*args, **kwargs)
-
-class TinctureoftimeUpdate(LoginRequiredMixin, UpdateView):
-    model = Tinctureoftime
-    fields = ['duration', 'date_started', 'date_ended', ]
-    template_name = 'treatment/tinctureoftime_update.html'
-    success_url = reverse_lazy('treatment:dashboard')    
-
-class OthertreatDetail(LoginRequiredMixin, DetailView):
-    model = Othertreat
-
-class OthertreatCreate(LoginRequiredMixin, CreateView):
-    model = Othertreat
-    fields = ['name', 'description', 'created', ]
+    def get_template_names(self):
+        template = "treatment/treatment_form.html"
+        return template
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def get(self, *args, **kwargs):
-        try:
-            user_other = self.model.objects.get(user=self.request.user)
-        except Othertreat.DoesNotExist:
-            user_other = None
-        if user_other:
-            return redirect("treatment:othertreat-update", pk=self.model.objects.get(user=self.request.user).pk)
-        else:
-            return super(OthertreatCreate, self).get(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(TreatmentUpdate, self).get_context_data(**kwargs)
+        context.update({
+            'treatment': self.kwargs['treatment'],
+        })
+        return context
 
-class OthertreatUpdate(LoginRequiredMixin, UpdateView):
-    model = Othertreat
-    fields = ['name', 'description', 'created', ]
-    template_name = 'treatment/othertreat_update.html'
-    success_url = reverse_lazy('treatment:dashboard')    
+    def get_object(self, queryset=None):
+        pk = self.kwargs['pk']
+        model = apps.get_model('treatment', model_name=self.kwargs['treatment'])
+        try:
+            queryset = model.objects.filter(user=self.request.user, pk=pk)
+        except ObjectDoesNotExist:
+            raise Http404("No object found matching this query.")
+        obj = super(TreatmentUpdate, self).get_object(queryset=queryset)
+        return obj

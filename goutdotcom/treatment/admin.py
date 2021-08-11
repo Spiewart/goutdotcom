@@ -79,7 +79,6 @@ class TinctureoftimeAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
         'user',
-        'duration',
         'date_started',
         'date_ended',
         'pk',

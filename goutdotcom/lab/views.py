@@ -69,12 +69,12 @@ class LabCreate(LoginRequiredMixin, CreateView):
         return context
 
 class LabDetail(LoginRequiredMixin, DetailView):
-    def get_object(self, queryset=None):
+    def get_object(self):
         self.model = apps.get_model('lab', model_name=self.kwargs['lab'])
         lab = get_object_or_404(self.model, pk=self.kwargs['pk'], user=self.request.user)
         return lab
 
-    def get_template_names(self, **kwargs):
+    def get_template_names(self):
         template = "lab/lab_detail_base.html"
         return template
 
@@ -160,7 +160,6 @@ class LabUpdate(LoginRequiredMixin, UpdateView):
             queryset = model.objects.filter(user=self.request.user, pk=pk)
         except ObjectDoesNotExist:
             raise Http404("No object found matching this query.")
-
         obj = super(LabUpdate, self).get_object(queryset=queryset)
         return obj
 
