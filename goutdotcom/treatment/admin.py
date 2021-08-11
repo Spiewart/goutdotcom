@@ -75,6 +75,17 @@ class ColchicineAdmin(admin.ModelAdmin):
         'pk',
     )
 
+
+class MeloxicamAdmin(admin.ModelAdmin):
+    list_display = (
+        '__str__',
+        'user',
+        'dose',
+        'freq',
+        'duration_calc',
+        'pk',
+    )
+
 class TinctureoftimeAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
@@ -102,5 +113,6 @@ admin.site.register(Prednisone, PrednisoneAdmin)
 admin.site.register(Methylprednisolone, MethylprednisoloneAdmin)
 admin.site.register(Probenecid, ProbenecidAdmin)
 admin.site.register(Colchicine, ColchicineAdmin)
+admin.site.register(Meloxicam, MeloxicamAdmin)
 admin.site.register(Tinctureoftime, TinctureoftimeAdmin)
 admin.site.register(Othertreat, OthertreatAdmin)

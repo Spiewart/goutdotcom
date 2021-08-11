@@ -77,17 +77,18 @@
               Medications
             </button>
             <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-
-              <li><a class="dropdown-item" href="{% url 'treatment:allopurinol-create' %}">Allopurinol</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:febuxostat-create' %}">Febuxostat</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:colchicine-create' %}">Colchicine</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:ibuprofen-create' %}">Ibuprofen</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:naproxen-create' %}">Naproxen</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:meloxicam-create' %}">Meloxicam</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:celecoxib-create' %}">Celecoxib</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:prednisone-create' %}">Prednisone</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:probenecid-create' %}">Probenecid</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:methylprednisolone-create' %}">Methylprednisolone</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'allopurinol' %}">Allopurinol</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'febuxostat' %}">Febuxostat</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'colchicine' %}">Colchicine</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'ibuprofen' %}">Ibuprofen</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'naproxen' %}">Naproxen</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'meloxicam' %}">Meloxicam</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'celecoxib' %}">Celecoxib</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'prednisone' %}">Prednisone</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'probenecid' %}">Probenecid</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'methylprednisolone' %}">Methylprednisolone</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'tinctureoftime' %}">Tincture of time</a></li>
+              <li><a class="dropdown-item" href="{% url 'treatment:create' 'othertreat' %}">Other</a></li>
             </ul>
           </div>
         </div>

@@ -14,11 +14,14 @@
           </h1>
           {% endblock treatment_title %}
           <ul>
-            <li class="gdc-list">{{ object.dose }} {{ object.freq }} {% if object.prn == True %} as needed (PRN) {% endif %}</li>
+            <li class="gdc-list">{{ object.dose }} {% if object|to_class_name == "Colchicine" or "Meloxicam" %} mg {% endif %}{{ object.freq }} {% if object.prn == True %} as needed (PRN) {% endif %}</li>
             <li class="gdc-list">Side effects: {{ object.side_effects }}</li>
             <li class="gdc-list">Drug class: {{ object.drug_class }}</li>
             <li class="gdc-list">Logged: {{ object.created }}</li>
             <li class="gdc-list">Last modified: {{ object.modified }}</li>
+            {% if object.de_sensitized %}
+            <li class="gdc-list">Desensitized: {{ object.de_sensitized }}</li>
+            {% endif %}
           </ul>
           <a class="btn btn-primary" href="{% url 'treatment:update' object|to_class_name object.pk %}" role="button">Update</a>
       </div>

@@ -86,7 +86,7 @@ for x in range(1, 19):
     ALLOPURINOL_DOSE_CHOICES += (y, z),
 
 COLCHICINE_DOSE_CHOICES = (
-    (.6, '0.6 mg'),
+    (Decimal("0.6"), '0.6 mg'),
 )
 
 PROBENECID_DOSE_CHOICES = (
@@ -111,8 +111,8 @@ NAPROXEN_DOSE_CHOICES = (
 )
 
 MELOXICAM_DOSE_CHOICES = (
-    (7.5, '7.5 mg'),
-    (15, '15 mg'),
+    (Decimal("7.5"), '7.5 mg'),
+    (Decimal("15"), '15 mg'),
 )
 
 CELECOXIB_DOSE_CHOICES = (
@@ -245,7 +245,7 @@ class Febuxostat(Treatment):
 class Colchicine(TemporizingTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=COLCHICINE)
     brand_names = ["Colcrys"]
-    dose = models.DecimalField(decimal_places=1, max_digits=2, default=0.6, blank=True, null=True)
+    dose = models.DecimalField(decimal_places=1, max_digits=2, choices=COLCHICINE_DOSE_CHOICES, default=Decimal("0.6"), blank=True, null=True)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY, blank=True)
     side_effects = models.CharField(max_length=100, choices=COLCHICINE_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
@@ -269,7 +269,7 @@ class Naproxen(TemporizingTreatment):
 class Meloxicam(TemporizingTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=MELOXICAM)
     brand_names = ["Mobic"]
-    dose = models.IntegerField(choices=MELOXICAM_DOSE_CHOICES, blank=True, null=True)
+    dose = models.DecimalField(decimal_places=1, max_digits=3, choices=MELOXICAM_DOSE_CHOICES, default=Decimal("15.0"), blank=True, null=True)
     freq = models.CharField(max_length = 50, choices=FREQ_CHOICES, default=QDAY, blank=True)
     side_effects = models.CharField(max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)

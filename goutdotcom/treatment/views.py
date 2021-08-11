@@ -1,6 +1,5 @@
 from .forms import *
 from django.apps import apps
-from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import modelform_factory
@@ -9,6 +8,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone, Tinctureoftime, Othertreat
 
+non_prn_models = [Allopurinol, Febuxostat, Probenecid]
+allopurinol_model = [Allopurinol]
+prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat, ]
+injection_models = [Methylprednisolone]
 
 class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'treatment/dashboard.html'
@@ -110,9 +113,6 @@ class PreventionView(LoginRequiredMixin, ListView):
         return queryset.filter(user=self.request.user)
 
 class TreatmentCreate(LoginRequiredMixin, CreateView):
-    non_prn_models = [Allopurinol, Febuxostat, Probenecid]
-    allopurinol_model = [Allopurinol]
-    prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone,]
     fields = ['dose', 'freq', 'side_effects']
 
     def get(self, request, *args, **kwargs):
@@ -143,12 +143,14 @@ class TreatmentCreate(LoginRequiredMixin, CreateView):
             if self.treatment is not None:
                 # Fetch model from URL 'lab' parameter
                 model = apps.get_model('treatment', model_name=self.treatment)
-                if model in self.prn_models:
+                if model in prn_models:
                     self.fields.append('prn')
                     self.fields.append('date_started')
                     self.fields.append('date_ended')
-                if model in self.allopurinol_model:
+                if model in allopurinol_model:
                     self.fields.append('de_sensitized')
+                if model in injection_models:
+                    self.fields.append('as_injection')
             elif getattr(self, 'object', None) is not None:
                 model = self.object.__class__
             else:
@@ -216,10 +218,7 @@ class TreatmentList(LoginRequiredMixin, ListView):
         return context
 
 class TreatmentUpdate(LoginRequiredMixin, UpdateView):
-    non_prn_models = [Allopurinol, Febuxostat, Probenecid]
-    allopurinol_model = [Allopurinol]
-    prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone, ]
-    fields = ['dose', 'freq', 'side_effects']
+    fields = ['dose', 'freq', 'side_effects', 'prn', 'date_started', 'date_ended', 'de_sensitized', 'as_injection',]
 
     def get(self, request, *args, **kwargs):
         self.treatment = self.kwargs['treatment']
@@ -232,23 +231,68 @@ class TreatmentUpdate(LoginRequiredMixin, UpdateView):
                 "Specifying both 'fields' and 'form_class' is not permitted."
             )
         if self.form_class:
+            model = apps.get_model('treatment', model_name=self.treatment)
+            if model not in prn_models:
+                if 'prn' in self.fields:
+                    self.fields.remove('prn')
+                if 'date_started' in self.fields:
+                    self.fields.remove('date_started')
+                if 'date_ended' in self.fields:
+                    self.fields.remove('date_ended')
+            if model not in allopurinol_model:
+                if 'de_sensitized' in self.fields:
+                    self.fields.remove('de_sensitized')
+            if model not in injection_models:
+                if 'as_injection' in self.fields:
+                    self.fields.remove('as_injection')
             return self.form_class
         else:
             if self.treatment is not None:
                 # Fetch model from URL 'treatment' parameter
                 model = apps.get_model('treatment', model_name=self.treatment)
-                if model in self.prn_models:
-                    self.fields.append('prn')
-                    self.fields.append('date_started')
-                    self.fields.append('date_ended')
-                if model in self.allopurinol_model:
-                    self.fields.append('de_sensitized')
+                if model not in prn_models:
+                    if 'prn' in self.fields:
+                        self.fields.remove('prn')
+                    if 'date_started' in self.fields:
+                        self.fields.remove('date_started')
+                    if 'date_ended' in self.fields:
+                        self.fields.remove('date_ended')
+                if model not in allopurinol_model:
+                    if 'de_sensitized' in self.fields:
+                        self.fields.remove('de_sensitized')
+                if model not in injection_models:
+                    if 'as_injection' in self.fields:
+                        self.fields.remove('as_injection')
             elif getattr(self, 'object', None) is not None:
                 model = self.object.__class__
-            elif getattr(self, 'object', None) is not None:
-                model = self.object.__class__
+                if model not in prn_models:
+                    if 'prn' in self.fields:
+                        self.fields.remove('prn')
+                    if 'date_started' in self.fields:
+                        self.fields.remove('date_started')
+                    if 'date_ended' in self.fields:
+                        self.fields.remove('date_ended')
+                if model not in allopurinol_model:
+                    if 'de_sensitized' in self.fields:
+                        self.fields.remove('de_sensitized')
+                if model not in injection_models:
+                    if 'as_injection' in self.fields:
+                        self.fields.remove('as_injection')
             else:
                 model = self.get_queryset().model
+                if model not in prn_models:
+                    if 'prn' in self.fields:
+                        self.fields.remove('prn')
+                    if 'date_started' in self.fields:
+                        self.fields.remove('date_started')
+                    if 'date_ended' in self.fields:
+                        self.fields.remove('date_ended')
+                if model not in allopurinol_model:
+                    if 'de_sensitized' in self.fields:
+                        self.fields.remove('de_sensitized')
+                if model not in injection_models:
+                    if 'as_injection' in self.fields:
+                        self.fields.remove('as_injection')
             if self.fields is None:
                 raise ImproperlyConfigured(
                     "Using ModelFormMixin (base class of %s) without "
