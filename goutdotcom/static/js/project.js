@@ -2,7 +2,7 @@
 
 // function that hides/shows subsequent fields based upon first_flare value
 function check_first_flare() {
-  if ($('#id_first_flare').value.length == 0) {
+  if ($('#id_first_flare').val().length == 0) {
       $('#div_id_num_flares').hide();
       $('#div_id_freq_flares').hide();
       $('#div_id_erosions').hide();
@@ -10,7 +10,8 @@ function check_first_flare() {
       $('#div_id_stones').hide();
       $('#div_id_ckd').hide();
       $('#div_id_uric_acid').hide();
-  elif ($('#id_first_flare').val() == 'True') {
+  }
+  else if ($('#id_first_flare').val() == 'True') {
       $('#div_id_num_flares').hide();
       $('#div_id_num_flares').setAttribute('value', 'One');
       $('#div_id_freq_flares').hide();
@@ -19,7 +20,8 @@ function check_first_flare() {
       $('#div_id_stones').hide();
       $('#div_id_ckd').hide();
       $('#div_id_uric_acid').hide();
-  } else {
+  }
+  else {
       $('#div_id_num_flares').show();
       $('#div_id_freq_flares').show();
       $('#div_id_erosions').show();
@@ -29,6 +31,7 @@ function check_first_flare() {
       $('#div_id_uric_acid').show();
   }
 }
+
 
 function check_treatment() {
   if ($('#id_treatment').val() == "Colcrys") {
