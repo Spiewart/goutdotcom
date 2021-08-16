@@ -19,8 +19,10 @@
     // this is executed once when the page loads
   $(document).ready(function() {
     // set things up so my function will be called when first_flare
-    $('#id_first_flare').change(check_first_flare);
-      check_first_flare.call($('#id_first_flare').get(0));
+    $('#id_num_flares').change(check_first_flare);
+      check_first_flare.call($('#id_num_flares').get(0));
+    $('#id_num_flares').change(one_flare);
+      one_flare.call($('#id_num_flares').get(0));
     });
 </script>
 {% endblock inline_javascript %}
