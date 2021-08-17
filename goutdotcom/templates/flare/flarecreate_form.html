@@ -32,10 +32,41 @@
 <script>
     // this is executed once when the page loads
   $(document).ready(function() {
-    check_treatment()
     // set things up so my function will be called when treatment changes
-    $('#id_treatment').change(check_treatment);
-    check_treatment.call($('#id_treatment').get(0));
+    $('#id_treatment_1').change(check_treatment_1);
+    check_treatment_1.call($('#id_treatment_1').get(0));
+    });
+  $(document).ready(function() {
+    $('#id_treatment_2').change(check_treatment_2);
+    check_treatment_2.call($('#id_treatment_2').get(0));
+    });
+  $(document).ready(function() {
+    $('#id_treatment_3').change(check_treatment_3);
+    check_treatment_3.call($('#id_treatment_3').get(0));
+    });
+    $(document).ready(function() {
+    $('#id_treatment_4').change(check_treatment_4);
+    check_treatment_4.call($('#id_treatment_4').get(0));
+    });
+    $(document).ready(function() {
+    $('#id_treatment_5').change(check_treatment_5);
+    check_treatment_5.call($('#id_treatment_5').get(0));
+    });
+    $(document).ready(function() {
+    $('#id_treatment_6').change(check_treatment_6);
+    check_treatment_6.call($('#id_treatment_6').get(0));
+    });
+    $(document).ready(function() {
+    $('#id_treatment_7').change(check_treatment_7);
+    check_treatment_7.call($('#id_treatment_7').get(0));
+    });
+    $(document).ready(function() {
+    $('#id_treatment_8').change(check_treatment_8);
+    check_treatment_8.call($('#id_treatment_8').get(0));
+    });
+    $(document).ready(function() {
+    $('#id_treatment_9').change(check_treatment_9);
+    check_treatment_9.call($('#id_treatment_9').get(0));
     });
 </script>
 {% endblock inline_javascript %}

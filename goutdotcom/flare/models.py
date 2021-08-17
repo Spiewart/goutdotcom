@@ -1,8 +1,8 @@
-from autoslug import AutoSlugField
 from django.db import models
 from django.conf import settings
 from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
+from multiselectfield import MultiSelectField
 
 from ..lab.models import Urate
 from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone,  Methylprednisolone, Tinctureoftime, Othertreat
@@ -99,36 +99,27 @@ TREATMENT_CHOICES = (
 
 BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
-NO = "No"
-LOGGED = "Already logged it"
-TOLOG = "Will log it now"
-
-LOG_CHOICES = ((NO, 'No'), (LOGGED, 'Already logged it'), (TOLOG, 'Will log it now'))
-
 class Flare(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
 
-    location = models.CharField(max_length=60, choices=JOINT_CHOICES, blank=True,
-                                help_text="What joint did the flare occur in?")
+    location = MultiSelectField(choices=JOINT_CHOICES, blank=True, null=True, help_text="What joint did the flare occur in?")
 
+    treatment = MultiSelectField(choices=TREATMENT_CHOICES, blank=True, null=True, help_text="What was the flare treated with?")
 
-    treatment = models.CharField(max_length=60, choices=TREATMENT_CHOICES,
-                                   help_text="What was the flare treated with?")
+    colchicine = models.ForeignKey(Colchicine, null=True, blank=True, on_delete=models.CASCADE)
+    ibuprofen = models.ForeignKey(Ibuprofen, null=True, blank=True, on_delete=models.CASCADE)
+    naproxen = models.ForeignKey(Naproxen, null=True, blank=True, on_delete=models.CASCADE)
+    celecoxib = models.ForeignKey(Celecoxib, null=True, blank=True, on_delete=models.CASCADE)
+    meloxicam = models.ForeignKey(Meloxicam, null=True, blank=True, on_delete=models.CASCADE)
+    prednisone = models.ForeignKey(Prednisone, null=True, blank=True, on_delete=models.CASCADE)
+    methylprednisolone = models.ForeignKey(Methylprednisolone, null=True, blank=True, on_delete=models.CASCADE)
+    tinctureoftime = models.ForeignKey(Tinctureoftime, null=True, blank=True, on_delete=models.CASCADE)
+    othertreat = models.ForeignKey(Othertreat, null=True, blank=True, on_delete=models.CASCADE)
 
-    colchicine = models.OneToOneField(Colchicine, null=True, blank=True, on_delete=models.CASCADE)
-    ibuprofen = models.OneToOneField(Ibuprofen, null=True, blank=True, on_delete=models.CASCADE)
-    naproxen = models.OneToOneField(Naproxen, null=True, blank=True, on_delete=models.CASCADE)
-    celecoxib = models.OneToOneField(Celecoxib, null=True, blank=True, on_delete=models.CASCADE)
-    meloxicam = models.OneToOneField(Meloxicam, null=True, blank=True, on_delete=models.CASCADE)
-    prednisone = models.OneToOneField(Prednisone, null=True, blank=True, on_delete=models.CASCADE)
-    methylprednisolone = models.OneToOneField(Methylprednisolone, null=True, blank=True, on_delete=models.CASCADE)
-    tinctureoftime = models.OneToOneField(Tinctureoftime, null=True, blank=True, on_delete=models.CASCADE)
-    othertreat = models.OneToOneField(Othertreat, null=True, blank=True, on_delete=models.CASCADE)
-
-    duration = models.IntegerField(help_text="How long did it last? (days)")
+    duration = models.IntegerField(null=True, blank=True, help_text="How long did it last? (days)")
 
     urate = models.OneToOneField(Urate, on_delete=models.CASCADE, help_text="What was the uric acid at the time of the flare?", blank=True, null=True)
 
