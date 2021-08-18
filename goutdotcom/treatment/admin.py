@@ -8,6 +8,9 @@ class AllopurinolAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 class FebuxostatAdmin(admin.ModelAdmin):
     list_display = (
@@ -15,6 +18,9 @@ class FebuxostatAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 
 class NaproxenAdmin(admin.ModelAdmin):
@@ -23,6 +29,9 @@ class NaproxenAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 
 class CelecoxibAdmin(admin.ModelAdmin):
@@ -31,6 +40,9 @@ class CelecoxibAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 
 class IbuprofenAdmin(admin.ModelAdmin):
@@ -39,6 +51,9 @@ class IbuprofenAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 
 class PrednisoneAdmin(admin.ModelAdmin):
@@ -47,6 +62,9 @@ class PrednisoneAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 
 class MethylprednisoloneAdmin(admin.ModelAdmin):
@@ -55,6 +73,9 @@ class MethylprednisoloneAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 
 class ProbenecidAdmin(admin.ModelAdmin):
@@ -63,6 +84,9 @@ class ProbenecidAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
+        'created',
+        'modified',
+        'pk',
     )
 
 class ColchicineAdmin(admin.ModelAdmin):
@@ -71,7 +95,8 @@ class ColchicineAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
-        'duration_calc',
+        'created',
+        'modified',
         'pk',
     )
 
@@ -82,7 +107,8 @@ class MeloxicamAdmin(admin.ModelAdmin):
         'user',
         'dose',
         'freq',
-        'duration_calc',
+        'created',
+        'modified',
         'pk',
     )
 
@@ -90,8 +116,9 @@ class TinctureoftimeAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
         'user',
-        'date_started',
-        'date_ended',
+        'duration',
+        'created',
+        'modified',
         'pk',
     )
 
@@ -100,7 +127,10 @@ class OthertreatAdmin(admin.ModelAdmin):
         '__str__',
         'user',
         'name',
-        'description',
+        'dose',
+        'freq',
+        'created',
+        'modified',
         'pk',
     )
 

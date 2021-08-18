@@ -1,21 +1,13 @@
 {% extends "base.html" %}
-{% load static %}
 {% load crispy_forms_tags %}
-{% crispy flareform flareform.helper %}
-{% crispy urateform urateform.helper %}
-{% crispy colchicineform colchicineform.helper %}
-{% crispy ibuprofenform ibuprofenform.helper %}
-{% crispy naproxenform naproxenform.helper %}
-{% crispy celecoxibform celecoxibform.helper %}
-{% crispy meloxicamform meloxicamform.helper %}
-{% crispy prednisoneform prednisoneform.helper %}
-{% crispy methylprednisoloneform methylprednisoloneform.helper %}
+
+{% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
-  <h2>Log a Flare</h2>
-    <form class="form-horizontal" method="post" action="{% url 'flare:flarecreate' %}">
+  <h1>Log a Flare {{ user.username }}</h1>
+    <form class="form-horizontal" method="post" action="{% url 'flare:create' %}">
     {% csrf_token %}
-    {% crispy flare_form %}
+    {% crispy form %}
     {% crispy colchicine_form %}
     {% crispy ibuprofen_form %}
     {% crispy naproxen_form %}
@@ -23,9 +15,10 @@
     {% crispy meloxicam_form %}
     {% crispy prednisone_form %}
     {% crispy methylprednisolone_form %}
+    {% crispy tinctureoftime_form %}
+    {% crispy othertreat_form %}
     {% crispy urate_form %}
     </form>
-  <p></p>
 {% endblock content %}
 
 {% block inline_javascript %}

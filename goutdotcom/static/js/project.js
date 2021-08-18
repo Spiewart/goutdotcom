@@ -156,16 +156,16 @@ function check_treatment_8() {
 
 function check_treatment_9() {
   if ($('#id_treatment_9').is(":checked")) {
-    $('#othreatreat_for_flare').show();
+    $('#othertreat_for_flare').show();
 } else {
-    $('#othreatreat_for_flare').hide();
-    $('#othreatreat_for_flare').find('#id_name').val('');
-    $('#othreatreat_for_flare').find('#id_description').val('');
-    $('#othreatreat_for_flare').find('#id_dose').val('');
-    $('#othreatreat_for_flare').find('#id_freq').val('');
-    $('#othreatreat_for_flare').find('#date_started').val('');
-    $('#othreatreat_for_flare').find('#id_date_ended').val('');
-    $('#othreatreat_for_flare').find('#id_side_effects').val('');
+    $('#othertreat_for_flare').hide();
+    $('#othertreat_for_flare').find('#id_name').val('');
+    $('#othertreat_for_flare').find('#id_description').val('');
+    $('#othertreat_for_flare').find('#id_dose').val('');
+    $('#othertreat_for_flare').find('#id_freq').val('');
+    $('#othertreat_for_flare').find('#date_started').val('');
+    $('#othertreat_for_flare').find('#id_date_ended').val('');
+    $('#othertreat_for_flare').find('#id_side_effects').val('');
   }
 }
 

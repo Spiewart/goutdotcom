@@ -5,8 +5,11 @@ from .models import *
 class FlareAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
+        'user',
         'treatment',
         'urate',
+        'created',
+        'modified',
         'pk',
     )
 

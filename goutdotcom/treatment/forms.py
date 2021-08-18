@@ -1,9 +1,10 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 
+from django import forms
 
 from .models import Allopurinol, Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
-from django import forms
+from .choices import COLCHICINE_DOSE_CHOICES, IBUPROFEN_DOSE_CHOICES, MELOXICAM_DOSE_CHOICES, NAPROXEN_DOSE_CHOICES, METHYLPREDNISOLONE_DOSE_CHOICES, CELECOXIB_DOSE_CHOICES
 
 class AllopurinolForm(forms.ModelForm):
     class Meta:
@@ -270,6 +271,8 @@ class OthertreatForm(forms.ModelForm):
         )
 
 class ColchicineFlareForm(forms.ModelForm):
+    dose = forms.ChoiceField(choices=COLCHICINE_DOSE_CHOICES, required=False)
+
     class Meta:
         model = Colchicine
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
@@ -302,7 +305,7 @@ class IbuprofenFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(IbuprofenFlareForm, self).__init__(*args, **kwargs)
-
+        #self.fields['dose'].required=False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -322,6 +325,8 @@ class IbuprofenFlareForm(forms.ModelForm):
 
 
 class NaproxenFlareForm(forms.ModelForm):
+    dose = forms.ChoiceField(choices=NAPROXEN_DOSE_CHOICES, required=False)
+
     class Meta:
         model = Naproxen
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
@@ -348,6 +353,8 @@ class NaproxenFlareForm(forms.ModelForm):
 
 
 class MeloxicamFlareForm(forms.ModelForm):
+    dose = forms.ChoiceField(choices=MELOXICAM_DOSE_CHOICES, required=False)
+
     class Meta:
         model = Meloxicam
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
@@ -374,6 +381,8 @@ class MeloxicamFlareForm(forms.ModelForm):
 
 
 class CelecoxibFlareForm(forms.ModelForm):
+    dose = forms.ChoiceField(choices=CELECOXIB_DOSE_CHOICES, required=False)
+
     class Meta:
         model = Celecoxib
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
@@ -400,6 +409,8 @@ class CelecoxibFlareForm(forms.ModelForm):
 
 
 class PrednisoneFlareForm(forms.ModelForm):
+    dose = forms.IntegerField(required=False)
+
     class Meta:
         model = Prednisone
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
@@ -426,6 +437,8 @@ class PrednisoneFlareForm(forms.ModelForm):
 
 
 class MethylprednisoloneFlareForm(forms.ModelForm):
+    dose = forms.ChoiceField(choices = METHYLPREDNISOLONE_DOSE_CHOICES, required=False)
+
     class Meta:
         model = Methylprednisolone
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
@@ -451,9 +464,11 @@ class MethylprednisoloneFlareForm(forms.ModelForm):
         )
 
 class TinctureoftimeFlareForm(forms.ModelForm):
+    duration = forms.IntegerField(required=False)
+
     class Meta:
         model = Tinctureoftime
-        fields = ('date_started', 'date_ended',)
+        fields = ('duration', 'date_started', 'date_ended',)
 
     def __init__(self, *args, **kwargs):
         super(TinctureoftimeFlareForm, self).__init__(*args, **kwargs)
@@ -473,6 +488,8 @@ class TinctureoftimeFlareForm(forms.ModelForm):
         )
 
 class OthertreatFlareForm(forms.ModelForm):
+    name = forms.CharField(required=False, max_length=100)
+
     class Meta:
         model = Othertreat
         fields = ('name', 'description', )

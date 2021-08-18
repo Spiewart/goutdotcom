@@ -29,7 +29,7 @@
       </h3>
       {% endif %}
       {% if object.naproxen %}
-      <h3>Treatment: <a href="{% url 'treatment:naproxen-detail' object.naproxen.pk %}">Naproxen</a>
+      <h3>Treatment: <a href="{% url 'treatment:detail' 'naproxen' object.naproxen.pk %}">Naproxen</a>
         {% if object.naproxen.dose %}
           {{ object.naproxen.dose }} mg {{ object.naproxen.freq }}
         {% endif %}
@@ -57,7 +57,7 @@
       </h3>
       {% endif %}
       {% if object.urate %}
-        <h3>Urate at time of flare: <a href="{% url 'lab:urate-detail' object.urate.pk %}">{{ object.urate }}</a> mg/dL</h3>
+        <h3>Urate at time of flare: <a href="{% url 'lab:lab-detail' 'urate' object.urate.pk %}">{{ object.urate }}</a> mg/dL</h3>
       {% endif %}
     </div>
   </div>

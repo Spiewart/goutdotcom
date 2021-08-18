@@ -1,9 +1,9 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Fieldset
 
+from django import forms
 
 from .models import Flare
-from django import forms
 
 class FlareForm(forms.ModelForm):
     class Meta:
@@ -12,7 +12,7 @@ class FlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FlareForm, self).__init__(*args, **kwargs)
-
+        
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
