@@ -271,7 +271,7 @@ class OthertreatForm(forms.ModelForm):
         )
 
 class ColchicineFlareForm(forms.ModelForm):
-    dose = forms.ChoiceField(choices=COLCHICINE_DOSE_CHOICES, required=False)
+    prefix = 'colchicine'
 
     class Meta:
         model = Colchicine
@@ -279,7 +279,7 @@ class ColchicineFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ColchicineFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['dose'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -299,13 +299,15 @@ class ColchicineFlareForm(forms.ModelForm):
 
 
 class IbuprofenFlareForm(forms.ModelForm):
+    prefix = 'ibuprofen'
+
     class Meta:
         model = Ibuprofen
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(IbuprofenFlareForm, self).__init__(*args, **kwargs)
-        #self.fields['dose'].required=False
+        self.fields['dose'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -325,7 +327,7 @@ class IbuprofenFlareForm(forms.ModelForm):
 
 
 class NaproxenFlareForm(forms.ModelForm):
-    dose = forms.ChoiceField(choices=NAPROXEN_DOSE_CHOICES, required=False)
+    prefix = 'naproxen'
 
     class Meta:
         model = Naproxen
@@ -333,7 +335,7 @@ class NaproxenFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NaproxenFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['dose'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -353,7 +355,7 @@ class NaproxenFlareForm(forms.ModelForm):
 
 
 class MeloxicamFlareForm(forms.ModelForm):
-    dose = forms.ChoiceField(choices=MELOXICAM_DOSE_CHOICES, required=False)
+    prefix = 'meloxicam'
 
     class Meta:
         model = Meloxicam
@@ -361,7 +363,7 @@ class MeloxicamFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MeloxicamFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['dose'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -381,7 +383,7 @@ class MeloxicamFlareForm(forms.ModelForm):
 
 
 class CelecoxibFlareForm(forms.ModelForm):
-    dose = forms.ChoiceField(choices=CELECOXIB_DOSE_CHOICES, required=False)
+    prefix = 'celecoxib'
 
     class Meta:
         model = Celecoxib
@@ -389,7 +391,7 @@ class CelecoxibFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CelecoxibFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['dose'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -409,7 +411,7 @@ class CelecoxibFlareForm(forms.ModelForm):
 
 
 class PrednisoneFlareForm(forms.ModelForm):
-    dose = forms.IntegerField(required=False)
+    prefix = 'prednisone'
 
     class Meta:
         model = Prednisone
@@ -417,7 +419,7 @@ class PrednisoneFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PrednisoneFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['dose'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -437,7 +439,7 @@ class PrednisoneFlareForm(forms.ModelForm):
 
 
 class MethylprednisoloneFlareForm(forms.ModelForm):
-    dose = forms.ChoiceField(choices = METHYLPREDNISOLONE_DOSE_CHOICES, required=False)
+    prefix = 'methylprednisolone'
 
     class Meta:
         model = Methylprednisolone
@@ -445,7 +447,7 @@ class MethylprednisoloneFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MethylprednisoloneFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['dose'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -464,7 +466,7 @@ class MethylprednisoloneFlareForm(forms.ModelForm):
         )
 
 class TinctureoftimeFlareForm(forms.ModelForm):
-    duration = forms.IntegerField(required=False)
+    prefix = 'tinctureoftime'
 
     class Meta:
         model = Tinctureoftime
@@ -472,7 +474,7 @@ class TinctureoftimeFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TinctureoftimeFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['duration'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -488,7 +490,7 @@ class TinctureoftimeFlareForm(forms.ModelForm):
         )
 
 class OthertreatFlareForm(forms.ModelForm):
-    name = forms.CharField(required=False, max_length=100)
+    prefix='othertreat'
 
     class Meta:
         model = Othertreat
@@ -496,7 +498,7 @@ class OthertreatFlareForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OthertreatFlareForm, self).__init__(*args, **kwargs)
-
+        self.fields['name'].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)

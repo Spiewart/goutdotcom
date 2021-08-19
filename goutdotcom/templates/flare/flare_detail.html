@@ -8,21 +8,21 @@
       <h3>Duration: {{ object.duration }}  days</h3>
       <h3>Location: {{ object.location }}</h3>
       {% if object.colchicine %}
-      <h3>Treatment: <a href="{% url 'treatment:colchicine-detail' object.colchicine.pk %}">Colchicine</a>
+      <h3>Treatment: <a href="{% url 'treatment:detail' 'colchicine' object.colchicine.pk %}">Colchicine</a>
         {% if object.colchicine.dose %}
           {{ object.colchicine.dose }} mg {{ object.colchicine.freq }}
         {% endif %}
       </h3>
       {% endif %}
       {% if object.meloxicam %}
-      <h3>Treatment: <a href="{% url 'treatment:meloxicam-detail' object.meloxicam.pk %}">Meloxicam</a>
+      <h3>Treatment: <a href="{% url 'treatment:detail' 'meloxicam' object.meloxicam.pk %}">Meloxicam</a>
         {% if object.meloxicam.dose %}
           {{ object.meloxicam.dose }} mg {{ object.meloxicam.freq }}
         {% endif %}
       </h3>
       {% endif %}
       {% if object.ibuprofen %}
-      <h3>Treatment: <a href="{% url 'treatment:ibuprofen-detail' object.ibuprofen.pk %}">Ibuprofen</a>
+      <h3>Treatment: <a href="{% url 'treatment:detail' 'ibuprofen' object.ibuprofen.pk %}">Ibuprofen</a>
         {% if object.ibuprofen.dose %}
           {{ object.ibuprofen.dose }} mg {{ object.ibuprofen.freq }}
         {% endif %}
@@ -36,21 +36,21 @@
       </h3>
       {% endif %}
       {% if object.celecoxib %}
-      <h3>Treatment: <a href="{% url 'treatment:celecoxib-detail' object.celecoxib.pk %}">Celecoxib</a>
+      <h3>Treatment: <a href="{% url 'treatment:detail' 'celecoxib' object.celecoxib.pk %}">Celecoxib</a>
         {% if object.celecoxib.dose %}
           {{ object.celecoxib.dose }} mg {{ object.celecoxib.freq }}
         {% endif %}
       </h3>
       {% endif %}
       {% if object.prednisone %}
-      <h3>Treatment: <a href="{% url 'treatment:prednisone-detail' object.prednisone.pk %}">Prednisone</a>
+      <h3>Treatment: <a href="{% url 'treatment:detail' 'prednisone' object.prednisone.pk %}">Prednisone</a>
         {% if object.prednisone.dose %}
           {{ object.prednisone.dose }} mg {{ object.prednisone.freq }}
         {% endif %}
       </h3>
       {% endif %}
       {% if object.methylprednisolone %}
-      <h3>Treatment: <a href="{% url 'treatment:methylprednisolone-detail' object.methylprednisolone.pk %}">Methylprednisolone</a>
+      <h3>Treatment: <a href="{% url 'treatment:detail' 'methylprednisolone' object.methylprednisolone.pk %}">Methylprednisolone</a>
         {% if object.methylprednisolone.dose %}
           {{ object.methylprednisolone.dose }} mg {{ object.methylprednisolone.freq }}
         {% endif %}
@@ -63,5 +63,5 @@
   </div>
 </div>
 <br>
-<a class="btn btn-primary btn-lg" href="{% url 'flare:flareurateupdate' object.id %}" role="button">Update</a>
+<a class="btn btn-primary btn-lg" href="{% url 'flare:update' object.id %}" role="button">Update</a>
 {% endblock content %}
