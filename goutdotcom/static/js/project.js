@@ -48,17 +48,40 @@ function check_first_flare() {
   }
 }
 
+function check_labs() {
+  if ($('#lab_check').is(":checked")) {
+    $('#div_id_labs').show();
+} else {
+    $('#div_id_labs').hide();
+  }
+}
+
+function check_urate() {
+  if ($('#id_labs_1').is(":checked")) {
+    $('#urate_fields').show();
+} else {
+    $('#urate_fields').hide();
+  }
+}
+
+function check_treatment() {
+  if ($('#treatment_check').is(":checked")) {
+    $('#div_id_treatment').show();
+} else {
+    $('#div_id_treatment').hide();
+  }
+}
 
 function check_treatment_1() {
   if ($('#id_treatment_1').is(":checked")) {
     $('#colchicine_for_flare').show();
 } else {
     $('#colchicine_for_flare').hide();
-    $('#colchicine_for_flare').find('#id_dose').val('');
-    $('#colchicine_for_flare').find('#id_freq').val('');
-    $('#colchicine_for_flare').find('#date_started').val('');
-    $('#colchicine_for_flare').find('#id_date_ended').val('');
-    $('#colchicine_for_flare').find('#id_side_effects').val('');
+    $('#colchicine_for_flare').find('#id_colchicine-dose').val('');
+    $('#colchicine_for_flare').find('#id_colchicine-freq').val('');
+    $('#colchicine_for_flare').find('#id_colchicine-date_started').val('');
+    $('#colchicine_for_flare').find('#id_colchicine-date_ended').val('');
+    $('#colchicine_for_flare').find('#id_colchicine-side_effects').val('');
   }
 }
 
@@ -67,11 +90,11 @@ function check_treatment_2() {
     $('#ibuprofen_for_flare').show();
 } else {
     $('#ibuprofen_for_flare').hide();
-    $('#ibuprofen_for_flare').find('#id_dose').val('');
-    $('#ibuprofen_for_flare').find('#id_freq').val('');
-    $('#ibuprofen_for_flare').find('#date_started').val('');
-    $('#ibuprofen_for_flare').find('#id_date_ended').val('');
-    $('#ibuprofen_for_flare').find('#id_side_effects').val('');
+    $('#ibuprofen_for_flare').find('#id_ibuprofen-dose').val('');
+    $('#ibuprofen_for_flare').find('#id_ibuprofen-freq').val('');
+    $('#ibuprofen_for_flare').find('#id_ibuprofen-date_started').val('');
+    $('#ibuprofen_for_flare').find('#id_ibuprofen-date_ended').val('');
+    $('#ibuprofen_for_flare').find('#id_ibuprofen-side_effects').val('');
   }
 }
 
@@ -80,11 +103,11 @@ function check_treatment_3() {
     $('#naproxen_for_flare').show();
 } else {
     $('#naproxen_for_flare').hide();
-    $('#naproxen_for_flare').find('#id_dose').val('');
-    $('#naproxen_for_flare').find('#id_freq').val('');
-    $('#naproxen_for_flare').find('#date_started').val('');
-    $('#naproxen_for_flare').find('#id_date_ended').val('');
-    $('#naproxen_for_flare').find('#id_side_effects').val('');
+    $('#naproxen_for_flare').find('#id_naproxen-dose').val('');
+    $('#naproxen_for_flare').find('#id_naproxen-freq').val('');
+    $('#naproxen_for_flare').find('#id_naproxen-date_started').val('');
+    $('#naproxen_for_flare').find('#id_naproxen-date_ended').val('');
+    $('#naproxen_for_flare').find('#id_naproxen-side_effects').val('');
   }
 }
 
@@ -93,11 +116,11 @@ function check_treatment_4() {
     $('#celecoxib_for_flare').show();
 } else {
     $('#celecoxib_for_flare').hide();
-    $('#celecoxib_for_flare').find('#id_dose').val('');
-    $('#celecoxib_for_flare').find('#id_freq').val('');
-    $('#celecoxib_for_flare').find('#date_started').val('');
-    $('#celecoxib_for_flare').find('#id_date_ended').val('');
-    $('#celecoxib_for_flare').find('#id_side_effects').val('');
+    $('#celecoxib_for_flare').find('#id_celecoxib-dose').val('');
+    $('#celecoxib_for_flare').find('#id_celecoxib-freq').val('');
+    $('#celecoxib_for_flare').find('#id_celecoxib-date_started').val('');
+    $('#celecoxib_for_flare').find('#id_celecoxib-date_ended').val('');
+    $('#celecoxib_for_flare').find('#id_celecoxib-side_effects').val('');
   }
 }
 
@@ -106,11 +129,11 @@ function check_treatment_5() {
     $('#meloxicam_for_flare').show();
 } else {
     $('#meloxicam_for_flare').hide();
-    $('#meloxicam_for_flare').find('#id_dose').val('');
-    $('#meloxicam_for_flare').find('#id_freq').val('');
-    $('#meloxicam_for_flare').find('#date_started').val('');
-    $('#meloxicam_for_flare').find('#id_date_ended').val('');
-    $('#meloxicam_for_flare').find('#id_side_effects').val('');
+    $('#meloxicam_for_flare').find('#id_meloxicam-dose').val('');
+    $('#meloxicam_for_flare').find('#id_meloxicam-freq').val('');
+    $('#meloxicam_for_flare').find('#id_meloxicam-date_started').val('');
+    $('#meloxicam_for_flare').find('#id_meloxicam-date_ended').val('');
+    $('#meloxicam_for_flare').find('#id_meloxicam-side_effects').val('');
   }
 }
 
@@ -119,11 +142,11 @@ function check_treatment_6() {
     $('#prednisone_for_flare').show();
 } else {
     $('#prednisone_for_flare').hide();
-    $('#prednisone_for_flare').find('#id_dose').val('');
-    $('#prednisone_for_flare').find('#id_freq').val('');
-    $('#prednisone_for_flare').find('#date_started').val('');
-    $('#prednisone_for_flare').find('#id_date_ended').val('');
-    $('#prednisone_for_flare').find('#id_side_effects').val('');
+    $('#prednisone_for_flare').find('#id_prednisone-dose').val('');
+    $('#prednisone_for_flare').find('#id_prednisone-freq').val('');
+    $('#prednisone_for_flare').find('#id_prednisone-date_started').val('');
+    $('#prednisone_for_flare').find('#id_prednisone-date_ended').val('');
+    $('#prednisone_for_flare').find('#id_prednisone-side_effects').val('');
   }
 }
 
@@ -132,11 +155,11 @@ function check_treatment_7() {
     $('#methylprednisolone_for_flare').show();
 } else {
     $('#methylprednisolone_for_flare').hide();
-    $('#methylprednisolone_for_flare').find('#id_dose').val('');
-    $('#methylprednisolone_for_flare').find('#id_freq').val('');
-    $('#methylprednisolone_for_flare').find('#date_started').val('');
-    $('#methylprednisolone_for_flare').find('#id_date_ended').val('');
-    $('#methylprednisolone_for_flare').find('#id_side_effects').val('');
+    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-dose').val('');
+    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-freq').val('');
+    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-date_started').val('');
+    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-date_ended').val('');
+    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-side_effects').val('');
   }
 }
 
@@ -145,12 +168,12 @@ function check_treatment_8() {
     $('#tinctureoftime_for_flare').show();
 } else {
     $('#tinctureoftime_for_flare').hide();
-    $('#tinctureoftime_for_flare').find('#id_duration').val('');
-    $('#tinctureoftime_for_flare').find('#id_dose').val('');
-    $('#tinctureoftime_for_flare').find('#id_freq').val('');
-    $('#tinctureoftime_for_flare').find('#date_started').val('');
-    $('#tinctureoftime_for_flare').find('#id_date_ended').val('');
-    $('#tinctureoftime_for_flare').find('#id_side_effects').val('');
+    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-duration').val('');
+    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-dose').val('');
+    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-freq').val('');
+    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-date_started').val('');
+    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-date_ended').val('');
+    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-side_effects').val('');
   }
 }
 
@@ -159,13 +182,13 @@ function check_treatment_9() {
     $('#othertreat_for_flare').show();
 } else {
     $('#othertreat_for_flare').hide();
-    $('#othertreat_for_flare').find('#id_name').val('');
-    $('#othertreat_for_flare').find('#id_description').val('');
-    $('#othertreat_for_flare').find('#id_dose').val('');
-    $('#othertreat_for_flare').find('#id_freq').val('');
-    $('#othertreat_for_flare').find('#date_started').val('');
-    $('#othertreat_for_flare').find('#id_date_ended').val('');
-    $('#othertreat_for_flare').find('#id_side_effects').val('');
+    $('#othertreat_for_flare').find('#id_othertreat-name').val('');
+    $('#othertreat_for_flare').find('#id_othertreat-description').val('');
+    $('#othertreat_for_flare').find('#id_othertreat-dose').val('');
+    $('#othertreat_for_flare').find('#id_othertreat-freq').val('');
+    $('#othertreat_for_flare').find('#id_othertreat-date_started').val('');
+    $('#othertreat_for_flare').find('#id_othertreat-date_ended').val('');
+    $('#othertreat_for_flare').find('#id_othertreat-side_effects').val('');
   }
 }
 

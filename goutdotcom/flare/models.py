@@ -30,6 +30,8 @@ class Flare(TimeStampedModel):
 
     duration = models.IntegerField(null=True, blank=True, help_text="How long did it last? (days)")
 
+    labs = MultiSelectField(choices=LAB_CHOICES, blank=True, null=True,
+                                 help_text="Did you get your labs checked during your flare?")
     urate = models.OneToOneField(Urate, on_delete=models.CASCADE, help_text="What was the uric acid at the time of the flare?", blank=True, null=True)
 
     class Meta:

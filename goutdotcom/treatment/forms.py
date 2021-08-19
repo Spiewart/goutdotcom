@@ -483,6 +483,7 @@ class TinctureoftimeFlareForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Log a tinctureoftime',
+                'duration',
                 'date_started',
                 'date_ended',
                 id='tinctureoftime_for_flare',

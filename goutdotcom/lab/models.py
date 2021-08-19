@@ -30,7 +30,7 @@ class Lab(TimeStampedModel):
     value = NullBooleanField()
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "Lab"
-    date_drawn = models.DateTimeField(help_text="What day was this lab drawn?", default=timezone.now)
+    date_drawn = models.DateTimeField(help_text="What day was this lab drawn?", default=timezone.now, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -53,7 +53,7 @@ class Lab(TimeStampedModel):
         return has_profile
 
 class Urate(Lab):
-    value = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid", null=True, blank=True)
+    value = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "urate"
 

@@ -4,7 +4,33 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
+  {% if form.instance.pk %}
+    <h1>Update {{ user.username }}'s Flare</h1>
+    <form class="form-horizontal" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
+      {% csrf_token %}
+      {% crispy form %}
+      {% crispy colchicine_form %}
+      {% crispy ibuprofen_form %}
+      {% crispy naproxen_form %}
+      {% crispy celecoxib_form %}
+      {% crispy meloxicam_form %}
+      {% crispy prednisone_form %}
+      {% crispy methylprednisolone_form %}
+      {% crispy tinctureoftime_form %}
+      {% crispy othertreat_form %}
+      {% crispy urate_form %}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </form>
+  {% else %}
   <h1>Log a Flare {{ user.username }}</h1>
+  <input type="checkbox" id="lab_check" name="lab_check" value="lab_check">
+  <label for="lab_check">Did you get your labs checked during your flare?</label><br>
+  <input type="checkbox" id="treatment_check" name="treatment_check" value="treatment_check">
+  <label for="treatment_check">Did you treat your flare?</label><br>
     <form class="form-horizontal" method="post" action="{% url 'flare:create' %}">
     {% csrf_token %}
     {% crispy form %}
@@ -19,11 +45,27 @@
     {% crispy othertreat_form %}
     {% crispy urate_form %}
     </form>
+  {% endif %}
 {% endblock content %}
 
 {% block inline_javascript %}
 <script>
     // this is executed once when the page loads
+  $(document).ready(function() {
+    // set things up so my function will be called when treatment changes
+    $('#lab_check').change(check_labs);
+    check_labs.call($('#lab_check').get(0));
+    });
+  $(document).ready(function() {
+    // set things up so my function will be called when treatment changes
+    $('#id_labs_1').change(check_urate);
+    check_urate.call($('#id_labs_1').get(0));
+    });
+  $(document).ready(function() {
+    // set things up so my function will be called when treatment changes
+    $('#treatment_check').change(check_treatment);
+    check_treatment.call($('#treatment_check').get(0));
+    });
   $(document).ready(function() {
     // set things up so my function will be called when treatment changes
     $('#id_treatment_1').change(check_treatment_1);

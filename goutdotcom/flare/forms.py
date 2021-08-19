@@ -8,11 +8,11 @@ from .models import Flare
 class FlareForm(forms.ModelForm):
     class Meta:
         model = Flare
-        fields = ('location', 'treatment', 'duration',)
+        fields = ('location', 'duration', 'treatment', 'labs',)
 
     def __init__(self, *args, **kwargs):
         super(FlareForm, self).__init__(*args, **kwargs)
-        
+
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -23,7 +23,8 @@ class FlareForm(forms.ModelForm):
             Fieldset(
                 'Log your flare',
                 'location',
-                'treatment',
                 'duration',
+                'treatment',
+                'labs',
                 ),
         )

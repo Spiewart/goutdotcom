@@ -1,12 +1,21 @@
-TinctureofTime = 'Tincture of time'
-Othertreatment = 'Other treatment'
-Colcrys = 'Colcrys'
 Advil = 'Advil'
 Aleve = 'Aleve'
 Celebrex = 'Celebrex'
+Colcrys = 'Colcrys'
+Methylpred = 'Methylprednisolone'
 Mobic = 'Mobic'
-Pred = 'Pred'
-Methylpred = 'Methylpred'
+Othertreatment = 'Other treatment'
+Pred = 'Prednisone'
+TinctureofTime = 'Tincture of time'
+
+
+AST = 'AST'
+ALT = 'ALT'
+Creatinine = 'Creatinine'
+HGB = 'Hemoglobin'
+PLTS = 'Platelets'
+WBC = 'White blood cells'
+Urate = 'Urate'
 
 TOER1 = 'Right great toe'
 TOER2 = 'Right second toe'
@@ -74,6 +83,16 @@ JOINT_CHOICES = (
     (ELBOWL, 'Left elbow'),
     (SHOUDLERR, 'Right shoulder'),
     (SHOULDERL, 'Left shoulder'),
+)
+
+LAB_CHOICES = (
+    (Urate, 'Urate'),
+    (ALT, 'ALT'),
+    (AST, 'AST'),
+    (Creatinine, 'Creatinine'),
+    (HGB, 'Hemoglobin'),
+    (WBC, 'White blood cells'),
+    (PLTS, 'Platelets'),
 )
 
 TREATMENT_CHOICES = (
