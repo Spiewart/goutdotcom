@@ -61,6 +61,8 @@ function check_urate() {
     $('#urate_fields').show();
 } else {
     $('#urate_fields').hide();
+    $('#urate_fields').find('#id_urate-value').val('');
+    $('#urate_fields').find('#date_drawn.pk').val('');
   }
 }
 

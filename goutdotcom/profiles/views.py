@@ -95,7 +95,7 @@ class PatientProfileUpdate(LoginRequiredMixin, UpdateView):
         obj = super(PatientProfileUpdate, self).get_object(queryset=queryset)
         return obj
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         self.object = self.get_object()
         form = self.form_class(request.POST, request.FILES, instance=self.object)
         height_form = self.height_form_class(request.POST, instance=self.object.height)

@@ -6,6 +6,10 @@
 {% block content %}
   {% if form.instance.pk %}
     <h1>Update {{ user.username }}'s Flare</h1>
+    <input type="checkbox" id="lab_check" name="lab_check" value="lab_check">
+    <label for="lab_check">Did you get your labs checked during your flare?</label><br>
+    <input type="checkbox" id="treatment_check" name="treatment_check" value="treatment_check">
+    <label for="treatment_check">Did you treat your flare?</label><br>
     <form class="form-horizontal" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {% crispy form %}
@@ -19,11 +23,6 @@
       {% crispy tinctureoftime_form %}
       {% crispy othertreat_form %}
       {% crispy urate_form %}
-      <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn btn-primary">Update</button>
-        </div>
-      </div>
     </form>
   {% else %}
   <h1>Log a Flare {{ user.username }}</h1>

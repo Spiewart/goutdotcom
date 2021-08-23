@@ -36,6 +36,8 @@ class UrateForm(forms.ModelForm):
 
 
 class UrateFlareForm(forms.ModelForm):
+    prefix = 'urate'
+    
     class Meta:
         model = Urate
         fields = ('value', 'date_drawn',)

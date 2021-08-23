@@ -51,7 +51,7 @@
       {% if colchicine_list %}
         {% for colchicine in colchicine_list %}
         <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' colchicine colchicine.pk %}">{{ colchicine.generic_name|capfirst }}</a>
+          <h5><a href="{% url 'treatment:update' 'colchicine' colchicine.pk %}">{{ colchicine.generic_name|capfirst }}</a>
           {% for brand_name in colchicine.brand_names %}
             ({{ brand_name|capfirst  }}) </h5>
           {% endfor %}
@@ -73,7 +73,7 @@
       {% if celecoxib_list %}
         {% for celecoxib in celecoxib_list %}
         <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' celecoxib celecoxib.pk %}">{{ celecoxib.generic_name|capfirst }}</a>
+          <h5><a href="{% url 'treatment:update' 'celecoxib' celecoxib.pk %}">{{ celecoxib.generic_name|capfirst }}</a>
           {% for brand_name in celecoxib.brand_names %}
             ({{ brand_name|capfirst  }}) </h5>
           {% endfor %}
@@ -96,7 +96,7 @@
       {% if ibuprofen_list %}
         {% for ibuprofen in ibuprofen_list %}
         <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' ibuprofen ibuprofen.pk %}">{{ ibuprofen.generic_name|capfirst }}</a>
+          <h5><a href="{% url 'treatment:update' 'ibuprofen' ibuprofen.pk %}">{{ ibuprofen.generic_name|capfirst }}</a>
           {% for brand_name in ibuprofen.brand_names %}
             ({{ brand_name|capfirst  }}) </h5>
           {% endfor %}
@@ -119,7 +119,7 @@
       {% if naproxen_list %}
         {% for naproxen in naproxen_list %}
         <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' naproxen naproxen.pk %}">{{ naproxen.generic_name|capfirst }}</a>
+          <h5><a href="{% url 'treatment:update' 'naproxen' naproxen.pk %}">{{ naproxen.generic_name|capfirst }}</a>
           {% for brand_name in naproxen.brand_names %}
             ({{ brand_name|capfirst  }}) </h5>
           {% endfor %}
@@ -142,7 +142,7 @@
       {% if meloxicam_list %}
         {% for meloxicam in meloxicam_list %}
         <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' meloxicam meloxicam.pk %}">{{ meloxicam.generic_name|capfirst }}</a>
+          <h5><a href="{% url 'treatment:update' 'meloxicam' meloxicam.pk %}">{{ meloxicam.generic_name|capfirst }}</a>
           {% for brand_name in meloxicam.brand_names %}
             ({{ brand_name|capfirst  }}) </h5>
           {% endfor %}
@@ -165,7 +165,7 @@
       {% if prednisone_list %}
         {% for prednisone in prednisone_list %}
         <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' prednisone prednisone.pk %}">{{ prednisone.generic_name|capfirst }}</a>
+          <h5><a href="{% url 'treatment:update' 'prednisone' prednisone.pk %}">{{ prednisone.generic_name|capfirst }}</a>
           {% for brand_name in prednisone.brand_names %}
             ({{ brand_name|capfirst  }}) </h5>
           {% endfor %}
@@ -188,7 +188,7 @@
       {% if methylprednisolone_list %}
         {% for methylprednisolone in methylprednisolone_list %}
         <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' methylprednisolone methylprednisolone.pk %}">{{ methylprednisolone.generic_name|capfirst }}</a>
+          <h5><a href="{% url 'treatment:update' 'methylprednisolone' methylprednisolone.pk %}">{{ methylprednisolone.generic_name|capfirst }}</a>
           {% for brand_name in methylprednisolone.brand_names %}
             ({{ brand_name|capfirst  }}) </h5>
           {% endfor %}
