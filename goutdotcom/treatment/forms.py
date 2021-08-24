@@ -1,6 +1,8 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 
+from datetimewidget.widgets import DateWidget
+
 from django import forms
 
 from .models import Allopurinol, Colchicine, Ibuprofen, Naproxen, Celecoxib, Meloxicam, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
@@ -10,6 +12,10 @@ class AllopurinolForm(forms.ModelForm):
     class Meta:
         model = Allopurinol
         fields = ('dose', 'freq', 'date_started', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "allopurinol-date_started"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(AllopurinolForm, self).__init__(*args, **kwargs)
@@ -36,6 +42,11 @@ class ColchicineForm(forms.ModelForm):
     class Meta:
         model = Colchicine
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "colchicine-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "colchicine-date_ended"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ColchicineForm, self).__init__(*args, **kwargs)
@@ -63,6 +74,11 @@ class IbuprofenForm(forms.ModelForm):
     class Meta:
         model = Ibuprofen
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "ibuprofen-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "ibuprofen-date_ended"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(IbuprofenForm, self).__init__(*args, **kwargs)
@@ -90,6 +106,11 @@ class NaproxenForm(forms.ModelForm):
     class Meta:
         model = Naproxen
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "naproxen-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "naproxen-date_ended"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(NaproxenForm, self).__init__(*args, **kwargs)
@@ -117,6 +138,11 @@ class MeloxicamForm(forms.ModelForm):
     class Meta:
         model = Meloxicam
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "meloxicam-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "meloxicam-date_ended"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(MeloxicamForm, self).__init__(*args, **kwargs)
@@ -144,6 +170,11 @@ class CelecoxibForm(forms.ModelForm):
     class Meta:
         model = Celecoxib
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "celecoxib-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "celecoxib-date_started"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(CelecoxibForm, self).__init__(*args, **kwargs)
@@ -171,6 +202,11 @@ class PrednisoneForm(forms.ModelForm):
     class Meta:
         model = Prednisone
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "prednisone-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "prednisone-date_started"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(PrednisoneForm, self).__init__(*args, **kwargs)
@@ -198,6 +234,11 @@ class MethylprednisoloneForm(forms.ModelForm):
     class Meta:
         model = Methylprednisolone
         fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "methylprednisolone-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "methylprednisolone-date_ended"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(MethylprednisoloneForm, self).__init__(*args, **kwargs)
@@ -224,7 +265,12 @@ class MethylprednisoloneForm(forms.ModelForm):
 class TinctureoftimeForm(forms.ModelForm):
     class Meta:
         model = Tinctureoftime
-        fields = ('date_started', 'date_ended',)
+        fields = ('duration', 'date_started', 'date_ended',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "tinctureoftime-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "tinctureoftime-date_ended"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(TinctureoftimeForm, self).__init__(*args, **kwargs)
@@ -250,6 +296,11 @@ class OthertreatForm(forms.ModelForm):
     class Meta:
         model = Othertreat
         fields = ('name', 'description',)
+        widgets = {
+            #Use localization and bootstrap 3
+            'date_started': DateWidget(attrs={'id': "othertreat-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "othertreat-date_ended"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(OthertreatForm, self).__init__(*args, **kwargs)
@@ -270,12 +321,8 @@ class OthertreatForm(forms.ModelForm):
                 )
         )
 
-class ColchicineFlareForm(forms.ModelForm):
+class ColchicineFlareForm(ColchicineForm):
     prefix = 'colchicine'
-
-    class Meta:
-        model = Colchicine
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(ColchicineFlareForm, self).__init__(*args, **kwargs)
@@ -297,13 +344,8 @@ class ColchicineFlareForm(forms.ModelForm):
             ),
         )
 
-
-class IbuprofenFlareForm(forms.ModelForm):
+class IbuprofenFlareForm(IbuprofenForm):
     prefix = 'ibuprofen'
-
-    class Meta:
-        model = Ibuprofen
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(IbuprofenFlareForm, self).__init__(*args, **kwargs)
@@ -326,12 +368,8 @@ class IbuprofenFlareForm(forms.ModelForm):
         )
 
 
-class NaproxenFlareForm(forms.ModelForm):
+class NaproxenFlareForm(NaproxenForm):
     prefix = 'naproxen'
-
-    class Meta:
-        model = Naproxen
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(NaproxenFlareForm, self).__init__(*args, **kwargs)
@@ -354,12 +392,8 @@ class NaproxenFlareForm(forms.ModelForm):
         )
 
 
-class MeloxicamFlareForm(forms.ModelForm):
+class MeloxicamFlareForm(MeloxicamForm):
     prefix = 'meloxicam'
-
-    class Meta:
-        model = Meloxicam
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(MeloxicamFlareForm, self).__init__(*args, **kwargs)
@@ -382,12 +416,8 @@ class MeloxicamFlareForm(forms.ModelForm):
         )
 
 
-class CelecoxibFlareForm(forms.ModelForm):
+class CelecoxibFlareForm(CelecoxibForm):
     prefix = 'celecoxib'
-
-    class Meta:
-        model = Celecoxib
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(CelecoxibFlareForm, self).__init__(*args, **kwargs)
@@ -410,12 +440,8 @@ class CelecoxibFlareForm(forms.ModelForm):
         )
 
 
-class PrednisoneFlareForm(forms.ModelForm):
+class PrednisoneFlareForm(PrednisoneForm):
     prefix = 'prednisone'
-
-    class Meta:
-        model = Prednisone
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(PrednisoneFlareForm, self).__init__(*args, **kwargs)
@@ -438,12 +464,8 @@ class PrednisoneFlareForm(forms.ModelForm):
         )
 
 
-class MethylprednisoloneFlareForm(forms.ModelForm):
+class MethylprednisoloneFlareForm(MethylprednisoloneForm):
     prefix = 'methylprednisolone'
-
-    class Meta:
-        model = Methylprednisolone
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
 
     def __init__(self, *args, **kwargs):
         super(MethylprednisoloneFlareForm, self).__init__(*args, **kwargs)
@@ -465,12 +487,8 @@ class MethylprednisoloneFlareForm(forms.ModelForm):
             ),
         )
 
-class TinctureoftimeFlareForm(forms.ModelForm):
+class TinctureoftimeFlareForm(TinctureoftimeForm):
     prefix = 'tinctureoftime'
-
-    class Meta:
-        model = Tinctureoftime
-        fields = ('duration', 'date_started', 'date_ended',)
 
     def __init__(self, *args, **kwargs):
         super(TinctureoftimeFlareForm, self).__init__(*args, **kwargs)
@@ -490,12 +508,8 @@ class TinctureoftimeFlareForm(forms.ModelForm):
             ),
         )
 
-class OthertreatFlareForm(forms.ModelForm):
+class OthertreatFlareForm(OthertreatForm):
     prefix='othertreat'
-
-    class Meta:
-        model = Othertreat
-        fields = ('name', 'description', )
 
     def __init__(self, *args, **kwargs):
         super(OthertreatFlareForm, self).__init__(*args, **kwargs)

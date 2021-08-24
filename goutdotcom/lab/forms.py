@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 
 from datetimewidget.widgets import DateTimeWidget
 
@@ -10,9 +10,13 @@ class UrateForm(forms.ModelForm):
     class Meta:
         model = Urate
         fields = ('value', 'date_drawn',)
+        dateTimeOptions = {
+            'autoclose': True,
+            'pickerPosition': 'bottom-left',
+        }
         widgets = {
             #Use localization and bootstrap 3
-            'date_drawn': DateTimeWidget(attrs={'id':"date_drawn.pk"}, usel10n = True, bootstrap_version=3)
+            'date_drawn': DateTimeWidget(options=dateTimeOptions, attrs={'id':"urate-date_drawn.pk"}, usel10n = True, bootstrap_version=3)
         }
 
     def __init__(self, *args, **kwargs):
@@ -35,16 +39,8 @@ class UrateForm(forms.ModelForm):
         )
 
 
-class UrateFlareForm(forms.ModelForm):
+class UrateFlareForm(UrateForm):
     prefix = 'urate'
-    
-    class Meta:
-        model = Urate
-        fields = ('value', 'date_drawn',)
-        widgets = {
-            #Use localization and bootstrap 3
-            'date_drawn': DateTimeWidget(attrs={'id': "date_drawn.pk"}, usel10n=True, bootstrap_version=3)
-        }
 
     def __init__(self, *args, **kwargs):
         super(UrateFlareForm, self).__init__(*args, **kwargs)
