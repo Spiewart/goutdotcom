@@ -173,7 +173,7 @@ class CelecoxibForm(forms.ModelForm):
         widgets = {
             #Use localization and bootstrap 3
             'date_started': DateWidget(attrs={'id': "celecoxib-date_started"}, usel10n=True, bootstrap_version=3),
-            'date_ended': DateWidget(attrs={'id': "celecoxib-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "celecoxib-date_ended"}, usel10n=True, bootstrap_version=3),
         }
 
     def __init__(self, *args, **kwargs):
@@ -205,7 +205,7 @@ class PrednisoneForm(forms.ModelForm):
         widgets = {
             #Use localization and bootstrap 3
             'date_started': DateWidget(attrs={'id': "prednisone-date_started"}, usel10n=True, bootstrap_version=3),
-            'date_ended': DateWidget(attrs={'id': "prednisone-date_started"}, usel10n=True, bootstrap_version=3),
+            'date_ended': DateWidget(attrs={'id': "prednisone-date_ended"}, usel10n=True, bootstrap_version=3),
         }
 
     def __init__(self, *args, **kwargs):

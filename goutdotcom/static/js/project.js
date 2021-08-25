@@ -56,6 +56,15 @@ function check_labs() {
   }
 }
 
+function check_initial_labs() {
+  if ($('#id_urate-value').val()) {
+    $('#lab_check').val(":checked");
+    $('#id_labs_1').val(":checked");
+} else {
+    $('#div_id_labs').hide();
+  }
+}
+
 function check_urate() {
   if ($('#id_labs_1').is(":checked")) {
     $('#urate_fields').show();
