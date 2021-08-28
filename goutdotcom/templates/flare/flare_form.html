@@ -51,13 +51,8 @@
 <script>
     // this is executed once when the page loads
   $(document).ready(function() {
-    if ($('#id_urate-value').val()) {
-      $('#lab_check').val(":checked");
-      $('#id_labs_1').val(":checked");
-  } else {
-      $('#div_id_labs').hide();
-    }
-  });
+    check_initial_labs;
+    });
   $(document).ready(function() {
     // set things up so my function will be called when treatment changes
     $('#lab_check').change(check_labs);

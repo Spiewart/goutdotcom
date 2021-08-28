@@ -58,8 +58,8 @@ function check_labs() {
 
 function check_initial_labs() {
   if ($('#id_urate-value').val()) {
-    $('#lab_check').val(":checked");
-    $('#id_labs_1').val(":checked");
+    alert('fudge');
+    $('#lab_check').prop("checked", true);
 } else {
     $('#div_id_labs').hide();
   }
