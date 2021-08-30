@@ -51,7 +51,17 @@
 <script>
     // this is executed once when the page loads
   $(document).ready(function() {
-    check_initial_labs;
+    check_initial_labs();
+    });
+  $(document).ready(function() {
+    // toggles upper and lower extremity options when location checkbox is checked
+    $('#location_check').change(check_location);
+    check_location.call($('#location_check').get(0));
+    });
+  $(document).ready(function() {
+    // toggles upper extremity options when upper extremity checkbox is checked
+    $('#upper_extremity_check').change(check_upper_extremity);
+    check_upper_extremity.call($('#upper_extremity_check').get(0));
     });
   $(document).ready(function() {
     // set things up so my function will be called when treatment changes

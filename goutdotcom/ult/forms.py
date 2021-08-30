@@ -20,7 +20,7 @@ class ULTForm(forms.ModelForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                'Answer this to sort it out',
+                '',
                 'num_flares',
                 'freq_flares',
                 'erosions',

@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset
+from crispy_forms.layout import Field, Fieldset, HTML, Layout
 
 from django import forms
 
@@ -13,15 +13,30 @@ class FlareForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FlareForm, self).__init__(*args, **kwargs)
 
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields['location'].label=False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                'Log your flare',
+                '',
+                HTML("""
+                    <input type="checkbox" id="location_check" name="location_check" value="location_check">
+                    <label for="location_check">Location</label>
+                    <br>
+                    <ul style="list-style: none">
+                    <li>
+                    <input type="checkbox" id="upper_extremity_check" name="upper_extremity_check" value="upper_extremity_check">
+                    <label for="upper_extremity_check">Upper Extremity</label>
+                    </li>
+                    <li>
+                    <input type="checkbox" id="lower_extremity_check" name="lower_extremity_check" value="lower_extremity_check">
+                    <label for="lower_extremity_check">Lower Extremity</label>
+                    </li>
+                    </ul>
+                    <br>
+                    """),
                 'location',
                 'duration',
                 'treatment',

@@ -1,5 +1,7 @@
 /* Project specific Javascript goes here. */
 
+/* ULT app JS */
+
 // function that hides/shows subsequent fields based upon first_flare value
 function one_flare() {
   if ($('#id_num_flares').val() == 'one') {
@@ -48,6 +50,38 @@ function check_first_flare() {
   }
 }
 
+/* FLARE app JS flare_form.html */
+// function that checks if the HTML button #location_check is checked and displays upper and lower extremity options
+function check_location() {
+  if ($('#location_check').is(":checked")) {
+    $('#upper_extremity_check').show();
+    $('label[for="upper_extremity_check"]').show();
+    $('#lower_extremity_check').show();
+    $('label[for="lower_extremity_check"]').show();
+} else {
+    $('#upper_extremity_check').hide();
+    $('label[for="upper_extremity_check"]').hide();
+    $('#lower_extremity_check').hide();
+    $('label[for="lower_extremity_check"]').hide();
+  }
+}
+// function that checks if the HTML button #upper_extremity_check is checked and displays upper extremity location options
+function check_upper_extremity() {
+  if ($('#upper_extremity_check').is(":checked")) {
+    $('#id_location_17').show();
+    $('label[for="id_location_17"]').show();
+    $('#id_location_18').show();
+    $('label[for="id_location_18"]').show();
+} else {
+    $('#id_location_17').hide();
+    $('label[for="id_location_17"]').hide();
+    $('#id_location_18').hide();
+    $('label[for="id_location_18"]').hide();
+  }
+}
+// function that checks if the HTML button #lower_extremity_check is checked and displays loewr extremity options
+
+// function that checks if the HTML button #lab_check is checked and shows the optional labs Flare model field check boxes, used on #lab_chec click
 function check_labs() {
   if ($('#lab_check').is(":checked")) {
     $('#div_id_labs').show();
@@ -56,15 +90,16 @@ function check_labs() {
   }
 }
 
+// function that checks whether any labs were selected on the Flare model field and reveals the appropriate fields for modification in Flare UpdateView
 function check_initial_labs() {
   if ($('#id_urate-value').val()) {
-    alert('fudge');
     $('#lab_check').prop("checked", true);
 } else {
     $('#div_id_labs').hide();
   }
 }
 
+// function that checks whether Urate #id_labs_1 field is checked and if so shows the options for creation/update of Flare-associated Urate field, evaluated on checking #id_labs_1=Urate
 function check_urate() {
   if ($('#id_labs_1').is(":checked")) {
     $('#urate_fields').show();
@@ -75,6 +110,7 @@ function check_urate() {
   }
 }
 
+// function that checks whether the HTML button #treatment_check is checked or not, shows appropriate treatment Flare model field options if so
 function check_treatment() {
   if ($('#treatment_check').is(":checked")) {
     $('#div_id_treatment').show();
@@ -83,6 +119,7 @@ function check_treatment() {
   }
 }
 
+// function that checks whether Flare model field treatment (#id_treatment_XXX) button is checked and, if so, displays appropriate treatment form
 function check_treatment_1() {
   if ($('#id_treatment_1').is(":checked")) {
     $('#colchicine_for_flare').show();
@@ -96,6 +133,7 @@ function check_treatment_1() {
   }
 }
 
+// function that checks whether Flare model field treatment (#id_treatment_XXX) button is checked and, if so, displays appropriate treatment form
 function check_treatment_2() {
   if ($('#id_treatment_2').is(":checked")) {
     $('#ibuprofen_for_flare').show();
@@ -109,6 +147,7 @@ function check_treatment_2() {
   }
 }
 
+// function that checks whether Flare model field treatment (#id_treatment_XXX) button is checked and, if so, displays appropriate treatment form
 function check_treatment_3() {
   if ($('#id_treatment_3').is(":checked")) {
     $('#naproxen_for_flare').show();
@@ -122,6 +161,7 @@ function check_treatment_3() {
   }
 }
 
+// function that checks whether Flare model field treatment (#id_treatment_XXX) button is checked and, if so, displays appropriate treatment form
 function check_treatment_4() {
   if ($('#id_treatment_4').is(":checked")) {
     $('#celecoxib_for_flare').show();
@@ -135,6 +175,7 @@ function check_treatment_4() {
   }
 }
 
+// function that checks whether Flare model field treatment (#id_treatment_XXX) button is checked and, if so, displays appropriate treatment form
 function check_treatment_5() {
   if ($('#id_treatment_5').is(":checked")) {
     $('#meloxicam_for_flare').show();
@@ -148,6 +189,7 @@ function check_treatment_5() {
   }
 }
 
+// function that checks whether Flare model field treatment prednisone (#id_treatment_6) button is checked and, if so, displays appropriate treatment form
 function check_treatment_6() {
   if ($('#id_treatment_6').is(":checked")) {
     $('#prednisone_for_flare').show();
@@ -161,6 +203,7 @@ function check_treatment_6() {
   }
 }
 
+// function that checks whether Flare model field treatment methylprednisolone (#id_treatment_7) button is checked and, if so, displays appropriate treatment form
 function check_treatment_7() {
   if ($('#id_treatment_7').is(":checked")) {
     $('#methylprednisolone_for_flare').show();
@@ -174,6 +217,7 @@ function check_treatment_7() {
   }
 }
 
+// function that checks whether Flare model field treatment tinctureoftime (#id_treatment_8) button is checked and, if so, displays appropriate treatment form
 function check_treatment_8() {
   if ($('#id_treatment_8').is(":checked")) {
     $('#tinctureoftime_for_flare').show();
@@ -188,6 +232,7 @@ function check_treatment_8() {
   }
 }
 
+// function that checks whether Flare model field treatment othertreat (#id_treatment_9) button is checked and, if so, displays appropriate treatment form
 function check_treatment_9() {
   if ($('#id_treatment_9').is(":checked")) {
     $('#othertreat_for_flare').show();
@@ -203,6 +248,8 @@ function check_treatment_9() {
   }
 }
 
+// function that sets up base flare_form
+// IS THIS STILL NEEDED?!!
 function flare_base() {
   $('#urate-logged-div').hide();
   $('#urate-desire-div').hide();
@@ -212,6 +259,9 @@ function flare_base() {
   $('#flare-with-urate-button').hide();
 }
 
+/* ULT app JS */
+// Long if / else if function displaying appropriate HTML form elements for ULT model Create and Update views
+// THIS LIKELY CAN BE DONE MORE INTELLIGENTLY BROKEN UP INTO SMALLER FUNCTIONS
 function urate_decider() {
   if ($('#urate-decision').val() == "No") {
     $('#urate-decision-div').hide();
@@ -257,6 +307,7 @@ function urate_decider() {
   }
 }
 
+// STILL NEEDED?
 function treatment_log() {
   if ($('#treatment-decision').val() == "Yes") {
     $('#treatment-logged').show();
@@ -270,6 +321,7 @@ function treatment_log() {
   }
 }
 
+// STILL NEEDED?
 function treatment_decider() {
   if ($('#treatment-logged').val() == "Yes") {
     $('#treatment-desire').show();

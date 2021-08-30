@@ -6,12 +6,19 @@
 
 
 {% block content %}
-  <h2>Is Urate-lowering Therapy for You?</h2>
-  <form class="form-horizontal" method="post" action="{% url 'ult:create' %}"></form>
+  {% if form.instance.pk %}
+  <h1>Do you still need urate-lowering therapy (ULT)?</h1>
+    <form class="form-horizontal" method="post" action="{% url 'ult:update' object.pk %}">
     {% csrf_token %}
     {% crispy form %}
-  </form>
-  <p></p>
+    </form>
+  {% else %}
+  <h1>Is Urate-lowering Therapy for You?</h1>
+    <form class="form-horizontal" method="post" action="{% url 'ult:create' %}">
+      {% csrf_token %}
+      {% crispy form %}
+    </form>
+  {% endif %}
 {% endblock content %}
 
 {% block inline_javascript %}

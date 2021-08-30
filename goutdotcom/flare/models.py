@@ -11,7 +11,7 @@ from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Napr
 class Flare(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE
     )
 
     location = MultiSelectField(choices=JOINT_CHOICES, blank=True, null=True, help_text="What joint did the flare occur in?")
