@@ -334,7 +334,7 @@ class ColchicineFlareForm(ColchicineForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                'Log a Colcrys',
+                'Colcrys',
                 'dose',
                 'freq',
                 'date_started',

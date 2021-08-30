@@ -39,7 +39,17 @@ class FlareForm(forms.ModelForm):
                     """),
                 'location',
                 'duration',
+                HTML("""
+                    <input type="checkbox" id="treatment_check" name="treatment_check" value="treatment_check">
+                    <label for="treatment_check">Did you treat your flare?</label>
+                    <br>
+                    """),
                 'treatment',
+                HTML("""
+                    <input type="checkbox" id="lab_check" name="lab_check" value="lab_check">
+                    <label for="lab_check">Did you get your labs checked during your flare?</label>
+                    <br>
+                    """),
                 'labs',
                 ),
         )
