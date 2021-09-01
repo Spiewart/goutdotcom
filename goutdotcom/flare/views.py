@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.fields import NullBooleanField
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.urls import reverse
@@ -254,6 +255,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     urate_data.user = request.user
                     urate_data.save()
                     flare_data.urate = urate_data
+            elif "Urate" not in flare_data.labs:
+                if self.object.urate:
+                    self.object.urate.delete()
+                    flare_data.urate = None
             if "Colcrys" in flare_data.treatment:
                 colchicine_form = self.colchicine_form_class(request.POST, instance=self.object.colchicine)
                 if colchicine_form.is_valid():
@@ -261,6 +266,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     colchicine_data.user = request.user
                     colchicine_data.save()
                     flare_data.colchicine = colchicine_data
+            elif "Colcrys" not in flare_data.treatment:
+                if self.object.colchicine:
+                    self.object.colchicine.delete()
+                    flare_data.colchicine = None
             if "Advil" in flare_data.treatment:
                 ibuprofen_form = self.ibuprofen_form_class(request.POST, instance=self.object.ibuprofen)
                 if ibuprofen_form.is_valid():
@@ -268,6 +277,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     ibuprofen_data.user = request.user
                     ibuprofen_data.save()
                     flare_data.ibuprofen = ibuprofen_data
+            elif "Advil" not in flare_data.treatment:
+                if self.object.ibuprofen:
+                    self.object.ibuprofen.delete()
+                    flare_data.ibuprofen = None
             if "Aleve" in flare_data.treatment:
                 naproxen_form = self.naproxen_form_class(request.POST, instance=self.object.naproxen)
                 if naproxen_form.is_valid():
@@ -275,6 +288,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     naproxen_data.user = request.user
                     naproxen_data.save()
                     flare_data.naproxen = naproxen_data
+            elif "Aleve" not in flare_data.treatment:
+                if self.object.naproxen:
+                    self.object.naproxen.delete()
+                    flare_data.naproxen = None
             if "Celebrex" in flare_data.treatment:
                 celecoxib_form = self.celecoxib_form_class(request.POST, instance=self.object.celecoxib)
                 if celecoxib_form.is_valid():
@@ -282,6 +299,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     celecoxib_data.user = request.user
                     celecoxib_data.save()
                     flare_data.celecoxib = celecoxib_data
+            elif "Celebrex" not in flare_data.treatment:
+                if self.object.celecoxib:
+                    self.object.celecoxib.delete()
+                    flare_data.celecoxib = None
             if "Mobic" in flare_data.treatment:
                 meloxicam_form = self.meloxicam_form_class(request.POST, instance=self.object.meloxicam)
                 if meloxicam_form.is_valid():
@@ -289,6 +310,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     meloxicam_data.user = request.user
                     meloxicam_data.save()
                     flare_data.meloxicam = meloxicam_data
+            elif "Mobic" not in flare_data.treatment:
+                if self.object.meloxicam:
+                    self.object.meloxicam.delete()
+                    flare_data.meloxicam = None
             if "Prednisone" in flare_data.treatment:
                 prednisone_form = self.prednisone_form_class(request.POST, instance=self.object.prednisone)
                 if prednisone_form.is_valid():
@@ -296,6 +321,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     prednisone_data.user = request.user
                     prednisone_data.save()
                     flare_data.prednisone = prednisone_data
+            elif "Prednisone" not in flare_data.treatment:
+                if self.object.prednisone:
+                    self.object.prednisone.delete()
+                    flare_data.prednisone = None
             if "Methylprednisolone" in flare_data.treatment:
                 methylprednisolone_form = self.methylprednisolone_form_class(
                     request.POST, instance=self.object.methylprednisolone)
@@ -304,6 +333,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     methylprednisolone_data.user = request.user
                     methylprednisolone_data.save()
                     flare_data.methylprednisolone = methylprednisolone_data
+            elif "Methylprednisolone" not in flare_data.treatment:
+                if self.object.methylprednisolone:
+                    self.object.methylprednisolone.delete()
+                    flare_data.methylprednisolone = None
             if "Tincture of time" in flare_data.treatment:
                 tinctureoftime_form = self.tinctureoftime_form_class(request.POST, instance=self.object.tinctureoftime)
                 if tinctureoftime_form.is_valid():
@@ -311,6 +344,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     tinctureoftime_data.user = request.user
                     tinctureoftime_data.save()
                     flare_data.tinctureoftime = tinctureoftime_data
+                elif "Tincture of time" not in flare_data.treatment:
+                    if self.object.tinctureoftime:
+                        self.object.tinctureoftime.delete()
+                        flare_data.tinctureoftime = None
             if "Other treatment" in flare_data.treatment:
                 othertreat_form = self.othertreat_form_class(request.POST, instance=self.object.othertreat)
                 if othertreat_form.is_valid():
@@ -318,6 +355,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     othertreat_data.user = request.user
                     othertreat_data.save()
                     flare_data.othertreat = othertreat_data
+                elif "Other treatment" not in flare_data.treatment:
+                    if self.object.othertreat:
+                        self.object.othertreat.delete()
+                        flare_data.othertreat = None
             flare_data.save()
             return HttpResponseRedirect(reverse('flare:detail', kwargs={'pk': flare_data.pk}))
         else:

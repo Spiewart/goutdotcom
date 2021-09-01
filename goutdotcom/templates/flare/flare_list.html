@@ -5,7 +5,7 @@
 <main role="main" class="container">
   <div class="row">
     <div class="col">
-    <h1>Flares</h1>
+    <h1>Flares <a class="btn btn-primary" href="{% url 'flare:create' %}" role="button">New Flare</a></h1>
     </div>
     <div class="col">
       <div class="pagination" style="float: right;">
@@ -68,7 +68,9 @@
                 </ul>
               </li>
               {% endif %}
+              {% if flare.duration %}
               <li>Duration: {{ flare.duration }}</li>
+              {% endif %}
               {% if flare.urate %}
               <li>Uric acid: {{ flare.urate }}</li>
               {% endif %}

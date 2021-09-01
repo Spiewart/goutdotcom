@@ -233,7 +233,7 @@ class PrednisoneForm(forms.ModelForm):
 class MethylprednisoloneForm(forms.ModelForm):
     class Meta:
         model = Methylprednisolone
-        fields = ('dose', 'freq', 'date_started', 'date_ended', 'side_effects',)
+        fields = ('dose', 'as_injection', 'freq', 'date_started', 'date_ended', 'side_effects',)
         widgets = {
             #Use localization and bootstrap 3
             'date_started': DateWidget(attrs={'id': "methylprednisolone-date_started"}, usel10n=True, bootstrap_version=3),
@@ -252,6 +252,7 @@ class MethylprednisoloneForm(forms.ModelForm):
             Fieldset(
                 'Log a methylprednisolone',
                 'dose',
+                'as_injection',
                 'freq',
                 'date_started',
                 'date_ended',
@@ -479,6 +480,7 @@ class MethylprednisoloneFlareForm(MethylprednisoloneForm):
             Fieldset(
                 'Log a methylprednisolone',
                 'dose',
+                'as_injection',
                 'freq',
                 'date_started',
                 'date_ended',
