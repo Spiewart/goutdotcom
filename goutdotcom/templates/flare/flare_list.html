@@ -2,75 +2,82 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
+<main role="main" class="container">
   <div class="row">
     <div class="col">
     <h1>Flares</h1>
-    {% if page_obj %}
-      {% for flare in page_obj %}
-        <div class="container user-flare-list">
-          <a href="{% url 'flare:update' flare.pk %}">Date: {{ flare.created }}</a>
-          <ul>
-            <li>Location: {{ flare.location }}</li>
-            <li>User: {{ flare.user }}</li>
-            {% if flare.treatment %}
-            <li>Treatment(s):
-              <ul>
-                {% if flare.colchicine %}
-                  <li><a href="{% url 'treatment:detail' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine }}</a></li>
-                {% endif %}
-                {% if flare.meloxicam %}
-                  <li><a href="{% url 'treatment:detail' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam }}</a></li>
-                {% endif %}
-                {% if flare.ibuprofen %}
-                  <li><a href="{% url 'treatment:detail' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen }}</a></li>
-                {% endif %}
-                {% if flare.naproxen %}
-                  <li><a href="{% url 'treatment:detail' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen }}</a></li>
-                {% endif %}
-                {% if flare.celecoxib %}
-                  <li><a href="{% url 'treatment:detail' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib }}</a></li>
-                {% endif %}
-                {% if flare.prednisone %}
-                  <li><a href="{% url 'treatment:detail' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone }}</a></li>
-                {% endif %}
-                {% if flare.methylprednisolone %}
-                  <li><a href="{% url 'treatment:detail' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone }}</a></li>
-                {% endif %}
-                {% if flare.tinctureoftime %}
-                  <li><a href="{% url 'treatment:detail' 'tinctureoftime' flare.tinctureoftime.pk %}">{{ flare.tinctureoftime }}</a></li>
-                {% endif %}
-                {% if flare.othertreat %}
-                  <li><a href="{% url 'treatment:detail' 'othertreat' flare.othertreat.pk %}">{{ flare.othertreat }}</a></li>
-                {% endif %}
-              </ul>
-            </li>
+    </div>
+    <div class="col">
+      <div class="pagination" style="float: right;">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
             {% endif %}
-            <li>Duration: {{ flare.duration }}</li>
-            {% if flare.urate %}
-            <li>Uric acid: {{ flare.urate }}</li>
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
             {% endif %}
-          </ul>
-        </div>
-        <br>
+        </span>
+      </div>
+    </div>
+  </div>
+    <div class="row">
+      <div class="col">
+      {% if page_obj %}
+        {% for flare in page_obj %}
+          <div class="container list-items">
+            <a href="{% url 'flare:detail' flare.pk %}"><h2>Date: {{ flare.created }}</h2></a>
+            <ul>
+              <li>Location: {{ flare.location }}</li>
+              {% if flare.treatment %}
+              <li>Treatment(s): {{ flare.treatment }}
+                <ul>
+                  {% if flare.colchicine %}
+                    <li><a href="{% url 'treatment:detail' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine }}</a></li>
+                  {% endif %}
+                  {% if flare.meloxicam %}
+                    <li><a href="{% url 'treatment:detail' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam }}</a></li>
+                  {% endif %}
+                  {% if flare.ibuprofen %}
+                    <li><a href="{% url 'treatment:detail' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen }}</a></li>
+                  {% endif %}
+                  {% if flare.naproxen %}
+                    <li><a href="{% url 'treatment:detail' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen }}</a></li>
+                  {% endif %}
+                  {% if flare.celecoxib %}
+                    <li><a href="{% url 'treatment:detail' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib }}</a></li>
+                  {% endif %}
+                  {% if flare.prednisone %}
+                    <li><a href="{% url 'treatment:detail' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone }}</a></li>
+                  {% endif %}
+                  {% if flare.methylprednisolone %}
+                    <li><a href="{% url 'treatment:detail' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone }}</a></li>
+                  {% endif %}
+                  {% if flare.tinctureoftime %}
+                    <li><a href="{% url 'treatment:detail' 'tinctureoftime' flare.tinctureoftime.pk %}">{{ flare.tinctureoftime }}</a></li>
+                  {% endif %}
+                  {% if flare.othertreat %}
+                    <li><a href="{% url 'treatment:detail' 'othertreat' flare.othertreat.pk %}">{{ flare.othertreat }}</a></li>
+                  {% endif %}
+                </ul>
+              </li>
+              {% endif %}
+              <li>Duration: {{ flare.duration }}</li>
+              {% if flare.urate %}
+              <li>Uric acid: {{ flare.urate }}</li>
+              {% endif %}
+            </ul>
+          </div>
+          <br>
       {% endfor %}
     {% endif %}
     </div>
-    <div class="pagination">
-      <span class="step-links">
-          {% if page_obj.has_previous %}
-              <a href="?page=1">&laquo; first</a>
-              <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-          {% endif %}
-
-          <span class="current">
-              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-          </span>
-
-          {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}">next</a>
-              <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-          {% endif %}
-      </span>
   </div>
+</main>
 {% endblock content %}

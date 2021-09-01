@@ -1,6 +1,3 @@
-from typing import Any, Sequence
-
-from django.contrib.auth import get_user_model
 from factory import Faker
 from factory.django import DjangoModelFactory
 import factory

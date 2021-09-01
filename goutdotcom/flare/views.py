@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .models import Flare
@@ -13,27 +13,6 @@ from ..treatment.forms import ColchicineFlareForm, IbuprofenFlareForm, NaproxenF
 from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
 
 # Create your views here.
-class IndexView(LoginRequiredMixin, ListView):
-    template_name = 'flare/index.html'
-    model = Flare
-
-    def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
-        context.update({
-            'flare_list': Flare.objects.filter(user=self.request.user).order_by('-created')[:5],
-            'methylprednisolone_inj_list': Methylprednisolone.objects.filter(user=self.request.user),
-            'colchicine_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'celecoxib_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'meloxicam_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'naproxen_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'prednisone_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=False),
-        })
-        return context
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user)
 
 class FlareDetail(LoginRequiredMixin, DetailView):
     model = Flare

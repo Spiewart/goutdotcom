@@ -5,211 +5,175 @@
 <div class="container">
   <div class="row">
     <div class="col">
-    <h1>Flares</h1>
+    <h1>Flares <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">Log a Flare</a></h1>
     {% if flare_list %}
       {% for flare in flare_list %}
-        <div class="container user-flare-list">
-          <a href="{% url 'flare:update' flare.pk %}">Date: {{ flare.created }}</a>
+        <div class="container list-items">
+          <a href="{% url 'flare:update' flare.pk %}"><h2>Date: {{ flare.created }}</h2></a>
           <ul>
             <li>Location: {{ flare.location }}</li>
             <li>User: {{ flare.user }}</li>
-            <li>Treatment: {{ flare.treatment }}
-            {% if flare.colchicine %}
-              {{ flare.colchicine.dose }} mg {{ flare.colchicine.freq }}
-            {% endif %}
-            {% if flare.meloxicam %}
-              {{ flare.meloxicam.dose }} mg {{ flare.meloxicam.freq }}
-            {% endif %}
-            {% if flare.ibuprofen %}
-              {{ flare.ibuprofen.dose }} mg {{ flare.ibuprofen.freq }}
-            {% endif %}
-            {% if flare.naproxen %}
-              {{ flare.naproxen.dose }} mg {{ flare.naproxen.freq }}
-            {% endif %}
-            {% if flare.celecoxib %}
-              {{ flare.celecoxib.dose }} mg {{ flare.celecoxib.freq }}
-            {% endif %}
-            {% if flare.prednisone %}
-              {{ flare.prednisone.dose }} mg {{ flare.prednisone.freq }}
-            {% endif %}
-            {% if flare.methylprednisolone %}
-              {{ flare.methylprednisolone.dose }} mg {{ flare.methylprednisolone.freq }}
-            {% endif %}
-            </li>
+            {% if flare.duration %}
             <li>Duration: {{ flare.duration }}</li>
+            {% endif %}
             {% if flare.urate %}
             <li>Uric acid: {{ flare.urate }}</li>
             {% endif %}
+            {% if flare.treatment %}
+            <li>Treatment: {{ flare.treatment }}</li>
+            {% endif %}
           </ul>
+            {% if flare.colchicine or flare.meloxicam or flare.ibuprofen or flare.celecoxib or flare.prednisone or flare.methylprednisolone or flare.tinctureoftime or flare.othertreat in flare_list.flare %}
+        </div>
+    </div>
+            {% endif %}
+                {% if flare.colchicine %}
+                    <div class="container list-items">
+                      <h2><a href="{% url 'treatment:update' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine.generic_name|capfirst }}</a>
+                      {% for brand_name in flare.colchicine.brand_names %}
+                        ({{ brand_name|capfirst  }}) </h2>
+                      {% endfor %}
+                      <ul>
+                        <li>{{ flare.colchicine.dose }} mg {{ flare.colchicine.freq }}</li>
+                        <li>Date started: {{ flare.colchicine.date_started }}</li>
+                        {% if flare.colchicine.date_ended %}
+                        <li>Date ended: {{ flare.colchicine.date_ended }}</li>
+                        {% endif %}
+                        <li>Class: {{ flare.colchicine.drug_class }}</li>
+                        {% if flare.colchicine.side_effects %}
+                        <li>Side effects: {{ flare.colchicine.side_effects }}
+                        {% endif %}
+                      </ul>
+                    </div>
+                {% endif %}
+                {% if flare.celecoxib %}
+                  <div class="container list-items">
+                    <h2><a href="{% url 'treatment:update' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib.generic_name|capfirst }}</a>
+                    {% for brand_name in flare.celecoxib.brand_names %}
+                      ({{ brand_name|capfirst  }}) </h2>
+                    {% endfor %}
+                    <ul>
+                      <li>{{ flare.celecoxib.dose }} mg {{ flare.celecoxib.freq }}</li>
+                      <li>Date started: {{ flare.celecoxib.date_started }}
+                      {% if flare.celecoxib.date_ended %}
+                      - {{ flare.celecoxib.date_ended }}
+                      {% endif %}
+                      </li>
+                      <li>Class: {{ flare.celecoxib.drug_class }}</li>
+                      {% if flare.celecoxib.side_effects %}
+                      <li>Side effects: {{ flare.celecoxib.side_effects }}
+                      {% endif %}
+                    </ul>
+                  </div>
+                {% endif %}
+                {% if flare.ibuprofen %}
+                  <div class="container list-items">
+                    <h2><a href="{% url 'treatment:update' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen.generic_name|capfirst }}</a>
+                    {% for brand_name in flare.ibuprofen.brand_names %}
+                      ({{ brand_name|capfirst  }}) </h2>
+                    {% endfor %}
+                    <ul>
+                      <li>{{ ibuprofen.dose }} mg {{ flare.ibuprofen.freq }}</li>
+                      <li>Date started: {{ flare.ibuprofen.date_started }}
+                      {% if flare.ibuprofen.date_ended %}
+                      - {{ flare.ibuprofen.date_ended }}
+                      {% endif %}
+                      </li>
+                      <li>Class: {{ flare.ibuprofen.drug_class }}</li>
+                      {% if flare.ibuprofen.side_effects %}
+                      <li>Side effects: {{ flare.ibuprofen.side_effects }}
+                      {% endif %}
+                    </ul>
+                  </div>
+                {% endif %}
+                {% if flare.naproxen %}
+                  <div class="container list-items">
+                    <h2><a href="{% url 'treatment:update' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen.generic_name|capfirst }}</a>
+                    {% for brand_name in flare.naproxen.brand_names %}
+                      ({{ brand_name|capfirst  }}) </h2>
+                    {% endfor %}
+                    <ul>
+                      <li>{{ flare.naproxen.dose }} mg {{ flare.naproxen.freq }}</li>
+                      <li>Date started: {{ flare.naproxen.date_started }}
+                      {% if flare.naproxen.date_ended %}
+                      - {{ flare.naproxen.date_ended }}
+                      {% endif %}
+                      </li>
+                      <li>Class: {{ flare.naproxen.drug_class }}</li>
+                      {% if flare.naproxen.side_effects %}
+                      <li>Side effects: {{ flare.naproxen.side_effects }}
+                      {% endif %}
+                    </ul>
+                  </div>
+                {% endif %}
+                {% if flare.meloxicam %}
+                  <div class="container list-items">
+                    <h2><a href="{% url 'treatment:update' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam.generic_name|capfirst }}</a>
+                    {% for brand_name in flare.meloxicam.brand_names %}
+                      ({{ brand_name|capfirst  }}) </h2>
+                    {% endfor %}
+                    <ul>
+                      <li>{{ flare.meloxicam.dose }} mg {{ flare.meloxicam.freq }}</li>
+                      <li>Date started: {{ flare.meloxicam.date_started }}
+                      {% if flare.meloxicam.date_ended %}
+                      - {{ flare.meloxicam.date_ended }}
+                      {% endif %}
+                      </li>
+                      <li>Class: {{ flare.meloxicam.drug_class }}</li>
+                      {% if flare.meloxicam.side_effects %}
+                      <li>Side effects: {{ flare.meloxicam.side_effects }}
+                      {% endif %}
+                    </ul>
+                  </div>
+                  <br>
+                {% endif %}
+                {% if flare.prednisone %}
+                  <div class="container list-items">
+                    <h2><a href="{% url 'treatment:update' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone.generic_name|capfirst }}</a>
+                    {% for brand_name in flare.prednisone.brand_names %}
+                      ({{ brand_name|capfirst  }}) </h2>
+                    {% endfor %}
+                    <ul>
+                      <li>{{ flare.prednisone.dose }} mg {{ flare.prednisone.freq }}</li>
+                      <li>Date started: {{ flare.prednisone.date_started }}
+                      {% if flare.prednisone.date_ended %}
+                      - {{ flare.prednisone.date_ended }}
+                      {% endif %}
+                      </li>
+                      <li>Class: {{ flare.prednisone.drug_class }}</li>
+                      {% if flare.prednisone.side_effects %}
+                      <li>Side effects: {{ flare.prednisone.side_effects }}
+                      {% endif %}
+                    </ul>
+                  </div>
+                {% endif %}
+                {% if flare.methylprednisolone %}
+                  <div class="container list-items">
+                    <h2><a href="{% url 'treatment:update' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone.generic_name|capfirst }}</a>
+                    {% for brand_name in flare.methylprednisolone.brand_names %}
+                      ({{ brand_name|capfirst  }}) </h2>
+                    {% endfor %}
+                    <ul>
+                      <li>{{ flare.methylprednisolone.dose }} mg {{ flare.methylprednisolone.freq }}</li>
+                      <li>Date started: {{ flare.methylprednisolone.date_started }}
+                      {% if flare.methylprednisolone.date_ended %}
+                      - {{ flare.methylprednisolone.date_ended }}
+                      {% endif %}
+                      </li>
+                      <li>Class: {{ flare.methylprednisolone.drug_class }}</li>
+                      {% if flare.methylprednisolone.side_effects %}
+                      <li>Side effects: {{ flare.methylprednisolone.side_effects }}
+                      {% endif %}
+                    </ul>
+                  </div>
+            {% endif %}
+              </div>
+
         </div>
         <br>
       {% endfor %}
     {% endif %}
     </div>
-    <div class="col">
-      <h1>Flare Treatments</h1>
-      {% if colchicine_list %}
-        {% for colchicine in colchicine_list %}
-        <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' 'colchicine' colchicine.pk %}">{{ colchicine.generic_name|capfirst }}</a>
-          {% for brand_name in colchicine.brand_names %}
-            ({{ brand_name|capfirst  }}) </h5>
-          {% endfor %}
-          <ul>
-            <li>{{ colchicine.dose }} mg {{ colchicine.freq }}</li>
-            <li>Date started: {{ colchicine.date_started }}</li>
-            {% if colchicine.date_ended %}
-            <li>Date ended: {{ colchicine.date_ended }}</li>
-            {% endif %}
-            <li>Class: {{ colchicine.drug_class }}</li>
-            {% if colchicine.side_effects %}
-            <li>Side effects: {{ colchicine.side_effects }}
-            {% endif %}
-          </ul>
-        </div>
-        <br>
-        {% endfor %}
-      {% endif %}
-      {% if celecoxib_list %}
-        {% for celecoxib in celecoxib_list %}
-        <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' 'celecoxib' celecoxib.pk %}">{{ celecoxib.generic_name|capfirst }}</a>
-          {% for brand_name in celecoxib.brand_names %}
-            ({{ brand_name|capfirst  }}) </h5>
-          {% endfor %}
-          <ul>
-            <li>{{ celecoxib.dose }} mg {{ celecoxib.freq }}</li>
-            <li>Date started: {{ celecoxib.date_started }}
-            {% if celecoxib.date_ended %}
-            - {{ celecoxib.date_ended }}
-            {% endif %}
-            </li>
-            <li>Class: {{ celecoxib.drug_class }}</li>
-            {% if celecoxib.side_effects %}
-            <li>Side effects: {{ celecoxib.side_effects }}
-            {% endif %}
-          </ul>
-        </div>
-        <br>
-        {% endfor %}
-      {% endif %}
-      {% if ibuprofen_list %}
-        {% for ibuprofen in ibuprofen_list %}
-        <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' 'ibuprofen' ibuprofen.pk %}">{{ ibuprofen.generic_name|capfirst }}</a>
-          {% for brand_name in ibuprofen.brand_names %}
-            ({{ brand_name|capfirst  }}) </h5>
-          {% endfor %}
-          <ul>
-            <li>{{ ibuprofen.dose }} mg {{ ibuprofen.freq }}</li>
-            <li>Date started: {{ ibuprofen.date_started }}
-            {% if ibuprofen.date_ended %}
-            - {{ ibuprofen.date_ended }}
-            {% endif %}
-            </li>
-            <li>Class: {{ ibuprofen.drug_class }}</li>
-            {% if ibuprofen.side_effects %}
-            <li>Side effects: {{ ibuprofen.side_effects }}
-            {% endif %}
-          </ul>
-        </div>
-        <br>
-        {% endfor %}
-      {% endif %}
-      {% if naproxen_list %}
-        {% for naproxen in naproxen_list %}
-        <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' 'naproxen' naproxen.pk %}">{{ naproxen.generic_name|capfirst }}</a>
-          {% for brand_name in naproxen.brand_names %}
-            ({{ brand_name|capfirst  }}) </h5>
-          {% endfor %}
-          <ul>
-            <li>{{ naproxen.dose }} mg {{ naproxen.freq }}</li>
-            <li>Date started: {{ naproxen.date_started }}
-            {% if naproxen.date_ended %}
-            - {{ naproxen.date_ended }}
-            {% endif %}
-            </li>
-            <li>Class: {{ naproxen.drug_class }}</li>
-            {% if naproxen.side_effects %}
-            <li>Side effects: {{ naproxen.side_effects }}
-            {% endif %}
-          </ul>
-        </div>
-        <br>
-        {% endfor %}
-      {% endif %}
-      {% if meloxicam_list %}
-        {% for meloxicam in meloxicam_list %}
-        <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' 'meloxicam' meloxicam.pk %}">{{ meloxicam.generic_name|capfirst }}</a>
-          {% for brand_name in meloxicam.brand_names %}
-            ({{ brand_name|capfirst  }}) </h5>
-          {% endfor %}
-          <ul>
-            <li>{{ meloxicam.dose }} mg {{ meloxicam.freq }}</li>
-            <li>Date started: {{ meloxicam.date_started }}
-            {% if meloxicam.date_ended %}
-            - {{ meloxicam.date_ended }}
-            {% endif %}
-            </li>
-            <li>Class: {{ meloxicam.drug_class }}</li>
-            {% if meloxicam.side_effects %}
-            <li>Side effects: {{ meloxicam.side_effects }}
-            {% endif %}
-          </ul>
-        </div>
-        <br>
-        {% endfor %}
-      {% endif %}
-      {% if prednisone_list %}
-        {% for prednisone in prednisone_list %}
-        <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' 'prednisone' prednisone.pk %}">{{ prednisone.generic_name|capfirst }}</a>
-          {% for brand_name in prednisone.brand_names %}
-            ({{ brand_name|capfirst  }}) </h5>
-          {% endfor %}
-          <ul>
-            <li>{{ prednisone.dose }} mg {{ prednisone.freq }}</li>
-            <li>Date started: {{ prednisone.date_started }}
-            {% if prednisone.date_ended %}
-            - {{ prednisone.date_ended }}
-            {% endif %}
-            </li>
-            <li>Class: {{ prednisone.drug_class }}</li>
-            {% if prednisone.side_effects %}
-            <li>Side effects: {{ prednisone.side_effects }}
-            {% endif %}
-          </ul>
-        </div>
-        <br>
-        {% endfor %}
-      {% endif %}
-      {% if methylprednisolone_list %}
-        {% for methylprednisolone in methylprednisolone_list %}
-        <div class="container user-flare-list">
-          <h5><a href="{% url 'treatment:update' 'methylprednisolone' methylprednisolone.pk %}">{{ methylprednisolone.generic_name|capfirst }}</a>
-          {% for brand_name in methylprednisolone.brand_names %}
-            ({{ brand_name|capfirst  }}) </h5>
-          {% endfor %}
-          <ul>
-            <li>{{ methylprednisolone.dose }} mg {{ methylprednisolone.freq }}</li>
-            <li>Date started: {{ methylprednisolone.date_started }}
-            {% if methylprednisolone.date_ended %}
-            - {{ methylprednisolone.date_ended }}
-            {% endif %}
-            </li>
-            <li>Class: {{ methylprednisolone.drug_class }}</li>
-            {% if methylprednisolone.side_effects %}
-            <li>Side effects: {{ methylprednisolone.side_effects }}
-            {% endif %}
-          </ul>
-        </div>
-        <br>
-        {% endfor %}
-      {% endif %}
-    </div>
   </div>
 </div>
-<a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button">Log a Flare</a>
 {% endblock content %}

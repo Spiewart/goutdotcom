@@ -1,17 +1,42 @@
 :root {
-  --main-background: linear-gradient(35deg, rgb(143, 212, 137), rgb(97, 27, 0));
-  --main-background-color: rgb(143, 212, 137);
-  --main-border-color: rgb(97, 27, 0);
-  --polarized-microscopy-background: repeating-linear-gradient(90deg, yellow 0px, navy 40px,magenta 80px); }
+  --main-background: linear-gradient(to left top, rgb(255, 34, 225), rgb(240, 255, 29));
+  --main-button-background-color: rgb(62, 67, 71);
+  --main-button-border-color: rgb(231, 231, 231);
+  --main-nested-container-background: linear-gradient(to right bottom, rgb(255, 34, 225), rgb(240, 255, 29));
+  --main-nested-container-border-style: solid;
+  --main-nested-container-border-width: medium;
+  --main-nested-container-border-color: rgb(1, 14, 20);
+  --main-nested-container-padding: 5px; }
 
 body {
   background: var(--main-background); }
 
+.jumbotron {
+  background: var(--main-nested-container-background);
+  border-style: var(--main-nested-container-border-style);
+  border-width: var(--main-nested-container-border-width);
+  border-color: var(--main-nested-container-border-color);
+  padding: var(--main-nested-container-padding); }
+
 .asteriskField {
   display: none; }
 
+.btn {
+  background-color: var(--main-button-background-color);
+  border-color: var(--main-button-border-color); }
+
+.btn:hover {
+  background-color: var(--main-button-border-color); }
+
 .hyperlink:hover {
   color: black; }
+
+.list-items {
+  background: var(--main-nested-container-background);
+  border-style: var(--main-nested-container-border-style);
+  border-width: var(--main-nested-container-border-width);
+  border-color: var(--main-nested-container-border-color);
+  padding: var(--main-nested-container-padding); }
 
 #profilepic {
   margin-left: 5px; }
@@ -79,20 +104,7 @@ body {
   padding: 5px;
   background-color: #8684e9; }
 
-.ult-index-jumbotron {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px; }
-
 .user-profile-media {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px;
-  background-color: #8684e9; }
-
-.user-flare-list {
   border-style: solid;
   border-width: medium;
   border-color: #010e14;
