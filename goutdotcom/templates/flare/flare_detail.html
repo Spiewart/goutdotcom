@@ -5,7 +5,10 @@
 <main role="main" class="container">
   <div class="row">
     <div class="col list-items">
-      <h1>{{ request.user|capfirst  }}'s Flare</h1>
+      <h1>{{ request.user|capfirst  }}'s Flare
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:list' %}" role="button" style="float: right;">Flare List</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:update' object.id %}" role="button" style="float: right;">Update</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a></h1>
       <p>Date: {{ flare.created }}</p>
       {% if flare.location %}
       <p>Location: {{ flare.location }}</p>
@@ -149,13 +152,10 @@
             {% endif %}
           </ul>
       {% endif %}
-      </h3>
       {% if object.urate %}
-        <h3>Urate at time of flare: <a href="{% url 'lab:lab-detail' 'urate' object.urate.pk %}">{{ object.urate }}</a> mg/dL</h3>
+        <h2><a href="{% url 'lab:lab-detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) at time of flare: {{ object.urate }}mg/dL</h2>
       {% endif %}
     </div>
   </div>
 </main>
-<br>
-<a class="btn btn-primary btn-lg" href="{% url 'flare:update' object.id %}" role="button">Update</a>
 {% endblock content %}

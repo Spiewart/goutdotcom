@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic.base import TemplateView
 
 from .models import Flare
 from ..lab.models import Urate
@@ -14,6 +15,9 @@ from ..treatment.forms import ColchicineFlareForm, IbuprofenFlareForm, NaproxenF
 from ..treatment.models import Colchicine, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat
 
 # Create your views here.
+
+class AboutFlares(TemplateView):
+    template_name = "flare/about.html"
 
 class FlareDetail(LoginRequiredMixin, DetailView):
     model = Flare
