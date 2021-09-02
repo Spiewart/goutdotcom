@@ -2,11 +2,27 @@
   --main-background: linear-gradient(to left top, rgb(255, 34, 225), rgb(240, 255, 29));
   --main-button-background-color: rgb(62, 67, 71);
   --main-button-border-color: rgb(231, 231, 231);
+  --main-master-container-background-color: rgb(47, 52, 124);
+  --main-master-container-border-style: solid;
+  --main-master-container-border-width: medium;
+  --main-master-container-border-color: rgb(0, 0, 0);
+  --main-master-container-box-shadow: 10px 10px 5px rgb(47, 52, 124);
+  --main-master-container-padding: 5px;
   --main-nested-container-background: linear-gradient(to right bottom, rgb(255, 34, 225), rgb(240, 255, 29));
   --main-nested-container-border-style: solid;
   --main-nested-container-border-width: medium;
   --main-nested-container-border-color: rgb(1, 14, 20);
+  --main-nested-container-box-shadow: 10px 10px 5px rgb(240, 255, 29);
   --main-nested-container-padding: 5px;
+}
+
+.gdc-default {
+  border-style: var(--main-master-container-border-style);
+  border-width: var(--main-master-container-border-width);
+  border-color: var(--main-master-container-border-color);
+  padding: var(--main-master-container-padding);
+  background-color: var(--main-master-container-background-color);
+  box-shadow: var(--main-master-container-box-shadow);
 }
 
 body {
@@ -44,6 +60,17 @@ body {
   border-width: var(--main-nested-container-border-width);
   border-color: var(--main-nested-container-border-color);
   padding: var(--main-nested-container-padding);
+  box-shadow: var(--main-nested-container-box-shadow);
+}
+
+.list-items-small {
+  background: var(--main-nested-container-background);
+  border-style: var(--main-nested-container-border-style);
+  border-width: var(--main-nested-container-border-width);
+  border-color: var(--main-nested-container-border-color);
+  padding: var(--main-nested-container-padding);
+  margin: 5px;
+  list-style-type: square;
 }
 
 #profilepic {
@@ -74,14 +101,6 @@ body {
   background-color: yellow;
   width: fit-content;
   height: min-content;
-}
-.gdc-default {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(97, 27, 0);
-  padding: 5px;
-  background-color: rgb(67, 137, 179);
-  box-shadow: 10px 10px 5px rgba(97, 27, 0, 0.4);
 }
 
 .pagination {

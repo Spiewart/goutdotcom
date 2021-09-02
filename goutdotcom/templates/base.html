@@ -69,13 +69,14 @@
               <a class="nav-link" href="{% url 'about' %}">About</a>
             </li>
             <li class="nav-item">
+              {% if request.user.is_authenticated %}
                 <a class="nav-link" href="{% url 'flare:list' %}">Flares</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'flare:about' %}">Flares</a>
+              {% endif %}
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'ult:index' %}">ULT</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'vitals:index' %}">Vitals</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Treatment</a>

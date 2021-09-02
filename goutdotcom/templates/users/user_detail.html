@@ -4,8 +4,8 @@
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
-  <main>
-    <div class="media gdc-default">
+  <main role="main" class="container">
+    <div class="media list-items">
         <div class="media-body">
           <h1>{{ object.username|capfirst}}</h1>
             {% if object.username %}
@@ -17,6 +17,12 @@
             {% if object.patientprofile.bio %}
               <p>{{ object.patientprofile.bio }}</p>
             {% endif %}
+                      {% if object.patientprofile %}
+            <p>Profile created on: {{ object.patientprofile.created }}</p>
+            {% else %}
+            <p>Want to complete your profile?</p>
+            <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
+            {% endif %}
         </div>
         {% if object.patientprofile.picture %}
           <div class="media">
@@ -26,44 +32,37 @@
     </div>
 
     <br>
-
+    {% if object == request.user %}
     <div class="container gdc-default">
       <div class="row">
         <div class="col-sm">
-          {% if object == request.user %}
             {% if object.patientprofile.date_of_birth %}
-            <li class ="gdc-list">Date of birth: {{ object.patientprofile.date_of_birth }}</li>
-            <li class ="gdc-list">Age: {{ object.patientprofile.get_age }}</li>
+            <li class ="list-items-small">Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
+            <li class ="list-items-small">Age: {{ object.patientprofile.get_age }}</li>
             {% endif %}
             {% if object.patientprofile.gender %}
-              <li class ="gdc-list">Gender: {{ object.patientprofile.gender }}</li>
+              <li class ="list-items-small">Gender: {{ object.patientprofile.gender|capfirst }}</li>
             {% endif %}
             {% if object.patientprofile.race %}
-              <li class ="gdc-list">Race: {{ object.patientprofile.race }}</li></li>
+              <li class ="list-items-small">Race: {{ object.patientprofile.race|capfirst }}</li></li>
             {% endif %}
             {% if object.patientprofile.weight %}
-              <li class ="gdc-list">Weight: {{ object.patientprofile.weight }}</li>
+              <li class ="list-items-small"><a href="{% url 'vitals:list' 'weight' %}">Weight: </a><a href="{% url 'vitals:detail' 'weight' object.patientprofile.weight.pk %}">{{ object.patientprofile.weight }}</a></li>
             {% endif %}
             {% if object.patientprofile.height %}
-              <li class ="gdc-list">height: {{ object.patientprofile.height }}</li>
+              <li class ="list-items-small"><a href="{% url 'vitals:list' 'height' %}">Height: </a><a href="{% url 'vitals:detail' 'height' object.patientprofile.height.pk %}">{{ object.patientprofile.height }}</a></li>
             {% endif %}
             {% if object.patientprofile.BMI_calculator %}
-              <li class ="gdc-list">BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
+              <li class ="list-items-small">BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
             {% endif %}
             {% if object.patientprofile.drinks_per_week %}
-              <li class ="gdc-list">Drinks per Week: {{ object.patientprofile.drinks_per_week }}</li>
+              <li class ="list-items-small">Drinks per Week: {{ object.patientprofile.drinks_per_week }}</li>
             {% endif %}
-            {% if object.patientprofile %}
-            <p>Profile created on: {{ object.patientprofile.created }}</p>
-            {% else %}
-            <p>Want to complete your profile?</p>
-            <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
-            {% endif %}
-          {% endif %}
         </div>
       </div>
     </div>
-    <br>
+    {% endif %}
+    </main>
 
     {% if object == request.user %}
         <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>

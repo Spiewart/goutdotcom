@@ -75,7 +75,7 @@ class PatientProfileUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(PatientProfileUpdate, self).get_context_data(**kwargs)
         context.update({
-            'user': self.request.user
+           'user': self.request.user
         })
         if self.request.POST:
             context['height_form'] = HeightForm(
