@@ -10,11 +10,11 @@
                 <a class="btn btn-primary btn-lg" href="{% url 'flare:list' %}" role="button" style="float: right;">My Flares</a>
                 <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
                 {% else %}
-                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button">Log In</a>
+                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
                 {% endif %}
                 </h1>
                 {% block intro %}
-                <p>Flares hurt</p>
+                <p>Gout flares are painful and disabling. They are driven by deposition of <a href="{% url 'lab:about' 'urate' %}">uric acid</a> in the joints and the body's inflammatory reaction to it. </p>
                 {% endblock intro %}
                 <hr size="6" color="navy">
                 <div class="container list-items">
@@ -31,9 +31,45 @@
                 </div>
                 <hr size="6" color="navy">
                 {% block basics %}
-                  <h2 class="nested-container"><a id="basics">The Basics</a></h2>
-                  <h3>Symptoms</h3>
-                  <p>The cardinal symptom of gout flares is pain. The pain is typically described as starting "mild" as "an itch" or "a tickle" before bedtime.
+                  <h2 class="nested-container"><a id="basics">Basics</a></h2>
+                  <h3><u>Pain</u></h3>
+                  <p>The cardinal symptom of gout flares is pain.
+                  The pain is typically characterized as starting "mild" as "an itch" or "a tickle" before bedtime.
+                  The next morning, the pain will have become severe.
+                  It will sometimes wake the patient from sleep before their usual waking hour.
+                  At this point, the pain is so severe that sufferers often believe they have broken their bone.
+                  It grows more violent and even light touch, such as that imparted by wearing a sock or setting a sheet down, will cause severe distress.</p>
+                  </p>
+                  <p>Gout flares thus start quite suddenly and reach maximal intensity within hours.
+                  Flares have a predilection for starting in the evening or early morning, when the joint is coolest.
+                  </p>
+                  <div class="row">
+                    <div class="col">
+                      <h3><u>Inflammation</u></h3>
+                      <p>There are typically signs of <a href="https://en.wikipedia.org/wiki/Inflammation">inflammation</a> in the involved joint.
+                      Redness (erythema or rubor) of the skin overlying the joint is commonly observed on visual inspection.
+                      The joint and overlying skin are often warm to the touch (calor).
+                      In addition to pain (dolor), the joint is often quite swollen (tumor).</p>
+                      <p>Often, sufferers will have a low-grade fever from the systemic effects of such severe localized inflammation.<p>
+                    </div>
+                    <div class="col-md-auto">
+                      <figure class="figure">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" class="figure-img img-fluid rounded" alt="" style="width:350px;height:260px;">
+                      <figcaption class="figure-caption">Podagra. James Heilman, MD. <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a></figcaption>
+                      </figure>
+                    </div>
+                  </div>
+                  <h3><u>Location</u></h3>
+                    <p>Gout has a predilection for the lower extremities when it initially begins to affect an individual.
+                    The big toe is the most common site and is frequently the site of a sufferer's first flare.
+                    When gout effects the big toe, it is termed <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG">podagra</a>. Gout also commonly occurs in the midfoot, ankle and knees.</p>
+                    <p>Early on in the course of an individual's gout, it is usually monoarticular (affects only one joint at a time).
+                    As the disease progresses, it can involve multiple joints at the same time (polyarticular).
+                    It can also start to involve more atypical sites such as those found in the upper extremities and proximal lower extremities.
+                    Advanced gout has a predilection for the wrist and elbow.
+                    It can also involve the fingers.</p>
+                    <p>Gout rarely involves the hips, back/spine, and shoulders.<p>
+                  <h3><u>Duration</u></h3>
                   <hr size="6" color="navy">
                 {% endblock basics %}
                 {% block biology %}
