@@ -2,22 +2,21 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container">
+<main role="main" class="container default-container">
   <div class="row">
     <div class="col">
-      <h1>Flares</h1>
-    </div>
-    <div class="col">
-      <a class="btn btn-primary" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
-      <a class="btn btn-primary" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
+      <h1 class="nested-container">Flares
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
+      </h1>
     </div>
   </div>
     <div class="row">
       <div class="col">
       {% if page_obj %}
         {% for flare in page_obj %}
-          <div class="container list-items">
-            <a href="{% url 'flare:detail' flare.pk %}"><h2>Date: {{ flare.created }}</h2></a>
+          <div class="container nested-container">
+            <a href="{% url 'flare:detail' flare.pk %}"><h2 class="default-container">Date: {{ flare.created }}</h2></a>
             <ul>
               <li>Location: {{ flare.location }}</li>
               {% if flare.treatment %}

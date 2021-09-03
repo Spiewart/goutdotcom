@@ -16,15 +16,6 @@
   --main-nested-container-padding: 5px;
 }
 
-.gdc-default {
-  border-style: var(--main-master-container-border-style);
-  border-width: var(--main-master-container-border-width);
-  border-color: var(--main-master-container-border-color);
-  padding: var(--main-master-container-padding);
-  background-color: var(--main-master-container-background-color);
-  box-shadow: var(--main-master-container-box-shadow);
-}
-
 body {
   background: var(--main-background);
 }
@@ -50,17 +41,26 @@ body {
   background-color: var(--main-button-border-color);
 }
 
+.default-container {
+  border-style: var(--main-master-container-border-style);
+  border-width: var(--main-master-container-border-width);
+  border-color: var(--main-master-container-border-color);
+  color:rgb(231, 231, 231);
+  padding: var(--main-master-container-padding);
+  background-color: var(--main-master-container-background-color);
+}
+
 .hyperlink:hover {
   color: black;
 }
 
-.list-items {
+.nested-container {
   background: var(--main-nested-container-background);
   border-style: var(--main-nested-container-border-style);
   border-width: var(--main-nested-container-border-width);
   border-color: var(--main-nested-container-border-color);
+  color:rgb(231, 231, 231);
   padding: var(--main-nested-container-padding);
-  box-shadow: var(--main-nested-container-box-shadow);
 }
 
 .list-items-small {

@@ -5,8 +5,8 @@
 
 {% block content %}
   {% if form.instance.pk %}
-    <h1>Update {{ user.username }}'s Flare</h1>
-    <form class="form-horizontal" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
+    <h1class='default-container'>Update {{ user.username }}'s Flare</h1>
+    <form class="form-horizontal default-container" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {% crispy form %}
       {% crispy colchicine_form %}
@@ -21,10 +21,11 @@
       {% crispy urate_form %}
     </form>
   {% else %}
-  <h1>Log a Flare {{ user.username }}</h1>
-    <form class="form-horizontal" method="post" action="{% url 'flare:create' %}">
+  <h1 class='default-container'>Log a Flare {{ user.username }}</h1>
+    <form class="form-horizontal default-container" method="post" action="{% url 'flare:create' %}">
     {% csrf_token %}
     {% crispy form %}
+    {% crispy urate_form %}
     {% crispy colchicine_form %}
     {% crispy ibuprofen_form %}
     {% crispy naproxen_form %}
@@ -34,7 +35,6 @@
     {% crispy methylprednisolone_form %}
     {% crispy tinctureoftime_form %}
     {% crispy othertreat_form %}
-    {% crispy urate_form %}
     </form>
   {% endif %}
 {% endblock content %}
