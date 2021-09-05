@@ -12,13 +12,13 @@
           Log a Lab
         </button>
         <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'urate' %}">Uric Acid</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'ALT' %}">ALT</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'AST' %}">AST</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'WBC' %}">WBC</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'hemoglobin' %}">Hemoglobin</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'platelet' %}">Platelets</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:lab-create' 'creatinine' %}">Creatinine</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:create' 'urate' %}">Uric Acid</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:create' 'ALT' %}">ALT</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:create' 'AST' %}">AST</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:create' 'WBC' %}">WBC</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:create' 'hemoglobin' %}">Hemoglobin</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:create' 'platelet' %}">Platelets</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:create' 'creatinine' %}">Creatinine</a></li>
         </ul>
       </div>
     </div>
@@ -27,11 +27,11 @@
     <div class="row">
         {% if urate_list %}
           <div class="col">
-          <h2><a href="{% url 'lab:lab-list' 'urate' %}">Uric Acids</a></h2>
+          <h2><a href="{% url 'lab:list' 'urate' %}">Uric Acids</a></h2>
           {% for urate in urate_list %}
           <div class="container user-flare-list">
             <p>{{ urate.value }} {{ urate.units }}</p>
-            <p>Date: <a href="{% url 'lab:lab-detail' 'urate' urate.pk %}">{{ urate.date_drawn }}</a></p>
+            <p>Date: <a href="{% url 'lab:detail' 'urate' urate.pk %}">{{ urate.date_drawn }}</a></p>
           </div>
           <br>
           {% endfor %}
@@ -39,12 +39,12 @@
         {% endif %}
         {% if creatinine_list %}
         <div class="col">
-           <h2><a href="{% url 'lab:lab-list' 'creatinine' %}">Creatinines</a></h2>
+           <h2><a href="{% url 'lab:list' 'creatinine' %}">Creatinines</a></h2>
            {% for creatinine in creatinine_list %}
             <div class="container user-flare-list">
               <p>{{ creatinine.value }} {{ creatinine.units }}</p>
               <p>eGFR: {{ creatinine.eGFR_calculator }}</p>
-              <p>Date: <a href="{% url 'lab:lab-detail' 'creatinine' creatinine.pk %}">{{ creatinine.date_drawn }}</a></p>
+              <p>Date: <a href="{% url 'lab:detail' 'creatinine' creatinine.pk %}">{{ creatinine.date_drawn }}</a></p>
            </div>
            <br>
            {% endfor %}
@@ -54,11 +54,11 @@
         <div class="row">
           {% if ALT_list %}
             <div class="col">
-            <h2><a href="{% url 'lab:lab-list' 'ALT' %}">ALTs</a></h2>
+            <h2><a href="{% url 'lab:list' 'ALT' %}">ALTs</a></h2>
             {% for ALT in ALT_list %}
             <div class="container user-flare-list">
               <p>{{ ALT.value }} {{ ALT.units}}</p>
-              <p>Date: <a href="{% url 'lab:lab-detail' 'ALT' ALT.pk %}">{{ ALT.date_drawn }}</a></p>
+              <p>Date: <a href="{% url 'lab:detail' 'ALT' ALT.pk %}">{{ ALT.date_drawn }}</a></p>
             </div>
             <br>
             {% endfor %}
@@ -66,11 +66,11 @@
           {% endif %}
           {% if AST_list %}
           <div class="col">
-            <h2><a href="{% url 'lab:lab-list' 'AST' %}">ASTs</a></h2>
+            <h2><a href="{% url 'lab:list' 'AST' %}">ASTs</a></h2>
             {% for AST in AST_list %}
             <div class="container user-flare-list">
               <p>{{ AST.value }} {{ AST.units }}</p>
-                <p>Date: <a href="{% url 'lab:lab-detail' 'AST' AST.pk %}">{{ AST.date_drawn }}</a></p>
+                <p>Date: <a href="{% url 'lab:detail' 'AST' AST.pk %}">{{ AST.date_drawn }}</a></p>
             </div>
             <br>
             {% endfor %}
@@ -80,11 +80,11 @@
       <div class="row">
         {% if platelet_list %}
         <div class="col">
-          <h2><a href="{% url 'lab:lab-list' 'platelet' %}">Platelets</a></h2>
+          <h2><a href="{% url 'lab:list' 'platelet' %}">Platelets</a></h2>
           {% for platelet in platelet_list %}
           <div class="container user-flare-list">
             <p>{{ platelet.value }} {{ platelet.units}}</p>
-            <p>Date: <a href="{% url 'lab:lab-detail' 'platelet' platelet.pk %}">{{ platelet.date_drawn }}</a></p>
+            <p>Date: <a href="{% url 'lab:detail' 'platelet' platelet.pk %}">{{ platelet.date_drawn }}</a></p>
           </div>
           <br>
           {% endfor %}
@@ -92,11 +92,11 @@
         {% endif %}
         {% if WBC_list %}
         <div class="col">
-          <h2><a href="{% url 'lab:lab-list' 'WBC' %}">WBCs</a></h2>
+          <h2><a href="{% url 'lab:list' 'WBC' %}">WBCs</a></h2>
           {% for WBC in WBC_list %}
           <div class="container user-flare-list">
             <p>{{ WBC.value }} {{ WBC.units }}</p>
-            <p>Date: <a href="{% url 'lab:lab-detail' 'WBC' WBC.pk %}">{{ WBC.date_drawn }}</a></p>
+            <p>Date: <a href="{% url 'lab:detail' 'WBC' WBC.pk %}">{{ WBC.date_drawn }}</a></p>
           </div>
           <br>
           {% endfor %}
@@ -104,11 +104,11 @@
         {% endif %}
        {% if hemoglobin_list %}
        <div class="col">
-          <h2><a href="{% url 'lab:lab-list' 'hemoglobin' %}">Hemoglobins</a></h2>
+          <h2><a href="{% url 'lab:list' 'hemoglobin' %}">Hemoglobins</a></h2>
           {% for hemoglobin in hemoglobin_list %}
           <div class="container user-flare-list">
             <p>{{ hemoglobin.value }} {{ hemoglobin.units }}</p>
-            <p>Date: <a href="{% url 'lab:lab-detail' 'hemoglobin' hemoglobin.pk %}">{{ hemoglobin.date_drawn }}</a></p>
+            <p>Date: <a href="{% url 'lab:detail' 'hemoglobin' hemoglobin.pk %}">{{ hemoglobin.date_drawn }}</a></p>
           </div>
           <br>
           {% endfor %}

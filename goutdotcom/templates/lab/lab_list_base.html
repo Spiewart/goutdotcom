@@ -3,62 +3,51 @@
 {% load lab_extras %}
 
 {% block content %}
-<div class="container">
-    <header class="row">
-        <div class="col">
-            {% if object_list %}
-                {% block lab_title %}
-                   <h1>{{ object_list|list_to_name }}s</h1> 
-                {% endblock lab_title %}
-        </div>
-        <div class="col" >
-            {% if page_obj %}
-                <div class="pagination" style="float: right;">
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                            <a href="?page=1" class="hyperlink">&laquo; first</a>
-                            <a href="?page={{ page_obj.previous_page_number }}" class="hyperlink">previous</a>
-                        {% endif %}
-                
-                        <span class="current">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                        </span>
-                
-                        {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}" class="hyperlink">next</a>
-                            <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
-                        {% endif %}
-                    </span>
-                </div>
-        </div>
-    </header>
-    <main class="row">
-        <div class="col">
-            {% for lab in object_list %}
-                <div class="container gdc-default">
-                    <h5 class="gdc-legend">{{ lab.value }} {{ lab.units }}</h5>
-                    {% if lab.name == 'creatinine' %}
-                    <li class="gdc-list">eGFR: {{ lab.eGFR_calculator }}</li>
-                    {% endif %}
-                    <h6 class="gdc-legend">Date: <a href="{{ lab.get_absolute_url }}" class="hyperlink">{{ lab.date_drawn.date }}</a></h6>
-                </div>
-                <br>
-            {% endfor %}
-        </div>
-    </main>
-            {% endif %}
-            {% else %}
-                <main>
-                    <p>{{ object_list|list_to_name }}!</p>
-                </main>
-            {% endif %}
-    <footer>
+<main class="container default-container">
+  {% if object_list %}
+    <header class="page-header">
+    {% block lab_title %}
+        <h1 class="nested-container">{{ object_list|list_to_name }}s
+    {% endblock lab_title %}
     {% block buttons %}
-    <a class="btn btn-primary" href="{% url 'lab:about' lab %}" role="button">About: {{ lab|capfirst }}</a>
-    <a class="btn btn-primary" href="{% url 'lab:lab-create' lab %}" role="button">New: {{ lab|capfirst }}</a>
-    <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
+    <a class="btn btn-primary" href="{% url 'lab:about' lab %}" role="button" style="float: right;">About: {{ lab|capfirst }}</a>
+    <a class="btn btn-primary" href="{% url 'lab:create' lab %}" role="button" style="float: right;">New: {{ lab|capfirst }}</a>
+    <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button" style="float: right;">Lab Home</a>
     {% endblock buttons %}
-    </footer>
-</div>
-<br>
+    </h1>
+    </header>
+    <div class="row">
+        <div class="col">
+          {% for lab in object_list %}
+              <div class="container nested-container">
+                  <h2 class="default-container">{{ lab.value }} {{ lab.units }}</h2>
+                  {% if lab.name == 'creatinine' %}
+                  <li class="gdc-list">eGFR: {{ lab.eGFR_calculator }}</li>
+                  {% endif %}
+                  <p>Date: <a href="{{ lab.get_absolute_url }}" class="hyperlink">{{ lab.date_drawn.date }}</a></p>
+              </div>
+              <br>
+          {% endfor %}
+          <footer class="page-footer">
+            {% if page_obj %}
+              <div class="pagination" style="float: right;">
+                <span class="step-links">
+                  {% if page_obj.has_previous %}
+                    <a href="?page=1" class="hyperlink">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="hyperlink">previous</a>
+                  {% endif %}
+                  <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                  </span>
+                  {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="hyperlink">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
+                  {% endif %}
+                </span>
+            {% endif %}
+            </div>
+          </footer>
+        </div>
+  {% endif %}
+</main>
 {% endblock content %}

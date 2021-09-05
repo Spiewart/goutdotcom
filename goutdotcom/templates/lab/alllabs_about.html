@@ -2,25 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="jumbotron-fluid gdc-default-list">
+<main class="container">
+    <div class="jumbotron-fluid default-container">
         <div class="row">
           <div class="col">
-            <h1 class="display-4">Lab Testing and Gout</h1>
-            <p class="lead">Lab testing is important in gout!</p>
-            <hr class="my-4">
-            <p>Labs are important in several gouty situations:</p>
-                <ul>
-                    <li>Diagnosis of gout, particularly the initial diagnosis</li>
-                    <li>Medical management of gout</li>
-                        <ul>
-                            <li>Determining which medictions are best for your gout</li>
-                            <li>Monitoring for side effects of gout medications</li>
-                        </ul>
-                </ul>
-          </div>
-          {% if request.user.is_authenticated %}
-          <div class="col">
+            <h1 class="nested-container">Lab Testing and Gout
+            {% if request.user.is_authenticated %}
             <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button" style="float: right;">Your Labs</a>
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
               <div class="btn-group" role="group">
@@ -38,22 +25,29 @@
                 </ul>
               </div>
             </div>
-          </div>
-          {% else %}
-          <div class="col">
-                  <div class="container-fluid gdc-container-subcontainer">
-                    <p><a id="log-in-link" class="btn btn-primary" href="{% url 'account_login' %}" role="button">Log In</a> to see your labs!</p>
-                  </div>
-          </div>
-          {% endif %}
+            {% else %}
+                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
+            {% endif %}
+          </h1>
+          <p class="lead">Lab testing is important in gout, particularly when making the initial diagnosis and when doing long-term management of gout (<a href="{% url 'treatment:ult' %}">ULT</a>).</p>
+          <hr class="my-4">
+          <p>Labs are important in several gouty situations:</p>
+            <ul>
+                <li>Diagnosis of gout, particularly the initial diagnosis</li>
+                <li>Medical management of gout</li>
+                  <ul>
+                      <li>Determining which medictions are best for your gout</li>
+                      <li>Monitoring for side effects of gout medications</li>
+                  </ul>
+            </ul>
           </div>
         </div>
-        <br>
-
+      </div>
+      <br>
       <div class="row">
         <div class="col-sm">
-          <div class="container gdc-default-list">
-              <h3>Diagnosis of Gout</h3>
+          <div class="container default-container">
+              <h3 class="nested-container">Diagnosis of Gout</h3>
               <p>The diagnosis gout is clinical, but labs help. Labs can increase or decrease a provider's clinical suspicion for gout (<a class="link-primary" href="https://en.wikipedia.org/wiki/Pre-_and_post-test_probability" target="_blank">pre-test probability</a>).</p>
               <ol>
                 <li>
@@ -66,8 +60,8 @@
             </div>
         </div>
         <div class="col-sm">
-          <div class="container gdc-default-list">
-             <h3> Management of Gout</h3>
+          <div class="container default-container">
+             <h3 class="nested-container">Management of Gout</h3>
              <p>Labs are used in the management of gout to: </p>
              <ol>
                <li>
@@ -85,6 +79,5 @@
         </div>
         </div>
     </div>
-</div>
-<br>
+</main>
 {% endblock content %}

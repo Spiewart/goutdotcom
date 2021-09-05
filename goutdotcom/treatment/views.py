@@ -89,12 +89,12 @@ class FlareView(LoginRequiredMixin, ListView):
         return queryset.filter(user=self.request.user)
 
 
-class PreventionView(LoginRequiredMixin, ListView):
-    template_name = 'treatment/prevention.html'
+class ULTView(LoginRequiredMixin, ListView):
+    template_name = 'treatment/ult.html'
     model = Allopurinol
 
     def get_context_data(self, **kwargs):
-        context = super(PreventionView, self).get_context_data(**kwargs)
+        context = super(ULTView, self).get_context_data(**kwargs)
         context.update({
             'allopurinol_list': Allopurinol.objects.filter(user=self.request.user),
             'febuxostat_list': Febuxostat.objects.filter(user=self.request.user),

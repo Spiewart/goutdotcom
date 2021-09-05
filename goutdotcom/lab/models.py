@@ -39,7 +39,7 @@ class Lab(TimeStampedModel):
         return str(self.value)
 
     def get_absolute_url(self):
-        return reverse("lab:lab-detail", kwargs={"pk":self.pk, "lab":self.name})
+        return reverse("lab:detail", kwargs={"pk":self.pk, "lab":self.name})
 
     def __unicode__(self):
         return self.name
