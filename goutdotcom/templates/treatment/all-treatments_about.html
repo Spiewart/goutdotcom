@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="container">
+    <div class="jumbotron-fluid default-container">
+        <div class="row">
+          <div class="col">
+            <h1 class="nested-container">Gout Treatment
+            {% if request.user.is_authenticated %}
+            <a class="btn btn-primary" href="{% url 'treatment:dashboard' %}" role="button" style="float: right;">Your Treatments</a>
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+              <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                  Log a treatment
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' 'allopurinol' %}">Allopurinol</a></li>
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' 'febuxostat' %}">Febuxostat</a></li>
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' 'colchicine' %}">Colchicine</a></li>
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' 'ibuprofen' %}">Ibuprofen</a></li>
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' 'naproxen' %}">Naproxen</a></li>
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' 'meloxicam' %}">Meloxicam</a></li>
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' 'prednisone' %}">Prednisone</a></li>
+                </ul>
+              </div>
+            </div>
+            {% else %}
+                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
+            {% endif %}
+          </h1>
+          <p class="lead">Lab testing is important in gout, particularly when making the initial diagnosis and when doing long-term management of gout (<a href="{% url 'treatment:ult' %}">ULT</a>).</p>
+          <hr class="my-4">
+          <p>Labs are important in several gouty situations:</p>
+            <ul>
+                <li>Diagnosis of gout, particularly the initial diagnosis</li>
+                <li>Medical management of gout</li>
+                  <ul>
+                      <li>Determining which medictions are best for your gout</li>
+                      <li>Monitoring for side effects of gout medications</li>
+                  </ul>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm">
+          <div class="container default-container">
+              <h3 class="nested-container">Diagnosis of Gout</h3>
+              <p>The diagnosis gout is clinical, but labs help. Labs can increase or decrease a provider's clinical suspicion for gout (<a class="link-primary" href="https://en.wikipedia.org/wiki/Pre-_and_post-test_probability" target="_blank">pre-test probability</a>).</p>
+              <ol>
+                <li>
+                 Measure your serum <a class="link-primary" href="{% url 'lab:about' 'urate' %}">uric acid</a>. Very high levels make gout more likely (but not 100%). Very low levels make gout unlikely (though not impossible). Intermediate or normal levels don't help one way or the other. Serum uric acid drops during flares of gout.
+                </li>
+                <li>
+                 We can also measure your liver(<a class="link-primary" href="{% url 'lab:about' 'AST' %}">AST</a>/<a class="link-primary" href="{% url 'lab:about' 'ALT' %}">ALT</a>) and kidney(<a class="link-primary" href="{% url 'lab:about' 'creatinine' %}">creatinine</a>) function as well as blood counts(<a class="link-primary" href="{% url 'lab:about' 'WBC' %}">WBC</a>, <a class="link-primary" href="{% url 'lab:about' 'hemoglobin' %}">hemoglobin</a>, <a class="link-primary" href="{% url 'lab:about' 'platelet' %}">platelets</a>). These are important when picking medications to treat your gout, both for the flare and for long-term management.
+                </li>
+              </ol>
+            </div>
+        </div>
+        <div class="col-sm">
+          <div class="container default-container">
+             <h3 class="nested-container">Management of Gout</h3>
+             <p>Labs are used in the management of gout to: </p>
+             <ol>
+               <li>
+                Confirm that your uric acid is at goal.
+               </li>
+                <ul>
+                  <li>This determines when you can stop taking medications to prevent a flare.</li>
+                  <li>It also will help you and your doctor know when you are at low or no risk of having gout flares.</li>
+                </ul>
+               <li>
+                Make sure that you aren't having any side effects from your medications.
+               </li>
+             </ol>
+          </div>
+        </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

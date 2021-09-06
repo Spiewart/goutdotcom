@@ -5,6 +5,7 @@ from .views import *
 app_name = "treatment"
 urlpatterns = [
     path("", view=IndexView.as_view(), name="index"),
+    path("about/<treatment>", view=TreatmentAbout.as_view(), name="about"),
     path("dashboard/", view=DashboardView.as_view(), name="dashboard"),
     path("flare/", FlareView.as_view(), name="flare"),
     path("ult/", ULTView.as_view(), name="ult"),

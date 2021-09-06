@@ -5,13 +5,27 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import modelform_factory
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView, TemplateView
 from .models import Allopurinol, Colchicine, Febuxostat, Ibuprofen, Celecoxib, Meloxicam, Naproxen, Prednisone, Probenecid, Methylprednisolone, Tinctureoftime, Othertreat
 
 non_prn_models = [Allopurinol, Febuxostat, Probenecid]
 allopurinol_model = [Allopurinol]
 prn_models = [Colchicine, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Prednisone, Methylprednisolone, Tinctureoftime, Othertreat]
 injection_models = [Methylprednisolone]
+
+class TreatmentAbout(TemplateView):
+    def get_template_names(self, **kwargs):
+        kwargs = self.kwargs
+        treatment = kwargs.get('treatment')
+        template = "treatment/" + str(treatment) + "_about.html"
+        return template
+
+    def get_context_data(self, **kwargs):
+        context = super(TreatmentAbout, self).get_context_data(**kwargs)
+        context.update({
+            'treatment': self.kwargs['treatment'],
+        })
+        return context
 
 class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'treatment/dashboard.html'
@@ -22,14 +36,14 @@ class DashboardView(LoginRequiredMixin, ListView):
         context.update({
             'allopurinol_list': Allopurinol.objects.filter(user=self.request.user),
             'febuxostat_list': Febuxostat.objects.filter(user=self.request.user),
-            'colchicine_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'celecoxib_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'meloxicam_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'naproxen_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=False),
-            'prednisone_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=False),
+            'colchicine_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=False).order_by('-created')[:1],
+            'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=False).order_by('-created')[:1],
+            'celecoxib_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=False).order_by('-created')[:1],
+            'meloxicam_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=False).order_by('-created')[:1],
+            'naproxen_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=False).order_by('-created')[:1],
+            'prednisone_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=False).order_by('-created')[:1],
             'probenecid_list': Probenecid.objects.filter(user=self.request.user),
-            'methylprednisolone_list': Methylprednisolone.objects.filter(user=self.request.user),
+            'methylprednisolone_list': Methylprednisolone.objects.filter(user=self.request.user).order_by('-created')[:1],
             'colchicine_ppx_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
             'ibuprofen_ppx_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
             'celecoxib_ppx_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),

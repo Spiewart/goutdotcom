@@ -69,34 +69,29 @@
               <a class="nav-link" href="{% url 'about' %}">About</a>
             </li>
             <li class="nav-item">
-              {% if request.user.is_authenticated %}
-                <a class="nav-link" href="{% url 'flare:list' %}">Flares</a>
-              {% else %}
-                <a class="nav-link" href="{% url 'flare:about' %}">Flares</a>
-              {% endif %}
+            {% if request.user.is_authenticated %}
+              <a class="nav-link" href="{% url 'flare:list' %}">Flares</a>
+            {% else %}
+              <a class="nav-link" href="{% url 'flare:about' %}">Flares</a>
+            {% endif %}
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'ult:index' %}">ULT</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Treatment</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'treatment:index' %}">Overview</a>
-                <a class="dropdown-item" href="{% url 'treatment:flare' %}">Flares</a>
-                <a class="dropdown-item" href="{% url 'treatment:ult' %}">ULT (urate-lowering therapy)</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'treatment:dashboard' %}">Treatment Dashboard</a>
-              </div>
-            </li>
+            <li class="nav-item">
             {% if request.user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'lab:index' %}">Labs</a>
-            </li>
+              <a class="nav-link" href="{% url 'treatment:dashboard' %}">Treatment</a>
             {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'lab:about' 'alllabs' %}">Labs</a>
-            </li>
+              <a class="nav-link" href="{% url 'treatment:about' 'all-treatments' %}">Treatment</a>
             {% endif %}
+            </li>
+            <li class="nav-item">
+            {% if request.user.is_authenticated %}
+              <a class="nav-link" href="{% url 'lab:index' %}">Labs</a>
+            {% else %}
+            <a class="nav-link" href="{% url 'lab:about' 'alllabs' %}">Labs</a>
+            {% endif %}
+            </li>
             {% if request.user.is_authenticated %}
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
