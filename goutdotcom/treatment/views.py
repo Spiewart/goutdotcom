@@ -57,30 +57,6 @@ class DashboardView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-class IndexView(LoginRequiredMixin, ListView):
-    template_name = 'treatment/index.html'
-    model = Allopurinol
-
-    def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
-        context.update({
-            'allopurinol_list': Allopurinol.objects.filter(user=self.request.user),
-            'febuxostat_list': Febuxostat.objects.filter(user=self.request.user),
-            'colchicine_list': Colchicine.objects.filter(user=self.request.user),
-            'ibuprofen_list': Ibuprofen.objects.filter(user=self.request.user),
-            'celecoxib_list': Celecoxib.objects.filter(user=self.request.user),
-            'meloxicam_list': Meloxicam.objects.filter(user=self.request.user),
-            'naproxen_list': Naproxen.objects.filter(user=self.request.user),
-            'prednisone_list': Prednisone.objects.filter(user=self.request.user),
-            'probenecid_list': Probenecid.objects.filter(user=self.request.user),
-            'methylprednisolone_list': Methylprednisolone.objects.filter(user=self.request.user),
-        })
-        return context
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user)
-
 class FlareView(LoginRequiredMixin, ListView):
     template_name = 'treatment/flare.html'
     model = Colchicine

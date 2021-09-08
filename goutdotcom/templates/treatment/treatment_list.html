@@ -52,7 +52,7 @@
     <footer>
     {% block buttons %}
     <a class="btn btn-primary" href="{% url 'treatment:create' treatment %}" role="button">New: {{ treatment|capfirst }}</a>
-    <a class="btn btn-primary" href="{% url 'treatment:index' %}" role="button">Treatment Home</a>
+    <a class="btn btn-primary" href="{% url 'treatment:dashboard' %}" role="button">Treatment Home</a>
     {% endblock buttons %}
     </footer>
 </div>

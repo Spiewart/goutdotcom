@@ -5,54 +5,38 @@
 
 {% block content %}
 <main class="container">
-    <div class="jumbotron-fluid default-container">
-      <div class="row">
+  <div class="row default-container">
+    <div class="col">
+      <h1 class="nested-container" id="treatment">{{ request.user.username|capfirst }}'s Treatment
+      <a class="btn btn-primary btn-lg" href="#ult" role="button" style="float: right;">ULT</a>
+      {% if colchicine_list or ibuprofen_list or celecoxib_list or meloxicam_list or naproxen_list or prednisone_list or methylprednisolone_list %}
+      <a class="btn btn-primary btn-lg" href="#flare" role="button" style="float: right;">Flare</a>
+      {% endif %}
+      {% if colchicine_ppx_list or ibuprofen_ppx_list or celecoxib_ppx_list or meloxicam_ppx_list or naproxen_ppx_list or prednisone_ppx_list %}
+      <a class="btn btn-primary btn-lg" href="#prophylaxis" role="button" style="float: right;">Prophylaxis</a>
+      {% endif %}
+      <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About</a>
+      </h1>
+    </div>
+  </div>
+  <br>
+    {% if allopurinol_list or febuxostat_list or probenecid_list %}
+      <div class="row default-container">
         <div class="col">
-          <h1 class="nested-container" id="treatment">Your Treatments
-          <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About Treatment</a>
+          <h1 class="nested-container" id="ult">ULT
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button" style="float: right;">About</a>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
             <div class="btn-group" role="group">
               <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                Log a treatment
+                Update
               </button>
               <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
                 <li><a class="dropdown-item" href="{% url 'treatment:create' 'allopurinol' %}">Allopurinol</a></li>
                 <li><a class="dropdown-item" href="{% url 'treatment:create' 'febuxostat' %}">Febuxostat</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'colchicine' %}">Colchicine</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'ibuprofen' %}">Ibuprofen</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'naproxen' %}">Naproxen</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'meloxicam' %}">Meloxicam</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'prednisone' %}">Prednisone</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:create' 'probenecid' %}">Probenecid</a></li>
               </ul>
             </div>
           </div>
-          </h1>
-          <a class="btn btn-primary" href="#ult" role="button" style="float: right;">ULT</a>
-          <a class="btn btn-primary" href="#flare" role="button" style="float: right;">Flare</a>
-          {% if colchicine_ppx_list or ibuprofen_ppx_list or celecoxib_ppx_list or meloxicam_ppx_list or naproxen_ppx_list or prednisone_ppx_list %}
-          <a class="btn btn-primary" href="#prophylaxis" role="button" style="float: right;">Prophylaxis</a>
-          {% endif %}
-        <p class="lead">Lab testing is important in gout, particularly when making the initial diagnosis and when doing long-term management of gout (<a href="{% url 'treatment:ult' %}">ULT</a>).</p>
-        <hr class="my-4">
-        <p>Labs are important in several gouty situations:</p>
-          <ul>
-              <li>Diagnosis of gout, particularly the initial diagnosis</li>
-              <li>Medical management of gout</li>
-                <ul>
-                    <li>Determining which medictions are best for your gout</li>
-                    <li>Monitoring for side effects of gout medications</li>
-                </ul>
-          </ul>
-      </div>
-    </div>
-    </div>
-      <br>
-
-    {% if allopurinol_list or febuxostat_list or probenecid_list %}
-      <div class="row default-container">
-        <div class="col">
-          <h1 class="nested-container" id="ult">ULT(urate-lowering therapy)
-          <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button" style="float: right;">ULT</a>
           </h1>
           <u><a href="#treatment">Back to Top</a></u>
           {% if allopurinol_list %}
@@ -145,12 +129,12 @@
     {% if colchicine_list or celecoxib_list or ibuprofen_list or naproxen_list or meloxicam_list or prednisone_list or methylprednisolone_list %}
       <div class="row default-container">
         <div class="col">
-          <h1 class="nested-container" id="flare">Flare Treatments
-          <a class="btn btn-primary btn-lg" href="{% url 'treatment:flare' %}" role="button" style="float: right;">Treatment: Flares</a>
+          <h1 class="nested-container" id="flare">Flare
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:flare' %}" role="button" style="float: right;">About</a>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
             <div class="btn-group" role="group">
               <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                Log a Flare Treatment
+                New
               </button>
               <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
                 <li><a class="dropdown-item" href="{% url 'treatment:create' 'colchicine' %}">Colchicine</a></li>
