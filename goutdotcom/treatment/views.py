@@ -133,7 +133,7 @@ class TreatmentCreate(LoginRequiredMixin, CreateView):
         self.object = None
         self.treatment = self.kwargs['treatment']
         self.model = apps.get_model('treatment', model_name=self.treatment)
-        if self.model in self.non_prn_models:
+        if self.model in non_prn_models:
             try:
                 user_treatment = self.model.objects.get(user=self.request.user)
             except self.model.DoesNotExist:

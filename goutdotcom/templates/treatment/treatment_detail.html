@@ -30,8 +30,10 @@
   </main>
   <br>
   {% block buttons %}
-  <a class="btn btn-primary" href="" role="button">About: {{ object|to_class_name }}</a>
+  <a class="btn btn-primary" href="{% url 'treatment:about' object|to_class_name %}" role="button">About: {{ object|to_class_name }}</a>
+  {% if object.drug_class == "nonsteroidal anti-inflammatory drug" or "local steroid" or "systemic steroid" or "anti-inflammatory" %}
   <a class="btn btn-primary" href="{% url 'treatment:list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
+  {% endif %}
   <a class="btn btn-primary" href="{% url 'treatment:create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
   <a class="btn btn-primary" href="{% url 'treatment:index' %}" role="button">Treatment Home</a>
   {% endblock buttons %}
