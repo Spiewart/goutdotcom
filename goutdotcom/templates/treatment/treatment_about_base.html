@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
-{% load lab_extras %}
+{% load treatment_extras %}
 
 {% block content %}
 <main class="container">
     <div class="row">
         <div class="column">
             <div class="container default-container">
-                <h1 class="nested-container"><a id="{{ lab }}">{{ lab|capfirst }}</a>
-                <a class="btn btn-primary btn-lg" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About: Labs</a>
+                <h1 class="nested-container"><a id="{{ treatment }}">{{ treatment|capfirst }}</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About</a>
                 {% if request.user.is_authenticated %}
-                <a class="btn btn-primary btn-lg" href="{% url 'lab:list' lab %}" role="button" style="float: right;">List: {{ lab|capfirst }}</a>
-                <a class="btn btn-primary btn-lg" href="{% url 'lab:create' lab %}" role="button" style="float: right;">New: {{ lab|capfirst }}</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'treatment:list' treatment %}" role="button" style="float: right;">List</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button" style="float: right;">New</a>
                 {% else %}
                 <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
                 {% endif %}

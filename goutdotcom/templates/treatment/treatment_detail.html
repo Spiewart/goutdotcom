@@ -39,11 +39,11 @@
 </main>
 {% block buttons %}
 <a class="btn btn-primary" href="{% url 'treatment:about' object|to_class_name %}" role="button">About: {{ object|to_class_name }}</a>
-{% if object.drug_class == "nonsteroidal anti-inflammatory drug" or "local steroid" or "systemic steroid" or "anti-inflammatory" %}
+{% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
+{% else %}
 <a class="btn btn-primary" href="{% url 'treatment:list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
 {% endif %}
-{% if object|to_class_name == 'Allopurinol' or "Febuxostat" or "Probenecid" %}
-{{ object|to_class_name }}
+{% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
 {% else %}
 <a class="btn btn-primary" href="{% url 'treatment:create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
 {% endif %}

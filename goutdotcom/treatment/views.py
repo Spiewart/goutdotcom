@@ -79,6 +79,27 @@ class FlareView(LoginRequiredMixin, ListView):
         return queryset.filter(user=self.request.user)
 
 
+class ProphylaxisView(LoginRequiredMixin, ListView):
+    template_name = 'treatment/prophylaxis.html'
+    model = Colchicine
+
+    def get_context_data(self, **kwargs):
+        context = super(ProphylaxisView, self).get_context_data(**kwargs)
+        context.update({
+            'colchicine_ppx_list': Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'ibuprofen_ppx_list': Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'celecoxib_ppx_list': Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'meloxicam_ppx_list': Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'naproxen_ppx_list': Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
+            'prednisone_ppx_list': Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
+
+
 class ULTView(LoginRequiredMixin, ListView):
     template_name = 'treatment/ult.html'
     model = Allopurinol

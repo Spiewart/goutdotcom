@@ -68,6 +68,7 @@ function check_location() {
 }
 
 // function that checks if the HTML buttons #lower_extremity_check and #upper_extremity_check are checked and displays appropriate options
+// NEED TO BLANK VALUES WHEN UNCHECKED
 function check_extremity() {
   if ($('#lower_extremity_check').is(":checked")) {
     if ($('#upper_extremity_check').is(":checked")) {
@@ -573,7 +574,7 @@ function check_extremity() {
   }
 }
 
-// function that checks if the HTML button #lab_check is checked and shows the optional labs Flare model field check boxes, used on #lab_chec click
+// function that checks if the HTML button #lab_check is checked and shows the optional labs Flare model field check boxes, used on #lab_check click
 function check_labs() {
   if ($('#lab_check').is(":checked")) {
     $('#div_id_labs').show();

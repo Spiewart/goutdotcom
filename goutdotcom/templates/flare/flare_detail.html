@@ -158,7 +158,7 @@
           </ul>
       {% endif %}
       {% if object.urate %}
-        <h2 class="nested-container"><a href="{% url 'lab:lab-detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) at time of flare: {{ object.urate }}mg/dL</h2>
+        <h2 class="nested-container"><a href="{% url 'lab:detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) at time of flare: {{ object.urate }}mg/dL</h2>
       {% endif %}
     </div>
   </div>

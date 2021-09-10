@@ -5,7 +5,7 @@
 
 {% block content %}
   {% if form.instance.pk %}
-    <h1class='default-container'>Update {{ user.username }}'s Flare</h1>
+    <h1 class='default-container'>Update {{ user.username|capfirst }}'s Flare</h1>
     <form class="form-horizontal default-container" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {% crispy form %}
