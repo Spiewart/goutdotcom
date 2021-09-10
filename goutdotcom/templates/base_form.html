@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.username }}{% endblock title %}
+
+{% block content %}
+<main class="container default-container">
+{% block header %}
+<h1 class="nested-container">{{ user.username|capfirst }}</h1>
+{% endblock header %}
+{% block form %}
+{% endblock form %}
+</main>
+{% endblock content %}

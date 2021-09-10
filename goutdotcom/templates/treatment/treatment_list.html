@@ -7,7 +7,12 @@
   {% if object_list %}
     <header>
       {% block treatment_title %}
-        <h1 class="nested-container">{{ object_list|list_to_name }}s</h1>
+        <h1 class="nested-container">{{ object_list|list_to_name }}s
+          {% block buttons %}
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' treatment %}" role="button" style="float: right;">About</a>
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button" style="float: right;">New</a>
+          {% endblock buttons %}
+        </h1>
       {% endblock treatment_title %}
     </header>
     <main>
@@ -37,30 +42,24 @@
         <p>No {{ object_list|list_to_name }}s logged!</p>
     </main>
   {% endif %}
-  <footer>
-  {% block buttons %}
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' treatment %}" role="button">About</a>
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button">New</a>
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:dashboard' %}" role="button">Treatment Home</a>
-  {% endblock buttons %}
-    {% if page_obj %}
-  <div class="pagination" style="float: right;">
-    <span class="step-links">
+</div>
+<footer class="page-footer">
+  {% if page_obj %}
+    <div class="pagination" style="float: right;">
+      <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="?page=1" class="hyperlink">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}" class="hyperlink">previous</a>
+          <a href="?page=1" class="hyperlink">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}" class="hyperlink">previous</a>
         {% endif %}
         <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
         </span>
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}" class="hyperlink">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
+          <a href="?page={{ page_obj.next_page_number }}" class="hyperlink">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
         {% endif %}
-    </span>
-  </div>
+      </span>
   {% endif %}
-  </footer>
-</div>
-<br>
+  </div>
+</footer>
 {% endblock content %}

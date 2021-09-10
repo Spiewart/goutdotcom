@@ -3,36 +3,38 @@
 {% load vitals_extras %}
 
 {% block content %}
-<div class="container">
-  <main>
-    <div class="row">
-      <div class="col">
-        <div class="container gdc-default">
-          {% block vital_title %}
-          <h1>
-            {{ object|to_class_name }} ({{ object.date_recorded.date }})
-          </h1>
-          {% endblock vital_title %}
-          <ul>
-            {% if object.name == 'height' %}
-              <li class="gdc-list">{{ object.convert_inches_to_feet }}</li>
-            {% else %}
-            <li class="gdc-list">{{ object.value }} {{ object.units }}</li>
-            {% endif %}
-            <li class="gdc-list">Recorded: {{ object.date_recorded }}</li>
-            <li class="gdc-list">Logged: {{ object.created }}</li>
-            <li class="gdc-list">Last modified: {{ object.modified }}</li>
-          </ul>
-          <a class="btn btn-primary" href="{% url 'vitals:update' object|to_class_name object.pk%}" role="button">Update</a>
-      </div>
-      </div>
+<div class="container default-container">
+  <div class="row">
+    <div class="col">
+      <main>
+        {% block vital_title %}
+        <h1 class="nested-container">
+          {{ object|to_class_name }} ({{ object.date_recorded.date }})
+        </h1>
+        {% endblock vital_title %}
+        <div class="container nested-container">
+          {% if object.name == 'height' %}
+            <li>{{ object.convert_inches_to_feet }}</li>
+          {% else %}
+          <li>{{ object.value }} {{ object.units }}</li>
+          {% endif %}
+          {% if object.date_recorded %}
+          <li>Recorded: {{ object.date_recorded }}</li>
+          {% endif %}
+          <li>Logged: {{ object.created }}</li>
+          <li>Last modified: {{ object.modified }}</li>
+        </div>
+      </main>
+      <br>
+      <footer>
+      {% block buttons %}
+        <a class="btn btn-primary btn-lg" href="{% url 'vitals:update' object|to_class_name object.pk%}" role="button">Update</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'vitals:list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'users:detail' request.user %}" role="button">Profile</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'home' %}" role="button">Home</a>
+      {% endblock buttons %}
+      </footer>
     </div>
-  </main>
-  <br>
-  {% block buttons %}
-    <a class="btn btn-primary" href="{% url 'vitals:list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
-    <a class="btn btn-primary" href="{% url 'vitals:create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
-    <a class="btn btn-primary" href="{% url 'vitals:index' %}" role="button">Vitals Home</a>
-  {% endblock buttons %}
+  </div>
 </div>
 {% endblock content %}

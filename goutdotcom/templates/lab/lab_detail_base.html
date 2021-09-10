@@ -22,7 +22,7 @@
             <li class="gdc-list">Logged: {{ object.created }}</li>
             <li class="gdc-list">Last modified: {{ object.modified }}</li>
           </ul>
-          <a class="btn btn-primary" href="{% url 'lab:lab-update' object|to_class_name object.pk%}" role="button">Update</a>
+          <a class="btn btn-primary" href="{% url 'lab:update' object|to_class_name object.pk%}" role="button">Update</a>
       </div>
       </div>
     </div>
@@ -30,8 +30,8 @@
   <br>
   {% block buttons %}
   <a class="btn btn-primary" href="{% url 'lab:about' object|to_class_name %}" role="button">About: {{ object|to_class_name }}</a>
-  <a class="btn btn-primary" href="{% url 'lab:lab-list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
-  <a class="btn btn-primary" href="{% url 'lab:lab-create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
+  <a class="btn btn-primary" href="{% url 'lab:list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
+  <a class="btn btn-primary" href="{% url 'lab:create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
   <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button">Lab Home</a>
   {% endblock buttons %}
 </div>

@@ -10,8 +10,11 @@
                 <h1 class="nested-container"><a id="{{ treatment }}">{{ treatment|capfirst }}</a>
                 <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About</a>
                 {% if request.user.is_authenticated %}
-                <a class="btn btn-primary btn-lg" href="{% url 'treatment:list' treatment %}" role="button" style="float: right;">List</a>
-                <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button" style="float: right;">New</a>
+                  {% if treatment|lower == 'allopurinol' or treatment.generic_name == 'febuxostat' or treatment.generic_name == 'probenecid'%}
+                  {% else %}
+                  <a class="btn btn-primary btn-lg" href="{% url 'treatment:list' treatment %}" role="button" style="float: right;">List: {{ treatment }}</a>
+                  <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button" style="float: right;">New</a>
+                  {% endif %}
                 {% else %}
                 <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
                 {% endif %}

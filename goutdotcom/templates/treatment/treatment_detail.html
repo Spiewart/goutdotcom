@@ -9,7 +9,18 @@
         {% block treatment_title %}
         <h1 class="nested-container">
           {{ object|to_class_name }}
+          {% block buttons %}
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' object|to_class_name %}" role="button" style="float: right;">About</a>
+          {% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
+          {% else %}
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:list' object|to_class_name %}" role="button" style="float: right;">List: {{ object|to_class_name }}</a>
+          {% endif %}
+          {% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
+          {% else %}
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' object|to_class_name %}" role="button" style="float: right;">New: {{ object|to_class_name }}</a>
+          {% endif %}
           <a class="btn btn-primary btn-lg" href="{% url 'treatment:update' object|to_class_name object.pk %}" role="button" style="float: right;">Update</a>
+          {% endblock buttons %}
         </h1>
         {% endblock treatment_title %}
     </div>
@@ -37,16 +48,4 @@
     </div>
   </div>
 </main>
-{% block buttons %}
-<a class="btn btn-primary" href="{% url 'treatment:about' object|to_class_name %}" role="button">About: {{ object|to_class_name }}</a>
-{% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
-{% else %}
-<a class="btn btn-primary" href="{% url 'treatment:list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
-{% endif %}
-{% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
-{% else %}
-<a class="btn btn-primary" href="{% url 'treatment:create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
-{% endif %}
-<a class="btn btn-primary" href="{% url 'treatment:dashboard' %}" role="button">Treatment Home</a>
-{% endblock buttons %}
 {% endblock content %}

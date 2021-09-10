@@ -4,93 +4,117 @@
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
-  <main role="main" class="container">
-    <div class="media list-items">
+<div class="container default-container">
+  <main>
+    <div class="media nested-container">
         <div class="media-body">
-          <h1>{{ object.username|capfirst}}</h1>
-            {% if object.username %}
-              {% if object.name %}
-                <p>{{ object.name }}</p>
+          <h1 class="default-container">{{ object.username|capfirst}}</h1>
+            <div class="container default-container">
+              {% if object.patientprofile.bio %}
+                <h2>Bio: </h2>{{ object.patientprofile.bio }}
+              {% else %}
+                <h2>Enter a <a href="{% url 'profiles:update' 'requeest.user' object.patientprofile.pk %}">bio</a></h2>
               {% endif %}
-                <p>{{ object.get_role_display }}</p>
-            {% endif %}
-            {% if object.patientprofile.bio %}
-              <p>{{ object.patientprofile.bio }}</p>
-            {% endif %}
-                      {% if object.patientprofile %}
-            <p>Profile created on: {{ object.patientprofile.created }}</p>
+            </div>
+            <br>
+            {% if object.patientprofile %}
+              <div class="container default-container">
+                  <div class="row">
+                    <div class="col">
+                      {% if object.name %}
+                        <li>{{ object.name }}</li>
+                      {% else %}
+                        <li>Name: not recorded</li>
+                      {% endif %}
+                    </div>
+                    <div class="col">
+                    {% if object.patientprofile.date_of_birth %}
+                      <li>Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
+                    {% else %}
+                      <li>Date of Birth: not recorded</li>
+                    {% endif %}
+                    </div>
+                    <div class="col">
+                    {% if object.patientprofile.date_of_birth %}
+                      <li>Age: {{ object.patientprofile.get_age }}</li>
+                    {% else %}
+                      <li>Age: can't calculate age without DoB<li>
+                    {% endif %}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                    {% if object.patientprofile.gender %}
+                      <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
+                    {% else %}
+                      <li>Gender: not recorded</li>
+                    {% endif %}
+                    </div>
+                    <div class="col">
+                    {% if object.patientprofile.race %}
+                      <li>Race: {{ object.patientprofile.race|capfirst }}</li>
+                    {% else %}
+                      <li>Race: not recorded</li>
+                    {% endif %}
+                    </div>
+                    <div class="col">
+                    {% if object.patientprofile.drinks_per_week %}
+                      <li>Drinks / Week: {{ object.patientprofile.drinks_per_week }}
+                    {% else %}
+                      <li>Drinks / Week: not recorded</li>
+                    {% endif %}
+                    </div>
+                  </div>
+                  {% if object.patientprofile.weight and object.patientprofile.height %}
+                  <div class="row">
+                    <div class="col">
+                    {% if object.patientprofile.weight %}
+                      <li><a href="{% url 'vitals:list' 'weight' %}">Weight: </a><a href="{% url 'vitals:detail' 'weight' object.patientprofile.weight.pk %}">{{ object.patientprofile.weight }}</a></li>
+                    {% else %}
+                      <li>Weight: not recorded</li>
+                    {% endif %}
+                    </div>
+                    <div class="col">
+                    {% if object.patientprofile.height %}
+                    <li><a href="{% url 'vitals:list' 'height' %}">Height: </a><a href="{% url 'vitals:detail' 'height' object.patientprofile.height.pk %}">{{ object.patientprofile.height }}</a></li>
+                    {% else %}
+                      <li><a href="{% url 'vitals:create' 'height' %}">Height</a>: not recorded</li>
+                    {% endif %}
+                    </div>
+                    <div class="col">
+                    {% if object.patientprofile.weight and object.patientprofile.height %}
+                    <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
+                    {% elif object.patientprofile.weight %}
+                    <li>BMI: can't calculate BMI without <a href="{% url 'profiles:update' 'requeest.user' object.patientprofile.pk %}">height</a> and weight</li>
+                    {% elif object.patient.profile.height %}
+                    <li>BMI: can't calculate BMI without height and <a href="{% url 'profiles:update' 'requeest.user' object.patientprofile.pk %}">weight</a></li>
+                    {% endif %}
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+                {% if object.patientprofile.picture %}
+                  <div class="media">
+                  <img src="{{ object.patientprofile.picture.url }}" id="profilepic" width="250" height="250" alt="{{ object.username|capfirst }}'s Picture">
+                  </div>
+                {% endif %}
+              </div>
+              </div>
             {% else %}
             <p>Want to complete your profile?</p>
             <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
             {% endif %}
-        </div>
-        {% if object.patientprofile.picture %}
-          <div class="media">
-          <img src="{{ object.patientprofile.picture.url }}" id="profilepic" width="250" height="250" alt="{{ object.username|capfirst }}'s Picture">
-          </div>
-        {% endif %}
-    </div>
 
-    <br>
+      </main>
+  <footer>
     {% if object == request.user %}
-    <div class="container gdc-default">
-      <div class="row">
-        <div class="col-sm">
-            {% if object.patientprofile.date_of_birth %}
-            <li class ="list-items-small">Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
-            <li class ="list-items-small">Age: {{ object.patientprofile.get_age }}</li>
-            {% endif %}
-            {% if object.patientprofile.gender %}
-              <li class ="list-items-small">Gender: {{ object.patientprofile.gender|capfirst }}</li>
-            {% endif %}
-            {% if object.patientprofile.race %}
-              <li class ="list-items-small">Race: {{ object.patientprofile.race|capfirst }}</li></li>
-            {% endif %}
-            {% if object.patientprofile.weight %}
-              <li class ="list-items-small"><a href="{% url 'vitals:list' 'weight' %}">Weight: </a><a href="{% url 'vitals:detail' 'weight' object.patientprofile.weight.pk %}">{{ object.patientprofile.weight }}</a></li>
-            {% endif %}
-            {% if object.patientprofile.height %}
-              <li class ="list-items-small"><a href="{% url 'vitals:list' 'height' %}">Height: </a><a href="{% url 'vitals:detail' 'height' object.patientprofile.height.pk %}">{{ object.patientprofile.height }}</a></li>
-            {% endif %}
-            {% if object.patientprofile.BMI_calculator %}
-              <li class ="list-items-small">BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
-            {% endif %}
-            {% if object.patientprofile.drinks_per_week %}
-              <li class ="list-items-small">Drinks per Week: {{ object.patientprofile.drinks_per_week }}</li>
-            {% endif %}
-        </div>
-      </div>
-    </div>
+      <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button">My Info</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
+      {% if request.user.patientprofile %}
+        <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}" role="button">Profile</a>
+      {% endif %}
     {% endif %}
-    </main>
-
-    {% if object == request.user %}
-        <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-        <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
-        {% if request.user.patientprofile %}
-        <a class="btn btn-primary" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}" role="button">Profile</a>
-        {% endif %}
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <div class="btn-group" role="group">
-            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              Medications
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'allopurinol' %}">Allopurinol</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'febuxostat' %}">Febuxostat</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'colchicine' %}">Colchicine</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'ibuprofen' %}">Ibuprofen</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'naproxen' %}">Naproxen</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'meloxicam' %}">Meloxicam</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'celecoxib' %}">Celecoxib</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'prednisone' %}">Prednisone</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'probenecid' %}">Probenecid</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'methylprednisolone' %}">Methylprednisolone</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'tinctureoftime' %}">Tincture of time</a></li>
-              <li><a class="dropdown-item" href="{% url 'treatment:create' 'othertreat' %}">Other</a></li>
-            </ul>
-          </div>
-        </div>
-    {% endif %}
-  </div>
+  </footer>
+</div>
 {% endblock content %}

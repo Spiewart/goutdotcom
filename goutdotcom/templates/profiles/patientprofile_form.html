@@ -1,11 +1,14 @@
-{% extends "base.html" %}
+{% extends "base_form.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}{{ user.username }}{% endblock %}
+{% block title %}{{ user.username|capfirst }}'s Profile Update{% endblock title %}
 
-{% block content %}
+{% block header %}
+<h1 class="nested-container">{{ user.username|capfirst }}'s Profile</h1>
+{% endblock header %}
+
+{% block form %}
   {% if form.instance.pk %}
-    <h1>{{ user.username }}</h1>
     <form class="form-horizontal" method="post" action="{% url 'profiles:update' request.user object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
@@ -13,12 +16,11 @@
       {{ weight_form|crispy }}
       <div class="control-group">
         <div class="controls">
-          <button type="submit" class="btn btn-primary">Update</button>
+          <button type="submit" class="btn btn-primary btn-lg">Update</button>
         </div>
       </div>
     </form>
   {% else %}
-    <h1>{{ user.username }}</h1>
     <form class="form-horizontal" method="post" action="{% url 'profiles:create' %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
@@ -31,4 +33,4 @@
       </div>
     </form>
   {% endif %}
-{% endblock %}
+{% endblock form %}

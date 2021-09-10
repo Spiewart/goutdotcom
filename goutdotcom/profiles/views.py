@@ -95,7 +95,8 @@ class PatientProfileUpdate(LoginRequiredMixin, UpdateView):
         obj = super(PatientProfileUpdate, self).get_object(queryset=queryset)
         return obj
 
-    def post(self, request):
+    def post(self, request, **kwargs):
+        #NEED **kwargs even though VSCode IDE says it's not used. Can't accept <user> and <pk> from url parameter otherwise.
         self.object = self.get_object()
         form = self.form_class(request.POST, request.FILES, instance=self.object)
         height_form = self.height_form_class(request.POST, instance=self.object.height)
