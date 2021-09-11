@@ -243,29 +243,29 @@
         <div class="row">
           <div class="col">
             <h5>Urate-lowering therapies (ULT)</h5>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:allopurinol-create' %}" role="button">Allopurinol</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:febuxostat-create' %}" role="button">Febuxostat</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:probenecid-create' %}" role="button">Probenecid</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'allopurinol' %}" role="button">Allopurinol</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'febuxostat' %}" role="button">Febuxostat</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'probenecid' %}" role="button">Probenecid</a>
           </div>
-        </div>  
+        </div>
         <div class="row">
           <div class="col">
             <h5>Flare Prophylaxis</h5>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:colchicine-create' %}" role="button">Colchicine</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:ibuprofen-create' %}" role="button">Ibuprofen</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:naproxen-create' %}" role="button">Naproxen</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:meloxicam-create' %}" role="button">Meloxicam</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:celecoxib-create' %}" role="button">Celecoxib</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:prednisone-create' %}" role="button">Prednisone</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'colchicine' %}" role="button">Colchicine</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'ibuprofen' %}" role="button">Ibuprofen</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'naproxen' %}" role="button">Naproxen</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'meloxicam' %}" role="button">Meloxicam</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'celecoxib' %}" role="button">Celecoxib</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' 'prednisone' %}" role="button">Prednisone</a>
           </div>
-        </div>  
+        </div>
         {% endif %}
     </div>
         <br>
         <div class="container user-ULT-list">
           <a class="btn btn-primary btn-lg" href="{% url 'treatment:dashboard' %}" role="button">Treatment Home</a>
           <a class="btn btn-primary btn-lg" href="{% url 'treatment:flare' %}" role="button">Treatment: Flares</a>
-          <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Treatment: ULT</a>
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">Treatment: ULT</a>
         </div>
 </main>
 {% endblock content %}

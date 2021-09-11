@@ -49,9 +49,9 @@ class ULT(TimeStampedModel):
         choices=BOOL_CHOICES, verbose_name="Is your uric acid over 9.0?", help_text="If you don't know, that's OK!", default=False, null=True, blank=True)
 
     def calculator(self):
-        go_forth = "Urate lowering therapy is recommended for your gout."
-        abstain = "Urate lowering therapy isn't indicated for your gout."
-        conditional = "Urate lowering therapy is conditionally recommended for your gout."
+        go_forth = "ULT is recommended for your gout."
+        abstain = "ULT isn't recommended for your gout."
+        conditional = "ULT is conditionally recommended for your gout."
 
         if self.num_flares == "one":
             if self.erosions == True or self.tophi == True:

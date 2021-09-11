@@ -2,18 +2,74 @@
 {% load static %}
 
 {% block content %}
-<div class="jumbotron ult-index-jumbotron">
-  <h2>{{ object.calculator }}</h2>
-  <h2>{{ object.created }}</h2>
-  <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">Recalculate Need for ULT</a>
+<main>
+  <div class="jumbotron-fluid default-container">
+    <div class="container">
+      <h1 class="nested-container">{{ object.calculator }}</h1>
+      <h2>What is the basis for this recommendation?</h2>
+      <hr class="my-4">
+      <div class="row">
+        <div class="col">
+          <h2 class="nested-container">Deciding Factors</h2>
+          <ul>
+            {% if object.num_flares %}
+              <li>Number of flares reported: {{ object.num_flares }}</li>
+                <ul>
+                  {% if object.num_flares == 'zero' %}
+                  <li>Not ever having a gout flare is a strong recommendation against using urate-lowering therapy.</li>
+                  {% endif %}
+                </ul>
+            {% endif %}
+            {% if object.freq_flares %}
+              <li>Frequency of flares: {{ object.freq_flares }} per year </li>
+            {% endif %}
+            {% if object.erosions %}
+              <li>Erosions present on x-rays or other imaging: yes</li>
+            {% else %}
+              <li>Erosions present on x-rays or other imaging: no</li>
+            {% endif %}
+            {% if object.tophi %}
+              <li>Tophi: yes</li>
+            {% else %}
+              <li>Tophi: no</li>
+            {% endif %}
+            {% if object.stones %}
+              <li>Urate kidney stones: yes</li>
+            {% else %}
+              <li>Urate kidney stones: no</li>
+            {% endif %}
+            {% if object.ckd %}
+              <li>Chronic kidney disease: yes</li>
+            {% else %}
+              <li>Chronic kidney disease: no</li>
+            {% endif %}
+            {% if object.uric_acid %}
+              <li>Uric acid > 9.0: yes</li>
+            {% else %}
+              <li>Uric acid > 9.0: no</li>
+            {% endif %}
+            <li>Created: {{ object.created }}</li>
+            {% if object.modified %}
+              <li>Last modified: {{ object.modified }}</li>
+            {% endif %}
+          </ul>
+        </div>
+        <div class="col">
+        <h2 class="nested-container">Explanation</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+  <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">Update</a>
   {% if object.calculator == "abstain" %}
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Learn about ULT?</a>
+  <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
   {% elif object.calculator == "conditional" %}
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Learn about ULT?</a>
+  <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
   {% else %}
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:prevention' %}" role="button">Learn about ULT?</a>
+  <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
   {% endif %}
-  <a class="btn btn-primary btn-lg" href="{% url 'ult:index' %}" role="button">ULT: Home</a>
-</div>
-
+  <a class="btn btn-primary btn-lg" href="{% url 'ult:index' %}" role="button">Home</a>
+  </footer>
+</main>
 {% endblock content %}
