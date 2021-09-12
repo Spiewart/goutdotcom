@@ -1,4 +1,20 @@
 {
     "python.pythonPath": "c:\\Users\\spiew\\Anaconda3\\envs\\goutdotcom\\python.exe",
-    "python.linting.pylintEnabled": true
+    "editor.formatOnSave": true,
+    "python.linting.lintOnSave": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint_django",
+        "--django-settings-module=core.settings",
+        "--max-line-length=120"
+    ],
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length=120"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    }
 }

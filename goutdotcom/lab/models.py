@@ -1,26 +1,29 @@
-from goutdotcom.profiles.models import PatientProfile
-from django.db import models
-from django.conf import settings
-from django.db.models.fields import NullBooleanField
-from django_extensions.db.models import TimeStampedModel
-from django.urls import reverse
-from django.utils import timezone
 from decimal import *
 
+from django.conf import settings
+from django.db import models
+from django.db.models.fields import NullBooleanField
+from django.urls import reverse
+from django.utils import timezone
+from django_extensions.db.models import TimeStampedModel
+
+from goutdotcom.profiles.models import PatientProfile
+
 # Create your models here.
-MGDL = 'mg/dL (milligrams per deciliter)'
-GDL = 'g/dL (grams per decliter)'
-CELLSMM3 = 'cells/mm^3 (cells per cubmic millimeter)'
-PLTMICROL = 'PLTS/\u03BCL (platelets per microliter)'
-UL = 'U/L (units per liter)'
+MGDL = "mg/dL (milligrams per deciliter)"
+GDL = "g/dL (grams per decliter)"
+CELLSMM3 = "cells/mm^3 (cells per cubmic millimeter)"
+PLTMICROL = "PLTS/\u03BCL (platelets per microliter)"
+UL = "U/L (units per liter)"
 
 UNIT_CHOICES = (
     (MGDL, "mg/dL (milligrams per deciliter)"),
     (GDL, "g/dL (grams per decliter)"),
     (CELLSMM3, "cells/mm^3 (cells per cubmic millimeter)"),
     (PLTMICROL, "PLTS/\u03BCL (platelets per microliter)"),
-    (UL, "U/L (units per liter)")
+    (UL, "U/L (units per liter)"),
 )
+
 
 class Lab(TimeStampedModel):
     user = models.ForeignKey(
@@ -30,7 +33,9 @@ class Lab(TimeStampedModel):
     value = NullBooleanField()
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "Lab"
-    date_drawn = models.DateTimeField(help_text="What day was this lab drawn?", default=timezone.now, null=True, blank=True)
+    date_drawn = models.DateTimeField(
+        help_text="What day was this lab drawn?", default=timezone.now, null=True, blank=True
+    )
 
     class Meta:
         abstract = True
@@ -39,7 +44,7 @@ class Lab(TimeStampedModel):
         return str(self.value)
 
     def get_absolute_url(self):
-        return reverse("lab:detail", kwargs={"pk":self.pk, "lab":self.name})
+        return reverse("lab:detail", kwargs={"pk": self.pk, "lab": self.name})
 
     def __unicode__(self):
         return self.name
@@ -47,40 +52,47 @@ class Lab(TimeStampedModel):
     def user_has_profile(self):
         has_profile = False
         try:
-            has_profile = (self.user.patientprofile is not None)
+            has_profile = self.user.patientprofile is not None
         except PatientProfile.DoesNotExist:
             pass
         return has_profile
+
 
 class Urate(Lab):
     value = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "urate"
 
+
 class ALT(Lab):
     value = models.IntegerField(help_text="ALT / SGPT")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "ALT"
+
 
 class AST(Lab):
     value = models.IntegerField(help_text="AST / SGOT")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "AST"
 
+
 class Platelet(Lab):
     value = models.IntegerField(help_text="PLT / platelets")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=PLTMICROL)
     name = "platelet"
+
 
 class WBC(Lab):
     value = models.DecimalField(max_digits=3, decimal_places=1, help_text="WBC")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=CELLSMM3)
     name = "WBC"
 
+
 class Hemoglobin(Lab):
     value = models.DecimalField(max_digits=3, decimal_places=1, help_text="HGB")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=GDL)
     name = "hemoglobin"
+
 
 def round_decimal(value, places):
     if value is not None:
@@ -88,46 +100,52 @@ def round_decimal(value, places):
         return value.quantize(Decimal(10) ** -places)
     return value
 
+
 class Creatinine(Lab):
     value = models.DecimalField(max_digits=4, decimal_places=2, help_text="creatinine")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "creatinine"
 
     def sex_vars_kappa(self):
-        if self.user.patientprofile.gender == 'male':
+        if self.user.patientprofile.gender == "male":
             return Decimal(0.9)
-        elif self.user.patientprofile.gender == 'female':
+        elif self.user.patientprofile.gender == "female":
             return Decimal(0.7)
         else:
             return False
 
     def sex_vars_alpha(self):
-        if self.user.patientprofile.gender == 'male':
+        if self.user.patientprofile.gender == "male":
             return Decimal(-0.411)
-        elif self.user.patientprofile.gender == 'female':
+        elif self.user.patientprofile.gender == "female":
             return Decimal(-0.329)
         else:
             return False
 
     def race_modifier(self):
-        if self.user.patientprofile.race == 'black':
+        if self.user.patientprofile.race == "black":
             return Decimal(1.159)
-        elif self.user.patientprofile.race == 'white' or self.user.patientprofile.race == 'asian' or self.user.patientprofile.race == 'native american' or self.user.patientprofile.race == 'hispanic':
+        elif (
+            self.user.patientprofile.race == "white"
+            or self.user.patientprofile.race == "asian"
+            or self.user.patientprofile.race == "native american"
+            or self.user.patientprofile.race == "hispanic"
+        ):
             return Decimal(1.00)
         else:
             return False
 
     def sex_modifier(self):
-        if self.user.patientprofile.gender == 'male':
+        if self.user.patientprofile.gender == "male":
             return Decimal(1.018)
-        elif self.user.patientprofile.gender == 'female' or self.user.patientprofile.gender == 'non-binary':
+        elif self.user.patientprofile.gender == "female" or self.user.patientprofile.gender == "non-binary":
             return Decimal(1.00)
         else:
             return False
 
     def eGFR_calculator(self):
         if self.user_has_profile() == True:
-            if self.user.patientprofile.gender == 'non-binary':
+            if self.user.patientprofile.gender == "non-binary":
                 return "Need biologic sex to calculate eGFR"
             else:
                 kappa = self.sex_vars_kappa()
@@ -136,7 +154,14 @@ class Creatinine(Lab):
                     if self.sex_modifier() != False:
                         self.race_modifier()
                         self.sex_modifier()
-                        eGFR = Decimal(141) * min(self.value / kappa, Decimal(1.00)) ** alpha * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209) * Decimal(0.993) ** self.user.patientprofile.get_age() * self.race_modifier() * self.sex_modifier()
+                        eGFR = (
+                            Decimal(141)
+                            * min(self.value / kappa, Decimal(1.00)) ** alpha
+                            * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209)
+                            * Decimal(0.993) ** self.user.patientprofile.get_age()
+                            * self.race_modifier()
+                            * self.sex_modifier()
+                        )
                         return round_decimal(eGFR, 2)
                     else:
                         return "Something went wrong with eGFR calculation"

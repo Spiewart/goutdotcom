@@ -6,11 +6,12 @@
   <div class="jumbotron-fluid default-container">
     <div class="container">
       <h1 class="nested-container">{{ object.calculator }}</h1>
-      <h2>What is the basis for this recommendation?</h2>
+      <p>Urate-lowering therapy (ULT) is indicated for your gout. This means there is some general medical consensus that you would benefit from ULT.</p>
+      <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.
       <hr class="my-4">
       <div class="row">
         <div class="col">
-          <h2 class="nested-container">Deciding Factors</h2>
+          <h2 class="nested-container">Indications and Contraindications to ULT</h2>
           <ul>
             {% if object.num_flares %}
               <li>Number of flares reported: {{ object.num_flares }}</li>
@@ -22,6 +23,11 @@
             {% endif %}
             {% if object.freq_flares %}
               <li>Frequency of flares: {{ object.freq_flares }} per year </li>
+                <ul>
+                  {% if object.freq_flares == 'one' %}
+                  <li>Generally, only having 1 flare per year isn't burdensome enough to warrant daily medication on an indefinite basis. There are, however, exceptions to this, such as when you have erosions, tophi, hyperuricemia, CKD, or urate kidney stones.</li>
+                  {% endif %}
+                </ul>
             {% endif %}
             {% if object.erosions %}
               <li>Erosions present on x-rays or other imaging: yes</li>
@@ -53,9 +59,6 @@
               <li>Last modified: {{ object.modified }}</li>
             {% endif %}
           </ul>
-        </div>
-        <div class="col">
-        <h2 class="nested-container">Explanation</h2>
         </div>
       </div>
     </div>

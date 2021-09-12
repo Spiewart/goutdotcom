@@ -45,7 +45,7 @@ body {
   border-style: var(--main-master-container-border-style);
   border-width: var(--main-master-container-border-width);
   border-color: var(--main-master-container-border-color);
-  color:rgb(231, 231, 231);
+  color: rgb(231, 231, 231);
   padding: var(--main-master-container-padding);
   background-color: var(--main-master-container-background-color);
 }
@@ -59,7 +59,7 @@ body {
   border-style: var(--main-nested-container-border-style);
   border-width: var(--main-nested-container-border-width);
   border-color: var(--main-nested-container-border-color);
-  color:rgb(231, 231, 231);
+  color: rgb(231, 231, 231);
   padding: var(--main-nested-container-padding);
 }
 
@@ -80,7 +80,7 @@ body {
 .flare-mini-detail-list {
   border-style: solid;
   border-width: medium;
-  border-color: rgb(1, 14,20);
+  border-color: rgb(1, 14, 20);
   padding: 5px;
   background-color: green;
 }
@@ -88,7 +88,7 @@ body {
 .flare-index-column {
   border-style: solid;
   border-width: medium;
-  border-color: rgb(1, 14,20);
+  border-color: rgb(1, 14, 20);
   padding: 5px;
   background-color: green;
 }
@@ -105,7 +105,7 @@ body {
 
 .pagination {
   margin: 0px !important;
-  }
+}
 
 .gdc-legend {
   border-style: solid;
@@ -129,7 +129,7 @@ body {
 .gdc-default-list {
   border-style: solid;
   border-width: medium;
-  border-color: rgb(1, 14,20);
+  border-color: rgb(1, 14, 20);
   padding: 5px;
   background-color: rgb(134, 132, 233);
 }
@@ -137,7 +137,7 @@ body {
 .user-profile-media {
   border-style: solid;
   border-width: medium;
-  border-color: rgb(1, 14,20);
+  border-color: rgb(1, 14, 20);
   padding: 5px;
   background-color: rgb(134, 132, 233);
 }
@@ -147,7 +147,7 @@ body {
 .user-ULT-list {
   border-style: solid;
   border-width: medium;
-  border-color: rgb(1, 14,20);
+  border-color: rgb(1, 14, 20);
   padding: 5px;
   background-color: rgb(134, 132, 233);
 }
@@ -155,7 +155,7 @@ body {
 .treatment-index {
   border-style: solid;
   border-width: medium;
-  border-color: rgb(1, 14,20);
+  border-color: rgb(1, 14, 20);
   padding: 5px;
   background-color: rgb(95, 173, 95);
 }
@@ -163,7 +163,7 @@ body {
 // project specific CSS goes here
 
 ////////////////////////////////
-		//Variables//
+//Variables//
 ////////////////////////////////
 
 // Alert colors
@@ -176,7 +176,7 @@ $dark-pink: #eed3d7;
 $red: #b94a48;
 
 ////////////////////////////////
-		//Alerts//
+//Alerts//
 ////////////////////////////////
 
 // bootstrap alert CSS, translated to the django-standard levels of
