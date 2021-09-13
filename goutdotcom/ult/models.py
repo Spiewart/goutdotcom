@@ -35,7 +35,7 @@ class ULT(TimeStampedModel):
         choices=ULT_CHOICES,
         verbose_name="How many gout flares have you had?",
         help_text="If more than one, an estimate is fine!",
-        default=ZERO,
+        default="",
         null=True,
         blank=True,
     )

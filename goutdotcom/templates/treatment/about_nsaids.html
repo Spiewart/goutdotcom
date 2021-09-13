@@ -1,0 +1,27 @@
+{% extends "treatment/about_base.html" %}
+{% load static %}
+{% load treatment_extras %}
+
+{% block header %}
+  <h1 class="nested-container" id="top">Non-steroidal antiinflammatory drugs (NSAIDs)
+  <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About</a>
+  </h1>
+{% endblock header %}
+
+{% block intro %}
+Non-steroidal antiinflammatory drugs are safe and very effective antiinflammatory drugs that are available over the counter and work exquisitely well for gout.
+{% endblock intro %}
+
+{% block basics %}
+  <h2 class="nested-container"><a id="basics">Basics</a></h2>
+  <p><a href="https://en.wikipedia.org/wiki/Inflammation" target="_blank">Inflammation</a> is the primary target of any treatment for gout flares. Inflammation is the result of local <a href="https://en.wikipedia.org/wiki/Cytokine" target="_blank">cytokine</a> production and migration of white blood cell migration into the affected joint or soft tissue.<p>
+  <p>Inflammation can be targeted in many different ways.
+  <hr size="6" color="white">
+{% endblock basics %}
+
+{% block biology %}
+  <h2 class="nested-container"><a id="basics">Basics</a></h2>
+  <p><a href="https://en.wikipedia.org/wiki/Inflammation" target="_blank">Inflammation</a> is the primary target of any treatment for gout flares. Inflammation is the result of local <a href="https://en.wikipedia.org/wiki/Cytokine" target="_blank">cytokine</a> production and migration of white blood cell migration into the affected joint or soft tissue.<p>
+  <p>Inflammation can be targeted in many different ways.
+  <hr size="6" color="white">
+{% endblock biology %}

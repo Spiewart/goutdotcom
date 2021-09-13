@@ -4,7 +4,7 @@
 {% block content %}
 <main>
   <div class="jumbotron-fluid default-container">
-    <div class="container">
+    <div class="container-fluid">
       <h1 class="nested-container">{{ object.calculator }}</h1>
       <p>Urate-lowering therapy (ULT) is indicated for your gout. This means there is some general medical consensus that you would benefit from ULT.</p>
       <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.
@@ -72,7 +72,6 @@
   {% else %}
   <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
   {% endif %}
-  <a class="btn btn-primary btn-lg" href="{% url 'ult:index' %}" role="button">Home</a>
   </footer>
 </main>
 {% endblock content %}

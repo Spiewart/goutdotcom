@@ -1,0 +1,32 @@
+{% extends "treatment/about_base.html" %}
+{% load static %}
+{% load treatment_extras %}
+
+{% block header %}
+  <h1 class="nested-container" id="top">Flare Treatment</h1>
+{% endblock header %}
+
+{% block intro %}
+Treatments for gout flares are effective.
+{% endblock intro %}
+
+{% block biology %}
+  <p><a href="https://en.wikipedia.org/wiki/Inflammation" target="_blank">Inflammation</a> is the primary target of any treatment for gout flares.
+  Inflammation is the result of local <a href="https://en.wikipedia.org/wiki/Cytokine" target="_blank">cytokine</a> production and migration of white blood cell migration into the affected joint or soft tissue.
+  Therapies that effectively treat gout flares all treat inflammation.<p>
+  <p>Treatment for gout flares usually do not immediately resolve the flare. If started early on in the flare, flare treatments can make the flare much milder and less disabling.
+{% endblock biology %}
+
+{% block pharmacology %}
+  <p>The manner in which the human body generates, maintains, and resolves inflammation is a large topic. In the context of gout, it is best explained in terms of the effective gout flare treatments.<p>
+  <h3><u>Non-steroidal antiinflammatory drugs (NSAIDs)</u></h3>
+  <p><a href="{% url 'treatment:about-NSAIDs' %}">NSAIDs</a> are a class of drug that targets an  <a href="https://en.wikipedia.org/wiki/Enzyme" target="_blank">enzyme</a> in our body called
+  <a href="https://en.wikipedia.org/wiki/Cyclooxygenase" target="_blank">cyclooxygenase</a>. There are two forms of cyclooxygenase, COX-1 and COX-2.
+  NSAIDs have a variability in their selectivity for COX-1 vs COX-2.</p>
+  Cyclooxygenases stimulate the production of <a href="https://en.wikipedia.org/wiki/Prostaglandin" target="_blank">prostaglandins</a> that increase local blood flow and attract inflammatory white blood cells to the joint or soft tissue. Inhibition of cyclooxygenase with NSAIDs interferes with the production of prostaglandins and thus diminishes or prevents inflammation.<p>
+  <h3><u>Colchicine</u></h3>
+  <p><a href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a> is a <a href="https://en.wikipedia.org/wiki/Microtubule" target="_blank">microtubule</a> inhibitor.
+  <h3><u>Corticosteroids</u></h3>
+  <p><a href="{% url 'treatment:about-corticosteroids' %}">Corticosteroids</a> are derivatives of the human body's naturally-occurring <a href="https://en.wikipedia.org/wiki/Hormone" target="_blank">hormone</a> <a href="https://en.wikipedia.org/wiki/Cortisol" target="_blank">cortisol</a>
+  In pharmaceutical forms, they can be given in formulations and doses that are much more potent than what our body typically produces.
+{% endblock pharmacology %}

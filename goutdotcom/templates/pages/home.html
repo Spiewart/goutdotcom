@@ -2,18 +2,31 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid gdc-default-list">
-<h1>
-ARE YOU HAVING A GOUT FLARE?
-<br>
-{% if request.user.is_authenticated %}
-<a href="{% url 'flare:create' %}">LINK </a> TO FLARE CREATE
-<br>
-{% else %}
-<a href="{% url 'ult:create' %}">LINK </a> TO ULT CREATE
-<br>
-{% endif %}
-OTHERWISE CLICK <a href="{% url 'about' %}">HERE </a>TO LEARN ABOUT GOUT
-</h1>
-</div>
+<main class="container-fluid">
+  <div class="jumbotron-fluid default-container">
+    <div class="row">
+      <div class="col">
+        <h1 class="nested-container" style="font-weight: bold;">Gouthelper is a site to learn about and help manage your gout</h1>
+        <div class="row">
+          <div class="col-9">
+            <h2>Are you having a gout flare? </h2>
+            <p class="lead">Gout flares are terrible. They are painful and disabling.</p>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-flare' %}" role="button">Flare Treatment</a>
+            <hr class="my-4">
+            <h2>You don't have to live with gout flares.</h2>
+            <p class="lead">If you are having a lot of gout flares, you don't have to continue living with them. There are very effective, save medications that can completely eliminate a person's gout. </p>
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-ult' %}" role="button">Urate-lowering Therapy</a>
+            <h2>Is urate-lowering therapy for you?</h2>
+            <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">ULT Decision Aid</a>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <figure class="figure">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" class="figure-img img-fluid rounded" alt="" style="max-width: 100%; max-height: auto;">
+        </figure>
+      </div>
+    </div>
+  </div>
+</main>
 {% endblock content %}

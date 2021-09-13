@@ -37,5 +37,3 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
     model = ULT
     form_class=ULTForm
 
-def index(request):
-    return render(request, 'ult/index.html')
