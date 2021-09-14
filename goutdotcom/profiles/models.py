@@ -4,18 +4,28 @@ from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 import datetime
 
+from goutdotcom.history.models import CKD, Hypertension, CHF, Diabetes, OrganTransplant, UrateKidneyStones
 from goutdotcom.profiles.choices import sexes, races
 from goutdotcom.users.models import models
 from goutdotcom.vitals.models import Weight, Height
 
 # Create your models here.
-class PatientProfile(TimeStampedModel):
+class Profile(TimeStampedModel):
+    user = models.OneToOneField(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE,
+    )
+
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"username": self.user_username})
+
+    class Meta:
+        abstract=True
+
+class PatientProfile(Profile):
     # Default User profile
     # If you do this you need to either have a post_save signal or redirect to a profile_edit view on initial login
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
+
     picture = models.ImageField(default="default_thumbnail.png", null=True, blank=True, help_text="Upload a picture for your profile")
     bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -62,6 +72,11 @@ class PatientProfile(TimeStampedModel):
     def __str__(self):
         return str(self.user.username + "'s profile")
 
-    def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.user_username})
 
+class MedicalProfile(Profile):
+    CKD = models.OneToOneField(CKD, on_delete=models.CASCADE, help_text="Do you have chronic kidney disease (CKD)?", null=True, blank=True)
+    hypertension = models.OneToOneField(Hypertension, on_delete=models.CASCADE, help_text="Do you have high blood pressure (hypertension)?", null=True, blank=True)
+    CHF = models.OneToOneField(CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True)
+    diabetes =  models.OneToOneField(Diabetes, on_delete=models.CASCADE, help_text="Do you have diabetes?", null=True, blank=True)
+    organ_transplant =  models.OneToOneField(OrganTransplant, on_delete=models.CASCADE, help_text="Have you had an organ transplant?", null=True, blank=True)
+    urate_kidney_stones =  models.OneToOneField(UrateKidneyStones, on_delete=models.CASCADE, help_text="Have you had urate kidney stones?", null=True, blank=True)

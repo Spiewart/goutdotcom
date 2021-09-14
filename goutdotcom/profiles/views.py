@@ -10,10 +10,23 @@ from goutdotcom.profiles.forms import PatientProfileForm
 from goutdotcom.vitals.forms import HeightForm, WeightForm
 from goutdotcom.vitals.models import Height, Weight
 
-from .models import PatientProfile
+from .models import MedicalProfile, PatientProfile
 
 
 # Create your views here.
+class MedicalProfileCreate(LoginRequiredMixin, CreateView):
+    model = MedicalProfile
+    form_class = MedicalProfileForm
+    CKD_form_class = CKDForm
+    hypertension_form_class = HypertensionForm
+    CHF_form_class = CHFForm
+    diabetes_form_class = DiabetesForm
+    urate_kidney_stone_form_class = UrateKidneyStoneForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 class PatientProfileCreate(LoginRequiredMixin, CreateView):
     model = PatientProfile
     form_class = PatientProfileForm
