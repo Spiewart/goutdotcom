@@ -4,13 +4,11 @@ from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 import datetime
 
+from goutdotcom.profiles.choices import sexes, races
 from goutdotcom.users.models import models
 from goutdotcom.vitals.models import Weight, Height
 
 # Create your models here.
-sexes = (('male', 'male'), ('female', 'female'), ('non-binary', 'non-binary'))
-races = (('white', 'white'), ('black', 'black'), ('asian', 'asian'), ('native american', 'native american'), ('hispanic', 'hispanic'))
-
 class PatientProfile(TimeStampedModel):
     # Default User profile
     # If you do this you need to either have a post_save signal or redirect to a profile_edit view on initial login

@@ -6,31 +6,10 @@ from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 from django.utils import timezone
 
+from .choices import *
 from math import floor
 
 # Create your models here.
-INCHES = 'inches'
-METERS = 'meters'
-POUNDS = 'pounds'
-KILOS = 'kilos'
-MMHG = 'mm (milimeters) of mercury'
-FAR = 'degrees Farenheit'
-CEL = 'degrees Celsius'
-BPM = 'beats per minute'
-BRPM = 'breaths per minute'
-
-UNIT_CHOICES = (
-    (INCHES, "inches"),
-    (METERS, "meters"),
-    (POUNDS, "pounds"),
-    (KILOS, "kilograms"),
-    (MMHG, "mm (milimeters) of mercury"),
-    (FAR, "degrees Farenheit"),
-    (CEL, "degrees Celsius"),
-    (BPM, "beats per minute"),
-    (BRPM, "breaths per minute")
-)
-
 class Vital(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

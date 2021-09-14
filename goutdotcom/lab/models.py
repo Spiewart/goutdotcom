@@ -2,37 +2,24 @@ from decimal import *
 
 from django.conf import settings
 from django.db import models
-from django.db.models.fields import NullBooleanField
+from django.db.models.fields import BooleanField
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 
+from goutdotcom.lab.choices import CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
 from goutdotcom.profiles.models import PatientProfile
 
+
 # Create your models here.
-MGDL = "mg/dL (milligrams per deciliter)"
-GDL = "g/dL (grams per decliter)"
-CELLSMM3 = "cells/mm^3 (cells per cubmic millimeter)"
-PLTMICROL = "PLTS/\u03BCL (platelets per microliter)"
-UL = "U/L (units per liter)"
-
-UNIT_CHOICES = (
-    (MGDL, "mg/dL (milligrams per deciliter)"),
-    (GDL, "g/dL (grams per decliter)"),
-    (CELLSMM3, "cells/mm^3 (cells per cubmic millimeter)"),
-    (PLTMICROL, "PLTS/\u03BCL (platelets per microliter)"),
-    (UL, "U/L (units per liter)"),
-)
-
-
 class Lab(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    value = NullBooleanField()
+    value = BooleanField()
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
-    name = "Lab"
+    name = "lab"
     date_drawn = models.DateTimeField(
         help_text="What day was this lab drawn?", default=timezone.now, null=True, blank=True
     )

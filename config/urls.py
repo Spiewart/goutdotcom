@@ -20,6 +20,7 @@ urlpatterns = [
     path("profiles/", include(("goutdotcom.profiles.urls"), namespace="profiles")),
     path("lab/", include(("goutdotcom.lab.urls"), namespace="lab")),
     path("flare/", include(("goutdotcom.flare.urls"), namespace="flare")),
+    path("history/", include(("goutdotcom.history.urls"), namespace="history")),
     path("ult/", include(("goutdotcom.ult.urls"), namespace="ult")),
     path("treatment/", include(("goutdotcom.treatment.urls"), namespace="treatment")),
     path("vitals/", include(("goutdotcom.vitals.urls"), namespace="vitals")),
