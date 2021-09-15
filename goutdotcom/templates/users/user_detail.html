@@ -9,15 +9,15 @@
     <div class="media nested-container">
         <div class="media-body">
           <h1 class="default-container">{{ object.username|capfirst}}</h1>
+          {% if object.patientprofile %}
             <div class="container default-container">
               {% if object.patientprofile.bio %}
                 <h2>Bio: </h2>{{ object.patientprofile.bio }}
               {% else %}
-                <h2>Enter a <a href="{% url 'profiles:update' 'requeest.user' object.patientprofile.pk %}">bio</a></h2>
+                <h2>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h2>
               {% endif %}
             </div>
             <br>
-            {% if object.patientprofile %}
               <div class="container default-container">
                   <div class="row">
                     <div class="col">
@@ -102,10 +102,7 @@
               </div>
               </div>
             {% else %}
-            <p>Want to complete your profile?</p>
-            <a class="btn btn-primary" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
             {% endif %}
-
       </main>
   <footer>
     {% if object == request.user %}
@@ -113,6 +110,12 @@
       <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
       {% if request.user.patientprofile %}
         <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}" role="button">Profile</a>
+      {% else %}
+        <a class="btn btn-primary btn-lg" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
+      {% endif %}
+      {% if request.user.medicalprofile %}
+      {% else %}
+      <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-medical' %}" role="button">Medical</a>
       {% endif %}
     {% endif %}
   </footer>

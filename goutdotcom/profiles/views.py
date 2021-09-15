@@ -1,4 +1,3 @@
-from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
@@ -11,7 +10,16 @@ from goutdotcom.history.forms import (
     CKDForm,
     DiabetesForm,
     HypertensionForm,
+    OrganTransplantForm,
     UrateKidneyStonesForm,
+)
+from goutdotcom.history.models import (
+    CHF,
+    CKD,
+    Diabetes,
+    Hypertension,
+    OrganTransplant,
+    UrateKidneyStones,
 )
 from goutdotcom.profiles.forms import MedicalProfileForm, PatientProfileForm
 from goutdotcom.vitals.forms import HeightForm, WeightForm
@@ -40,7 +48,89 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     hypertension_form_class = HypertensionForm
     CHF_form_class = CHFForm
     diabetes_form_class = DiabetesForm
+    organ_transplant_form_class = OrganTransplantForm
     urate_kidney_stone_form_class = UrateKidneyStonesForm
+
+    def get_context_data(self, **kwargs):
+        context = super(MedicalProfileCreate, self).get_context_data(**kwargs)
+        context.update({"user": self.request.user})
+        if "CKD_form" not in context:
+            context["CKD_form"] = self.CKD_form_class(self.request.GET)
+        if "hypertension_form" not in context:
+            context["hypertension_form"] = self.hypertension_form_class(self.request.GET)
+        if "CHF_form" not in context:
+            context["CHF_form"] = self.CHF_form_class(self.request.GET)
+        if "diabetes_form" not in context:
+            context["diabetes_form"] = self.diabetes_form_class(self.request.GET)
+        if "organ_transplant_form" not in context:
+            context["organ_transplant_form"] = self.organ_transplant_form_class(self.request.GET)
+        if "urate_kidney_stones_form" not in context:
+            context["urate_kidney_stones_form"] = self.urate_kidney_stone_form_class(self.request.GET)
+        return context
+
+    def get_object(self, queryset=None):
+        object = self.model
+        return object
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=PatientProfile())
+        CKD_form = self.CKD_form_class(request.POST, instance=CKD())
+        hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
+        CHF_form = self.CHF_form_class(request.POST, instance=CHF())
+        diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
+        organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=OrganTransplant())
+        urate_kidney_stones_form = self.urate_kidney_stone_form_class(request.POST, instance=UrateKidneyStones())
+
+        if (
+            form.is_valid()
+            and CKD_form.is_valid()
+            and hypertension_form.is_valid()
+            and CHF_form.is_valid()
+            and diabetes_form.is_valid()
+            and organ_transplant_form.is_valid()
+            and urate_kidney_stones_form.is_valid()
+        ):
+            medical_profile_data = form.save(commit=False)
+            medical_profile_data.user = request.user
+            CKD_data = CKD_form.save(commit=False)
+            CKD_data.user = request.user
+            CKD_data.save()
+            hypertension_data = hypertension_form.save(commit=False)
+            hypertension_data.user = request.user
+            hypertension_data.save()
+            CHF_data = CHF_form.save(commit=False)
+            CHF_data.user = request.user
+            CHF_data.save()
+            diabetes_data = diabetes_form.save(commit=False)
+            diabetes_data.user = request.user
+            diabetes_data.save()
+            organ_transplant_data = organ_transplant_form.save(commit=False)
+            organ_transplant_data.user = request.user
+            organ_transplant_data.save()
+            urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
+            urate_kidney_stones_data.user = request.user
+            urate_kidney_stones_data.save()
+            medical_profile_data.CKD = CKD_data
+            medical_profile_data.hypertension = hypertension_data
+            medical_profile_data.CHF = CHF_data
+            medical_profile_data.diabetes = diabetes_data
+            medical_profile_data.organ_transplant = organ_transplant_data
+            medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
+            medical_profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    CKD_form=CKD_form,
+                    hypertension_form=hypertension_form,
+                    CHF_form=CHF_form,
+                    diabetes_form=diabetes_form,
+                    organ_transplant_form=organ_transplant_form,
+                    urate_kidney_stones_form=urate_kidney_stones_form,
+                )
+            )
 
 
 class PatientProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):

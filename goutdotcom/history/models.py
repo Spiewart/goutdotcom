@@ -16,7 +16,7 @@ class History(TimeStampedModel):
     )
 
     name = "history"
-    value = BooleanField(choices=BOOL_CHOICES, help_text=("Do you have " + str(name) + "?"), null=True, blank=True)
+    value = BooleanField(choices=BOOL_CHOICES, help_text=("Do you have " + name + "?"), null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -59,26 +59,58 @@ class CKD(MedicalHistory):
         IV = 4
         V = 5
 
-    stage = IntegerField(choices=Stage.choices, help_text="What stage?", null=True, blank=True)
+    stage = IntegerField(
+        choices=Stage.choices,
+        help_text="What stage is your CKD? If you don't know, skip this or leave it blank.",
+        verbose_name="CKD stage",
+        null=True,
+        blank=True,
+    )
     dialysis = BooleanField(choices=BOOL_CHOICES, help_text="Are you on dialysis?", null=True, blank=True)
     name = "CKD"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have " + name + "?"),
+        verbose_name="Chronic kidney disease (CKD)",
+        null=True,
+        blank=True,
+    )
 
 
 class Hypertension(MedicalHistory):
     medication = BooleanField(
-        choices=BOOL_CHOICES, help_text="Are you on medications for high blood pressure?", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text="Are you on medications for high blood pressure?",
+        verbose_name="Blood pressure medications",
+        null=True,
+        blank=True,
     )
     name = "hypertension"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have " + name + "?"),
+        verbose_name="Hypertension (high blood pressure)",
+        null=True,
+        blank=True,
+    )
 
 
 class CHF(MedicalHistory):
     systolic = BooleanField(
         choices=BOOL_CHOICES,
-        help_text="Do you have systolic (reduced ejection fraction) heart faliure?",
+        help_text="Do you have systolic (reduced ejection fraction) heart faliure? If you don't know, skip this or leave it blank.",
+        verbose_name="Systolic or diastolic heart failure",
         null=True,
         blank=True,
     )
     name = "CHF"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have " + name + "?"),
+        verbose_name="Congestive heart failure (CHF)",
+        null=True,
+        blank=True,
+    )
 
 
 class Diabetes(MedicalHistory):
@@ -87,21 +119,46 @@ class Diabetes(MedicalHistory):
         II = 2
 
     type = IntegerField(
-        choices=Type.choices, help_text="Do you have type I or type II diabetes?", null=True, blank=True
+        choices=Type.choices,
+        help_text="Do you have type I or type II diabetes?",
+        verbose_name="Type 1 or type 2 diabetes?",
+        null=True,
+        blank=True,
     )
     insulin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on insulin?", null=True, blank=True)
     name = "diabetes"
+    value = BooleanField(
+        choices=BOOL_CHOICES, help_text=("Do you have " + name + "?"), verbose_name="Diabetes", null=True, blank=True
+    )
 
 
 class OrganTransplant(MedicalHistory):
     organ = MultiSelectField(
-        choices=ORGAN_CHOICES, help_text="Which organ did you have transplanted?", default=True, null=True
+        choices=ORGAN_CHOICES,
+        help_text="Which organ did you have transplanted?",
+        verbose_name="Organ(s) transplanted",
+        default=True,
+        null=True,
     )
     name = "organ transplant"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have " + name + "?"),
+        verbose_name="Organ transplant",
+        null=True,
+        blank=True,
+    )
 
 
 class UrateKidneyStones(MedicalHistory):
     name = "urate kidney stones"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have a history of " + name + "?"),
+        verbose_name="Urate Kidney Stones",
+        null=True,
+        blank=True,
+    )
 
 
 class Diuretics(MedicationHistory):

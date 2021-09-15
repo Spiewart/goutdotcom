@@ -1,13 +1,22 @@
-from django.conf import settings
-from django.db import models
-from django_extensions.db.models import TimeStampedModel
-from django.urls import reverse
 import datetime
 
-from goutdotcom.history.models import CKD, Hypertension, CHF, Diabetes, OrganTransplant, UrateKidneyStones
-from goutdotcom.profiles.choices import sexes, races
+from django.conf import settings
+from django.db import models
+from django.urls import reverse
+from django_extensions.db.models import TimeStampedModel
+
+from goutdotcom.history.models import (
+    CHF,
+    CKD,
+    Diabetes,
+    Hypertension,
+    OrganTransplant,
+    UrateKidneyStones,
+)
+from goutdotcom.profiles.choices import races, sexes
 from goutdotcom.users.models import models
-from goutdotcom.vitals.models import Weight, Height
+from goutdotcom.vitals.models import Height, Weight
+
 
 # Create your models here.
 class Profile(TimeStampedModel):
@@ -74,7 +83,7 @@ class PatientProfile(Profile):
 
 
 class MedicalProfile(Profile):
-    CKD = models.OneToOneField(CKD, on_delete=models.CASCADE, help_text="Do you have chronic kidney disease (CKD)?", null=True, blank=True)
+    CKD = models.OneToOneField(CKD, on_delete=models.CASCADE, help_text="Do you have chronic kidney disease (CKD)?", verbose_name = "CKD", null=True, blank=True)
     hypertension = models.OneToOneField(Hypertension, on_delete=models.CASCADE, help_text="Do you have high blood pressure (hypertension)?", null=True, blank=True)
     CHF = models.OneToOneField(CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True)
     diabetes =  models.OneToOneField(Diabetes, on_delete=models.CASCADE, help_text="Do you have diabetes?", null=True, blank=True)
