@@ -286,7 +286,6 @@ class TinctureoftimeForm(forms.ModelForm):
                 'Log a tincture of time',
                 'date_started',
                 'date_ended',
-
                 ),
                 ButtonHolder(
                     Submit('submit', 'Submit', css_class='button white')

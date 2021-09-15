@@ -6,39 +6,48 @@ from django.http.response import Http404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
-from goutdotcom.profiles.forms import PatientProfileForm
+from goutdotcom.history.forms import (
+    CHFForm,
+    CKDForm,
+    DiabetesForm,
+    HypertensionForm,
+    UrateKidneyStonesForm,
+)
+from goutdotcom.profiles.forms import MedicalProfileForm, PatientProfileForm
 from goutdotcom.vitals.forms import HeightForm, WeightForm
 from goutdotcom.vitals.models import Height, Weight
 
 from .models import MedicalProfile, PatientProfile
 
 
+# Mixins
+class AssignUserMixin:
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class UserDetailRedirectMixin:
+    def get_success_url(self):
+        return self.request.user.get_absolute_url()
+
+
 # Create your views here.
-class MedicalProfileCreate(LoginRequiredMixin, CreateView):
+class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
     CKD_form_class = CKDForm
     hypertension_form_class = HypertensionForm
     CHF_form_class = CHFForm
     diabetes_form_class = DiabetesForm
-    urate_kidney_stone_form_class = UrateKidneyStoneForm
+    urate_kidney_stone_form_class = UrateKidneyStonesForm
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
 
-class PatientProfileCreate(LoginRequiredMixin, CreateView):
+class PatientProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):
     model = PatientProfile
     form_class = PatientProfileForm
     height_form_class = HeightForm
     weight_form_class = WeightForm
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return self.request.user.get_absolute_url()
 
     def get_context_data(self, **kwargs):
         context = super(PatientProfileCreate, self).get_context_data(**kwargs)
@@ -78,14 +87,11 @@ class PatientProfileCreate(LoginRequiredMixin, CreateView):
             )
 
 
-class PatientProfileUpdate(LoginRequiredMixin, UpdateView):
+class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
     model = PatientProfile
     form_class = PatientProfileForm
     height_form_class = HeightForm
     weight_form_class = WeightForm
-
-    def get_success_url(self):
-        return self.request.user.get_absolute_url()
 
     def get_context_data(self, **kwargs):
         context = super(PatientProfileUpdate, self).get_context_data(**kwargs)
