@@ -9,11 +9,16 @@
 
 {% block form %}
   {% if form.instance.pk %}
-    <form class="form-horizontal" method="post" action="{% url 'profiles:update' request.user object.pk %}" enctype='multipart/form-data'>
+    <form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
-      {{ height_form|crispy }}
-      {{ weight_form|crispy }}
+      {{ form|crispy }}
+      {{ CKD_form|crispy }}
+      {{ hypertension_form|crispy }}
+      {{ CHF_form|crispy }}
+      {{ diabetes_form|crispy }}
+      {{ organ_transplant_form|crispy }}
+      {{ urate_kidney_stones_form|crispy }}
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary btn-lg">Update</button>

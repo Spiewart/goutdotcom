@@ -19,29 +19,30 @@ from goutdotcom.vitals.models import Height, Weight
 
 
 # Create your models here.
-class Profile(TimeStampedModel):
-    user = models.OneToOneField(
-    settings.AUTH_USER_MODEL,
-    on_delete=models.CASCADE,
-    )
-
-    def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.user_username})
-
-    class Meta:
-        abstract=True
-
-class PatientProfile(Profile):
+class PatientProfile(TimeStampedModel):
     # Default User profile
     # If you do this you need to either have a post_save signal or redirect to a profile_edit view on initial login
-
-    picture = models.ImageField(default="default_thumbnail.png", null=True, blank=True, help_text="Upload a picture for your profile")
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    picture = models.ImageField(
+        default="default_thumbnail.png", null=True, blank=True, help_text="Upload a picture for your profile"
+    )
     bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    gender = models.CharField(max_length=20, choices=sexes, help_text='Enter gender', null=True, blank=True, default='male')
-    race = models.CharField(max_length=40, choices=races, help_text='Enter race', null=True, blank=True, default='white')
-    weight = models.OneToOneField(Weight, on_delete=models.CASCADE, help_text="How much do you weight in pounds?", null=True, blank=True)
-    height = models.OneToOneField(Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True)
+    gender = models.CharField(
+        max_length=20, choices=sexes, help_text="Enter gender", null=True, blank=True, default="male"
+    )
+    race = models.CharField(
+        max_length=40, choices=races, help_text="Enter race", null=True, blank=True, default="white"
+    )
+    weight = models.OneToOneField(
+        Weight, on_delete=models.CASCADE, help_text="How much do you weight in pounds?", null=True, blank=True
+    )
+    height = models.OneToOneField(
+        Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True
+    )
     drinks_per_week = models.IntegerField(null=True, blank=True)
 
     def get_age(self):
@@ -81,11 +82,46 @@ class PatientProfile(Profile):
     def __str__(self):
         return str(self.user.username + "'s profile")
 
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"username": self.user_username})
 
-class MedicalProfile(Profile):
-    CKD = models.OneToOneField(CKD, on_delete=models.CASCADE, help_text="Do you have chronic kidney disease (CKD)?", verbose_name = "CKD", null=True, blank=True)
-    hypertension = models.OneToOneField(Hypertension, on_delete=models.CASCADE, help_text="Do you have high blood pressure (hypertension)?", null=True, blank=True)
-    CHF = models.OneToOneField(CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True)
-    diabetes =  models.OneToOneField(Diabetes, on_delete=models.CASCADE, help_text="Do you have diabetes?", null=True, blank=True)
-    organ_transplant =  models.OneToOneField(OrganTransplant, on_delete=models.CASCADE, help_text="Have you had an organ transplant?", null=True, blank=True)
-    urate_kidney_stones =  models.OneToOneField(UrateKidneyStones, on_delete=models.CASCADE, help_text="Have you had urate kidney stones?", null=True, blank=True)
+
+class MedicalProfile(TimeStampedModel):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    CKD = models.OneToOneField(
+        CKD,
+        on_delete=models.CASCADE,
+        help_text="Do you have chronic kidney disease (CKD)?",
+        verbose_name="CKD",
+        null=True,
+        blank=True,
+    )
+    hypertension = models.OneToOneField(
+        Hypertension,
+        on_delete=models.CASCADE,
+        help_text="Do you have high blood pressure (hypertension)?",
+        null=True,
+        blank=True,
+    )
+    CHF = models.OneToOneField(
+        CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True
+    )
+    diabetes = models.OneToOneField(
+        Diabetes, on_delete=models.CASCADE, help_text="Do you have diabetes?", null=True, blank=True
+    )
+    organ_transplant = models.OneToOneField(
+        OrganTransplant, on_delete=models.CASCADE, help_text="Have you had an organ transplant?", null=True, blank=True
+    )
+    urate_kidney_stones = models.OneToOneField(
+        UrateKidneyStones,
+        on_delete=models.CASCADE,
+        help_text="Have you had urate kidney stones?",
+        null=True,
+        blank=True,
+    )
+
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"username": self.user_username})

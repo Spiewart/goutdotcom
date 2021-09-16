@@ -114,6 +114,7 @@
         <a class="btn btn-primary btn-lg" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
       {% endif %}
       {% if request.user.medicalprofile %}
+      <a class="btn btn-primary btn-lg" href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}" role="button">Medical</a>
       {% else %}
       <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-medical' %}" role="button">Medical</a>
       {% endif %}
