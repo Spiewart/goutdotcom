@@ -4,8 +4,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+
 class User(AbstractUser):
     """Default user for goutdotcom."""
+
     # User types for different roles
     class Roles(models.TextChoices):
         PATIENT = "PATIENT", "Patient"
@@ -20,9 +22,7 @@ class User(AbstractUser):
     # Ensures that creating new users through proxy models works
     base_role = Roles.PATIENT
 
-    role = models.CharField(
-        _("Role"), max_length=50, choices=Roles.choices, default=Roles.PATIENT
-    )
+    role = models.CharField(_("Role"), max_length=50, choices=Roles.choices, default=Roles.PATIENT)
 
     def save(self, *args, **kwargs):
         # If a new user, set the user's role based off the base_role property
@@ -40,10 +40,12 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"username": self.username})
 
+
 class PatientManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
         return results.filter(type=User.Roles.PATIENT)
+
 
 class Patient(User):
     # This sets the user type to PATIENT during record creation
@@ -54,7 +56,7 @@ class Patient(User):
 
     # Setting proxy to "True" means a table will not be created for this record
     class Meta:
-        proxy=True
+        proxy = True
 
     # Custom methods for Patient Role go here...
     @property
@@ -63,4 +65,3 @@ class Patient(User):
             return self.patientprofile
         except self.patientprofile.DoesNotExist:
             return None
-

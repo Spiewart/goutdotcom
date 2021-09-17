@@ -74,7 +74,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, instance=PatientProfile())
+        form = self.form_class(request.POST, instance=MedicalProfile())
         CKD_form = self.CKD_form_class(request.POST, instance=CKD())
         hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
         CHF_form = self.CHF_form_class(request.POST, instance=CHF())
@@ -151,7 +151,9 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             context["hypertension_form"] = HypertensionForm(self.request.POST, instance=self.object.hypertension)
             context["CHF_form"] = CHFForm(self.request.POST, instance=self.object.CHF)
             context["diabetes_form"] = DiabetesForm(self.request.POST, instance=self.object.diabetes)
-            context["organ_transplant"] = OrganTransplantForm(self.request.POST, instance=self.object.organ_transplant)
+            context["organ_transplant_form"] = OrganTransplantForm(
+                self.request.POST, instance=self.object.organ_transplant
+            )
             context["urate_kidney_stones_form"] = UrateKidneyStonesForm(
                 self.request.POST, instance=self.object.urate_kidney_stones
             )
@@ -160,7 +162,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             context["hypertension_form"] = self.hypertension_form_class(instance=self.object.hypertension)
             context["CHF_form"] = self.CHF_form_class(instance=self.object.CHF)
             context["diabetes_form"] = self.diabetes_form_class(instance=self.object.diabetes)
-            context["organ_transplant"] = self.organ_transplant_form_class(instance=self.object.organ_transplant)
+            context["organ_transplant_form"] = self.organ_transplant_form_class(instance=self.object.organ_transplant)
             context["urate_kidney_stones_form"] = self.urate_kidney_stone_form_class(
                 instance=self.object.urate_kidney_stones
             )
@@ -197,43 +199,12 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             and urate_kidney_stones_form.is_valid()
         ):
             medical_profile_data = form.save(commit=False)
-            if ("value" or "stage" or "dialysis") in CKD_form.changed_data:
-                CKD_data = CKD_form.save(commit=False)
-                CKD_data.pk = None
-                CKD_data.save()
-            else:
-                CKD_data = CKD_form.save()
-            if ("value" or "medication") in hypertension_form.changed_data:
-                hypertension_data = hypertension_form.save(commit=False)
-                hypertension_data.pk = None
-                hypertension_data.save()
-            else:
-                hypertension_data = hypertension_form.save()
-            if ("value" or "systolic") in CHF_form.changed_data:
-                CHF_data = CHF_form.save(commit=False)
-                CHF_data.pk = None
-                CHF_data.save()
-            else:
-                CHF_data = CHF_form.save()
-            if ("value" or "type" or "insulin") in diabetes_form.changed_data:
-                diabetes_data = diabetes_form.save(commit=False)
-                diabetes_data.pk = None
-                diabetes_data.save()
-            else:
-                diabetes_data = diabetes_form.save()
-            if ("value" or "organ") in organ_transplant_form.changed_data:
-                organ_transplant_data = organ_transplant_form.save(commit=False)
-                organ_transplant_data.pk = None
-                organ_transplant_data.save()
-            else:
-                organ_transplant_data = organ_transplant_form.save()
-            if "value" in urate_kidney_stones_form.changed_data:
-                urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
-                urate_kidney_stones_data.pk = None
-                urate_kidney_stones_data.save()
-            else:
-                urate_kidney_stones_data = urate_kidney_stones_form.save()
-
+            CKD_data = CKD_form.save()
+            hypertension_data = hypertension_form.save()
+            CHF_data = CHF_form.save()
+            diabetes_data = diabetes_form.save()
+            organ_transplant_data = organ_transplant_form.save()
+            urate_kidney_stones_data = urate_kidney_stones_form.save()
             medical_profile_data.ckd = CKD_data
             medical_profile_data.hypertension = hypertension_data
             medical_profile_data.CHF = CHF_data
@@ -256,7 +227,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             )
 
 
-class PatientProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):
+class PatientProfileCreate(LoginRequiredMixin, UserDetailRedirectMixin, CreateView):
     model = PatientProfile
     form_class = PatientProfileForm
     height_form_class = HeightForm
@@ -270,6 +241,10 @@ class PatientProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedire
         if "weight_form" not in context:
             context["weight_form"] = self.weight_form_class(self.request.GET)
         return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
     def get_object(self, queryset=None):
         object = self.model
@@ -305,6 +280,10 @@ class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
     form_class = PatientProfileForm
     height_form_class = HeightForm
     weight_form_class = WeightForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(PatientProfileUpdate, self).get_context_data(**kwargs)

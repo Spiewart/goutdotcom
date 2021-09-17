@@ -11,14 +11,14 @@
           <h1 class="default-container">{{ object.username|capfirst}}</h1>
           {% if object.patientprofile %}
             <div class="container default-container">
+            <h2>
+            Profile
+            </h2>
               {% if object.patientprofile.bio %}
-                <h2>Bio: </h2>{{ object.patientprofile.bio }}
+                <h3>Bio: </h2>{{ object.patientprofile.bio }}</h3>
               {% else %}
-                <h2>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h2>
+                <h3>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h3>
               {% endif %}
-            </div>
-            <br>
-              <div class="container default-container">
                   <div class="row">
                     <div class="col">
                       {% if object.name %}
@@ -68,14 +68,14 @@
                   {% if object.patientprofile.weight and object.patientprofile.height %}
                   <div class="row">
                     <div class="col">
-                    {% if object.patientprofile.weight %}
+                    {% if object.patientprofile.weight.value %}
                       <li><a href="{% url 'vitals:list' 'weight' %}">Weight: </a><a href="{% url 'vitals:detail' 'weight' object.patientprofile.weight.pk %}">{{ object.patientprofile.weight }}</a></li>
                     {% else %}
-                      <li>Weight: not recorded</li>
+                      <li><a href="{% url 'vitals:create' 'weight' %}">Weight</a>: not recorded</li>
                     {% endif %}
                     </div>
                     <div class="col">
-                    {% if object.patientprofile.height %}
+                    {% if object.patientprofile.height.value %}
                     <li><a href="{% url 'vitals:list' 'height' %}">Height: </a><a href="{% url 'vitals:detail' 'height' object.patientprofile.height.pk %}">{{ object.patientprofile.height }}</a></li>
                     {% else %}
                       <li><a href="{% url 'vitals:create' 'height' %}">Height</a>: not recorded</li>
@@ -103,6 +103,23 @@
               </div>
             {% else %}
             {% endif %}
+
+
+      {% if object.medicalprofile %}
+      <div class="container default-container">
+        <div class="container nested-container">
+          <div class="container default-container">
+            <h2>Medical Profile</h2>
+            <ul>
+              {% if object.medicalprofile.CKD.value %}
+                <li>{{ object.medicalprofile.CKD.value }}</li>
+              {% else %}
+                <li>{{ object.medicalprofile.CKD.name }} not recorded</li>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
       </main>
   <footer>
     {% if object == request.user %}
