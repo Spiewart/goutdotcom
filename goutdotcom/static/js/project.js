@@ -1,5 +1,101 @@
 /* Project specific Javascript goes here. */
 
+/* Profiles app JS */
+// function that searches for each MedicalProfile related 1to1 CKD model and hides, empties subfields if the value is empty //
+function medical_profile_ckd() {
+  if ($('#id_CKD-value').val() == '') {
+      $('#div_id_CKD-stage').hide();
+      $('#id_CKD-stage').val('');
+      $('#div_id_CKD-dialysis').hide();
+      $('#id_CKD-dialysis').val('');
+  }
+  else if ($('#id_CKD-value').val() == 'False') {
+      $('#div_id_CKD-stage').hide();
+      $('#id_CKD-stage').val('');
+      $('#div_id_CKD-dialysis').hide();
+      $('#id_CKD-dialysis').val('');
+  }
+  else {
+      $('#div_id_CKD-stage').show();
+      $('#div_id_CKD-dialysis').show();
+  }
+}
+
+// function that searches for each MedicalProfile related 1to1 Hypertension model and hides, empties subfields if the value is empty //
+function medical_profile_hypertension() {
+  if ($('#id_hypertension-value').val() == '') {
+      $('#div_id_hypertension-medication').hide();
+      $('#id_hypertension-medication').val('');
+  }
+  else if ($('#id_hypertension-value').val() == 'False') {
+      $('#div_id_hypertension-medication').hide();
+      $('#id_hypertension-medication').val('');
+  }
+  else {
+      $('#div_id_hypertension-medication').show();
+  }
+}
+
+// function that searches for each MedicalProfile related 1to1 CHF model and hides, empties subfields if the value is empty //
+function medical_profile_CHF() {
+  if ($('#id_CHF-value').val() == '') {
+      $('#div_id_CHF-systolic').hide();
+      $('#id_CHF-systolic').val('');
+  }
+  else if ($('#id_CHF-value').val() == 'False') {
+      $('#div_id_CHF-systolic').hide();
+      $('#id_CHF-systolic').val('');
+  }
+  else {
+      $('#div_id_CHF-systolic').show();
+  }
+}
+
+// function that searches for each MedicalProfile related 1to1 diabetes model and hides, empties subfields if the value is empty //
+function medical_profile_diabetes() {
+  if ($('#id_diabetes-value').val() == '') {
+      $('#div_id_diabetes-insulin').hide();
+      $('#id_diabetes-insulin').val('');
+      $('#div_id_diabetes-type').hide();
+      $('#id_diabetes-type').val('');
+  }
+  else if ($('#id_diabetes-value').val() == 'False') {
+      $('#div_id_diabetes-type').hide();
+      $('#id_diabetes-type').val('');
+      $('#div_id_diabetes-insulin').hide();
+      $('#id_diabetes-insulin').val('');
+  }
+  else {
+      $('#div_id_diabetes-insulin').show();
+      $('#div_id_diabetes-type').show();
+  }
+}
+
+// function that searches for each MedicalProfile related 1to1 organ_transplant model and hides, empties subfields if the value is empty //
+function medical_profile_organ_transplant() {
+  if ($('#id_organ_transplant-value').val() == '') {
+      $('#div_id_organ_transplant-organ').hide();
+      $('#id_organ_transplant-organ_1').prop("checked", false);
+      $('#id_organ_transplant-organ_2').val('');
+      $('#id_organ_transplant-organ_3').val('');
+      $('#id_organ_transplant-organ_4').val('');
+      $('#id_organ_transplant-organ_5').val('');
+      $('#id_organ_transplant-organ_6').val('');
+  }
+  else if ($('#id_organ_transplant-value').val() == 'False') {
+      $('#div_id_organ_transplant-organ').hide();
+      $('#id_organ_transplant-organ_1').prop("checked", false);
+      $('#id_organ_transplant-organ_2').val('');
+      $('#id_organ_transplant-organ_3').val('');
+      $('#id_organ_transplant-organ_4').val('');
+      $('#id_organ_transplant-organ_5').val('');
+      $('#id_organ_transplant-organ_6').val('');
+  }
+  else {
+      $('#div_id_organ_transplant-organ').show();
+  }
+}
+
 /* ULT app JS */
 
 // function that hides/shows subsequent fields based upon first_flare value

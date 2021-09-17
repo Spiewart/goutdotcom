@@ -43,3 +43,50 @@
     </form>
   {% endif %}
 {% endblock form %}
+
+{% block inline_javascript %}
+<script>
+// functions to load when the page loads
+$(document).ready(function() {
+  medical_profile_ckd();
+});
+$(document).ready(function() {
+  medical_profile_hypertension();
+});
+$(document).ready(function() {
+  medical_profile_CHF();
+});
+$(document).ready(function() {
+  medical_profile_diabetes();
+});
+$(document).ready(function() {
+  medical_profile_organ_transplant();
+});
+// functions to run when form field is changed
+$(document).ready(function() {
+  // toggles CKD subfields when CKD is changed
+  $('#id_CKD-value').change(medical_profile_ckd);
+  medical_profile_ckd.call($('#id_CKD-value').get(0));
+});
+$(document).ready(function() {
+  // toggles Hypertension subfields when Hypertension is changed
+  $('#id_hypertension-value').change(medical_profile_hypertension);
+  medical_profile_hypertension.call($('#id_hypertension-value').get(0));
+});
+$(document).ready(function() {
+  // toggles CHF subfields when CHF is changed
+  $('#id_CHF-value').change(medical_profile_CHF);
+  medical_profile_CHF.call($('#id_CHF-value').get(0));
+});
+$(document).ready(function() {
+  // toggles Diabetes subfields when Diabetes is changed
+  $('#id_diabetes-value').change(medical_profile_diabetes);
+  medical_profile_diabetes.call($('#id_diabetes-value').get(0));
+});
+$(document).ready(function() {
+  // toggles OrganTransplant subfields when OrganTransplant is changed
+  $('#id_organ_transplant-value').change(medical_profile_organ_transplant);
+  medical_profile_organ_transplant.call($('#id_organ_transplant-value').get(0));
+});
+</script>
+{% endblock inline_javascript %}
