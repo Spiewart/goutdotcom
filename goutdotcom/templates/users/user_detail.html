@@ -112,9 +112,19 @@
             <h2>Medical Profile</h2>
             <ul>
               {% if object.medicalprofile.CKD.value %}
-                <li>{{ object.medicalprofile.CKD.value }}</li>
+                <li>{{ object.medicalprofile.CKD }}</li>
               {% else %}
                 <li>{{ object.medicalprofile.CKD.name }} not recorded</li>
+              {% endif %}
+              {% if object.medicalprofile.hypertension.value %}
+                <li>{{ object.medicalprofile.hypertension }} {{ object.medicalprofile.hypertension.medication }}</li>
+              {% else %}
+                <li>{{ object.medicalprofile.hypertension.name|capfirst }} not recorded</li>
+              {% endif %}
+              {% if object.medicalprofile.CHF.value %}
+                <li>{{ object.medicalprofile.CHF }}</li>
+              {% else %}
+                <li>{{ object.medicalprofile.CHF.name|capfirst }} not recorded</li>
               {% endif %}
           </div>
         </div>
