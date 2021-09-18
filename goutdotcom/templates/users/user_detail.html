@@ -113,18 +113,19 @@
             <ul>
               {% if object.medicalprofile.CKD.value %}
                 <li>{{ object.medicalprofile.CKD }}</li>
-              {% else %}
-                <li>{{ object.medicalprofile.CKD.name }} not recorded</li>
+                <ul>
+                {% if object.medicalprofile.CKD.stage %}
+                  <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
+                {% endif %}
+                {% if object.medicalprofile.ckd.dialysis %}
+                  <li>{{ object.medicalprofile.ckd.dialysis }}</li>
+                {% endif %}
               {% endif %}
               {% if object.medicalprofile.hypertension.value %}
                 <li>{{ object.medicalprofile.hypertension }} {{ object.medicalprofile.hypertension.medication }}</li>
-              {% else %}
-                <li>{{ object.medicalprofile.hypertension.name|capfirst }} not recorded</li>
               {% endif %}
               {% if object.medicalprofile.CHF.value %}
                 <li>{{ object.medicalprofile.CHF }}</li>
-              {% else %}
-                <li>{{ object.medicalprofile.CHF.name|capfirst }} not recorded</li>
               {% endif %}
           </div>
         </div>

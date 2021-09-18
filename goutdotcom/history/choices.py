@@ -12,7 +12,8 @@ GRANDPA = "Grandpa"
 GRANDMA = "Grandma"
 
 FAMILY_CHOICES = (
-    (FATHER, "Father"),
+    (FATHER
+     , "Father"),
     (MOTHER, "Mother"),
     (SISTER, "Sister"),
     (BROTHER, "Brother"),
