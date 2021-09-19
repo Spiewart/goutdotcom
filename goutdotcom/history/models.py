@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.fields import BooleanField, IntegerField
 from django.urls import reverse
+from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
@@ -178,14 +179,19 @@ class Cyclosporine(MedicationHistory):
 
 class Anticoagulation(MedicationHistory):
     value = BooleanField(choices=BOOL_CHOICES, help_text="Are you on anticoagulation?", null=True, blank=True)
-    warfarin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on warfarin / Coumadin?", null=True, blank=True)
     apixaban = BooleanField(choices=BOOL_CHOICES, help_text="Are you on apixaban / Eliquis?", null=True, blank=True)
-    rivaroxaban = BooleanField(
-        choices=BOOL_CHOICES, help_text="Are you on rivaroxaban / Xarelto?", null=True, blank=True
-    )
+
     clopidogrel = BooleanField(
         choices=BOOL_CHOICES, help_text="Are you on clopidogrel / Plavix?", null=True, blank=True
     )
+    dabigatran = BooleanField(choices=BOOL_CHOICES, help_text="Are you on dabigatran / Pradaxa?", null=True, blank=True)
+    enoxaparin = BooleanField(
+        choices=BOOL_CHOICES, help_text="Are you on enoxaparin / Lovenox?", null=True, blank=True
+    )
+    rivaroxaban = BooleanField(
+        choices=BOOL_CHOICES, help_text="Are you on rivaroxaban / Xarelto?", null=True, blank=True
+    )
+    warfarin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on warfarin / Coumadin?", null=True, blank=True)
     name = "anticoagulation"
 
 
@@ -220,13 +226,34 @@ class Stroke(VascularHistory):
 
 class HeartAttack(VascularHistory):
     stent = BooleanField(choices=BOOL_CHOICES, help_text="Have you had stents placed?", null=True, blank=True)
+    stent_date = models.DateTimeField(
+        help_text="When was the last time you has a stent?",
+        default=timezone.now,
+        null=True,
+        blank=True,
+    )
     cabg = BooleanField(choices=BOOL_CHOICES, help_text="Have you had bypass?", null=True, blank=True)
+    cabg_date = models.DateTimeField(
+        help_text="When did you have a bypass?",
+        default=timezone.now,
+        null=True,
+        blank=True,
+    )
     name = "MI"
 
 
-class BleedingEvent(VascularHistory):
+class Bleed(VascularHistory):
     GIB = BooleanField(choices=BOOL_CHOICES, help_text="Have you had a gastrointestinal bleed?", null=True, blank=True)
+    GIB_date = models.DateTimeField(
+        help_text="When was the last time you has a gastrointestinal bleed?",
+        default=timezone.now,
+        null=True,
+        blank=True,
+    )
     CNS = BooleanField(choices=BOOL_CHOICES, help_text="Have you had an intracranial bleed?", null=True, blank=True)
+    CNS_date = models.DateTimeField(
+        help_text="When was the last time you had an intracranial bleed?", default=timezone.now, null=True, blank=True
+    )
     transfusion = BooleanField(choices=BOOL_CHOICES, help_text="Did you require a transfusion?", null=True, blank=True)
     name = "bleeding event"
 
@@ -242,6 +269,26 @@ class Alcohol(SocialHistory):
     beer = BooleanField(choices=BOOL_CHOICES, help_text="Do you drink beer?", null=True, blank=True)
     liquor = BooleanField(choices=BOOL_CHOICES, help_text="Do you drink liquor?", null=True, blank=True)
     name = "alcohol"
+
+
+class Fructose(SocialHistory):
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Do you eat a lot of fructose such as the sugar found in soda/pop, processed candies, or juices?",
+        null=True,
+        blank=True,
+    )
+    name = "fructose"
+
+
+class Shellfish(SocialHistory):
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Do you eat a lot of shellfish?",
+        null=True,
+        blank=True,
+    )
+    name = "shellfish"
 
 
 class FamilyHistory(History):

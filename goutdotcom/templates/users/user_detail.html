@@ -12,86 +12,67 @@
           {% if object.patientprofile %}
             <div class="container default-container">
             <h2>
-            Profile
+            <u>Profile</u>
             </h2>
               {% if object.patientprofile.bio %}
-                <h3>Bio: </h2>{{ object.patientprofile.bio }}</h3>
+                <h3>Bio</h3>
+                <p>{{ object.patientprofile.bio }}</p>
               {% else %}
                 <h3>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h3>
               {% endif %}
+              <hr size="6" color="white">
+              <h3>Demographics</h3>
                   <div class="row">
-                    <div class="col">
-                      {% if object.name %}
+                    {% if object.name %}
+                      <div class="col-auto">
                         <li>{{ object.name }}</li>
-                      {% else %}
-                        <li>Name: not recorded</li>
-                      {% endif %}
-                    </div>
-                    <div class="col">
-                    {% if object.patientprofile.date_of_birth %}
-                      <li>Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
-                    {% else %}
-                      <li>Date of Birth: not recorded</li>
+                      </div>
                     {% endif %}
-                    </div>
-                    <div class="col">
                     {% if object.patientprofile.date_of_birth %}
-                      <li>Age: {{ object.patientprofile.get_age }}</li>
-                    {% else %}
-                      <li>Age: can't calculate age without DoB<li>
+                      <div class="col-auto">
+                        <li>Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
+                      </div>
                     {% endif %}
-                    </div>
+                    {% if object.patientprofile.date_of_birth %}
+                      <div class="col-auto">
+                        <li>Age: {{ object.patientprofile.get_age }}</li>
+                      </div>
+                    {% endif %}
                   </div>
                   <div class="row">
-                    <div class="col">
                     {% if object.patientprofile.gender %}
-                      <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
-                    {% else %}
-                      <li>Gender: not recorded</li>
+                      <div class="col-auto">
+                        <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
+                      </div>
                     {% endif %}
-                    </div>
-                    <div class="col">
                     {% if object.patientprofile.race %}
-                      <li>Race: {{ object.patientprofile.race|capfirst }}</li>
-                    {% else %}
-                      <li>Race: not recorded</li>
+                      <div class="col=auto">
+                        <li>Race: {{ object.patientprofile.race|capfirst }}</li>
+                      </div>
                     {% endif %}
-                    </div>
-                    <div class="col">
                     {% if object.patientprofile.drinks_per_week %}
-                      <li>Drinks / Week: {{ object.patientprofile.drinks_per_week }}
-                    {% else %}
-                      <li>Drinks / Week: not recorded</li>
+                      <div class="col-auto">
+                        <li>Drinks / Week: {{ object.patientprofile.drinks_per_week }}</li>
+                      </div>
                     {% endif %}
-                    </div>
                   </div>
-                  {% if object.patientprofile.weight and object.patientprofile.height %}
                   <div class="row">
-                    <div class="col">
                     {% if object.patientprofile.weight.value %}
-                      <li><a href="{% url 'vitals:list' 'weight' %}">Weight: </a><a href="{% url 'vitals:detail' 'weight' object.patientprofile.weight.pk %}">{{ object.patientprofile.weight }}</a></li>
-                    {% else %}
-                      <li><a href="{% url 'vitals:create' 'weight' %}">Weight</a>: not recorded</li>
+                      <div class="col-auto">
+                        <li><a href="{% url 'vitals:list' 'weight' %}">Weight: </a><a href="{% url 'vitals:detail' 'weight' object.patientprofile.weight.pk %}">{{ object.patientprofile.weight }}</a></li>
+                      </div>
                     {% endif %}
-                    </div>
-                    <div class="col">
                     {% if object.patientprofile.height.value %}
-                    <li><a href="{% url 'vitals:list' 'height' %}">Height: </a><a href="{% url 'vitals:detail' 'height' object.patientprofile.height.pk %}">{{ object.patientprofile.height }}</a></li>
-                    {% else %}
-                      <li><a href="{% url 'vitals:create' 'height' %}">Height</a>: not recorded</li>
+                      <div class="col-auto">
+                        <li><a href="{% url 'vitals:list' 'height' %}">Height: </a><a href="{% url 'vitals:detail' 'height' object.patientprofile.height.pk %}">{{ object.patientprofile.height }}</a></li>
+                      </div>
                     {% endif %}
-                    </div>
-                    <div class="col">
                     {% if object.patientprofile.weight and object.patientprofile.height %}
-                    <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
-                    {% elif object.patientprofile.weight %}
-                    <li>BMI: can't calculate BMI without <a href="{% url 'profiles:update' 'requeest.user' object.patientprofile.pk %}">height</a> and weight</li>
-                    {% elif object.patient.profile.height %}
-                    <li>BMI: can't calculate BMI without height and <a href="{% url 'profiles:update' 'requeest.user' object.patientprofile.pk %}">weight</a></li>
+                      <div class="col-auto">
+                        <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
+                      </div>
                     {% endif %}
-                    </div>
                   </div>
-                  {% endif %}
                 </div>
               </div>
                 {% if object.patientprofile.picture %}
@@ -109,29 +90,65 @@
       <div class="container default-container">
         <div class="container nested-container">
           <div class="container default-container">
-            <h2>Medical Profile</h2>
-            <ul>
-              {% if object.medicalprofile.CKD.value %}
-                <li>{{ object.medicalprofile.CKD }}</li>
-                <ul>
-                {% if object.medicalprofile.CKD.stage %}
-                  <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
+            <h2><u>Medical History</u></h2>
+            <div class="row">
+                {% if object.medicalprofile.CKD.value %}
+                  <div class="col-auto"
+                    <li>{{ object.medicalprofile.CKD }}</li>
+                    {% if object.medicalprofile.CKD.stage %}
+                      <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
+                    {% endif %}
+                    {% if object.medicalprofile.ckd.dialysis %}
+                      <li>{{ object.medicalprofile.ckd.dialysis }}</li>
+                    {% endif %}
+                  </div>
                 {% endif %}
-                {% if object.medicalprofile.ckd.dialysis %}
-                  <li>{{ object.medicalprofile.ckd.dialysis }}</li>
+                {% if object.medicalprofile.hypertension.value %}
+                  <div class="col-auto"
+                  <li>Hypertension</li>
+                    {% if object.medicalprofile.hypertension.medication %}
+                      <li>Treated with medications</li>
+                    {% endif %}
+                  </div>
                 {% endif %}
-              {% endif %}
-              {% if object.medicalprofile.hypertension.value %}
-                <li>{{ object.medicalprofile.hypertension }} {{ object.medicalprofile.hypertension.medication }}</li>
-              {% endif %}
-              {% if object.medicalprofile.CHF.value %}
-                <li>{{ object.medicalprofile.CHF }}</li>
-              {% endif %}
+                {% if object.medicalprofile.CHF.value %}
+                  <div class="col-auto">
+                    <li>CHF (congestive heart failure)</li>
+                    {% if object.medicalprofile.CHF.systolic %}
+                      <li>Systolic (reduced EF / ejection fraction)</li>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if object.medicalprofile.diabetes.value %}
+                  <div class="col-auto">
+                    <li>Diabetes</li>
+                    {% if object.medicalprofile.diabetes.type %}
+                      <li>{{ object.medicalprofile.diabetes.type }}</li>
+                    {% endif %}
+                    {% if object.medicalprofile.diabetes.insulin %}
+                      <li>You take insulin</li>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if object.medicalprofile.organ_transplant.value %}
+                  <div class="col-auto">
+                    <li>Organ Transplant</li>
+                    {% if object.medicalprofile.organ_transplant.organ %}
+                      <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if object.medicalprofile.urate_kidney_stones.value %}
+                  <div class="col-auto">
+                    <li>Urate Kidney Stones</li>
+                  </div>
+                {% endif %}
+            </div>
           </div>
         </div>
       </div>
       {% endif %}
-      </main>
+    </main>
   <footer>
     {% if object == request.user %}
       <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button">My Info</a>
@@ -148,5 +165,6 @@
       {% endif %}
     {% endif %}
   </footer>
-</div>
+  </div>
+
 {% endblock content %}

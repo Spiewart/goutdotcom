@@ -5,20 +5,29 @@ from crispy_forms.layout import Fieldset, Layout
 from datetimewidget.widgets import DateWidget
 from django import forms
 
-from .models import MedicalProfile, PatientProfile
-
-YEARS = []
+from .models import ContraindicationsProfile, MedicalProfile, PatientProfile
 
 
-def populate_years(x=0):
-    if 1890 not in YEARS:
-        current = int(datetime.date.today().year) - x
-        YEARS.append(current)
-        x = x + 1
-        populate_years(x)
+class ContraindicationsProfileForm(forms.ModelForm):
+    class Meta:
+        model = ContraindicationsProfile
+        fields = ("value",)
 
+    def __init__(self, *args, **kwargs):
+        super(ContraindicationsProfileForm, self).__init__(*args, **kwargs)
 
-populate_years()
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "value",
+            ),
+        )
 
 
 class MedicalProfileForm(forms.ModelForm):
@@ -52,14 +61,16 @@ class PatientProfileForm(forms.ModelForm):
             "gender",
             "race",
         )
+        dateTimeOptions = {
+            "autoclose": True,
+            "pickerPosition": "bottom-left",
+        }
         widgets = {
             # Use localization and bootstrap 3
-            "date_of_birth": DateWidget(attrs={"id": "date_of_birth"}, usel10n=True, bootstrap_version=3),
+            "date_of_birth": DateWidget(
+                options=dateTimeOptions, attrs={"id": "date_of_birth.pk"}, usel10n=True, bootstrap_version=3
+            )
         }
-
-    date_of_birth = forms.DateField(
-        widget=forms.SelectDateWidget(years=YEARS, empty_label=("Choose Year", "Choose Month", "Choose Day"))
-    )
 
     def __init__(self, *args, **kwargs):
         super(PatientProfileForm, self).__init__(*args, **kwargs)

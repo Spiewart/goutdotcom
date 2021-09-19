@@ -2,18 +2,25 @@ import datetime
 
 from django.conf import settings
 from django.db import models
+from django.db.models.fields import BooleanField
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
 from goutdotcom.history.models import (
     CHF,
     CKD,
+    Alcohol,
+    Bleed,
     Diabetes,
+    Fructose,
+    HeartAttack,
     Hypertension,
     OrganTransplant,
+    Shellfish,
+    Stroke,
     UrateKidneyStones,
 )
-from goutdotcom.profiles.choices import races, sexes
+from goutdotcom.profiles.choices import BOOL_CHOICES, races, sexes
 from goutdotcom.users.models import models
 from goutdotcom.vitals.models import Height, Weight
 
@@ -43,7 +50,6 @@ class PatientProfile(TimeStampedModel):
     height = models.OneToOneField(
         Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True
     )
-    drinks_per_week = models.IntegerField(null=True, blank=True)
 
     def get_age(self):
         if self.date_of_birth:
@@ -119,6 +125,74 @@ class MedicalProfile(TimeStampedModel):
         UrateKidneyStones,
         on_delete=models.CASCADE,
         help_text="Have you had urate kidney stones?",
+        null=True,
+        blank=True,
+    )
+
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"username": self.user_username})
+
+
+class SocialProfile(TimeStampedModel):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    alcohol = models.OneToOneField(
+        Alcohol,
+        on_delete=models.CASCADE,
+        help_text="How many drinks do you have per week?",
+        null=True,
+        blank=True,
+    )
+    fructose = models.OneToOneField(
+        Fructose,
+        on_delete=models.CASCADE,
+        help_text="Do you eat a lot of fructose such as the sugar found in soda/pop, processed candies, or juices?",
+        null=True,
+        blank=True,
+    )
+    shellfish = models.OneToOneField(
+        Shellfish,
+        on_delete=models.CASCADE,
+        help_text="Do you eat a lot of shellfish?",
+        null=True,
+        blank=True,
+    )
+
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"username": self.user_username})
+
+
+class ContraindicationsProfile(TimeStampedModel):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Have you ever had a heart stroke, heart attack, or major bleeding event?",
+        null=True,
+        blank=True,
+    )
+    stroke = models.OneToOneField(
+        Stroke,
+        on_delete=models.CASCADE,
+        help_text="Have you had a stroke?",
+        null=True,
+        blank=True,
+    )
+    heartattack = models.OneToOneField(
+        HeartAttack,
+        on_delete=models.CASCADE,
+        help_text="Have you had a heart attack?",
+        null=True,
+        blank=True,
+    )
+    bleed = models.OneToOneField(
+        Bleed,
+        on_delete=models.CASCADE,
+        help_text="Have you had a major bleeding event?",
         null=True,
         blank=True,
     )

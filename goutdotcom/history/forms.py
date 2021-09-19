@@ -8,6 +8,7 @@ from .models import (
     CKD,
     Alcohol,
     Anticoagulation,
+    Bleed,
     BleedingEvent,
     ColchicineInteractions,
     Cyclosporine,
@@ -23,6 +24,7 @@ from .models import (
 )
 
 
+### Medical History ModelForms ###
 class CKDForm(forms.ModelForm):
     prefix = "CKD"
 
@@ -157,4 +159,95 @@ class UrateKidneyStonesForm(forms.ModelForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Diabetes", "value", id="urate_kidney_stones_for_profile"),
+        )
+
+
+### Contraindications ModelForms ###
+class StrokeForm(forms.ModelForm):
+    prefix = "stroke"
+
+    class Meta:
+        model = Stroke
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(StrokeForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Stroke", "value", id="stroke_for_contraindications"),
+        )
+
+
+class HeartAttackForm(forms.ModelForm):
+    prefix = "heartattack"
+
+    class Meta:
+        model = HeartAttack
+        fields = (
+            "value",
+            "stent",
+            "stent_date",
+            "cabg",
+            "cabg_date",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(HeartAttackForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                "Heart Attack",
+                "value",
+                "stent",
+                "stent_date",
+                "cabg",
+                "cabg_date",
+                id="heart_attack_for_contraindications",
+            ),
+        )
+
+
+class BleedForm(forms.ModelForm):
+    prefix = "bleed"
+
+    class Meta:
+        model = Bleed
+        fields = (
+            "value",
+            "GIB",
+            "GIB_date",
+            "CNS",
+            "CNS_date",
+            "transfusion",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(HeartAttackForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                "Bleed (major)",
+                "value",
+                "GIB",
+                "GIB_date",
+                "CNS",
+                "CNS_date",
+                "transfusion",
+                id="bleed_for_contraindications",
+            ),
         )

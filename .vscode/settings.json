@@ -14,6 +14,7 @@
     "python.formatting.blackArgs": [
         "--line-length=120"
     ],
+    "[python]": {"editor.formatOnPaste": false, "editor.formatOnSaveMode": "file"},
     "editor.codeActionsOnSave": {
         "source.organizeImports": true
     }
