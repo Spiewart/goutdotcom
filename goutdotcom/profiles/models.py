@@ -169,7 +169,7 @@ class ContraindicationsProfile(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    value = BooleanField(
+    contraindication = BooleanField(
         choices=BOOL_CHOICES,
         help_text="Have you ever had a heart stroke, heart attack, or major bleeding event?",
         null=True,

@@ -17,7 +17,7 @@ class History(TimeStampedModel):
     )
 
     name = "history"
-    value = BooleanField(choices=BOOL_CHOICES, help_text=("Do you have " + name + "?"), null=True, blank=True)
+    value = BooleanField(choices=BOOL_CHOICES, help_text=("Do you have a " + name + "?"), null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -185,9 +185,7 @@ class Anticoagulation(MedicationHistory):
         choices=BOOL_CHOICES, help_text="Are you on clopidogrel / Plavix?", null=True, blank=True
     )
     dabigatran = BooleanField(choices=BOOL_CHOICES, help_text="Are you on dabigatran / Pradaxa?", null=True, blank=True)
-    enoxaparin = BooleanField(
-        choices=BOOL_CHOICES, help_text="Are you on enoxaparin / Lovenox?", null=True, blank=True
-    )
+    enoxaparin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on enoxaparin / Lovenox?", null=True, blank=True)
     rivaroxaban = BooleanField(
         choices=BOOL_CHOICES, help_text="Are you on rivaroxaban / Xarelto?", null=True, blank=True
     )
@@ -222,9 +220,24 @@ class ColchicineInteractions(MedicationHistory):
 
 class Stroke(VascularHistory):
     name = "stroke"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Have you ever had a " + name + "?"),
+        verbose_name="stroke",
+        null=True,
+        blank=True,
+    )
 
 
 class HeartAttack(VascularHistory):
+    name = "heart attack"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Have you ever had a " + name + "?"),
+        verbose_name="heart attack",
+        null=True,
+        blank=True,
+    )
     stent = BooleanField(choices=BOOL_CHOICES, help_text="Have you had stents placed?", null=True, blank=True)
     stent_date = models.DateTimeField(
         help_text="When was the last time you has a stent?",
@@ -243,6 +256,14 @@ class HeartAttack(VascularHistory):
 
 
 class Bleed(VascularHistory):
+    name = "major bleed"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Have you ever had a " + name + "?"),
+        verbose_name="major bleed",
+        null=True,
+        blank=True,
+    )
     GIB = BooleanField(choices=BOOL_CHOICES, help_text="Have you had a gastrointestinal bleed?", null=True, blank=True)
     GIB_date = models.DateTimeField(
         help_text="When was the last time you has a gastrointestinal bleed?",
@@ -255,7 +276,6 @@ class Bleed(VascularHistory):
         help_text="When was the last time you had an intracranial bleed?", default=timezone.now, null=True, blank=True
     )
     transfusion = BooleanField(choices=BOOL_CHOICES, help_text="Did you require a transfusion?", null=True, blank=True)
-    name = "bleeding event"
 
 
 class SocialHistory(History):
@@ -264,6 +284,14 @@ class SocialHistory(History):
 
 
 class Alcohol(SocialHistory):
+    name = "alcohol"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you drink " + name + "?"),
+        verbose_name="alcohol",
+        null=True,
+        blank=True,
+    )
     number = models.IntegerField(help_text="How many drinks do you have per week?", null=True, blank=True)
     wine = BooleanField(choices=BOOL_CHOICES, help_text="Do you drink wine?", null=True, blank=True)
     beer = BooleanField(choices=BOOL_CHOICES, help_text="Do you drink beer?", null=True, blank=True)
@@ -306,3 +334,9 @@ class FamilyHistory(History):
 
 class Gout(FamilyHistory):
     name = "gout"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Do you have a family history of gout?",
+        null=True,
+        blank=True,
+    )

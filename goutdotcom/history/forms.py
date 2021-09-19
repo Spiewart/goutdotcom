@@ -9,7 +9,6 @@ from .models import (
     Alcohol,
     Anticoagulation,
     Bleed,
-    BleedingEvent,
     ColchicineInteractions,
     Cyclosporine,
     Diabetes,
@@ -168,7 +167,15 @@ class StrokeForm(forms.ModelForm):
 
     class Meta:
         model = Stroke
-        fields = ("value",)
+        fields = (
+            "value",
+            "number",
+            "date",
+        )
+        widgets = {
+            # Use localization and bootstrap 3
+            "date": DateWidget(attrs={"id": "stroke_date.pk"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(StrokeForm, self).__init__(*args, **kwargs)
@@ -179,7 +186,7 @@ class StrokeForm(forms.ModelForm):
         self.helper.form_tag = False
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
-            Fieldset("Stroke", "value", id="stroke_for_contraindications"),
+            Fieldset("Stroke", "value", "number", "date", id="stroke_for_contraindications"),
         )
 
 
@@ -190,11 +197,23 @@ class HeartAttackForm(forms.ModelForm):
         model = HeartAttack
         fields = (
             "value",
+            "number",
+            "date",
             "stent",
             "stent_date",
             "cabg",
             "cabg_date",
         )
+        dateTimeOptions = {
+            "autoclose": True,
+            "pickerPosition": "bottom-left",
+        }
+        widgets = {
+            # Use localization and bootstrap 3
+            "date": DateWidget(attrs={"id": "heartattack_date.pk"}, usel10n=True, bootstrap_version=3),
+            "stent_date": DateWidget(attrs={"id": "stent_date.pk"}, usel10n=True, bootstrap_version=3),
+            "cabg_date": DateWidget(attrs={"id": "cabg_date.pk"}, usel10n=True, bootstrap_version=3),
+        }
 
     def __init__(self, *args, **kwargs):
         super(HeartAttackForm, self).__init__(*args, **kwargs)
@@ -208,6 +227,8 @@ class HeartAttackForm(forms.ModelForm):
             Fieldset(
                 "Heart Attack",
                 "value",
+                "number",
+                "date",
                 "stent",
                 "stent_date",
                 "cabg",
@@ -224,15 +245,33 @@ class BleedForm(forms.ModelForm):
         model = Bleed
         fields = (
             "value",
+            "number",
+            "date",
             "GIB",
             "GIB_date",
             "CNS",
             "CNS_date",
             "transfusion",
         )
+        dateTimeOptions = {
+            "autoclose": True,
+            "pickerPosition": "bottom-left",
+        }
+        widgets = {
+            # Use localization and bootstrap 3
+            "date": DateWidget(
+                options=dateTimeOptions, attrs={"id": "bleed_date.pk"}, usel10n=True, bootstrap_version=3
+            ),
+            "GIB_date": DateWidget(
+                options=dateTimeOptions, attrs={"id": "GIB_date.pk"}, usel10n=True, bootstrap_version=3
+            ),
+            "CNS_date": DateWidget(
+                options=dateTimeOptions, attrs={"id": "CNS_date.pk"}, usel10n=True, bootstrap_version=3
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
-        super(HeartAttackForm, self).__init__(*args, **kwargs)
+        super(BleedForm, self).__init__(*args, **kwargs)
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -243,6 +282,8 @@ class BleedForm(forms.ModelForm):
             Fieldset(
                 "Bleed (major)",
                 "value",
+                "number",
+                "date",
                 "GIB",
                 "GIB_date",
                 "CNS",

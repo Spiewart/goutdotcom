@@ -1,9 +1,18 @@
 from django.contrib import admin
 
-from .models import MedicalProfile, PatientProfile
+from .models import ContraindicationsProfile, MedicalProfile, PatientProfile
 
 
 # Register your models here.
+class ContraindicationsProfileAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "stroke",
+        "heartattack",
+        "bleed",
+    )
+
+
 class MedicalProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -27,9 +36,9 @@ class PatientProfileAdmin(admin.ModelAdmin):
         "weight",
         "height",
         "BMI_calculator",
-        "drinks_per_week",
     )
 
 
+admin.site.register(ContraindicationsProfile, ContraindicationsProfileAdmin)
 admin.site.register(MedicalProfile, MedicalProfileAdmin)
 admin.site.register(PatientProfile, PatientProfileAdmin)

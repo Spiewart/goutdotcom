@@ -131,6 +131,8 @@ class StrokeAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "value",
+        "number",
+        "date",
         "created",
         "pk",
     )
@@ -140,6 +142,8 @@ class HeartAttackAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "value",
+        "number",
+        "date",
         "stent",
         "cabg",
         "created",
@@ -147,10 +151,12 @@ class HeartAttackAdmin(admin.ModelAdmin):
     )
 
 
-class BleedingEventAdmin(admin.ModelAdmin):
+class BleedAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "value",
+        "number",
+        "date",
         "GIB",
         "CNS",
         "transfusion",
@@ -195,6 +201,6 @@ admin.site.register(XOIInteractions, XOIInteractionsAdmin)
 admin.site.register(ColchicineInteractions, ColchicineInteractionsAdmin)
 admin.site.register(Stroke, StrokeAdmin)
 admin.site.register(HeartAttack, HeartAttackAdmin)
-admin.site.register(BleedingEvent, BleedingEventAdmin)
+admin.site.register(Bleed, BleedAdmin)
 admin.site.register(Alcohol, AlcoholAdmin)
 admin.site.register(Gout, GoutAdmin)

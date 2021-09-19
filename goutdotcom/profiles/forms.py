@@ -11,7 +11,7 @@ from .models import ContraindicationsProfile, MedicalProfile, PatientProfile
 class ContraindicationsProfileForm(forms.ModelForm):
     class Meta:
         model = ContraindicationsProfile
-        fields = ("value",)
+        fields = ("contraindication",)
 
     def __init__(self, *args, **kwargs):
         super(ContraindicationsProfileForm, self).__init__(*args, **kwargs)
@@ -25,7 +25,7 @@ class ContraindicationsProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 "",
-                "value",
+                "contraindication",
             ),
         )
 

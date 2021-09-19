@@ -163,6 +163,11 @@
       {% else %}
       <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-medical' %}" role="button">Medical</a>
       {% endif %}
+      {% if request.user.contraindicationsprofile %}
+      <a class="btn btn-primary btn-lg" href="" role="button">Contraindications</a>
+      {% else %}
+      <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-contraindications' %}" role="button">Contraindications</a>
+      {% endif %}
     {% endif %}
   </footer>
   </div>

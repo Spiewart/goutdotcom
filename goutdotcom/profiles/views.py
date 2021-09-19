@@ -6,26 +6,36 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
 from goutdotcom.history.forms import (
+    BleedForm,
     CHFForm,
     CKDForm,
     DiabetesForm,
+    HeartAttackForm,
     HypertensionForm,
     OrganTransplantForm,
+    StrokeForm,
     UrateKidneyStonesForm,
 )
 from goutdotcom.history.models import (
     CHF,
     CKD,
+    Bleed,
     Diabetes,
+    HeartAttack,
     Hypertension,
     OrganTransplant,
+    Stroke,
     UrateKidneyStones,
 )
-from goutdotcom.profiles.forms import MedicalProfileForm, PatientProfileForm
+from goutdotcom.profiles.forms import (
+    ContraindicationsProfileForm,
+    MedicalProfileForm,
+    PatientProfileForm,
+)
 from goutdotcom.vitals.forms import HeightForm, WeightForm
 from goutdotcom.vitals.models import Height, Weight
 
-from .models import MedicalProfile, PatientProfile
+from .models import ContraindicationsProfile, MedicalProfile, PatientProfile
 
 
 # Mixins
@@ -41,6 +51,148 @@ class UserDetailRedirectMixin:
 
 
 # Create your views here.
+class ContraindicationsProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):
+    model = ContraindicationsProfile
+    form_class = ContraindicationsProfileForm
+    stroke_form_class = StrokeForm
+    heartattack_form_class = HeartAttackForm
+    bleed_form_class = BleedForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ContraindicationsProfileCreate, self).get_context_data(**kwargs)
+        context.update({"user": self.request.user})
+        if "stroke_form" not in context:
+            context["stroke_form"] = self.stroke_form_class(self.request.GET)
+        if "heartattack_form" not in context:
+            context["heartattack_form"] = self.heartattack_form_class(self.request.GET)
+        if "bleed_form" not in context:
+            context["bleed_form"] = self.bleed_form_class(self.request.GET)
+        return context
+
+    def get_object(self, queryset=None):
+        object = self.model
+        return object
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=ContraindicationsProfile())
+        stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
+        heartattack_form = self.heartattack_form_class(request.POST, instance=HeartAttack())
+        bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
+
+        if form.is_valid() and stroke_form.is_valid() and heartattack_form.is_valid() and bleed_form.is_valid():
+            contraindications_profile_data = form.save(commit=False)
+            contraindications_profile_data.user = request.user
+            stroke_data = stroke_form.save(commit=False)
+            stroke_data.user = request.user
+            stroke_data.save()
+            heartattack_data = heartattack_form.save(commit=False)
+            heartattack_data.user = request.user
+            heartattack_data.save()
+            bleed_data = bleed_form.save(commit=False)
+            bleed_data.user = request.user
+            bleed_data.save()
+            contraindications_profile_data.stroke = stroke_data
+            contraindications_profile_data.heartattack = heartattack_data
+            contraindications_profile_data.bleed = bleed_data
+            contraindications_profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    stroke_form=stroke_form,
+                    heartattack_form=heartattack_form,
+                    bleed_form=bleed_form,
+                )
+            )
+
+
+class ContraindicationsProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, UpdateView):
+    model = ContraindicationsProfile
+    form_class = ContraindicationsProfileForm
+    stroke_form_class = StrokeForm
+    heartattack_form_class = HeartAttackForm
+    bleed_form_class = BleedForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ContraindicationsProfileUpdate, self).get_context_data(**kwargs)
+        context.update({"user": self.request.user})
+        if self.request.POST:
+            context["stroke_form"] = StrokeForm(self.request.POST, instance=self.object.stroke)
+            context["heartattack_form"] = HeartAttackForm(self.request.POST, instance=self.object.heartattack)
+            context["bleed_form"] = BleedForm(self.request.POST, instance=self.object.bleed)
+            )
+        else:
+            context["CKD_form"] = self.CKD_form_class(instance=self.object.CKD)
+            context["hypertension_form"] = self.hypertension_form_class(instance=self.object.hypertension)
+            context["CHF_form"] = self.CHF_form_class(instance=self.object.CHF)
+            context["diabetes_form"] = self.diabetes_form_class(instance=self.object.diabetes)
+            context["organ_transplant_form"] = self.organ_transplant_form_class(instance=self.object.organ_transplant)
+            context["urate_kidney_stones_form"] = self.urate_kidney_stone_form_class(
+                instance=self.object.urate_kidney_stones
+            )
+        return context
+
+    def get_object(self, queryset=None):
+        try:
+            queryset = self.model.objects.filter(user=self.request.user)
+        except ObjectDoesNotExist:
+            raise Http404("No object found matching this query.")
+        obj = super(MedicalProfileUpdate, self).get_object(queryset=queryset)
+        return obj
+
+    def post(self, request, **kwargs):
+        # NEED **kwargs even though VSCode IDE says it's not used. Can't accept <user> and <pk> from url parameter otherwise.
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        CKD_form = self.CKD_form_class(request.POST, instance=self.object.CKD)
+        hypertension_form = self.hypertension_form_class(request.POST, instance=self.object.hypertension)
+        CHF_form = self.CHF_form_class(request.POST, instance=self.object.CHF)
+        diabetes_form = self.diabetes_form_class(request.POST, instance=self.object.diabetes)
+        organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=self.object.organ_transplant)
+        urate_kidney_stones_form = self.urate_kidney_stone_form_class(
+            request.POST, instance=self.object.urate_kidney_stones
+        )
+
+        if (
+            form.is_valid()
+            and CKD_form.is_valid()
+            and hypertension_form.is_valid()
+            and CHF_form.is_valid()
+            and diabetes_form.is_valid()
+            and organ_transplant_form.is_valid()
+            and urate_kidney_stones_form.is_valid()
+        ):
+            medical_profile_data = form.save(commit=False)
+            CKD_data = CKD_form.save()
+            hypertension_data = hypertension_form.save()
+            CHF_data = CHF_form.save()
+            diabetes_data = diabetes_form.save()
+            organ_transplant_data = organ_transplant_form.save()
+            urate_kidney_stones_data = urate_kidney_stones_form.save()
+            medical_profile_data.ckd = CKD_data
+            medical_profile_data.hypertension = hypertension_data
+            medical_profile_data.CHF = CHF_data
+            medical_profile_data.diabetes = diabetes_data
+            medical_profile_data.organ_transplant = organ_transplant_data
+            medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
+            medical_profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    CKD_form=CKD_form,
+                    hypertension_form=hypertension_form,
+                    CHF_form=CHF_form,
+                    diabetes_form=diabetes_form,
+                    organ_transplant_form=organ_transplant_form,
+                    urate_kidney_stones_form=urate_kidney_stones_form,
+                )
+            )
+
+
 class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     model = MedicalProfile
     form_class = MedicalProfileForm

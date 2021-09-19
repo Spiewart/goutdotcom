@@ -1,23 +1,21 @@
 {% extends "base_form.html" %}
 {% load crispy_forms_tags %}
+{{ form.media }}
 
-{% block title %}{{ user.username|capfirst }}'s Profile Update{% endblock title %}
+{% block title %}{{ user.username|capfirst }}'s Contraindications Update{% endblock title %}
 
 {% block header %}
-<h1 class="nested-container">{{ user.username|capfirst }}'s Medical Profile</h1>
+<h1 class="nested-container">{{ user.username|capfirst }}'s Contraindications</h1>
 {% endblock header %}
 
 {% block form %}
   {% if form.instance.pk %}
-    <form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user object.pk %}" enctype='multipart/form-data'>
+    <form class="form-horizontal" method="post" action="{% url 'profiles:update-contraindications' request.user object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
-      {{ CKD_form|crispy }}
-      {{ hypertension_form|crispy }}
-      {{ CHF_form|crispy }}
-      {{ diabetes_form|crispy }}
-      {{ organ_transplant_form|crispy }}
-      {{ urate_kidney_stones_form|crispy }}
+      {{ stroke_form|crispy }}
+      {{ heartattack_form|crispy }}
+      {{ bleed_form|crispy }}
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary btn-lg">Update</button>
@@ -25,15 +23,12 @@
       </div>
     </form>
   {% else %}
-    <form class="form-horizontal" method="post" action="{% url 'profiles:create-medical' %}" enctype='multipart/form-data'>
+    <form class="form-horizontal" method="post" action="{% url 'profiles:create-contraindications' %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
-      {{ CKD_form|crispy }}
-      {{ hypertension_form|crispy }}
-      {{ CHF_form|crispy }}
-      {{ diabetes_form|crispy }}
-      {{ organ_transplant_form|crispy }}
-      {{ urate_kidney_stones_form|crispy }}
+      {{ stroke_form|crispy }}
+      {{ heartattack_form|crispy }}
+      {{ bleed_form|crispy }}
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary">Create</button>
