@@ -4,13 +4,13 @@
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
-<div class="container default-container">
-  <main>
-    <div class="media nested-container">
+  <main class="container nested-container">
+    <div class="media default-container">
         <div class="media-body">
-          <h1 class="default-container">{{ object.username|capfirst}}</h1>
+          <h1 class="sub-default-container">{{ object.username|capfirst}}</h1>
           {% if object.patientprofile %}
-            <div class="container default-container">
+          <hr size="6" color="white">
+            <div class="container sub-default-container">
             <h2>
             <u>Profile</u>
             </h2>
@@ -73,7 +73,7 @@
                       </div>
                     {% endif %}
                   </div>
-                </div>
+          </div>
               </div>
                 {% if object.patientprofile.picture %}
                   <div class="media">
@@ -85,14 +85,13 @@
             {% else %}
             {% endif %}
     {% if object.medicalprofile %}
-      <div class="container default-container">
-        <div class="container nested-container">
-          <div class="container default-container">
+          <div class="container nested-container">
+            <div class="container default-container">
             <h2><u>Medical History</u></h2>
             <div class="row">
                 {% if object.medicalprofile.CKD.value %}
-                  <div class="col-auto"
-                    <li>{{ object.medicalprofile.CKD }}</li>
+                  <div class="col-auto">
+                    <h3>{{ object.medicalprofile.CKD }}</h3>
                     {% if object.medicalprofile.CKD.stage %}
                       <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
                     {% endif %}
@@ -102,8 +101,8 @@
                   </div>
                 {% endif %}
                 {% if object.medicalprofile.hypertension.value %}
-                  <div class="col-auto"
-                  <li>Hypertension</li>
+                  <div class="col-auto">
+                  <h3>Hypertension</h3>
                     {% if object.medicalprofile.hypertension.medication %}
                       <li>Treated with medications</li>
                     {% endif %}
@@ -111,7 +110,7 @@
                 {% endif %}
                 {% if object.medicalprofile.CHF.value %}
                   <div class="col-auto">
-                    <li>CHF (congestive heart failure)</li>
+                    <h3>CHF (congestive heart failure)</h3>
                     {% if object.medicalprofile.CHF.systolic %}
                       <li>Systolic (reduced EF / ejection fraction)</li>
                     {% endif %}
@@ -119,7 +118,7 @@
                 {% endif %}
                 {% if object.medicalprofile.diabetes.value %}
                   <div class="col-auto">
-                    <li>Diabetes</li>
+                    <h3>Diabetes</h3>
                     {% if object.medicalprofile.diabetes.type %}
                       <li>{{ object.medicalprofile.diabetes.type }}</li>
                     {% endif %}
@@ -130,7 +129,7 @@
                 {% endif %}
                 {% if object.medicalprofile.organ_transplant.value %}
                   <div class="col-auto">
-                    <li>Organ Transplant</li>
+                    <h3>Organ Transplant</h3>
                     {% if object.medicalprofile.organ_transplant.organ %}
                       <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
                     {% endif %}
@@ -138,81 +137,97 @@
                 {% endif %}
                 {% if object.medicalprofile.urate_kidney_stones.value %}
                   <div class="col-auto">
-                    <li>Urate Kidney Stones</li>
+                    <h3>Urate Kidney Stones</h3>
                   </div>
                 {% endif %}
             </div>
+          </div>
           </div>
         </div>
       </div>
     {% endif %}
     {% if object.contraindicationsprofile %}
-      <div class="container default-container">
-        <div class="container nested-container">
-          <div class="container default-container">
+          <div class="container nested-container">
+            <div class="container default-container">
             <h2><u>Contraindications</u></h2>
             <div class="row">
                 {% if object.contraindicationsprofile.stroke.value %}
-                  <div class="col-auto"
-                    <li>{{ object.contraindicationsprofile.stroke }}</li>
+                  <div class="col-auto">
+                    <h3>{{ object.contraindicationsprofile.stroke|capfirst }}</h3>
                     {% if object.contraindicationsprofile.number %}
                       <li>{{ object.contraindicationsprofile.number }} strokes</li>
                     {% endif %}
                     {% if object.contraindicationsprofile.date %}
                       <li>Date (of last): {{ object.contraindicationsprofile.date }}</li>
+                    {% else %}
+                      <li>Date of stroke not recorded</li>
                     {% endif %}
                   </div>
                 {% endif %}
                 {% if object.contraindicationsprofile.heartattack.value %}
-                  <div class="col-auto"
-                  <li>{{ object.contraindicationsprofile.heartattack }}</li>
+                  <div class="col-auto">
+                  <h3>Myocarial Infarction (MI)</h3>
                     {% if object.contraindicationsprofile.heartattack.date %}
                       <li>Date (of last): {{ object.contraindicationsprofile.heartattack.date }}</li>
+                    {% else %}
+                      <li>Date of MI not recorded</li>
                     {% endif %}
                     {% if object.contraindicationsprofile.heartattack.stent %}
-                      <li>{{ object.contraindicationsprofile.heartattack.stent }}</li>
+                      <li>Stent,
                     {% endif %}
                     {% if object.contraindicationsprofile.heartattack.stent_date %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.heartattack.stent_date }}</li>
+                      date (of last): {{ object.contraindicationsprofile.heartattack.stent_date }}</li>
+                    {% else %}
+                      date not recorded</li>
                     {% endif %}
                     {% if object.contraindicationsprofile.heartattack.cabg %}
-                      <li>{{ object.contraindicationsprofile.heartattack.cabg }}</li>
+                      <li>Coronary artery bypass grafting (CABG),
                     {% endif %}
                     {% if object.contraindicationsprofile.heartattack.cabg_date %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.heartattack.cabg_date }}</li>
+                      <li>date: {{ object.contraindicationsprofile.heartattack.cabg_date }}</li>
+                    {% else %}
+                        date not recorded</li>
                     {% endif %}
                   </div>
                 {% endif %}
                 {% if object.contraindicationsprofile.bleed.value %}
-                  <div class="col-auto"
-                  <li>{{ object.contraindicationsprofile.bleed }}</li>
+                  <div class="col-auto">
+                  <h3>Major Bleed</h3>
                     {% if object.contraindicationsprofile.bleed.date %}
                       <li>Date (of last): {{ object.contraindicationsprofile.bleed.date }}</li>
+                    {% else %}
+                      <li>Date of major bleed not recorded</li>
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.GIB %}
-                      <li>{{ object.contraindicationsprofile.bleed.GIB }}</li>
+                      <li>Gastrointestinal (GI) bleed,
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.GIB_date %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.bleed.GIB_date }}</li>
+                      ate : {{ object.contraindicationsprofile.bleed.GIB_date }}
+                    {% else %}
+                      date not recorded</li>
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.CNS %}
-                      <li>{{ object.contraindicationsprofile.bleed.CNS }}</li>
+                      <li>Intracranial bleed,
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.CNS_date %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.bleed.CNS_date }}</li>
+                      date: {{ object.contraindicationsprofile.bleed.CNS_date }}</li>
+                    {% else %}
+                      date not recorded
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.transfusion %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.bleed.transfusion }}</li>
+                      <li>Required transfusion for bleeding</li>
                     {% endif %}
                   </div>
                 {% endif %}
             </div>
           </div>
+          </div>
         </div>
       </div>
-      {% endif %}
-    </main>
+    {% endif %}
+  </main>
   <footer>
+    <div class="container">
     {% if object == request.user %}
       <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button">My Info</a>
       <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
@@ -232,7 +247,6 @@
       <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-contraindications' %}" role="button">Contraindications</a>
       {% endif %}
     {% endif %}
+    </div>
   </footer>
-  </div>
-
 {% endblock content %}

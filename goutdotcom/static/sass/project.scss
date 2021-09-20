@@ -14,6 +14,7 @@
   --main-nested-container-border-color: rgb(1, 14, 20);
   --main-nested-container-box-shadow: 10px 10px 5px rgb(240, 255, 29);
   --main-nested-container-padding: 5px;
+  --main-master-sub-container-border-color: white;
 }
 
 body {
@@ -50,6 +51,12 @@ body {
   background-color: var(--main-master-container-background-color);
 }
 
+.sub-default-container {
+  color: rgb(231, 231, 231);
+  padding: var(--main-master-container-padding);
+  background-color: var(--main-master-container-background-color);
+}
+
 .hyperlink:hover {
   color: black;
 }
@@ -62,6 +69,7 @@ body {
   color: rgb(231, 231, 231);
   padding: var(--main-nested-container-padding);
 }
+
 
 .list-items-small {
   background: var(--main-nested-container-background);

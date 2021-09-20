@@ -13,7 +13,8 @@
   --main-nested-container-border-width: medium;
   --main-nested-container-border-color: rgb(1, 14, 20);
   --main-nested-container-box-shadow: 10px 10px 5px rgb(240, 255, 29);
-  --main-nested-container-padding: 5px; }
+  --main-nested-container-padding: 5px;
+  --main-master-sub-container-border-color: white; }
 
 body {
   background: var(--main-background); }
@@ -39,6 +40,11 @@ body {
   border-style: var(--main-master-container-border-style);
   border-width: var(--main-master-container-border-width);
   border-color: var(--main-master-container-border-color);
+  color: #e7e7e7;
+  padding: var(--main-master-container-padding);
+  background-color: var(--main-master-container-background-color); }
+
+.sub-default-container {
   color: #e7e7e7;
   padding: var(--main-master-container-padding);
   background-color: var(--main-master-container-background-color); }

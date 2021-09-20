@@ -1,6 +1,7 @@
 /* Project specific Javascript goes here. */
 
 /* Profiles app JS */
+/* MedicalProfile model JS */
 // function that searches for each MedicalProfile related 1to1 CKD model and hides, empties subfields if the value is empty //
 function medical_profile_ckd() {
   if ($('#id_CKD-value').val() == '') {
@@ -93,6 +94,87 @@ function medical_profile_organ_transplant() {
   }
   else {
       $('#div_id_organ_transplant-organ').show();
+  }
+}
+
+/* Contraindication model JS */
+// function that searches for each MedicalProfile related 1to1 Stroke model and hides, empties subfields if the value is empty //
+function contraindications_profile_stroke() {
+  if ($('#id_stroke-value').val() == '') {
+      $('#div_id_stroke-number').hide();
+      $('#id_stroke-number').val('');
+      $('#div_id_stroke-date').hide();
+      $('#id_stroke-date').val('');
+  }
+  else if ($('#id_stroke-value').val() == 'False') {
+      $('#div_id_stroke-number').hide();
+      $('#id_stroke-number').val('');
+      $('#div_id_stroke-date').hide();
+      $('#id_stroke-date').val('');
+  }
+  else {
+      $('#div_id_stroke-number').show();
+      $('#div_id_stroke-date').show();
+  }
+}
+
+// function that searches for each MedicalProfile related 1to1 HeartAttack model and hides, empties subfields if the value is empty //
+function contraindications_profile_heartattack() {
+  if ($('#id_heartattack-value').val() == '') {
+      $('#div_id_heartattack-number').hide();
+      $('#id_heartattack-number').val('');
+      $('#div_id_heartattack-date').hide();
+      $('#id_heartattack-date').val('');
+      $('#div_id_heartattack-stent').hide();
+      $('#id_heartattack-stent').val('');
+      $('#div_id_heartattack-stent_date').hide();
+      $('#id_heartattack-stent_date').val('');
+      $('#div_id_heartattack-cabg').hide();
+      $('#id_heartattack-cabg').val('');
+      $('#div_id_heartattack-cabg_date').hide();
+      $('#id_heartattack-cabg_date').val('');
+  }
+  else if ($('#id_heartattack-value').val() == 'False') {
+      $('#div_id_heartattack-number').hide();
+      $('#id_heartattack-number').val('');
+      $('#div_id_heartattack-date').hide();
+      $('#id_heartattack-date').val('');
+      $('#div_id_heartattack-stent').hide();
+      $('#id_heartattack-stent').val('');
+      $('#div_id_heartattack-stent_date').hide();
+      $('#id_heartattack-stent_date').val('');
+      $('#div_id_heartattack-cabg').hide();
+      $('#id_heartattack-cabg').val('');
+      $('#div_id_heartattack-cabg_date').hide();
+      $('#id_heartattack-cabg_date').val('');
+  }
+  else {
+      $('#div_id_heartattack-number').show();
+      $('#div_id_heartattack-date').show();
+      $('#div_id_heartattack-stent').show();
+      $('#div_id_heartattack-cabg').show();
+      if ($('#id_heartattack-stent').val() == 'True') {
+        $('#div_id_heartattack-stent_date').show();
+      }
+      else if ($('#id_heartattack-stent').val() == 'False') {
+        $('#div_id_heartattack-stent_date').hide();
+        $('#id_heartattack-stent_date').val('');
+      }
+      else if ($('#id_heartattack-stent').val() == '') {
+        $('#div_id_heartattack-stent_date').hide();
+        $('#id_heartattack-stent_date').val('');
+      }
+      if ($('#id_heartattack-cabg').val() == 'True') {
+        $('#div_id_heartattack-cabg_date').show();
+      }
+      else if ($('#id_heartattack-cabg').val() == 'False') {
+        $('#div_id_heartattack-cabg_date').hide();
+        $('#id_heartattack-cabg_date').val('');
+      }
+      else if ($('#id_heartattack-cabg').val() == '') {
+        $('#div_id_heartattack-cabg_date').hide();
+        $('#id_heartattack-cabg_date').val('');
+      }
   }
 }
 

@@ -238,14 +238,18 @@ class HeartAttack(VascularHistory):
         null=True,
         blank=True,
     )
-    stent = BooleanField(choices=BOOL_CHOICES, help_text="Have you had stents placed?", null=True, blank=True)
+    stent = BooleanField(
+        choices=BOOL_CHOICES, help_text="Have you had stents placed?", verbose_name="stent", null=True, blank=True
+    )
     stent_date = models.DateTimeField(
         help_text="When was the last time you has a stent?",
         default=timezone.now,
         null=True,
         blank=True,
     )
-    cabg = BooleanField(choices=BOOL_CHOICES, help_text="Have you had bypass?", null=True, blank=True)
+    cabg = BooleanField(
+        choices=BOOL_CHOICES, help_text="Have you had bypass?", verbose_name="cabg", null=True, blank=True
+    )
     cabg_date = models.DateTimeField(
         help_text="When did you have a bypass?",
         default=timezone.now,
@@ -256,7 +260,7 @@ class HeartAttack(VascularHistory):
 
 
 class Bleed(VascularHistory):
-    name = "major bleed"
+    name = "bleed"
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=("Have you ever had a " + name + "?"),
