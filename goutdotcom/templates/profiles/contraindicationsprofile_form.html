@@ -48,7 +48,7 @@ $(document).ready(function() {
   contraindications_profile_heartattack();
 });
 $(document).ready(function() {
-  medical_profile_CHF();
+  contraindications_profile_bleed();
 });
 // functions to run when form field is changed
 $(document).ready(function() {
@@ -63,8 +63,8 @@ $(document).ready(function() {
 });
 $(document).ready(function() {
   // toggles CHF subfields when CHF is changed
-  $('#id_CHF-value').change(medical_profile_CHF);
-  medical_profile_CHF.call($('#id_CHF-value').get(0));
+  $('#id_bleed-value').change(contraindications_profile_bleed);
+  contraindications_profile_bleed.call($('#id_bleed-value').get(0));
 });
 </script>
 {% endblock inline_javascript %}

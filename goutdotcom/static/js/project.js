@@ -118,7 +118,7 @@ function contraindications_profile_stroke() {
   }
 }
 
-// function that searches for each MedicalProfile related 1to1 HeartAttack model and hides, empties subfields if the value is empty //
+// function that searches for each Contraindications related 1to1 HeartAttack model and hides, empties subfields if the value is empty //
 function contraindications_profile_heartattack() {
   if ($('#id_heartattack-value').val() == '') {
       $('#div_id_heartattack-number').hide();
@@ -178,6 +178,50 @@ function contraindications_profile_heartattack() {
   }
 }
 
+// function that searches for each Contraindications related 1to1 Bleed model and hides, empties subfields if the value is empty //
+function contraindications_profile_bleed() {
+  if ($('#id_bleed-value').val() == '') {
+      $('#div_id_bleed-number').hide();
+      $('#id_bleed-number').val('');
+      $('#div_id_bleed-date').hide();
+      $('#id_bleed-date').val('');
+      $('#div_id_bleed-GIB').hide();
+      $('#id_bleed-GIB').val('');
+      $('#div_id_bleed-GIB_date').hide();
+      $('#id_bleed-GIB_date').val('');
+      $('#div_id_bleed-CNS').hide();
+      $('#id_bleed-CNS').val('');
+      $('#div_id_bleed-CNS_date').hide();
+      $('#id_bleed-CNS_date').val('');
+      $('#div_id_bleed-transfusion').hide();
+      $('#id_bleed-transfusion').val('');
+  }
+  else if ($('#id_heartattack-value').val() == 'False') {
+      $('#div_id_bleed-number').hide();
+      $('#id_bleed-number').val('');
+      $('#div_id_bleed-date').hide();
+      $('#id_bleed-date').val('');
+      $('#div_id_bleed-GIB').hide();
+      $('#id_bleed-GIB').val('');
+      $('#div_id_bleed-GIB_date').hide();
+      $('#id_bleed-GIB_date').val('');
+      $('#div_id_bleed-CNS').hide();
+      $('#id_bleed-CNS').val('');
+      $('#div_id_bleed-CNS_date').hide();
+      $('#id_bleed-CNS_date').val('');
+      $('#div_id_bleed-transfusion').hide();
+      $('#id_bleed-transfusion').val('');
+  }
+  else {
+      $('#div_id_bleed-number').show();
+      $('#div_id_bleed-date').show();
+      $('#div_id_bleed-GIB').show();
+      $('#div_id_bleed-GIB_date').show();
+      $('#div_id_bleed-CNS').show();
+      $('#div_id_bleed-CNS_date').show();
+      $('#div_id_bleed-transfusion').show();
+  }
+}
 /* ULT app JS */
 
 // function that hides/shows subsequent fields based upon first_flare value
