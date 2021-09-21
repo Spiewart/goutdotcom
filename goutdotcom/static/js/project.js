@@ -124,59 +124,65 @@ function contraindications_profile_heartattack() {
       $('#div_id_heartattack-number').hide();
       $('#id_heartattack-number').val('');
       $('#div_id_heartattack-date').hide();
-      $('#id_heartattack-date').val('');
+      $('#heartattack_date.pk').val('');
       $('#div_id_heartattack-stent').hide();
       $('#id_heartattack-stent').val('');
       $('#div_id_heartattack-stent_date').hide();
-      $('#id_heartattack-stent_date').val('');
+      $('#stent_date.pk').val('');
       $('#div_id_heartattack-cabg').hide();
       $('#id_heartattack-cabg').val('');
       $('#div_id_heartattack-cabg_date').hide();
-      $('#id_heartattack-cabg_date').val('');
+      $('#cabg_date.pk').val('');
   }
   else if ($('#id_heartattack-value').val() == 'False') {
       $('#div_id_heartattack-number').hide();
       $('#id_heartattack-number').val('');
       $('#div_id_heartattack-date').hide();
-      $('#id_heartattack-date').val('');
+      $('#heartattack_date.pk').val('').attr('type', 'text').attr('type', 'date');
       $('#div_id_heartattack-stent').hide();
       $('#id_heartattack-stent').val('');
       $('#div_id_heartattack-stent_date').hide();
-      $('#id_heartattack-stent_date').val('');
+      $('#stent_date.pk').val('');
       $('#div_id_heartattack-cabg').hide();
       $('#id_heartattack-cabg').val('');
       $('#div_id_heartattack-cabg_date').hide();
-      $('#id_heartattack-cabg_date').val('');
+      $('#cabg_date.pk').val('');
   }
   else {
       $('#div_id_heartattack-number').show();
       $('#div_id_heartattack-date').show();
       $('#div_id_heartattack-stent').show();
       $('#div_id_heartattack-cabg').show();
-      if ($('#id_heartattack-stent').val() == 'True') {
-        $('#div_id_heartattack-stent_date').show();
-      }
-      else if ($('#id_heartattack-stent').val() == 'False') {
-        $('#div_id_heartattack-stent_date').hide();
-        $('#id_heartattack-stent_date').val('');
-      }
-      else if ($('#id_heartattack-stent').val() == '') {
-        $('#div_id_heartattack-stent_date').hide();
-        $('#id_heartattack-stent_date').val('');
-      }
-      if ($('#id_heartattack-cabg').val() == 'True') {
-        $('#div_id_heartattack-cabg_date').show();
-      }
-      else if ($('#id_heartattack-cabg').val() == 'False') {
-        $('#div_id_heartattack-cabg_date').hide();
-        $('#id_heartattack-cabg_date').val('');
-      }
-      else if ($('#id_heartattack-cabg').val() == '') {
-        $('#div_id_heartattack-cabg_date').hide();
-        $('#id_heartattack-cabg_date').val('');
-      }
   }
 }
+
+function contraindications_profile_stent() {
+  if ($('#id_heartattack-stent').val() == 'True') {
+        $('#div_id_heartattack-stent_date').show();
+      }
+  else if ($('#id_heartattack-stent').val() == 'False') {
+        $('#div_id_heartattack-stent_date').hide();
+        $('#id_heartattack-stent_date.pk').val('');
+      }
+  else if ($('#id_heartattack-stent').val() == '') {
+        $('#div_id_heartattack-stent_date').hide();
+        $('#id_heartattack-stent_date.pk').val('');
+      }
+  }
+
+function contraindications_profile_cabg() {
+  if ($('#id_heartattack-cabg').val() == 'True') {
+        $('#div_id_heartattack-cabg_date').show();
+      }
+  else if ($('#id_heartattack-cabg').val() == 'False') {
+    $('#div_id_heartattack-cabg_date').hide();
+    $('#cabg_date.pk').val('');
+      }
+  else if ($('#id_heartattack-cabg').val() == '') {
+    $('#div_id_heartattack-cabg_date').hide();
+    $('#-cabg_date.pk').val('');
+      }
+  }
 
 // function that searches for each Contraindications related 1to1 Bleed model and hides, empties subfields if the value is empty //
 function contraindications_profile_bleed() {
@@ -196,7 +202,7 @@ function contraindications_profile_bleed() {
       $('#div_id_bleed-transfusion').hide();
       $('#id_bleed-transfusion').val('');
   }
-  else if ($('#id_heartattack-value').val() == 'False') {
+  else if ($('#id_bleed-value').val() == 'False') {
       $('#div_id_bleed-number').hide();
       $('#id_bleed-number').val('');
       $('#div_id_bleed-date').hide();

@@ -50,6 +50,12 @@ $(document).ready(function() {
 $(document).ready(function() {
   contraindications_profile_bleed();
 });
+$(document).ready(function() {
+  contraindications_profile_stent();
+});
+$(document).ready(function() {
+  contraindications_profile_cabg();
+});
 // functions to run when form field is changed
 $(document).ready(function() {
   // toggles Stroke subfields when Stroke is changed
@@ -65,6 +71,16 @@ $(document).ready(function() {
   // toggles CHF subfields when CHF is changed
   $('#id_bleed-value').change(contraindications_profile_bleed);
   contraindications_profile_bleed.call($('#id_bleed-value').get(0));
+});
+$(document).ready(function() {
+  // toggles CHF subfields when CHF is changed
+  $('#id_heartattack-stent').change(contraindications_profile_stent);
+  contraindications_profile_stent.call($('#id_heartattack-stent').get(0));
+});
+$(document).ready(function() {
+  // toggles CHF subfields when CHF is changed
+  $('#id_heartattack-cabg').change(contraindications_profile_cabg);
+  contraindications_profile_cabg.call($('#id_heartattack-cabg').get(0));
 });
 </script>
 {% endblock inline_javascript %}
