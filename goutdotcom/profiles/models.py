@@ -26,6 +26,43 @@ from goutdotcom.vitals.models import Height, Weight
 
 
 # Create your models here.
+class ContraindicationsProfile(TimeStampedModel):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    contraindication = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Have you ever had a heart stroke, heart attack, or major bleeding event?",
+        null=True,
+        blank=True,
+    )
+    stroke = models.OneToOneField(
+        Stroke,
+        on_delete=models.CASCADE,
+        help_text="Have you had a stroke?",
+        null=True,
+        blank=True,
+    )
+    heartattack = models.OneToOneField(
+        HeartAttack,
+        on_delete=models.CASCADE,
+        help_text="Have you had a heart attack?",
+        null=True,
+        blank=True,
+    )
+    bleed = models.OneToOneField(
+        Bleed,
+        on_delete=models.CASCADE,
+        help_text="Have you had a major bleeding event?",
+        null=True,
+        blank=True,
+    )
+
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"username": self.user_username})
+
+
 class PatientProfile(TimeStampedModel):
     # Default User profile
     # If you do this you need to either have a post_save signal or redirect to a profile_edit view on initial login
@@ -156,43 +193,6 @@ class SocialProfile(TimeStampedModel):
         Shellfish,
         on_delete=models.CASCADE,
         help_text="Do you eat a lot of shellfish?",
-        null=True,
-        blank=True,
-    )
-
-    def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.user_username})
-
-
-class ContraindicationsProfile(TimeStampedModel):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
-    contraindication = BooleanField(
-        choices=BOOL_CHOICES,
-        help_text="Have you ever had a heart stroke, heart attack, or major bleeding event?",
-        null=True,
-        blank=True,
-    )
-    stroke = models.OneToOneField(
-        Stroke,
-        on_delete=models.CASCADE,
-        help_text="Have you had a stroke?",
-        null=True,
-        blank=True,
-    )
-    heartattack = models.OneToOneField(
-        HeartAttack,
-        on_delete=models.CASCADE,
-        help_text="Have you had a heart attack?",
-        null=True,
-        blank=True,
-    )
-    bleed = models.OneToOneField(
-        Bleed,
-        on_delete=models.CASCADE,
-        help_text="Have you had a major bleeding event?",
         null=True,
         blank=True,
     )
