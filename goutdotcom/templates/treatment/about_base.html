@@ -25,7 +25,7 @@
                 <hr size="6" color="white">
                 {% block quicklinks %}
                   <h2>Quick Links</h2>
-                  <ol>
+                  <ol id="quicklinks">
                       <li><a href="#biology">Biology</a></li>
                       <li><a href="#pharmacology">Pharmacology</a></li>
                       {% block extraquicklinks %}{% endblock extraquicklinks %}
@@ -43,14 +43,14 @@
                 <hr size="6" color="white">
                 {% block dosing %}{% endblock dosing %}
                 {% block sideeffects %}{% endblock sideeffects %}
-                {% block history %}{% endblock history %}
                 <h2 class="nested-container"><a id="history">History</a></h2>
+                {% block history %}{% endblock history %}
                 <hr size="6" color="white">
-                {% block ingout %}{% endblock ingout %}
                 <h2 class="nested-container"><a id="ingout">In Gout</a></h2>
+                {% block ingout %}{% endblock ingout %}
                 <hr size="6" color="white">
-                {% block references %}{% endblock references %}
                 <h2 class="nested-container"><a id="references">References</a></h2>
+                {% block references %}{% endblock references %}
                 <u><a href="#{{ lab }}">Back to Top</a></u>
             </div>
         </div>

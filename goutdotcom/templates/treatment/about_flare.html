@@ -30,3 +30,14 @@ Treatments for gout flares are effective.
   <p><a href="{% url 'treatment:about-corticosteroids' %}">Corticosteroids</a> are derivatives of the human body's naturally-occurring <a href="https://en.wikipedia.org/wiki/Hormone" target="_blank">hormone</a> <a href="https://en.wikipedia.org/wiki/Cortisol" target="_blank">cortisol</a>
   In pharmaceutical forms, they can be given in formulations and doses that are much more potent than what our body typically produces.
 {% endblock pharmacology %}
+
+{% block history %}
+<p>Like gout, the description of gout treatment is almost as old as humanity itself. <a href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a>, via the autumn crocus (<a href="https://en.wikipedia.org/wiki/Microtubule" target="_blank">Colchicum autumnale</a>) was used by the Greeks in the sixth century AD for treatment of gout (<a href="#1">1</a>). </p>
+<p>Non-steroidal anti-inflammatory drugs (<a href="{% url 'treatment:ibprofen' 'ibuprofen' %}">Colchicine</a>) were developed in the 1950's and 1960's. </p>
+{% endblock history %}
+
+{% block references %}
+  <ol>
+    <li id=1>Copeman, W. S. C.. "CHAPTER III. The Story of Colchicum". A Short History of the Gout and the Rheumatic Diseases, Berkeley: University of California Press, 1964, pp. 38-47. <a href="https://doi.org/10.1525/9780520339484-005" target="_blank">https://doi.org/10.1525/9780520339484-005</a></li>
+  </ol>
+{% endblock references %}

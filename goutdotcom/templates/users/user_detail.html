@@ -174,19 +174,19 @@
                     {% endif %}
                     {% if object.contraindicationsprofile.heartattack.stent %}
                       <li>Stent,
-                    {% endif %}
-                    {% if object.contraindicationsprofile.heartattack.stent_date %}
-                      date (of last): {{ object.contraindicationsprofile.heartattack.stent_date }}</li>
-                    {% else %}
-                      date not recorded</li>
+                      {% if object.contraindicationsprofile.heartattack.stent_date %}
+                        date (of last): {{ object.contraindicationsprofile.heartattack.stent_date }}</li>
+                      {% else %}
+                        date not recorded</li>
+                      {% endif %}
                     {% endif %}
                     {% if object.contraindicationsprofile.heartattack.cabg %}
                       <li>Coronary artery bypass grafting (CABG),
-                    {% endif %}
-                    {% if object.contraindicationsprofile.heartattack.cabg_date %}
-                      <li>date: {{ object.contraindicationsprofile.heartattack.cabg_date }}</li>
-                    {% else %}
-                        date not recorded</li>
+                      {% if object.contraindicationsprofile.heartattack.cabg_date %}
+                        <li>date: {{ object.contraindicationsprofile.heartattack.cabg_date }}</li>
+                      {% else %}
+                          date not recorded</li>
+                      {% endif %}
                     {% endif %}
                   </div>
                 {% endif %}
@@ -200,19 +200,19 @@
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.GIB %}
                       <li>Gastrointestinal (GI) bleed,
-                    {% endif %}
-                    {% if object.contraindicationsprofile.bleed.GIB_date %}
-                      ate : {{ object.contraindicationsprofile.bleed.GIB_date }}
-                    {% else %}
-                      date not recorded</li>
+                      {% if object.contraindicationsprofile.bleed.GIB_date %}
+                        ate : {{ object.contraindicationsprofile.bleed.GIB_date }}
+                      {% else %}
+                        date not recorded</li>
+                      {% endif %}
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.CNS %}
                       <li>Intracranial bleed,
-                    {% endif %}
-                    {% if object.contraindicationsprofile.bleed.CNS_date %}
-                      date: {{ object.contraindicationsprofile.bleed.CNS_date }}</li>
-                    {% else %}
-                      date not recorded
+                      {% if object.contraindicationsprofile.bleed.CNS_date %}
+                        date: {{ object.contraindicationsprofile.bleed.CNS_date }}</li>
+                      {% else %}
+                        date not recorded
+                      {% endif %}
                     {% endif %}
                     {% if object.contraindicationsprofile.bleed.transfusion %}
                       <li>Required transfusion for bleeding</li>
