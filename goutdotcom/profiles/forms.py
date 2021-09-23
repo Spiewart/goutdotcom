@@ -5,7 +5,13 @@ from crispy_forms.layout import Fieldset, Layout
 from datetimewidget.widgets import DateWidget
 from django import forms
 
-from .models import ContraindicationsProfile, FamilyProfile, MedicalProfile, PatientProfile, SocialProfile
+from .models import (
+    ContraindicationsProfile,
+    FamilyProfile,
+    MedicalProfile,
+    PatientProfile,
+    SocialProfile,
+)
 
 
 class ContraindicationsProfileForm(forms.ModelForm):
@@ -29,13 +35,14 @@ class ContraindicationsProfileForm(forms.ModelForm):
             ),
         )
 
+
 class FamilyProfileForm(forms.ModelForm):
     class Meta:
         model = FamilyProfile
         fields = ()
 
     def __init__(self, *args, **kwargs):
-        super(MedicalProfileForm, self).__init__(*args, **kwargs)
+        super(FamilyProfileForm, self).__init__(*args, **kwargs)
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
@@ -48,6 +55,7 @@ class FamilyProfileForm(forms.ModelForm):
                 "Log your family history",
             ),
         )
+
 
 class MedicalProfileForm(forms.ModelForm):
     class Meta:
@@ -110,13 +118,14 @@ class PatientProfileForm(forms.ModelForm):
             ),
         )
 
+
 class SocialProfileForm(forms.ModelForm):
     class Meta:
         model = SocialProfile
         fields = ()
 
     def __init__(self, *args, **kwargs):
-        super(MedicalProfileForm, self).__init__(*args, **kwargs)
+        super(SocialProfileForm, self).__init__(*args, **kwargs)
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields

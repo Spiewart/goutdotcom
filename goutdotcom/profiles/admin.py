@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import ContraindicationsProfile, MedicalProfile, PatientProfile
+from .models import (
+    ContraindicationsProfile,
+    MedicalProfile,
+    PatientProfile,
+    SocialProfile,
+)
 
 
 # Register your models here.
@@ -39,6 +44,16 @@ class PatientProfileAdmin(admin.ModelAdmin):
     )
 
 
+class SocialProfileAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "alcohol",
+        "fructose",
+        "shellfish",
+    )
+
+
 admin.site.register(ContraindicationsProfile, ContraindicationsProfileAdmin)
 admin.site.register(MedicalProfile, MedicalProfileAdmin)
 admin.site.register(PatientProfile, PatientProfileAdmin)
+admin.site.register(SocialProfile, SocialProfileAdmin)

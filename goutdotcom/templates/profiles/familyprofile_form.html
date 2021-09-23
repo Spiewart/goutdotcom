@@ -1,0 +1,40 @@
+{% extends "base_form.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.username|capfirst }}'s Family History{% endblock title %}
+
+{% block header %}
+<h1 class="nested-container">{{ user.username|capfirst }}'s Family History</h1>
+{% endblock header %}
+
+{% block form %}
+  {% if form.instance.pk %}
+    <form class="form-horizontal" method="post" action="{% url 'profiles:update-family' request.user object.pk %}" enctype='multipart/form-data'>
+      {% csrf_token %}
+      {{ form|crispy }}
+      {{ gout_form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary btn-lg">Update</button>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <form class="form-horizontal" method="post" action="{% url 'profiles:create-family' %}" enctype='multipart/form-data'>
+      {% csrf_token %}
+      {{ form|crispy }}
+      {{ gout_form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </form>
+  {% endif %}
+{% endblock form %}
+
+{% block inline_javascript %}
+<script>
+
+</script>
+{% endblock inline_javascript %}

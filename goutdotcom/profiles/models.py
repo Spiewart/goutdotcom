@@ -13,6 +13,7 @@ from goutdotcom.history.models import (
     Bleed,
     Diabetes,
     Fructose,
+    Gout,
     HeartAttack,
     Hypertension,
     OrganTransplant,
@@ -57,6 +58,19 @@ class ContraindicationsProfile(TimeStampedModel):
         help_text="Have you had a major bleeding event?",
         null=True,
         blank=True,
+    )
+
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"username": self.user_username})
+
+
+class FamilyProfile(TimeStampedModel):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    gout = models.OneToOneField(
+        Gout, on_delete=models.CASCADE, help_text="Do you have a family history of gout?", null=True, blank=True
     )
 
     def get_absolute_url(self):

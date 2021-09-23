@@ -1,0 +1,44 @@
+{% extends "base_form.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.username|capfirst }}'s Social History Update{% endblock title %}
+
+{% block header %}
+<h1 class="nested-container">{{ user.username|capfirst }}'s Social History</h1>
+{% endblock header %}
+
+{% block form %}
+{% if form.instance.pk %}
+<form class="form-horizontal" method="post" action="{% url 'profiles:update-social' request.user object.pk %}"
+  enctype='multipart/form-data'>
+  {% csrf_token %}
+  {{ form|crispy }}
+  {{ alcohol_form|crispy }}
+  {{ fructose_form|crispy }}
+  {{ shellfish_form|crispy }}
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn btn-primary btn-lg">Update</button>
+    </div>
+  </div>
+</form>
+{% else %}
+<form class="form-horizontal" method="post" action="{% url 'profiles:create-social' %}" enctype='multipart/form-data'>
+  {% csrf_token %}
+  {{ form|crispy }}
+  {{ alcohol_form|crispy }}
+  {{ fructose_form|crispy }}
+  {{ shellfish_form|crispy }}
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+  </div>
+</form>
+{% endif %}
+{% endblock form %}
+
+{% block inline_javascript %}
+<script>
+</script>
+{% endblock inline_javascript %}

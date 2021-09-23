@@ -309,6 +309,7 @@ class Fructose(SocialHistory):
         help_text="Do you eat a lot of fructose such as the sugar found in soda/pop, processed candies, or juices?",
         null=True,
         blank=True,
+        verbose_name="fructose",
     )
     name = "fructose"
 
@@ -319,6 +320,7 @@ class Shellfish(SocialHistory):
         help_text="Do you eat a lot of shellfish?",
         null=True,
         blank=True,
+        verbose_name="shellfish",
     )
     name = "shellfish"
 
