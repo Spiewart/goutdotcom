@@ -13,10 +13,12 @@ from .models import (
     Cyclosporine,
     Diabetes,
     Diuretics,
+    Fructose,
     Gout,
     HeartAttack,
     Hypertension,
     OrganTransplant,
+    Shellfish,
     Stroke,
     UrateKidneyStones,
     XOIInteractions,
@@ -291,4 +293,94 @@ class BleedForm(forms.ModelForm):
                 "transfusion",
                 id="bleed_for_contraindications",
             ),
+        )
+
+
+### Family History Forms ###
+
+
+class GoutForm(forms.ModelForm):
+    prefix = "gout"
+
+    class Meta:
+        model = Gout
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(GoutForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Gout", "value", id="gout_for_profile"),
+        )
+
+
+### Social History Forms ###
+class AlcoholForm(forms.ModelForm):
+    prefix = "alcohol"
+
+    class Meta:
+        model = Alcohol
+        fields = (
+            "value",
+            "number",
+            "wine",
+            "beer",
+            "liquor",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(AlcoholForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Alcohol", "value", "number", "wine", "beer", "liquor", id="alcohol_for_profile"),
+        )
+
+
+class FructoseForm(forms.ModelForm):
+    prefix = "fructose"
+
+    class Meta:
+        model = Fructose
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(FructoseForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Fructose", "value", id="fructose_for_profile"),
+        )
+
+
+class ShellfishForm(forms.ModelForm):
+    prefix = "shellfish"
+
+    class Meta:
+        model = Shellfish
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(ShellfishForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Shellfish", "value", id="shellfish_for_profile"),
         )

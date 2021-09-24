@@ -4,249 +4,274 @@
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
-  <main class="container nested-container">
-    <div class="media default-container">
-        <div class="media-body">
-          <h1 class="sub-default-container">{{ object.username|capfirst}}</h1>
-          {% if object.patientprofile %}
-          <hr size="6" color="white">
-            <div class="container sub-default-container">
-            <h2>
-            <u>Profile</u>
-            </h2>
-              {% if object.patientprofile.bio %}
-                <h3>Bio</h3>
-                <p>{{ object.patientprofile.bio }}</p>
-              {% else %}
-                <h3>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h3>
-              {% endif %}
-              <hr size="6" color="white">
-              <h3>Demographics</h3>
-                  <div class="row">
-                    {% if object.name %}
-                      <div class="col-auto">
-                        <li>{{ object.name }}</li>
-                      </div>
-                    {% endif %}
-                    {% if object.patientprofile.date_of_birth %}
-                      <div class="col-auto">
-                        <li>Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
-                      </div>
-                    {% endif %}
-                    {% if object.patientprofile.date_of_birth %}
-                      <div class="col-auto">
-                        <li>Age: {{ object.patientprofile.get_age }}</li>
-                      </div>
-                    {% endif %}
-                  </div>
-                  <div class="row">
-                    {% if object.patientprofile.gender %}
-                      <div class="col-auto">
-                        <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
-                      </div>
-                    {% endif %}
-                    {% if object.patientprofile.race %}
-                      <div class="col=auto">
-                        <li>Race: {{ object.patientprofile.race|capfirst }}</li>
-                      </div>
-                    {% endif %}
-                    {% if object.patientprofile.drinks_per_week %}
-                      <div class="col-auto">
-                        <li>Drinks / Week: {{ object.patientprofile.drinks_per_week }}</li>
-                      </div>
-                    {% endif %}
-                  </div>
-                  <div class="row">
-                    {% if object.patientprofile.weight.value %}
-                      <div class="col-auto">
-                        <li><a href="{% url 'vitals:list' 'weight' %}">Weight: </a><a href="{% url 'vitals:detail' 'weight' object.patientprofile.weight.pk %}">{{ object.patientprofile.weight }}</a></li>
-                      </div>
-                    {% endif %}
-                    {% if object.patientprofile.height.value %}
-                      <div class="col-auto">
-                        <li><a href="{% url 'vitals:list' 'height' %}">Height: </a><a href="{% url 'vitals:detail' 'height' object.patientprofile.height.pk %}">{{ object.patientprofile.height }}</a></li>
-                      </div>
-                    {% endif %}
-                    {% if object.patientprofile.weight and object.patientprofile.height %}
-                      <div class="col-auto">
-                        <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
-                      </div>
-                    {% endif %}
-                  </div>
+<main class="container nested-container">
+  <div class="media default-container">
+    <div class="media-body">
+      <h1 class="sub-default-container">{{ object.username|capfirst}}</h1>
+      {% if object.patientprofile %}
+      <hr size="6" color="white">
+      <div class="container sub-default-container">
+        <h2>
+          <u>Profile</u>
+        </h2>
+        {% if object.patientprofile.bio %}
+        <h3>Bio</h3>
+        <p>{{ object.patientprofile.bio }}</p>
+        {% else %}
+        <h3>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h3>
+        {% endif %}
+        <hr size="6" color="white">
+        <h3>Demographics</h3>
+        <div class="row">
+          {% if object.name %}
+          <div class="col-auto">
+            <li>{{ object.name }}</li>
           </div>
-              </div>
-                {% if object.patientprofile.picture %}
-                  <div class="media">
-                  <img src="{{ object.patientprofile.picture.url }}" id="profilepic" width="250" height="250" alt="{{ object.username|capfirst }}'s Picture">
-                  </div>
-                {% endif %}
-              </div>
-              </div>
-            {% else %}
-            {% endif %}
-    {% if object.medicalprofile %}
-          <div class="container nested-container">
-            <div class="container default-container">
-            <h2><u>Medical History</u></h2>
-            <div class="row">
-                {% if object.medicalprofile.CKD.value %}
-                  <div class="col-auto">
-                    <h3>{{ object.medicalprofile.CKD }}</h3>
-                    {% if object.medicalprofile.CKD.stage %}
-                      <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
-                    {% endif %}
-                    {% if object.medicalprofile.ckd.dialysis %}
-                      <li>{{ object.medicalprofile.ckd.dialysis }}</li>
-                    {% endif %}
-                  </div>
-                {% endif %}
-                {% if object.medicalprofile.hypertension.value %}
-                  <div class="col-auto">
-                  <h3>Hypertension</h3>
-                    {% if object.medicalprofile.hypertension.medication %}
-                      <li>Treated with medications</li>
-                    {% endif %}
-                  </div>
-                {% endif %}
-                {% if object.medicalprofile.CHF.value %}
-                  <div class="col-auto">
-                    <h3>CHF (congestive heart failure)</h3>
-                    {% if object.medicalprofile.CHF.systolic %}
-                      <li>Systolic (reduced EF / ejection fraction)</li>
-                    {% endif %}
-                  </div>
-                {% endif %}
-                {% if object.medicalprofile.diabetes.value %}
-                  <div class="col-auto">
-                    <h3>Diabetes</h3>
-                    {% if object.medicalprofile.diabetes.type %}
-                      <li>{{ object.medicalprofile.diabetes.type }}</li>
-                    {% endif %}
-                    {% if object.medicalprofile.diabetes.insulin %}
-                      <li>You take insulin</li>
-                    {% endif %}
-                  </div>
-                {% endif %}
-                {% if object.medicalprofile.organ_transplant.value %}
-                  <div class="col-auto">
-                    <h3>Organ Transplant</h3>
-                    {% if object.medicalprofile.organ_transplant.organ %}
-                      <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
-                    {% endif %}
-                  </div>
-                {% endif %}
-                {% if object.medicalprofile.urate_kidney_stones.value %}
-                  <div class="col-auto">
-                    <h3>Urate Kidney Stones</h3>
-                  </div>
-                {% endif %}
-            </div>
+          {% endif %}
+          {% if object.patientprofile.date_of_birth %}
+          <div class="col-auto">
+            <li>Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
           </div>
+          {% endif %}
+          {% if object.patientprofile.date_of_birth %}
+          <div class="col-auto">
+            <li>Age: {{ object.patientprofile.get_age }}</li>
           </div>
+          {% endif %}
+        </div>
+        <div class="row">
+          {% if object.patientprofile.gender %}
+          <div class="col-auto">
+            <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
+          </div>
+          {% endif %}
+          {% if object.patientprofile.race %}
+          <div class="col=auto">
+            <li>Race: {{ object.patientprofile.race|capfirst }}</li>
+          </div>
+          {% endif %}
+          {% if object.patientprofile.drinks_per_week %}
+          <div class="col-auto">
+            <li>Drinks / Week: {{ object.patientprofile.drinks_per_week }}</li>
+          </div>
+          {% endif %}
+        </div>
+        <div class="row">
+          {% if object.patientprofile.weight.value %}
+          <div class="col-auto">
+            <li><a href="{% url 'vitals:list' 'weight' %}">Weight:
+                {{ object.patientprofile.weight }}</a></li>
+          </div>
+          {% endif %}
+          {% if object.patientprofile.height.value %}
+          <div class="col-auto">
+            <li><a href="{% url 'vitals:list' 'height' %}">Height:
+                {{ object.patientprofile.height }}</a></li>
+          </div>
+          {% endif %}
+          {% if object.patientprofile.weight and object.patientprofile.height %}
+          <div class="col-auto">
+            <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
+          </div>
+          {% endif %}
         </div>
       </div>
-    {% endif %}
-    {% if object.contraindicationsprofile %}
-          <div class="container nested-container">
-            <div class="container default-container">
-            <h2><u>Contraindications</u></h2>
-            <div class="row">
-                {% if object.contraindicationsprofile.stroke.value %}
-                  <div class="col-auto">
-                    <h3>{{ object.contraindicationsprofile.stroke|capfirst }}</h3>
-                    {% if object.contraindicationsprofile.number %}
-                      <li>{{ object.contraindicationsprofile.number }} strokes</li>
-                    {% endif %}
-                    {% if object.contraindicationsprofile.date %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.date }}</li>
-                    {% else %}
-                      <li>Date of stroke not recorded</li>
-                    {% endif %}
-                  </div>
-                {% endif %}
-                {% if object.contraindicationsprofile.heartattack.value %}
-                  <div class="col-auto">
-                  <h3>Myocarial Infarction (MI)</h3>
-                    {% if object.contraindicationsprofile.heartattack.date %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.heartattack.date }}</li>
-                    {% else %}
-                      <li>Date of MI not recorded</li>
-                    {% endif %}
-                    {% if object.contraindicationsprofile.heartattack.stent %}
-                      <li>Stent,
-                      {% if object.contraindicationsprofile.heartattack.stent_date %}
-                        date (of last): {{ object.contraindicationsprofile.heartattack.stent_date }}</li>
-                      {% else %}
-                        date not recorded</li>
-                      {% endif %}
-                    {% endif %}
-                    {% if object.contraindicationsprofile.heartattack.cabg %}
-                      <li>Coronary artery bypass grafting (CABG),
-                      {% if object.contraindicationsprofile.heartattack.cabg_date %}
-                        <li>date: {{ object.contraindicationsprofile.heartattack.cabg_date }}</li>
-                      {% else %}
-                          date not recorded</li>
-                      {% endif %}
-                    {% endif %}
-                  </div>
-                {% endif %}
-                {% if object.contraindicationsprofile.bleed.value %}
-                  <div class="col-auto">
-                  <h3>Major Bleed</h3>
-                    {% if object.contraindicationsprofile.bleed.date %}
-                      <li>Date (of last): {{ object.contraindicationsprofile.bleed.date }}</li>
-                    {% else %}
-                      <li>Date of major bleed not recorded</li>
-                    {% endif %}
-                    {% if object.contraindicationsprofile.bleed.GIB %}
-                      <li>Gastrointestinal (GI) bleed,
-                      {% if object.contraindicationsprofile.bleed.GIB_date %}
-                        ate : {{ object.contraindicationsprofile.bleed.GIB_date }}
-                      {% else %}
-                        date not recorded</li>
-                      {% endif %}
-                    {% endif %}
-                    {% if object.contraindicationsprofile.bleed.CNS %}
-                      <li>Intracranial bleed,
-                      {% if object.contraindicationsprofile.bleed.CNS_date %}
-                        date: {{ object.contraindicationsprofile.bleed.CNS_date }}</li>
-                      {% else %}
-                        date not recorded
-                      {% endif %}
-                    {% endif %}
-                    {% if object.contraindicationsprofile.bleed.transfusion %}
-                      <li>Required transfusion for bleeding</li>
-                    {% endif %}
-                  </div>
-                {% endif %}
-            </div>
-          </div>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-  </main>
-  <footer>
-    <div class="container">
-    {% if object == request.user %}
-      <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button">My Info</a>
-      <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
-      {% if request.user.patientprofile %}
-        <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}" role="button">Profile</a>
-      {% else %}
-        <a class="btn btn-primary btn-lg" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
-      {% endif %}
-      {% if request.user.medicalprofile %}
-      <a class="btn btn-primary btn-lg" href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}" role="button">Medical</a>
-      {% else %}
-      <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-medical' %}" role="button">Medical</a>
-      {% endif %}
-      {% if request.user.contraindicationsprofile %}
-      <a class="btn btn-primary btn-lg" href="{% url 'profiles:update-contraindications' request.user request.user.medicalprofile.pk %}" role="button">Contraindications</a>
-      {% else %}
-      <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-contraindications' %}" role="button">Contraindications</a>
-      {% endif %}
-    {% endif %}
     </div>
-  </footer>
+    {% if object.patientprofile.picture %}
+    <div class="media">
+      <img src="{{ object.patientprofile.picture.url }}" id="profilepic" width="250" height="250"
+        alt="{{ object.username|capfirst }}'s Picture">
+    </div>
+    {% endif %}
+  </div>
+  </div>
+  {% else %}
+  {% endif %}
+  {% if object.medicalprofile %}
+  <div class="container nested-container">
+    <div class="container default-container">
+      <h2><u>Medical History</u></h2>
+      <div class="row">
+        {% if object.medicalprofile.CKD.value %}
+        <div class="col-auto">
+          <h3>{{ object.medicalprofile.CKD }}</h3>
+          {% if object.medicalprofile.CKD.stage %}
+          <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
+          {% endif %}
+          {% if object.medicalprofile.ckd.dialysis %}
+          <li>{{ object.medicalprofile.ckd.dialysis }}</li>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if object.medicalprofile.hypertension.value %}
+        <div class="col-auto">
+          <h3>Hypertension</h3>
+          {% if object.medicalprofile.hypertension.medication %}
+          <li>Treated with medications</li>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if object.medicalprofile.CHF.value %}
+        <div class="col-auto">
+          <h3>CHF (congestive heart failure)</h3>
+          {% if object.medicalprofile.CHF.systolic %}
+          <li>Systolic (reduced EF / ejection fraction)</li>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if object.medicalprofile.diabetes.value %}
+        <div class="col-auto">
+          <h3>Diabetes</h3>
+          {% if object.medicalprofile.diabetes.type %}
+          <li>{{ object.medicalprofile.diabetes.type }}</li>
+          {% endif %}
+          {% if object.medicalprofile.diabetes.insulin %}
+          <li>You take insulin</li>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if object.medicalprofile.organ_transplant.value %}
+        <div class="col-auto">
+          <h3>Organ Transplant</h3>
+          {% if object.medicalprofile.organ_transplant.organ %}
+          <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if object.medicalprofile.urate_kidney_stones.value %}
+        <div class="col-auto">
+          <h3>Urate Kidney Stones</h3>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  {% endif %}
+  {% if object.contraindicationsprofile %}
+  <div class="container nested-container">
+    <div class="container default-container">
+      <h2><u>Contraindications</u></h2>
+      <div class="row">
+        {% if object.contraindicationsprofile.stroke.value %}
+        <div class="col-auto">
+          <h3>{{ object.contraindicationsprofile.stroke|capfirst }}</h3>
+          {% if object.contraindicationsprofile.number %}
+          <li>{{ object.contraindicationsprofile.number }} strokes</li>
+          {% endif %}
+          {% if object.contraindicationsprofile.date %}
+          <li>Date (of last): {{ object.contraindicationsprofile.date }}</li>
+          {% else %}
+          <li>Date of stroke not recorded</li>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if object.contraindicationsprofile.heartattack.value %}
+        <div class="col-auto">
+          <h3>Myocarial Infarction (MI)</h3>
+          {% if object.contraindicationsprofile.heartattack.date %}
+          <li>Date (of last): {{ object.contraindicationsprofile.heartattack.date }}</li>
+          {% else %}
+          <li>Date of MI not recorded</li>
+          {% endif %}
+          {% if object.contraindicationsprofile.heartattack.stent %}
+          <li>Stent,
+            {% if object.contraindicationsprofile.heartattack.stent_date %}
+            date (of last): {{ object.contraindicationsprofile.heartattack.stent_date }}</li>
+          {% else %}
+          date not recorded</li>
+          {% endif %}
+          {% endif %}
+          {% if object.contraindicationsprofile.heartattack.cabg %}
+          <li>Coronary artery bypass grafting (CABG),
+            {% if object.contraindicationsprofile.heartattack.cabg_date %}
+          <li>date: {{ object.contraindicationsprofile.heartattack.cabg_date }}</li>
+          {% else %}
+          date not recorded</li>
+          {% endif %}
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if object.contraindicationsprofile.bleed.value %}
+        <div class="col-auto">
+          <h3>Major Bleed</h3>
+          {% if object.contraindicationsprofile.bleed.date %}
+          <li>Date (of last): {{ object.contraindicationsprofile.bleed.date }}</li>
+          {% else %}
+          <li>Date of major bleed not recorded</li>
+          {% endif %}
+          {% if object.contraindicationsprofile.bleed.GIB %}
+          <li>Gastrointestinal (GI) bleed,
+            {% if object.contraindicationsprofile.bleed.GIB_date %}
+            ate : {{ object.contraindicationsprofile.bleed.GIB_date }}
+            {% else %}
+            date not recorded</li>
+          {% endif %}
+          {% endif %}
+          {% if object.contraindicationsprofile.bleed.CNS %}
+          <li>Intracranial bleed,
+            {% if object.contraindicationsprofile.bleed.CNS_date %}
+            date: {{ object.contraindicationsprofile.bleed.CNS_date }}</li>
+          {% else %}
+          date not recorded
+          {% endif %}
+          {% endif %}
+          {% if object.contraindicationsprofile.bleed.transfusion %}
+          <li>Required transfusion for bleeding</li>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="container nested-container">
+    {% if object.socialprofile %}
+    {{ object.socialprofile.alcohol }}
+    {% endif %}
+  </div>
+  </div>
+  </div>
+  {% endif %}
+</main>
+<footer>
+  <div class="container">
+    {% if object == request.user %}
+    <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button">My Info</a>
+    <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
+    {% if request.user.patientprofile %}
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}"
+      role="button">Profile</a>
+    {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
+    {% endif %}
+    {% if request.user.medicalprofile %}
+    <a class="btn btn-primary btn-lg"
+      href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}" role="button">Medical</a>
+    {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-medical' %}" role="button">Medical</a>
+    {% endif %}
+    {% if request.user.contraindicationsprofile %}
+    <a class="btn btn-primary btn-lg"
+      href="{% url 'profiles:update-contraindications' request.user request.user.medicalprofile.pk %}"
+      role="button">Contraindications</a>
+    {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-contraindications' %}"
+      role="button">Contraindications</a>
+    {% endif %}
+    {% if request.user.familyprofile %}
+    <a class="btn btn-primary btn-lg"
+      href="{% url 'profiles:update-family' request.user request.user.familyprofile.pk %}" role="button">Family</a>
+    {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-family' %}" role="button">Family</a>
+    {% endif %}
+    {% if request.user.socialprofile %}
+    <a class="btn btn-primary btn-lg"
+      href="{% url 'profiles:update-social' request.user request.user.socialprofile.pk %}" role="button">Social</a>
+    {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-social' %}" role="button">Social</a>
+    {% endif %}
+    {% endif %}
+  </div>
+</footer>
 {% endblock content %}

@@ -6,36 +6,52 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
 from goutdotcom.history.forms import (
+    AlcoholForm,
     BleedForm,
     CHFForm,
     CKDForm,
     DiabetesForm,
+    FructoseForm,
+    GoutForm,
     HeartAttackForm,
     HypertensionForm,
     OrganTransplantForm,
+    ShellfishForm,
     StrokeForm,
     UrateKidneyStonesForm,
 )
 from goutdotcom.history.models import (
     CHF,
     CKD,
+    Alcohol,
     Bleed,
     Diabetes,
+    Fructose,
+    Gout,
     HeartAttack,
     Hypertension,
     OrganTransplant,
+    Shellfish,
     Stroke,
     UrateKidneyStones,
 )
 from goutdotcom.profiles.forms import (
     ContraindicationsProfileForm,
+    FamilyProfileForm,
     MedicalProfileForm,
     PatientProfileForm,
+    SocialProfileForm,
 )
 from goutdotcom.vitals.forms import HeightForm, WeightForm
 from goutdotcom.vitals.models import Height, Weight
 
-from .models import ContraindicationsProfile, MedicalProfile, PatientProfile
+from .models import (
+    ContraindicationsProfile,
+    FamilyProfile,
+    MedicalProfile,
+    PatientProfile,
+    SocialProfile,
+)
 
 
 # Mixins
@@ -151,7 +167,7 @@ class ContraindicationsProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDe
             bleed_data = bleed_form.save()
             contraindications_profile_data.ckd = stroke_data
             contraindications_profile_data.hypertension = heartattack_data
-            contraindications_profile_data.CHF = bleed_data
+            contraindications_profile_data.bleed = bleed_data
             contraindications_profile_data.save()
             return HttpResponseRedirect(self.request.user.get_absolute_url())
         else:
@@ -161,6 +177,88 @@ class ContraindicationsProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDe
                     stroke_form=stroke_form,
                     heartattack_form=heartattack_form,
                     bleed_form=bleed_form,
+                )
+            )
+
+
+class FamilyProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):
+    model = FamilyProfile
+    form_class = FamilyProfileForm
+    gout_form_class = GoutForm
+
+    def get_context_data(self, **kwargs):
+        context = super(FamilyProfileCreate, self).get_context_data(**kwargs)
+        context.update({"user": self.request.user})
+        if "gout_form" not in context:
+            context["gout_form"] = self.gout_form_class(self.request.GET)
+        return context
+
+    def get_object(self, queryset=None):
+        object = self.model
+        return object
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=FamilyProfile())
+        gout_form = self.gout_form_class(request.POST, instance=Gout())
+
+        if form.is_valid() and gout_form.is_valid():
+            family_profile_data = form.save(commit=False)
+            family_profile_data.user = request.user
+            gout_data = gout_form.save(commit=False)
+            gout_data.user = request.user
+            gout_data.save()
+            family_profile_data.gout = gout_data
+            family_profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    gout_form=gout_form,
+                )
+            )
+
+
+class FamilyProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, UpdateView):
+    model = FamilyProfile
+    form_class = FamilyProfileForm
+    gout_form_class = GoutForm
+
+    def get_context_data(self, **kwargs):
+        context = super(FamilyProfileUpdate, self).get_context_data(**kwargs)
+        context.update({"user": self.request.user})
+        if self.request.POST:
+            context["gout_form"] = GoutForm(self.request.POST, instance=self.object.gout)
+        else:
+            context["gout_form"] = self.gout_form_class(instance=self.object.gout)
+        return context
+
+    def get_object(self, queryset=None):
+        try:
+            queryset = self.model.objects.filter(user=self.request.user)
+        except ObjectDoesNotExist:
+            raise Http404("No object found matching this query.")
+        obj = super(FamilyProfileUpdate, self).get_object(queryset=queryset)
+        return obj
+
+    def post(self, request, **kwargs):
+        # NEED **kwargs even though VSCode IDE says it's not used. Can't accept <user> and <pk> from url parameter otherwise.
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        gout_form = self.gout_form_class(request.POST, instance=self.object.gout)
+
+        if form.is_valid() and gout_form.is_valid():
+            family_profile_data = form.save(commit=False)
+            gout_data = gout_form.save()
+            family_profile_data.gout = gout_data
+            family_profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    gout_form=gout_form,
                 )
             )
 
@@ -467,4 +565,118 @@ class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
         else:
             return self.render_to_response(
                 self.get_context_data(form=form, height_form=height_form, weight_form=weight_form)
+            )
+
+
+class SocialProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):
+    model = SocialProfile
+    form_class = SocialProfileForm
+    alcohol_form_class = AlcoholForm
+    fructose_form_class = FructoseForm
+    shellfish_form_class = ShellfishForm
+
+    def get_context_data(self, **kwargs):
+        context = super(SocialProfileCreate, self).get_context_data(**kwargs)
+        context.update({"user": self.request.user})
+        if "alcohol_form" not in context:
+            context["alcohol_form"] = self.alcohol_form_class(self.request.GET)
+        if "fructose_form" not in context:
+            context["fructose_form"] = self.fructose_form_class(self.request.GET)
+        if "shellfish_form" not in context:
+            context["shellfish_form"] = self.shellfish_form_class(self.request.GET)
+        return context
+
+    def get_object(self, queryset=None):
+        object = self.model
+        return object
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=SocialProfile())
+        alcohol_form = self.alcohol_form_class(request.POST, instance=Alcohol())
+        fructose_form = self.fructose_form_class(request.POST, instance=Fructose())
+        shellfish_form = self.shellfish_form_class(request.POST, instance=Shellfish())
+
+        if form.is_valid() and alcohol_form.is_valid() and fructose_form.is_valid() and shellfish_form.is_valid():
+            social_profile_data = form.save(commit=False)
+            social_profile_data.user = request.user
+            alcohol_data = alcohol_form.save(commit=False)
+            alcohol_data.user = request.user
+            alcohol_data.save()
+            fructose_data = fructose_form.save(commit=False)
+            fructose_data.user = request.user
+            fructose_data.save()
+            shellfish_data = shellfish_form.save(commit=False)
+            shellfish_data.user = request.user
+            shellfish_data.save()
+            social_profile_data.stroke = alcohol_data
+            social_profile_data.heartattack = fructose_data
+            social_profile_data.bleed = shellfish_data
+            social_profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    alcohol_form=alcohol_form,
+                    fructose_form=fructose_form,
+                    shellfish_form=shellfish_form,
+                )
+            )
+
+
+class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, UpdateView):
+    model = SocialProfile
+    form_class = SocialProfileForm
+    alcohol_form_class = AlcoholForm
+    fructose_form_class = FructoseForm
+    shellfish_form_class = ShellfishForm
+
+    def get_context_data(self, **kwargs):
+        context = super(SocialProfileUpdate, self).get_context_data(**kwargs)
+        context.update({"user": self.request.user})
+        if self.request.POST:
+            context["alcohol_form"] = AlcoholForm(self.request.POST, instance=self.object.alcohol)
+            context["fructose_form"] = FructoseForm(self.request.POST, instance=self.object.fructose)
+            context["shellfish_form"] = ShellfishForm(self.request.POST, instance=self.object.shellfish)
+        else:
+            context["alcohol_form"] = self.alcohol_form_class(instance=self.object.alcohol)
+            context["fructose_form"] = self.fructose_form_class(instance=self.object.fructose)
+            context["shellfish_form"] = self.shellfish_form_class(instance=self.object.shellfish)
+        return context
+
+    def get_object(self, queryset=None):
+        try:
+            queryset = self.model.objects.filter(user=self.request.user)
+        except ObjectDoesNotExist:
+            raise Http404("No object found matching this query.")
+        obj = super(SocialProfileUpdate, self).get_object(queryset=queryset)
+        return obj
+
+    def post(self, request, **kwargs):
+        # NEED **kwargs even though VSCode IDE says it's not used. Can't accept <user> and <pk> from url parameter otherwise.
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        alcohol_form = self.alcohol_form_class(request.POST, instance=self.object.alcohol)
+        fructose_form = self.fructose_form_class(request.POST, instance=self.object.fructose)
+        shellfish_form = self.shellfish_form_class(request.POST, instance=self.object.shellfish)
+
+        if form.is_valid() and alcohol_form.is_valid() and fructose_form.is_valid() and shellfish_form.is_valid():
+            social_profile_data = form.save(commit=False)
+            alcohol_data = alcohol_form.save()
+            fructose_data = fructose_form.save()
+            shellfish_data = shellfish_form.save()
+            social_profile_data.alcohol = alcohol_data
+            social_profile_data.fructose = fructose_data
+            social_profile_data.shellfish = shellfish_data
+            social_profile_data.save()
+            return HttpResponseRedirect(self.request.user.get_absolute_url())
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    alcohol_form=alcohol_form,
+                    fructose_form=fructose_form,
+                    shellfish_form=shellfish_form,
+                )
             )
