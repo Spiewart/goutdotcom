@@ -178,6 +178,24 @@ class AlcoholAdmin(admin.ModelAdmin):
     )
 
 
+class FructoseAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+
+
+class ShellfishAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+
+
 class GoutAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -192,6 +210,7 @@ admin.site.register(CKD, CKDAdmin)
 admin.site.register(Hypertension, HypertensionAdmin)
 admin.site.register(CHF, CHFAdmin)
 admin.site.register(Diabetes, DiabetesAdmin)
+admin.site.register(Fructose, FructoseAdmin)
 admin.site.register(OrganTransplant, OrganTransplantAdmin)
 admin.site.register(UrateKidneyStones, UrateKidneyStonesAdmin)
 admin.site.register(Diuretics, DiureticsAdmin)
@@ -199,6 +218,7 @@ admin.site.register(Cyclosporine, CyclosporineAdmin)
 admin.site.register(Anticoagulation, AnticoagulationAdmin)
 admin.site.register(XOIInteractions, XOIInteractionsAdmin)
 admin.site.register(ColchicineInteractions, ColchicineInteractionsAdmin)
+admin.site.register(Shellfish, ShellfishAdmin)
 admin.site.register(Stroke, StrokeAdmin)
 admin.site.register(HeartAttack, HeartAttackAdmin)
 admin.site.register(Bleed, BleedAdmin)

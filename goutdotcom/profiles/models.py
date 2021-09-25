@@ -111,20 +111,27 @@ class PatientProfile(TimeStampedModel):
 
     def BMI_calculator(self):
         def weight_kgs_calc(self):
-            if self.weight.value:
-                return self.weight.value / 2.205
+            if self.weight:
+                if self.weight.value:
+                    return self.weight.value / 2.205
+                else:
+                    return "Enter a weight in pounds"
             else:
                 return "Enter a weight in pounds"
 
         def height_meters_calc(self):
-            if self.height.value:
-                return self.height.value / 39.37
+            if self.height:
+                if self.height.value:
+                    return self.height.value / 39.37
+                else:
+                    return "Enter a height in inches"
             else:
                 return "Enter a height in inches"
 
-        if self.weight.value and self.height.value:
-            BMI = weight_kgs_calc(self) / (height_meters_calc(self) ** 2)
-            return BMI
+        if self.weight and self.height:
+            if self.weight.value and self.height.value:
+                BMI = weight_kgs_calc(self) / (height_meters_calc(self) ** 2)
+                return BMI
         elif self.weight is None:
             if self.height is None:
                 return "Enter a valid height and weight"

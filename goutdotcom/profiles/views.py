@@ -575,6 +575,10 @@ class SocialProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
     fructose_form_class = FructoseForm
     shellfish_form_class = ShellfishForm
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super(SocialProfileCreate, self).get_context_data(**kwargs)
         context.update({"user": self.request.user})
@@ -631,6 +635,10 @@ class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
     alcohol_form_class = AlcoholForm
     fructose_form_class = FructoseForm
     shellfish_form_class = ShellfishForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(SocialProfileUpdate, self).get_context_data(**kwargs)

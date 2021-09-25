@@ -47,7 +47,7 @@ body {
 .sub-default-container {
   color: #e7e7e7;
   padding: var(--main-master-container-padding);
-  background-color: var(--main-master-container-background-color); }
+  background-color: var(--main-nested-container-background-color); }
 
 .hyperlink:hover {
   color: black; }

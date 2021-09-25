@@ -3,8 +3,8 @@
 
 {% block content %}
 <main role="main" class="container">
-  <div class="container">
-    <h1>{{ request.user|capfirst }}'s Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a>
+  <div class="container default-container">
+    <h1 class="nested-container">{{ request.user|capfirst }}'s Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a>
     {% if request.user.is_authenticated %}
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
       <div class="btn-group" role="group">
@@ -26,8 +26,9 @@
     </h1>
     <div class="row">
         {% if urate_list %}
-          <div class="col">
-          <h2><a href="{% url 'lab:list' 'urate' %}">Uric Acids</a></h2>
+        <div class="col">
+          <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'lab:list' 'urate' %}">Uric Acids</a></h2>
           {% for urate in urate_list %}
           <div class="container user-flare-list">
             <p>{{ urate.value }} {{ urate.units }}</p>
@@ -35,21 +36,24 @@
           </div>
           <br>
           {% endfor %}
+          </div>
         </div>
         {% endif %}
         {% if creatinine_list %}
         <div class="col">
-           <h2><a href="{% url 'lab:list' 'creatinine' %}">Creatinines</a></h2>
-           {% for creatinine in creatinine_list %}
-            <div class="container user-flare-list">
-              <p>{{ creatinine.value }} {{ creatinine.units }}</p>
-              <p>eGFR: {{ creatinine.eGFR_calculator }}</p>
-              <p>Date: <a href="{% url 'lab:detail' 'creatinine' creatinine.pk %}">{{ creatinine.date_drawn }}</a></p>
-           </div>
-           <br>
-           {% endfor %}
-         </div>
-         {% endif %}
+          <div class="container">
+            <h2 class="default-container"><a href="{% url 'lab:list' 'creatinine' %}">Creatinines</a></h2>
+            {% for creatinine in creatinine_list %}
+              <div class="container user-flare-list">
+                <p>{{ creatinine.value }} {{ creatinine.units }}</p>
+                <p>eGFR: {{ creatinine.eGFR_calculator }}</p>
+                <p>Date: <a href="{% url 'lab:detail' 'creatinine' creatinine.pk %}">{{ creatinine.date_drawn }}</a></p>
+            </div>
+            <br>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
         </div>
         <div class="row">
           {% if ALT_list %}
@@ -92,14 +96,16 @@
         {% endif %}
         {% if WBC_list %}
         <div class="col">
-          <h2><a href="{% url 'lab:list' 'WBC' %}">WBCs</a></h2>
-          {% for WBC in WBC_list %}
-          <div class="container user-flare-list">
-            <p>{{ WBC.value }} {{ WBC.units }}</p>
-            <p>Date: <a href="{% url 'lab:detail' 'WBC' WBC.pk %}">{{ WBC.date_drawn }}</a></p>
+          <div class="container nested-container">
+            <h2 class="default-container"><a href="{% url 'lab:list' 'WBC' %}">WBCs</a></h2>
+            {% for WBC in WBC_list %}
+            <div class="container user-flare-list">
+              <p>{{ WBC.value }} {{ WBC.units }}</p>
+              <p>Date: <a href="{% url 'lab:detail' 'WBC' WBC.pk %}">{{ WBC.date_drawn }}</a></p>
+            </div>
+            <br>
+            {% endfor %}
           </div>
-          <br>
-          {% endfor %}
         </div>
         {% endif %}
        {% if hemoglobin_list %}

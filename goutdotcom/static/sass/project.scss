@@ -54,7 +54,7 @@ body {
 .sub-default-container {
   color: rgb(231, 231, 231);
   padding: var(--main-master-container-padding);
-  background-color: var(--main-master-container-background-color);
+  background-color: var(--main-nested-container-background-color);
 }
 
 .hyperlink:hover {

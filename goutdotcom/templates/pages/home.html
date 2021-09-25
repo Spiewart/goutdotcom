@@ -3,29 +3,29 @@
 
 {% block content %}
 <main class="container-fluid">
-  <div class="jumbotron-fluid default-container">
-    <div class="row">
-      <div class="col">
-        <h1 class="nested-container" style="font-weight: bold;">Gouthelper is a site to learn about and help manage your gout</h1>
-        <div class="row">
-          <div class="col-9">
-            <h2>Are you having a gout flare? </h2>
-            <p class="lead">Gout flares are terrible. They are painful and disabling.</p>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-flare' %}" role="button">Flare Treatment</a>
-            <hr class="my-4">
-            <h2>You don't have to live with gout flares.</h2>
-            <p class="lead">If you are having a lot of gout flares, you don't have to continue living with them. There are very effective, save medications that can completely eliminate a person's gout. </p>
-            <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-ult' %}" role="button">Urate-lowering Therapy</a>
-            <h2>Is urate-lowering therapy for you?</h2>
-            <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">ULT Decision Aid</a>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <figure class="figure">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" class="figure-img img-fluid rounded" alt="" style="max-width: 100%; max-height: auto;">
-        </figure>
-      </div>
+  <h1 class="nested-container" style="font-weight: bold;">Gouthelper</h1>
+  <div class="media default-container">
+    <img class="mr-3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" class="figure-img img-fluid rounded" alt="" style="max-width: 15%; max-height: auto;" alt="Generic placeholder image">
+    <div class="media-body">
+      <h2 class="mt-0 nested-container">Having a gout flare?</h2>
+      <p>Gout flares are terrible. They are painful and disabling.</p>
+      <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-flare' %}" role="button">Flare Treatment</a>
+    </div>
+  </div>
+  <div class="media default-container">
+    <div class="media-body">
+      <h2 class="mt-0 nested-container">Lots of <a href="{% url 'flare:about' %}">flares</a>?</h2>
+      <p>Don't live with gout (ULT).</p>
+      <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button">Treatment</a>
+    </div>
+    <img class="mr-3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" class="figure-img img-fluid rounded" alt="" style="max-width: 15%; max-height: auto;" alt="Generic placeholder image">
+  </div>
+  <div class="media default-container">
+    <img class="mr-3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" class="figure-img img-fluid rounded" alt="" style="max-width: 15%; max-height: auto;" alt="Generic placeholder image">
+    <div class="media-body">
+      <h2 class="mt-0 nested-container">Is gout treatment for you?</h2>
+      <p>Gout flares are terrible. They are painful and disabling.</p>
+      <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button"" role="button">ULT</a>
     </div>
   </div>
 </main>

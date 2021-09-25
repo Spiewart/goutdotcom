@@ -7,21 +7,17 @@
 <main class="container nested-container">
   <div class="media default-container">
     <div class="media-body">
-      <h1 class="sub-default-container">{{ object.username|capfirst}}</h1>
       {% if object.patientprofile %}
+      <h1 class="nested-container">{{ object.username|capfirst}}'s Profile</h1>
       <hr size="6" color="white">
-      <div class="container sub-default-container">
-        <h2>
-          <u>Profile</u>
-        </h2>
         {% if object.patientprofile.bio %}
-        <h3>Bio</h3>
+        <h3 class="nested-container">Bio</h3>
         <p>{{ object.patientprofile.bio }}</p>
         {% else %}
         <h3>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h3>
         {% endif %}
         <hr size="6" color="white">
-        <h3>Demographics</h3>
+        <h3 class="nested-container">Demographics</h3>
         <div class="row">
           {% if object.name %}
           <div class="col-auto">
@@ -76,7 +72,6 @@
           {% endif %}
         </div>
       </div>
-    </div>
     {% if object.patientprofile.picture %}
     <div class="media">
       <img src="{{ object.patientprofile.picture.url }}" id="profilepic" width="250" height="250"
@@ -86,11 +81,12 @@
   </div>
   </div>
   {% else %}
+  <h1 class="">{{ object.username|capfirst}}'s Profile</h1>
   {% endif %}
   {% if object.medicalprofile %}
   <div class="container nested-container">
     <div class="container default-container">
-      <h2><u>Medical History</u></h2>
+      <h2 class="nested-container">Medical History</h2>
       <div class="row">
         {% if object.medicalprofile.CKD.value %}
         <div class="col-auto">
@@ -152,7 +148,7 @@
   {% if object.contraindicationsprofile %}
   <div class="container nested-container">
     <div class="container default-container">
-      <h2><u>Contraindications</u></h2>
+      <h2 class="nested-container">Contraindications</h2>
       <div class="row">
         {% if object.contraindicationsprofile.stroke.value %}
         <div class="col-auto">
@@ -225,10 +221,49 @@
       </div>
     </div>
   </div>
+  {% if object.socialprofile %}
   <div class="container nested-container">
-    {% if object.socialprofile %}
-    {{ object.socialprofile.alcohol }}
-    {% endif %}
+    <div class="container default-container">
+      <h2 class="nested-container">Social History</h2>
+      <div class="row">
+        {% if object.socialprofile.alcohol.value %}
+          <div class="col-auto">
+          <h3>Alcohol</h3>
+          {% if object.socialprofile.alcohol.number %}
+            <li>Quantity per week: {{ object.socialprofile.alcohol.number }} <a href="https://en.wikipedia.org/wiki/Standard_drink" target="_blank">drinks</a></li>
+          {% endif %}
+          {% if object.socialprofile.alcohol.beer or object.socialprofile.alcohol.wine or object.socialprofile.alcohol.liquor %}
+            <li>Types of Alcohol</li>
+            <ul>
+            {% if object.socialprofile.alcohol.beer %}
+              <li>Beer</li>
+            {% endif %}
+            {% if object.socialprofile.alcohol.wine %}
+              <li>Wine</li>
+            {% endif %}
+            {% if object.socialprofile.alcohol.liquor %}
+              <li>Liquor</li>
+            {% endif %}
+            </ul>
+          {% endif %}
+        {% else %}
+          <li>Alcohol use not recorded</li>
+        {% endif %}
+        </div>
+        {% if object.socialprofile.fructose.value %}
+        <div class="col">
+          <h3>Fructose</h3>
+        </div>
+        {% endif %}
+        {% if object.socialprofile.shellfish.value %}
+        <div class="col">
+          <h3>Shellfish</h3>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
   </div>
   </div>
   </div>
