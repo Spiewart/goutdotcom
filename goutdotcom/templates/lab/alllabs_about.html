@@ -29,12 +29,12 @@
                 <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
             {% endif %}
           </h1>
-          <p class="lead">Lab testing is important in gout, particularly when making the initial diagnosis and when doing long-term management of gout (<a href="{% url 'treatment:ult' %}">ULT</a>).</p>
-          <hr class="my-4">
+          <p class="lead">Lab testing is important in gout, particularly when making the initial diagnosis and when doing long-term management of gout (<a href="{% url 'treatment:about-ult' %}">ULT</a>).</p>
+          <hr class="my-6" color="white">
           <p>Labs are important in several gouty situations:</p>
             <ul>
                 <li>Diagnosis of gout, particularly the initial diagnosis</li>
-                <li>Medical management of gout</li>
+                <li>Medical <a class="link-primary" href="{% url 'treatment:about' 'all-treatments' %}">treatment</a> of gout</li>
                   <ul>
                       <li>Determining which medictions are best for your gout</li>
                       <li>Monitoring for side effects of gout medications</li>
@@ -65,7 +65,7 @@
              <p>Labs are used in the management of gout to: </p>
              <ol>
                <li>
-                Confirm that your uric acid is at goal.
+                Confirm that your <a class="link-primary" href="{% url 'lab:about' 'urate' %}">uric acid</a> is at goal.
                </li>
                 <ul>
                   <li>This determines when you can stop taking medications to prevent a flare.</li>

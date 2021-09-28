@@ -27,7 +27,8 @@
         "naproxen",
         "patientprofile",
         "quicklinks",
-        "sideeffects"
+        "sideeffects",
+        "urate"
     ],
     "[django-html]": {
 

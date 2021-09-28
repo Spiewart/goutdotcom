@@ -18,7 +18,9 @@
           <div class="container nested-container">
             <a href="{% url 'flare:detail' flare.pk %}"><h2 class="default-container">Date: {{ flare.created }}</h2></a>
             <ul>
+              {% if flare.location %}
               <li>Location: {{ flare.location }}</li>
+              {% endif %}
               {% if flare.treatment %}
               <li>Treatment(s): {{ flare.treatment }}
                 <ul>
@@ -53,7 +55,7 @@
               </li>
               {% endif %}
               {% if flare.duration %}
-              <li>Duration: {{ flare.duration }}</li>
+              <li>Duration: {{ flare.duration }} days</li>
               {% endif %}
               {% if flare.urate %}
               <li>Uric acid: {{ flare.urate }}</li>
@@ -82,7 +84,7 @@
           <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
         {% endif %}
       </span>
+    </div>
   {% endif %}
-  </div>
 </footer>
 {% endblock content %}
