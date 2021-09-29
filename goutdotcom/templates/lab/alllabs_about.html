@@ -25,28 +25,23 @@
                 </ul>
               </div>
             </div>
-            {% else %}
-                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
             {% endif %}
           </h1>
-          <p class="lead">Lab testing is important in gout, particularly when making the initial diagnosis and when doing long-term management of gout (<a href="{% url 'treatment:about-ult' %}">ULT</a>).</p>
+          <p class="lead">Lab testing is important in gout, particularly in diagnosis and treatment.</p>
           <hr class="my-6" color="white">
           <p>Labs are important in several gouty situations:</p>
             <ul>
                 <li>Diagnosis of gout, particularly the initial diagnosis</li>
                 <li>Medical <a class="link-primary" href="{% url 'treatment:about' 'all-treatments' %}">treatment</a> of gout</li>
                   <ul>
-                      <li>Determining which medictions are best for your gout</li>
-                      <li>Monitoring for side effects of gout medications</li>
+                      <li>Determining which medications are best for flares of your gout (<a href="{% url 'treatment:about-flare' %}">flare treatment</a>)</li>
+                      <li>Determining the correct doses for your long-term gout medications (<a href="{% url 'treatment:about-ult' %}">ULT</a>) and monitoring for side effects</li>
                   </ul>
             </ul>
           </div>
         </div>
-      </div>
-      <br>
       <div class="row">
-        <div class="col-sm">
-          <div class="container default-container">
+        <div class="col">
               <h3 class="nested-container">Diagnosis of Gout</h3>
               <p>The diagnosis gout is clinical, but labs help. Labs can increase or decrease a provider's clinical suspicion for gout (<a class="link-primary" href="https://en.wikipedia.org/wiki/Pre-_and_post-test_probability" target="_blank">pre-test probability</a>).</p>
               <ol>
@@ -57,10 +52,8 @@
                  We can also measure your liver(<a class="link-primary" href="{% url 'lab:about' 'AST' %}">AST</a>/<a class="link-primary" href="{% url 'lab:about' 'ALT' %}">ALT</a>) and kidney(<a class="link-primary" href="{% url 'lab:about' 'creatinine' %}">creatinine</a>) function as well as blood counts(<a class="link-primary" href="{% url 'lab:about' 'WBC' %}">WBC</a>, <a class="link-primary" href="{% url 'lab:about' 'hemoglobin' %}">hemoglobin</a>, <a class="link-primary" href="{% url 'lab:about' 'platelet' %}">platelets</a>). These are important when picking medications to treat your gout, both for the flare and for long-term management.
                 </li>
               </ol>
-            </div>
         </div>
-        <div class="col-sm">
-          <div class="container default-container">
+        <div class="col">
              <h3 class="nested-container">Management of Gout</h3>
              <p>Labs are used in the management of gout to: </p>
              <ol>
@@ -75,8 +68,6 @@
                 Make sure that you aren't having any side effects from your medications.
                </li>
              </ol>
-          </div>
-        </div>
         </div>
     </div>
 </main>

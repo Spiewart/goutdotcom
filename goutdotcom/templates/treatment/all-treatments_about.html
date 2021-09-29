@@ -26,45 +26,49 @@
               </div>
             </div>
             {% else %}
-                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
             {% endif %}
           </h1>
-          <p class="lead">Lab testing is important in gout, particularly when making the initial diagnosis and when doing long-term management of gout (<a href="{% url 'treatment:ult' %}">ULT</a>).</p>
+          <p class="lead">People who have had a gout flare will tell you: treatment is better than not.
+            Treatment is divided into two categories: flare and prevention.
+          </p>
           <hr class="my-6" color="white">
-          <p>Labs are important in several gouty situations:</p>
-            <ul>
-                <li>Diagnosis of gout, particularly the initial diagnosis</li>
-                <li>Medical management of gout</li>
-                  <ul>
-                      <li>Determining which medictions are best for your gout</li>
-                      <li>Monitoring for side effects of gout medications</li>
-                  </ul>
-            </ul>
-          </div>
         </div>
       </div>
-      <br>
       <div class="row">
         <div class="col-sm">
-          <div class="container default-container">
             <h3 class="nested-container">Flare Treatment <a class="btn btn-primary" href="{% url 'treatment:about-flare' %}" role="button">About</a></h3>
-            <p>Gout flares are the main driver of treatment. This is obvious due to how painful and disabling <a class="link-primary" href="{% url 'flare:about' %}">flares</a> are.</p>
+            <p>Gout flares are the main driver of treatment. This is obvious due to how painful and disabling <a class="link-primary" href="{% url 'flare:about' %}">flares</a> are.
+               Flare treatment shortens the duration of flares, which are initially 5-7 days of excrutiating pain and disability.
+               Unfortunately, they do not eliminate the flares entirely (you need preventative therapy for this).
+            </p>
             <p>There are generally 3 options for treatment of gout flares.
             <ol>
               <li>
               NSAIDs: <a class="link-primary" href="{% url 'treatment:about' 'ibuprofen' %}">ibuprofen</a>, <a class="link-primary" href="{% url 'treatment:about' 'naproxen' %}">naproxen</a>, <a class="link-primary" href="{% url 'treatment:about' 'meloxicam' %}">meloxicam</a>, and <a class="link-primary" href="{% url 'treatment:about' 'celecoxib' %}">Celebrex</a>, among others.
+              <ul>
+                <li>NSAIDs are the most common gout flare treatment. They are effective, over the counter, safe, and cheap.</li>
+                <li>There are also prescription varietals that can be used for flares at the discretion of your doctor.</li>
+              </ul>
               </li>
               <li>
               <a class="link-primary" href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a>
+              <ul>
+                <li>Colchicine is as old as time and has been used to treat gout nearly as long.</li>
+                <li>Colchicine is only available by prescription in the US.</li>
+                <li>It can cause stomach upset.</li>
+              </ul>
               </li>
               <li>
                 Steroids: <a class="link-primary" href="{% url 'treatment:about' 'prednisone' %}">prednisone</a>, <a class="link-primary" href="{% url 'treatment:about' 'methylprednisolone' %}">methylprednisolone</a>.
+                <ul>
+                  <li>Steroids are great for basically everything inflammatory.</li>
+                  <li>They work very well for gout and can be given in high doses for difficult flares.</li>
+                  <li>Steroids are associated with a litany of <a class="link-primary" href="https://www.mayoclinic.org/steroids/art-20045692#:~:text=Fluid%20retention%2C%20causing,of%20your%20neck">short</a>- and <a class="link-primary" href="https://www.mayoclinic.org/steroids/art-20045692#:~:text=Elevated%20pressure%20in,slower%20wound%20healing">long</a>-term side effects.</li>
+                </ul>
               </li>
             </ol>
-          </div>
         </div>
         <div class="col-sm">
-          <div class="container default-container">
             <h3 class="nested-container">Gout Prevention <a class="btn btn-primary" href="{% url 'treatment:about-ult' %}" role="button">About</a></h3></h3>
             <p>Long term management of gout is extremely effective. It can essentially eliminate gout flares. However it does involve continued use of medications</p>
             <p>Luckily, the medications are extremely safe and well tolerated.</p>
@@ -92,7 +96,6 @@
               </li>
             </ol>
           </div>
-        </div>
         </div>
     </div>
 </main>
