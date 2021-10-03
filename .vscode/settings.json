@@ -29,6 +29,7 @@
         "patientprofile",
         "quicklinks",
         "sideeffects",
+        "tophi",
         "urate"
     ],
     "[django-html]": {

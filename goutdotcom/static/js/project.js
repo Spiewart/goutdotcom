@@ -229,7 +229,6 @@ function contraindications_profile_bleed() {
   }
 }
 /* ULT app JS */
-
 // function that hides/shows subsequent fields based upon first_flare value
 function one_flare() {
   if ($('#id_num_flares').val() == 'one') {
@@ -243,20 +242,32 @@ function one_flare() {
 function check_first_flare() {
   if ($('#id_num_flares').val().length == 0) {
       $('#div_id_freq_flares').hide();
+      $('#id_freq_flares').val('');
       $('#div_id_erosions').hide();
+      $('id_erosions').prop("checked", False);
+      $('#id_erosions').val('');
       $('#div_id_tophi').hide();
+      $('#id_tophi').val('');
       $('#div_id_stones').hide();
+      $('#id_stones').val('');
       $('#div_id_ckd').hide();
+      $('#id_ckd').val('');
       $('#div_id_uric_acid').hide();
+      $('#id_uric_acid').val('');
   }
   else if ($('#id_num_flares').val() == 'zero') {
       $('#div_id_freq_flares').hide();
-      $('#div_id_freq_flares').val('one');
+      $('#id_freq_flares').val('');
       $('#div_id_erosions').hide();
+      $('id_erosions').prop("checked", False);
       $('#div_id_tophi').hide();
+      $('#id_tophi').val('');
       $('#div_id_stones').hide();
+      $('#id_stones').val('');
       $('#div_id_ckd').hide();
+      $('#id_ckd').val('');
       $('#div_id_uric_acid').hide();
+      $('#id_uric_acid').val('');
   }
   else if ($('#id_num_flares').val() == 'one') {
       $('#div_id_freq_flares').val('one');

@@ -45,13 +45,11 @@ body {
   background-color: var(--main-button-border-color);
 }
 
-.card {
+#card-homepage {
   background: var(--main-nested-container-background);
-}
-
-.card-columns {
-  margin: auto;
-  width: 100%;
+  width: 18rem;
+  height: 100%;
+  color: var(--main-button-background-color);
 }
 
 .default-container {

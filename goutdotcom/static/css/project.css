@@ -39,12 +39,12 @@ body {
 .btn:hover {
   background-color: var(--main-button-border-color); }
 
-.card {
-  background: var(--main-nested-container-background); }
-
-.card-columns {
-  margin: auto;
-  width: 100%; }
+#card-homepage {
+  background: var(--main-nested-container-background);
+  width: 288px;
+  width: 18rem;
+  height: 100%;
+  color: var(--main-button-background-color); }
 
 .default-container {
   border-style: var(--main-master-container-border-style);
