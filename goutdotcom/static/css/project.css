@@ -24,7 +24,10 @@ body {
   border-style: var(--main-nested-container-border-style);
   border-width: var(--main-nested-container-border-width);
   border-color: var(--main-nested-container-border-color);
-  padding: var(--main-nested-container-padding); }
+  padding: var(--main-nested-container-padding);
+  width: 100%;
+  margin: 0px;
+  padding: 0px; }
 
 .asteriskField {
   display: none; }
@@ -35,6 +38,13 @@ body {
 
 .btn:hover {
   background-color: var(--main-button-border-color); }
+
+.card {
+  background: var(--main-nested-container-background); }
+
+.card-columns {
+  margin: auto;
+  width: 100%; }
 
 .default-container {
   border-style: var(--main-master-container-border-style);
@@ -51,6 +61,9 @@ body {
 
 .hyperlink:hover {
   color: black; }
+
+.navbar {
+  background: var(--main-nested-container-background); }
 
 .nested-container {
   background: var(--main-nested-container-background);
@@ -72,20 +85,6 @@ body {
 #profilepic {
   margin-left: 5px; }
 
-.flare-mini-detail-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px;
-  background-color: green; }
-
-.flare-index-column {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px;
-  background-color: green; }
-
 .gdc-container-subcontainer {
   border-style: solid;
   border-width: medium;
@@ -101,51 +100,6 @@ body {
 
 .pagination {
   margin: 0px !important; }
-
-.gdc-legend {
-  border-style: solid;
-  border-width: medium;
-  border-color: var(--main-border-color);
-  padding: 5px;
-  background: var(--main-background); }
-
-.gdc-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: #611b00;
-  background-color: #8fd489;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 5px;
-  list-style-type: square; }
-
-.gdc-default-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px;
-  background-color: #8684e9; }
-
-.user-profile-media {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px;
-  background-color: #8684e9; }
-
-.user-ULT-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px;
-  background-color: #8684e9; }
-
-.treatment-index {
-  border-style: solid;
-  border-width: medium;
-  border-color: #010e14;
-  padding: 5px;
-  background-color: #5fad5f; }
 
 .alert-debug {
   background-color: #fff;

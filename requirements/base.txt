@@ -1,3 +1,5 @@
+pyparsing==2.4.7  # https://pypi.org/project/pyparsing/
+bibtexparser==1.0.1 # https://bibtexparser.readthedocs.io/en/master/index.html#
 pytz==2021.1  # https://github.com/stub42/pytz
 python-slugify==4.0.1  # https://github.com/un33k/python-slugify
 Pillow==8.1.2  # https://github.com/python-pillow/Pillow

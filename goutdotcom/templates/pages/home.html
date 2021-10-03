@@ -2,31 +2,43 @@
 {% load static %}
 
 {% block content %}
-<main class="container-fluid">
-  <h1 class="nested-container" style="font-weight: bold;">Gouthelper: Educate Yourself, Don't Live with Gout</h1>
-  <div class="media default-container">
-    <img class="mr-3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" class="figure-img img-fluid rounded" alt="" style="max-width: 25%; max-height: auto;" alt="Generic placeholder image">
-    <div class="media-body">
-      <h2 class="mt-0 nested-container">Having a gout flare?</h2>
-      <p>Gout flares are terrible. They are painful and disabling.</p>
-      <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-flare' %}" role="button">Flare Treatment</a>
-    </div>
-  </div>
-  <div class="media default-container">
-    <div class="media-body">
-      <h2 class="mt-0 nested-container">Lots of <a href="{% url 'flare:about' %}">flares</a>?</h2>
-      <p>Don't live with gout (ULT).</p>
-      <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button">Treatment</a>
-    </div>
-    <img class="mr-3" src="https://www.researchgate.net/publication/51124040/figure/fig1/AS:216380080168960@1428600439359/Distribution-of-joints-typically-affected-by-gout-reproduced-with-the-permission-of-the.png" class="figure-img img-fluid rounded" alt="" style="max-width: 15%; max-height: auto;" alt="Generic placeholder image">
-  </div>
-  <div class="media default-container">
-    <img class="mr-3" src="https://www.researchgate.net/profile/Tim-Jansen-2/publication/230618654/figure/fig4/AS:300405515931649@1448633664057/Chronic-tophaceous-gout-of-the-hand-showing-deforming-arthropathy-and-obvious-tophi.png" class="figure-img img-fluid rounded" alt="" style="max-width: 25%; max-height: auto;" alt="Generic placeholder image">
-    <div class="media-body">
-      <h2 class="mt-0 nested-container">Is gout treatment for you?</h2>
-      <p>Gout flares are terrible. They are painful and disabling.</p>
-      <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button"" role="button">ULT</a>
-    </div>
+<div class="jumbotron-fluid default-container">
+        <div class="row">
+          <div class="col">
+            <h1 class="nested-container">Gouthelper</h1>
+          <h2 class="lead">Educate Yourself, Don't Live with Gout</h2>
+          <hr class="my-6" color="white">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="card-columns">
+              <a href="{% url 'treatment:about-flare' %}">
+              <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" alt="Card image cap">
+                <div class="card-body">
+                  <h2>Having a gout flare?</h2>
+                </div>
+              </div>
+              </a>
+              <a href="{% url 'flare:about' %}">
+              <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="https://www.stockvault.net/data/2016/08/23/208302/preview16.jpg" alt="Card image cap">
+                <div class="card-body">
+                  <h2>Lots of flares?</h2>
+                </div>
+              </div>
+              </a>
+              <a href="{% url 'ult:create' %}">
+              <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="https://www.researchgate.net/profile/Tim-Jansen-2/publication/230618654/figure/fig4/AS:300405515931649@1448633664057/Chronic-tophaceous-gout-of-the-hand-showing-deforming-arthropathy-and-obvious-tophi.png" alt="Card image cap">
+                <div class="card-body">
+                  <h2>Is gout treatment for you?</h2>
+                </div>
+              </div>
+              </a>
+            </div>
+      </div>
   </div>
 </main>
 {% endblock content %}

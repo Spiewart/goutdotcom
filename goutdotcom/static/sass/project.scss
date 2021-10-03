@@ -27,6 +27,9 @@ body {
   border-width: var(--main-nested-container-border-width);
   border-color: var(--main-nested-container-border-color);
   padding: var(--main-nested-container-padding);
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
 }
 
 .asteriskField {
@@ -40,6 +43,15 @@ body {
 
 .btn:hover {
   background-color: var(--main-button-border-color);
+}
+
+.card {
+  background: var(--main-nested-container-background);
+}
+
+.card-columns {
+  margin: auto;
+  width: 100%;
 }
 
 .default-container {
@@ -59,6 +71,10 @@ body {
 
 .hyperlink:hover {
   color: black;
+}
+
+.navbar {
+  background: var(--main-nested-container-background);
 }
 
 .nested-container {
@@ -85,21 +101,6 @@ body {
   margin-left: 5px;
 }
 
-.flare-mini-detail-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(1, 14, 20);
-  padding: 5px;
-  background-color: green;
-}
-
-.flare-index-column {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(1, 14, 20);
-  padding: 5px;
-  background-color: green;
-}
 
 .gdc-container-subcontainer {
   border-style: solid;
@@ -115,58 +116,9 @@ body {
   margin: 0px !important;
 }
 
-.gdc-legend {
-  border-style: solid;
-  border-width: medium;
-  border-color: var(--main-border-color);
-  padding: 5px;
-  background: var(--main-background);
-}
-
-.gdc-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(97, 27, 0);
-  background-color: rgb(143, 212, 137);
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 5px;
-  list-style-type: square;
-}
-
-.gdc-default-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(1, 14, 20);
-  padding: 5px;
-  background-color: rgb(134, 132, 233);
-}
-
-.user-profile-media {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(1, 14, 20);
-  padding: 5px;
-  background-color: rgb(134, 132, 233);
-}
 
 
 
-.user-ULT-list {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(1, 14, 20);
-  padding: 5px;
-  background-color: rgb(134, 132, 233);
-}
-
-.treatment-index {
-  border-style: solid;
-  border-width: medium;
-  border-color: rgb(1, 14, 20);
-  padding: 5px;
-  background-color: rgb(95, 173, 95);
-}
 
 // project specific CSS goes here
 

@@ -76,11 +76,11 @@ LOCAL_APPS = [
     "goutdotcom.users.apps.UsersConfig",
     "goutdotcom.profiles.apps.ProfilesConfig",
     "goutdotcom.lab.apps.LabConfig",
+    "goutdotcom.citations.apps.CitationsConfig",
     "goutdotcom.flare.apps.FlareConfig",
     "goutdotcom.history.apps.HistoryConfig",
     "goutdotcom.ult.apps.UltConfig",
     "goutdotcom.treatment.apps.TreatmentConfig",
-    "goutdotcom.reference.apps.ReferenceConfig",
     "goutdotcom.vitals.apps.VitalsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
