@@ -64,7 +64,11 @@
     </div>
   </div>
   <footer>
+  {% if request.user.is_authenticated %}
   <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">Update</a>
+  {% else %}
+  <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button">Recalculate</a>
+  {% endif %}
   {% if object.calculator == "abstain" %}
   <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
   {% elif object.calculator == "conditional" %}

@@ -242,42 +242,45 @@ function one_flare() {
 function check_first_flare() {
   if ($('#id_num_flares').val().length == 0) {
       $('#div_id_freq_flares').hide();
-      $('#id_freq_flares').val('');
+      $('#div_id_freq_flares').val('');
       $('#div_id_erosions').hide();
-      $('id_erosions').prop("checked", False);
-      $('#id_erosions').val('');
+      $('#id_erosions').prop('checked', false);
       $('#div_id_tophi').hide();
-      $('#id_tophi').val('');
+      $('#id_tophi').prop('checked', false);
       $('#div_id_stones').hide();
-      $('#id_stones').val('');
+      $('#id_stones').prop('checked', false);
       $('#div_id_ckd').hide();
-      $('#id_ckd').val('');
+      $('#id_ckd').prop('checked', false);
       $('#div_id_uric_acid').hide();
-      $('#id_uric_acid').val('');
+      $('#id_uric_acid').prop('checked', false);
   }
   else if ($('#id_num_flares').val() == 'zero') {
       $('#div_id_freq_flares').hide();
-      $('#id_freq_flares').val('');
+      $('#div_id_freq_flares').val('');
       $('#div_id_erosions').hide();
-      $('id_erosions').prop("checked", False);
+      $('#id_erosions').prop('checked', false);
       $('#div_id_tophi').hide();
-      $('#id_tophi').val('');
+      $('#id_tophi').prop('checked', false);
       $('#div_id_stones').hide();
-      $('#id_stones').val('');
+      $('#id_stones').prop('checked', false);
       $('#div_id_ckd').hide();
-      $('#id_ckd').val('');
+      $('#id_ckd').prop('checked', false);
       $('#div_id_uric_acid').hide();
-      $('#id_uric_acid').val('');
+      $('#id_uric_acid').prop('checked', false);
   }
   else if ($('#id_num_flares').val() == 'one') {
-      $('#div_id_freq_flares').val('one');
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('one');
       $('#div_id_erosions').show();
+      $('#id_erosions').prop('checked', false);
       $('#div_id_tophi').show();
+      $('#id_tophi').prop('checked', false);
       $('#div_id_stones').show();
+      $('#id_stones').prop('checked', false);
       $('#div_id_ckd').show();
+      $('#id_ckd').prop('checked', false);
       $('#div_id_uric_acid').show();
+      $('#id_uric_acid').prop('checked', false);
   }
   else {
       $('#div_id_freq_flares').show();

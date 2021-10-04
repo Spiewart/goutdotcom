@@ -6,6 +6,7 @@
 {% if form.instance.pk %}
 <h1 class="nested-container">Do you still need urate-lowering therapy (ULT)?</h1>
 {% else %}
+<h1 class="nested-container">Do you need urate-lowering therapy (ULT)?</h1>
 {% endif %}
 {% endblock header %}
 
@@ -16,13 +17,6 @@
     {% crispy form %}
     </form>
   {% else %}
-    <div class="jumbotron">
-    <h1 class="default-container">Urate-lowering therapy (ULT)</h1>
-    <p class="lead">Urate-lowering therapy is the cornerstone of chronic management of gout. For people with persistent gout, it can literally be life-changing.</p>
-    <hr class="my-4">
-    <p>Not everyone who has gout needs chronic management and there is some nuance to starting ULT, particularly in the first 12 months of therapy.</p>
-    <h2 class="default-container">Answer a few simple questions below to find out if ULT is for you.</h2>
-  </div>
     <form class="form-horizontal" method="post" action="{% url 'ult:create' %}">
       {% csrf_token %}
       {% crispy form %}
