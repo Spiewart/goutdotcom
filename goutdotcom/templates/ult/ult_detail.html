@@ -4,52 +4,86 @@
 {% block content %}
 <main>
   <div class="jumbotron-fluid default-container">
-    <div class="container-fluid">
-      <h1 class="nested-container">{{ object.calculator }}</h1>
+      {% if object.calculator == "Indicated" %}
+      <h1 class="nested-container">ULT Indicated</h1>
       <p>Urate-lowering therapy (ULT) is indicated for your gout. This means there is some general medical consensus that you would benefit from ULT.</p>
       <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.
-      <hr class="my-4">
+      {% elif object.calculator == "Conditional" %}
+      <h1 class="nested-container">ULT Conditionally Indicated</h1>
+      <h2><u>Conditional Indications</u></h2>
+      <p>Urate-lowering therapy (ULT) is conditionally indicated for your gout.
+      This means there is some general medical consensus that you would benefit from ULT, but it is not a "strong" recommendation.
+      It also means that, generally, there is less scientific evidence that you will benefit.
+      It is more a matter of expert opinion.</p>
+      <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.
+      {% else %}
+      <h1 class="nested-container">ULT Not Indicated</h1>
+
+      {% endif %}
+      <hr class="my-6" color="white">
       <div class="row">
         <div class="col">
-          <h2 class="nested-container">Indications and Contraindications to ULT</h2>
-          <ul>
+          <h2 class="nested-container">Rationale</h2>
             {% if object.num_flares %}
-              <li>Number of flares reported: {{ object.num_flares }}</li>
-                <ul>
-                  {% if object.num_flares == 'zero' %}
-                  <li>Not ever having a gout flare is a strong recommendation against using urate-lowering therapy.</li>
+            <h3>Number of Flares</h3>
+              <p>You reported: {{ object.num_flares }}.</p>
+              {% if object.num_flares == 'zero' %}
+              <p>Not ever having a gout flare is a strong recommendation against using urate-lowering therapy.</p>
+              {% elif object.num_flares == 'one' %}
+              <p>ULT is generally not recommended for an individual's first gout flare.
+              This is because the time that passes between flares will sometimes be as long as years and it is not necessarily worth it to take a medication daily to prevent infrequent attacks.</p>
+              {% else %}
+                {% if object.freq_flares %}
+                  {% if object.freq_flares == "Two or more" %}
+                  <p>If you are having more than one gout flare per year, ULT is strongly recommended.
+                    This is to prevent the pain and disability of recurrent flares.
+                    Also, individuals who get more than one flare per year are more likely to have their gout accelerate, becoming more frequent, disabling, and causing long-term joint damage.
+                  </p>
                   {% endif %}
-                </ul>
+                {% endif %}
+              {% endif %}
             {% endif %}
             {% if object.freq_flares %}
-              <li>Frequency of flares: {{ object.freq_flares }} per year </li>
-                <ul>
-                  {% if object.freq_flares == 'one' %}
-                  <li>Generally, only having 1 flare per year isn't burdensome enough to warrant daily medication on an indefinite basis. There are, however, exceptions to this, such as when you have erosions, tophi, hyperuricemia, CKD, or urate kidney stones.</li>
-                  {% endif %}
-                </ul>
+            <hr class="my-6" color="white">
+            <h3>Frequency of Flares</h3>
+              <p>You reported: {{ object.freq_flares }} per year </p>
+              {% if object.freq_flares == 'one' %}
+              <p>Generally, only having 1 flare per year isn't burdensome enough to warrant daily medication on an indefinite basis.
+                There are, however, exceptions to this, such as when you have erosions, tophi, hyperuricemia, CKD, or urate kidney stones.</p>
+              {% endif %}
             {% endif %}
             {% if object.erosions %}
-              <li>Erosions present on x-rays or other imaging: yes</li>
-            {% else %}
-              <li>Erosions present on x-rays or other imaging: no</li>
+            <hr class="my-6" color="white">
+            <h3>Erosions</h3>
+              {% if object.erosions == True %}
+              <p>You reported: yes, you do have erosions on imaging (x-ray, CT, MRI, ultrasound, etc.)</p>
+              {% else %}
+              <p>You reported: no, you don't have erosions on imaging (x-ray, CT, MRI, ultrasound, etc.)</p>
+              {% endif %}
             {% endif %}
             {% if object.tophi %}
-              <li>Tophi: yes</li>
-            {% else %}
-              <li>Tophi: no</li>
+            <hr class="my-6" color="white">
+            <h3>Erosions</h3>
+              {% if object.tophi == True %}
+              <p>You responded: yes, you do have tophi</p>
+              {% else %}
+              <p>You responded: no, you don't have tophi</p>
+              {% endif %}
             {% endif %}
             {% if object.stones %}
+            <hr class="my-6" color="white">
               <li>Urate kidney stones: yes</li>
             {% else %}
               <li>Urate kidney stones: no</li>
             {% endif %}
             {% if object.ckd %}
+            <hr class="my-6" color="white">
               <li>Chronic kidney disease: yes</li>
             {% else %}
               <li>Chronic kidney disease: no</li>
             {% endif %}
             {% if object.uric_acid %}
+            <hr class="my-6" color="white">
               <li>Uric acid > 9.0: yes</li>
             {% else %}
               <li>Uric acid > 9.0: no</li>
@@ -58,10 +92,14 @@
             {% if object.modified %}
               <li>Last modified: {{ object.modified }}</li>
             {% endif %}
-          </ul>
         </div>
       </div>
-    </div>
+      <h2 class="nested-container"><a id="references">References</a></h2>
+      {% block references %}
+      <ol>
+        <li id=1>FitzGerald JD, Dalbeth N, Mikuls T, Brignardello-Petersen R, Guyatt G, Abeles AM, Gelber AC, Harrold LR, Khanna D, King C, Levy G, Libbey C, Mount D, Pillinger MH, Rosenthal A, Singh JA, Sims JE, Smith BJ, Wenger NS, Bae SS, Danve A, Khanna PP, Kim SC, Lenert A, Poon S, Qasim A, Sehra ST, Sharma TSK, Toprover M, Turgunbaev M, Zeng L, Zhang MA, Turner AS, Neogi T. 2020 American College of Rheumatology Guideline for the Management of Gout. Arthritis Care Res (Hoboken). 2020 Jun;72(6):744-760. doi: 10.1002/acr.24180. Epub 2020 May 11. Erratum in: Arthritis Care Res (Hoboken). 2020 Aug;72(8):1187. Erratum in: Arthritis Care Res (Hoboken). 2021 Mar;73(3):458. PMID: 32391934.<a href="https://pubmed.ncbi.nlm.nih.gov/32391934/" target="_blank"> https://doi.org/10.1525/9780520339484-005</a></li>
+      </ol>
+      {% endblock references %}
   </div>
   <footer>
   {% if request.user.is_authenticated %}

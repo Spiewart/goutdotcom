@@ -69,9 +69,9 @@ class ULT(TimeStampedModel):
     )
 
     def calculator(self):
-        go_forth = "ULT is recommended for your gout."
-        abstain = "ULT isn't recommended for your gout."
-        conditional = "ULT is conditionally recommended for your gout."
+        go_forth = "Indicated"
+        abstain = "Not Indicated"
+        conditional = "Conditional"
 
         if self.num_flares == "one":
             if self.erosions == True or self.tophi == True:
