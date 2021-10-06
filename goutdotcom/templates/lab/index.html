@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container">
+<main role="main">
   <div class="container default-container">
     <h1 class="nested-container">{{ request.user|capfirst }}'s Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a>
     {% if request.user.is_authenticated %}
@@ -28,28 +28,33 @@
         {% if urate_list %}
         <div class="col">
           <div class="container nested-container">
-          <h2 class="default-container"><a href="{% url 'lab:list' 'urate' %}">Uric Acids</a></h2>
+          <h2 class="default-container"><a href="{% url 'lab:list' 'urate' %}">Uric Acid</a></h2>
           {% for urate in urate_list %}
-          <div class="container user-flare-list">
+          <div class="container default-container">
             <p>{{ urate.value }} {{ urate.units }}</p>
+            {% if urate.date %}
             <p>Date: <a href="{% url 'lab:detail' 'urate' urate.pk %}">{{ urate.date_drawn }}</a></p>
+            {% else %}
+            <p>Date: not recorded</p>
+            {% endif %}
           </div>
-          <br>
           {% endfor %}
           </div>
         </div>
         {% endif %}
         {% if creatinine_list %}
         <div class="col">
-          <div class="container">
-            <h2 class="default-container"><a href="{% url 'lab:list' 'creatinine' %}">Creatinines</a></h2>
+          <div class="container nested-container">
+            <h2 class="default-container"><a href="{% url 'lab:list' 'creatinine' %}">Creatinine</a></h2>
             {% for creatinine in creatinine_list %}
-              <div class="container user-flare-list">
-                <p>{{ creatinine.value }} {{ creatinine.units }}</p>
-                <p>eGFR: {{ creatinine.eGFR_calculator }}</p>
+              <div class="container default-container">
+                <p>{{ creatinine.value }} {{ creatinine.units }} (eGFR: {{ creatinine.eGFR_calculator }})</p>
+                {% if creatinine.date_drawn %}
                 <p>Date: <a href="{% url 'lab:detail' 'creatinine' creatinine.pk %}">{{ creatinine.date_drawn }}</a></p>
+                {% else %}
+                <p>Date: not recorded</p>
+                {% endif %}
             </div>
-            <br>
             {% endfor %}
           </div>
         </div>
@@ -58,66 +63,89 @@
         <div class="row">
           {% if ALT_list %}
             <div class="col">
-            <h2><a href="{% url 'lab:list' 'ALT' %}">ALTs</a></h2>
+              <div class="container nested-container">
+            <h2 class="default-container"><a href="{% url 'lab:list' 'ALT' %}">ALT</a></h2>
             {% for ALT in ALT_list %}
-            <div class="container user-flare-list">
+            <div class="container default-container">
               <p>{{ ALT.value }} {{ ALT.units}}</p>
+              {% if ALT.date_drawn %}
               <p>Date: <a href="{% url 'lab:detail' 'ALT' ALT.pk %}">{{ ALT.date_drawn }}</a></p>
+              {% else %}
+              <p>Date: not recorded</p>
+              {% endif %}
             </div>
-            <br>
             {% endfor %}
+            </div>
           </div>
           {% endif %}
           {% if AST_list %}
           <div class="col">
-            <h2><a href="{% url 'lab:list' 'AST' %}">ASTs</a></h2>
+            <div class="container nested-container">
+            <h2 class="default-container"><a href="{% url 'lab:list' 'AST' %}">AST</a></h2>
             {% for AST in AST_list %}
-            <div class="container user-flare-list">
+            <div class="container default-container">
               <p>{{ AST.value }} {{ AST.units }}</p>
-                <p>Date: <a href="{% url 'lab:detail' 'AST' AST.pk %}">{{ AST.date_drawn }}</a></p>
+              {% if AST.date_drawn %}
+              <p>Date: <a href="{% url 'lab:detail' 'AST' AST.pk %}">{{ AST.date_drawn }}</a></p>
+              {% else %}
+              <p>Date: not recorded</p>
+              {% endif %}
             </div>
-            <br>
             {% endfor %}
+            </div>
           </div>
           {% endif %}
       </div>
       <div class="row">
         {% if platelet_list %}
         <div class="col">
-          <h2><a href="{% url 'lab:list' 'platelet' %}">Platelets</a></h2>
+          <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'lab:list' 'platelet' %}">Platelets</a></h2>
           {% for platelet in platelet_list %}
-          <div class="container user-flare-list">
+          <div class="container default-container">
             <p>{{ platelet.value }} {{ platelet.units}}</p>
+            {% if platelet.date_drawn %}
             <p>Date: <a href="{% url 'lab:detail' 'platelet' platelet.pk %}">{{ platelet.date_drawn }}</a></p>
+            {% else %}
+            <p>Date: not recorded</p>
+            {% endif %}
           </div>
-          <br>
           {% endfor %}
+          </div>
         </div>
         {% endif %}
         {% if WBC_list %}
         <div class="col">
           <div class="container nested-container">
-            <h2 class="default-container"><a href="{% url 'lab:list' 'WBC' %}">WBCs</a></h2>
+            <h2 class="default-container"><a href="{% url 'lab:list' 'WBC' %}">WBC</a></h2>
             {% for WBC in WBC_list %}
-            <div class="container user-flare-list">
+            <div class="container default-container">
               <p>{{ WBC.value }} {{ WBC.units }}</p>
+              {% if WBC.date_drawn %}
               <p>Date: <a href="{% url 'lab:detail' 'WBC' WBC.pk %}">{{ WBC.date_drawn }}</a></p>
+              {% else %}
+              <p>Date: not recorded</p>
+              {% endif %}
             </div>
-            <br>
             {% endfor %}
           </div>
         </div>
         {% endif %}
        {% if hemoglobin_list %}
        <div class="col">
-          <h2><a href="{% url 'lab:list' 'hemoglobin' %}">Hemoglobins</a></h2>
+         <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'lab:list' 'hemoglobin' %}">Hemoglobin</a></h2>
           {% for hemoglobin in hemoglobin_list %}
-          <div class="container user-flare-list">
+          <div class="container default-container">
             <p>{{ hemoglobin.value }} {{ hemoglobin.units }}</p>
+            {% if hemoglobin.date_drawn %}
             <p>Date: <a href="{% url 'lab:detail' 'hemoglobin' hemoglobin.pk %}">{{ hemoglobin.date_drawn }}</a></p>
+            {% else %}
+            <p>Date: not recorded</p>
+            {% endif %}
           </div>
-          <br>
           {% endfor %}
+          </div>
         </div>
         {% endif %}
       </div>

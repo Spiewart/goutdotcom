@@ -17,7 +17,7 @@
         {% for flare in page_obj %}
           <div class="container nested-container">
             <a href="{% url 'flare:detail' flare.pk %}"><h2 class="default-container">Date: {{ flare.created }}</h2></a>
-            <ul>
+            <ul class="ul-main-list">
               {% if flare.location %}
               <li>Location: {{ flare.location }}</li>
               {% endif %}

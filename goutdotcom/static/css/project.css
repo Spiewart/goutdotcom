@@ -101,6 +101,15 @@ body {
 .pagination {
   margin: 0px !important; }
 
+.ul-main-list {
+  border-style: var(--main-master-container-border-style);
+  border-width: var(--main-master-container-border-width);
+  border-color: var(--main-master-container-border-color);
+  color: #e7e7e7;
+  padding: var(--main-master-container-padding);
+  background-color: var(--main-master-container-background-color);
+  list-style-position: inside; }
+
 .alert-debug {
   background-color: #fff;
   border-color: #d6e9c6;

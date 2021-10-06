@@ -6,7 +6,7 @@
 <main class="container-fluid">
     <div class="row">
         <div class="column">
-            <div class="container default-container">
+            <div class="container-fluid default-container">
                 <h1 class="nested-container"><a id="{{ lab }}">{{ lab|capfirst }}</a>
                 <a class="btn btn-primary btn-lg" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About: Labs</a>
                 {% if request.user.is_authenticated %}

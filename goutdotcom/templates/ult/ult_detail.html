@@ -6,27 +6,27 @@
   <div class="jumbotron-fluid default-container">
       {% if object.calculator == "Indicated" %}
       <h1 class="nested-container">ULT Indicated</h1>
-      <p>Urate-lowering therapy (ULT) is indicated for your gout. This means there is some general medical consensus that you would benefit from ULT.</p>
-      <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.
+      <h2>Strong Recommendation</h2>
+      <p>Urate-lowering therapy (ULT) is strongly recommended for your gout. </p>
+      <p>This means there is general medical consensus that you would benefit from ULT.</p>
       {% elif object.calculator == "Conditional" %}
       <h1 class="nested-container">ULT Conditionally Indicated</h1>
-      <h2><u>Conditional Indications</u></h2>
-      <p>Urate-lowering therapy (ULT) is conditionally indicated for your gout.
-      This means there is some general medical consensus that you would benefit from ULT, but it is not a "strong" recommendation.
+      <h2><u>Conditional Recommendation</u></h2>
+      <p>Urate-lowering therapy (ULT) is conditionally recommended for your gout.</p>
+      <p>This means there is some general medical consensus that you would benefit from ULT, but it is not a "strong" recommendation.
       It also means that, generally, there is less scientific evidence that you will benefit.
       It is more a matter of expert opinion.</p>
-      <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.
+      <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.</p>
       {% else %}
       <h1 class="nested-container">ULT Not Indicated</h1>
-
+      <h2>Recommended Against</h2>
+      <p>ULT is not recommended for your gout.</p>
       {% endif %}
       <hr class="my-6" color="white">
       <div class="row">
         <div class="col">
           <h2 class="nested-container">Rationale</h2>
-            {% if object.num_flares %}
-            <h3>Number of Flares</h3>
-              <p>You reported: {{ object.num_flares }}.</p>
+            <h3>Number of Flares: {{ object.num_flares }}</h3>
               {% if object.num_flares == 'zero' %}
               <p>Not ever having a gout flare is a strong recommendation against using urate-lowering therapy.</p>
               {% elif object.num_flares == 'one' %}
@@ -34,7 +34,9 @@
               This is because the time that passes between flares will sometimes be as long as years and it is not necessarily worth it to take a medication daily to prevent infrequent attacks.</p>
               {% else %}
                 {% if object.freq_flares %}
-                  {% if object.freq_flares == "Two or more" %}
+                  {% if object.freq_flares == "one" %}
+                  <p>If you've had more than one flare, the decision to treat is generally based on <a href="#frequency">how frequently</a> you are getting them.</p>
+                  {% elif object.freq_flares == "Two or more" %}
                   <p>If you are having more than one gout flare per year, ULT is strongly recommended.
                     This is to prevent the pain and disability of recurrent flares.
                     Also, individuals who get more than one flare per year are more likely to have their gout accelerate, becoming more frequent, disabling, and causing long-term joint damage.
@@ -42,62 +44,90 @@
                   {% endif %}
                 {% endif %}
               {% endif %}
-            {% endif %}
-            {% if object.freq_flares %}
             <hr class="my-6" color="white">
-            <h3>Frequency of Flares</h3>
-              <p>You reported: {{ object.freq_flares }} per year </p>
-              {% if object.freq_flares == 'one' %}
+            <h3 id="frequency">Frequency of Flares: {{ object.freq_flares }} / year</h3>
+            {% if object.freq_flares == 'one' %}
               <p>Generally, only having 1 flare per year isn't burdensome enough to warrant daily medication on an indefinite basis.
                 There are, however, exceptions to this, such as when you have erosions, tophi, hyperuricemia, CKD, or urate kidney stones.</p>
-              {% endif %}
+            {% elif object.freq_flares == 'two or more' %}
+              <p>Having more than one gout flare per year is a strong indication for ULT.</p>
             {% endif %}
-            {% if object.erosions %}
             <hr class="my-6" color="white">
-            <h3>Erosions</h3>
-              {% if object.erosions == True %}
-              <p>You reported: yes, you do have erosions on imaging (x-ray, CT, MRI, ultrasound, etc.)</p>
-              {% else %}
-              <p>You reported: no, you don't have erosions on imaging (x-ray, CT, MRI, ultrasound, etc.)</p>
-              {% endif %}
-            {% endif %}
-            {% if object.tophi %}
-            <hr class="my-6" color="white">
-            <h3>Erosions</h3>
-              {% if object.tophi == True %}
-              <p>You responded: yes, you do have tophi</p>
-              {% else %}
-              <p>You responded: no, you don't have tophi</p>
-              {% endif %}
-            {% endif %}
-            {% if object.stones %}
-            <hr class="my-6" color="white">
-              <li>Urate kidney stones: yes</li>
+            <h3>Erosions:
+            {% if object.erosions == True %}
+            present
+            {% elif object.erosions == False %}
+            absent
             {% else %}
-              <li>Urate kidney stones: no</li>
+            unknown
             {% endif %}
-            {% if object.ckd %}
+            </h3>
+            <p>These are often found on x-rays your doctor performed on the joints that you report having gout in.
+              They can also be seen on <a href="https://en.wikipedia.org/wiki/CT_scan" target="_blank">CT</a> scans,  <a href="https://radiopaedia.org/cases/90545?lang=us" target="_blank">MRIs</a>, and ultrasounds of your gouty joints.
+            </p>
+            <p>Erosions are an indication for urate-lowering therapy.
+              This is important for your long-term health because erosions are permanent changes to the bone and cartilage.
+              They can be prevented with ULT, but once present can't be reversed.</p>
             <hr class="my-6" color="white">
-              <li>Chronic kidney disease: yes</li>
+            <h3>Tophi:
+            {% if object.tophi == True %}
+            present
+            {% elif object.tophi == False %}
+            absent
             {% else %}
-              <li>Chronic kidney disease: no</li>
+            unknown
             {% endif %}
-            {% if object.uric_acid %}
+            </h3>
+            <p>Tophi are an indication for <a class="link-primary" href="{% url 'treatment:about-ult' %}">ULT</a> because they can cause permanent damage to the bone and cartilage they are adjacent to.
+              They can also break down, drain, and become infected.
+            </p>
             <hr class="my-6" color="white">
-              <li>Uric acid > 9.0: yes</li>
+            <h3>Uric Acid Kidney Stones:
+            {% if object.stones == True %}
+            present
+            {% elif object.stones == False %}
+            absent
             {% else %}
-              <li>Uric acid > 9.0: no</li>
+            unknown
             {% endif %}
-            <li>Created: {{ object.created }}</li>
+            </h3>
+            <p>Kidney stones are terrible. If you have uric acid kidney stones and gout, using ULT to get rid of both is a no-brainer (conditional recommendation).</p>
+            <hr class="my-6" color="white">
+            <h3>Chronic Kidney Disease:
+            {% if object.ckd == True %}
+            present
+            {% elif object.ckd == False %}
+            absent
+            {% else %}
+            unknown
+            {% endif %}
+            </h3>
+            <p>Chronic kidney disease (CKD) is associated with incident and progressive gout (<a href="#2">2</a>, <a href="#3">3</a>).</p>
+            <hr class="my-6" color="white">
+            <h3>Hyperuricemia:
+            {% if object.uric_acid == True %}
+            present
+            {% elif object.uric_acid == False %}
+            absent
+            {% else %}
+            unknown
+            {% endif %}
+            </h3>
+            <p>Hyperuricemia (elevated blood levels of uric acid) is a conditional indication for ULT if you have had a gout flare.</p>
+            <hr class="my-6" color="white">
             {% if object.modified %}
-              <li>Last modified: {{ object.modified }}</li>
+              <p>Last modified: {{ object.modified }}</p>
+            {% else %}
+              <p>Created: {{ object.created }}</p>
             {% endif %}
         </div>
       </div>
       <h2 class="nested-container"><a id="references">References</a></h2>
       {% block references %}
       <ol>
-        <li id=1>FitzGerald JD, Dalbeth N, Mikuls T, Brignardello-Petersen R, Guyatt G, Abeles AM, Gelber AC, Harrold LR, Khanna D, King C, Levy G, Libbey C, Mount D, Pillinger MH, Rosenthal A, Singh JA, Sims JE, Smith BJ, Wenger NS, Bae SS, Danve A, Khanna PP, Kim SC, Lenert A, Poon S, Qasim A, Sehra ST, Sharma TSK, Toprover M, Turgunbaev M, Zeng L, Zhang MA, Turner AS, Neogi T. 2020 American College of Rheumatology Guideline for the Management of Gout. Arthritis Care Res (Hoboken). 2020 Jun;72(6):744-760. doi: 10.1002/acr.24180. Epub 2020 May 11. Erratum in: Arthritis Care Res (Hoboken). 2020 Aug;72(8):1187. Erratum in: Arthritis Care Res (Hoboken). 2021 Mar;73(3):458. PMID: 32391934.<a href="https://pubmed.ncbi.nlm.nih.gov/32391934/" target="_blank"> https://doi.org/10.1525/9780520339484-005</a></li>
+        <li id=1>FitzGerald JD, Dalbeth N, Mikuls T, Brignardello-Petersen R, Guyatt G, Abeles AM, Gelber AC, Harrold LR, Khanna D, King C, Levy G, Libbey C, Mount D, Pillinger MH, Rosenthal A, Singh JA, Sims JE, Smith BJ, Wenger NS, Bae SS, Danve A, Khanna PP, Kim SC, Lenert A, Poon S, Qasim A, Sehra ST, Sharma TSK, Toprover M, Turgunbaev M, Zeng L, Zhang MA, Turner AS, Neogi T. 2020 American College of Rheumatology Guideline for the Management of Gout. Arthritis Care Res (Hoboken). 2020 Jun;72(6):744-760. doi: 10.1002/acr.24180. PMID: 32391934.<a href="https://pubmed.ncbi.nlm.nih.gov/32391934/" target="_blank"> https://doi.org/10.1525/9780520339484-005</a></li>
+        <li id=2>Zhu, Yanyan, Bhavik J. Pandya, and Hyon K. Choi. "Comorbidities of gout and hyperuricemia in the US general population: NHANES 2007-2008." <a href="https://www.sciencedirect.com/science/article/pii/S0002934312001891" target="_blank">The American journal of medicine 125.7 (2012): 679-687</a>.</li>
+        <li id=3>Krishnan, Eswar. "Reduced glomerular function and prevalence of gout: NHANES 2009–10." <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050046" target="_blank">PloS one 7.11 (2012): e50046</a>.</li>
       </ol>
       {% endblock references %}
   </div>

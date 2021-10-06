@@ -20,11 +20,10 @@
         <div class="col">
           {% for lab in object_list %}
               <div class="container nested-container">
-                  <h2 class="default-container">{{ lab.value }} {{ lab.units }}</h2>
+                  <h2 class="default-container">{{ lab.value }} {{ lab.units }} <a href="{{ lab.get_absolute_url }}" class="hyperlink">{{ lab.date_drawn.date }}</a></h2>
                   {% if lab.name == 'creatinine' %}
                   <li class="gdc-list">eGFR: {{ lab.eGFR_calculator }}</li>
                   {% endif %}
-                  <p>Date: <a href="{{ lab.get_absolute_url }}" class="hyperlink">{{ lab.date_drawn.date }}</a></p>
               </div>
               <br>
           {% endfor %}
