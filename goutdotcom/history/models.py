@@ -53,6 +53,8 @@ class VascularHistory(MedicalHistory):
 
 
 class CKD(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+
     class Stage(models.IntegerChoices):
         I = 1
         II = 2
@@ -152,11 +154,38 @@ class OrganTransplant(MedicalHistory):
 
 
 class UrateKidneyStones(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     name = "urate kidney stones"
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=("Do you have a history of " + name + "?"),
         verbose_name="Urate Kidney Stones",
+        null=True,
+        blank=True,
+    )
+
+
+class Erosions(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    name = "erosions"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have a history of " + name + "?"),
+        verbose_name="Do you have erosions on your x-rays?",
+        default=False,
+        null=True,
+        blank=True,
+    )
+
+
+class Tophi(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    name = "tophi"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have a history of " + name + "?"),
+        verbose_name="Do you have tophi on your x-rays?",
+        default=False,
         null=True,
         blank=True,
     )

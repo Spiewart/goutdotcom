@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.fields.related import OneToOneField
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
+from ..history.models import CKD, Erosions, Tophi, UrateKidneyStones
 from .choices import *
 
 
@@ -27,32 +29,36 @@ class ULT(TimeStampedModel):
         null=True,
         blank=True,
     )
-    erosions = models.BooleanField(
-        choices=BOOL_CHOICES,
+    erosions = models.OneToOneField(
+        Erosions,
+        on_delete=models.SET_NULL,
         verbose_name="Do you have erosions on your x-rays?",
         help_text="If you don't know, that's OK!",
         default=False,
         null=True,
         blank=True,
     )
-    tophi = models.BooleanField(
-        choices=BOOL_CHOICES,
+    tophi = models.OneToOneField(
+        Tophi,
+        on_delete=models.SET_NULL,
         verbose_name="Do you have tophi?",
         help_text="If you don't know, that's OK!",
         default=False,
         null=True,
         blank=True,
     )
-    stones = models.BooleanField(
-        choices=BOOL_CHOICES,
+    stones = OneToOneField(
+        UrateKidneyStones,
+        on_delete=models.SET_NULL,
         verbose_name="Have you ever had kidney stones made of uric acid?",
         help_text="If you don't know, that's OK!",
         default=False,
         null=True,
         blank=True,
     )
-    ckd = models.BooleanField(
-        choices=BOOL_CHOICES,
+    ckd = models.OneToOneField(
+        CKD,
+        on_delete=models.SET_NULL,
         verbose_name="Do you have chronic kidney disease (CKD) stage III or greater?",
         help_text="If you don't know, that's OK!",
         default=False,

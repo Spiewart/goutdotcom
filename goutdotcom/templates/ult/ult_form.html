@@ -15,11 +15,19 @@
     <form class="form-horizontal" method="post" action="{% url 'ult:update' object.pk %}">
     {% csrf_token %}
     {% crispy form %}
+    {% crispy CKD_form %}
+    {% crispy erosions_form %}
+    {% crispy tophi_form %}
+    {% crispy urate_kidney_stones_form %}
     </form>
   {% else %}
     <form class="form-horizontal" method="post" action="{% url 'ult:create' %}">
       {% csrf_token %}
       {% crispy form %}
+      {% crispy CKD_form %}
+      {% crispy erosions_form %}
+      {% crispy tophi_form %}
+      {% crispy urate_kidney_stones_form %}
     </form>
   {% endif %}
 {% endblock form %}

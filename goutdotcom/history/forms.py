@@ -13,6 +13,7 @@ from .models import (
     Cyclosporine,
     Diabetes,
     Diuretics,
+    Erosions,
     Fructose,
     Gout,
     HeartAttack,
@@ -20,6 +21,7 @@ from .models import (
     OrganTransplant,
     Shellfish,
     Stroke,
+    Tophi,
     UrateKidneyStones,
     XOIInteractions,
 )
@@ -120,6 +122,26 @@ class DiabetesForm(forms.ModelForm):
         )
 
 
+class ErosionsForm(forms.ModelForm):
+    prefix = "erosions"
+
+    class Meta:
+        model = Erosions
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(ErosionsForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Erosions", "value", id="erosions_for_profile"),
+        )
+
+
 class OrganTransplantForm(forms.ModelForm):
     prefix = "organ_transplant"
 
@@ -140,6 +162,26 @@ class OrganTransplantForm(forms.ModelForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Organ Transplant", "value", "organ", id="organ_transplant_for_profile"),
+        )
+
+
+class TophiForm(forms.ModelForm):
+    prefix = "tophi"
+
+    class Meta:
+        model = Tophi
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(TophiForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Tophi", "value", id="tophi_for_profile"),
         )
 
 
