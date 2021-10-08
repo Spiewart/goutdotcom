@@ -47,11 +47,29 @@ class DiabetesAdmin(admin.ModelAdmin):
     )
 
 
+class ErosionsAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+
+
 class OrganTransplantAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "value",
         "organ",
+        "created",
+        "pk",
+    )
+
+
+class TophiAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
         "created",
         "pk",
     )
@@ -210,6 +228,7 @@ admin.site.register(CKD, CKDAdmin)
 admin.site.register(Hypertension, HypertensionAdmin)
 admin.site.register(CHF, CHFAdmin)
 admin.site.register(Diabetes, DiabetesAdmin)
+admin.site.register(Erosions, ErosionsAdmin)
 admin.site.register(Fructose, FructoseAdmin)
 admin.site.register(OrganTransplant, OrganTransplantAdmin)
 admin.site.register(UrateKidneyStones, UrateKidneyStonesAdmin)
@@ -220,6 +239,7 @@ admin.site.register(XOIInteractions, XOIInteractionsAdmin)
 admin.site.register(ColchicineInteractions, ColchicineInteractionsAdmin)
 admin.site.register(Shellfish, ShellfishAdmin)
 admin.site.register(Stroke, StrokeAdmin)
+admin.site.register(Tophi, TophiAdmin)
 admin.site.register(HeartAttack, HeartAttackAdmin)
 admin.site.register(Bleed, BleedAdmin)
 admin.site.register(Alcohol, AlcoholAdmin)

@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.views.generic.base import TemplateView
 
+from goutdotcom.ult.models import ULT
+
 from ..lab.forms import UrateFlareForm
 from ..lab.models import Urate
 from ..treatment.forms import (
@@ -31,14 +33,66 @@ from ..treatment.models import (
     Prednisone,
     Tinctureoftime,
 )
-from .forms import FlareForm
-from .models import Flare
+from .forms import DecisionAidForm, FlareForm
+from .models import DecisionAid, Flare
 
 # Create your views here.
 
 
 class AboutFlares(TemplateView):
     template_name = "flare/about.html"
+
+
+class DecisionAidCreate(CreateView):
+    model = DecisionAid
+    form_class = DecisionAidForm
+
+    def form_valid(self, form):
+        if self.request.user.is_authenticated:
+            form.instance.user = self.request.user
+            return super().form_valid(form)
+        else:
+            return super().form_valid(form)
+
+
+class DecisionAidDetail(DetailView):
+    model = DecisionAid
+    template_name = "flare/decisionaid_detail.html"
+
+
+class DecisionAidList(ListView):
+    model = DecisionAid
+    """Changed allow_empty to = False so it returns 404 when empty, then redirect with dispatch to DecisionAid About view"""
+
+    allow_empty = False
+    paginate_by = 5
+    model = DecisionAid
+    """Overrode dispatch to redirect to Flare About view if DecisionAid view returns 404, as in the case of it being empty due to allow_empty=False
+    """
+
+    def dispatch(self, *args, **kwargs):
+        try:
+            return super().dispatch(*args, **kwargs)
+        except Http404:
+            return redirect("flare:about")
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update(
+            {
+                "decisionaid_list": DecisionAid.objects.filter(user=self.request.user),
+            }
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user).order_by("-created")
+
+
+class DecisionAidUpdate(UpdateView):
+    model = DecisionAid
+    form_class = DecisionAidForm
 
 
 class FlareDetail(LoginRequiredMixin, DetailView):

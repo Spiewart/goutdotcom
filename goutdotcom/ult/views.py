@@ -76,6 +76,7 @@ class ULTCreate(CreateView):
             ULT_data = form.save(commit=False)
             if request.user.is_authenticated:
                 CKD_data = CKD_form.save(commit=False)
+                CKD_data.pk = None
                 erosions_data = erosions_form.save(commit=False)
                 tophi_data = tophi_form.save(commit=False)
                 urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
@@ -97,6 +98,7 @@ class ULTCreate(CreateView):
                 erosions_data = erosions_form.save(commit=False)
                 tophi_data = tophi_form.save(commit=False)
                 urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
+                CKD_data.pk = None
                 CKD_data.save()
                 erosions_data.save()
                 tophi_data.save()

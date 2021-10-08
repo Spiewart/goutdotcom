@@ -201,7 +201,8 @@ class UrateKidneyStonesForm(forms.ModelForm):
         self.helper.form_tag = False
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
-            Fieldset("Diabetes", "value", id="urate_kidney_stones_for_profile"),
+            Fieldset("Uric Acid Kidney Stones", "value", id="urate_kidney_stones_for_profile"),
+            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 

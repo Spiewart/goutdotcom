@@ -10,8 +10,6 @@
                 {% if request.user.is_authenticated %}
                 <a class="btn btn-primary btn-lg" href="{% url 'flare:list' %}" role="button" style="float: right;">My Flares</a>
                 <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
-                {% else %}
-                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
                 {% endif %}
                 </h1>
                 {% endblock header %}

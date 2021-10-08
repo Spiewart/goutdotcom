@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main role="main" class="container">
+  <div class="row">
+    <div class="col default-container">
+      <h1 class="nested-container">{{ request.user|capfirst  }}'s Flare Treatment Recommendation
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:decisionaid-create' %}" role="button" style="float: right;">New Rec</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:decisionaid-list' %}" role="button" style="float: right;">Rec History</a>
+      <p>Date: {{ object.created }}</p>
+      {% if object.perfect_health == True %}
+      <p>In perfect health</p>
+      <p>Treatment: {{ object.decision_aid }}</p>
+      {% endif %}
+      {% if flare.duration %}
+      <p>Duration: {{ flare.duration }}  days</p>
+      {% endif %}
+      {% if flare.urate %}
+      <p>Uric acid: {{ flare.urate }}</p>
+      {% endif %}
+      {% if flare.treatment %}
+      <p>Treatment: {{ flare.treatment }}</p>
+      {% endif %}
+    </div>
+  </div>
+</main>
+{% endblock content %}

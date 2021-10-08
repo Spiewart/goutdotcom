@@ -1,0 +1,36 @@
+{% extends "base_form.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+{% if form.instance.pk %}
+Update Flare
+{% else %}
+New Flare
+{% endif %}
+{% endblock %}
+
+{% block header %}
+{% if form.instance.pk %}
+<h1 class="nested-container">Update Decision Aid</h1>
+{% else %}
+<h1 class="nested-container">New Decision Aid</h1>
+{% endif %}
+{% endblock header %}
+
+{% block form %}
+  {% if form.instance.pk %}
+    <form class="form-horizontal default-container" method="post" action="{% url 'flare:decisionaid-update' object.pk %}" enctype='multipart/form-data'>
+      {% csrf_token %}
+      {% crispy form %}
+    </form>
+  {% else %}
+    <form class="form-horizontal default-container" method="post" action="{% url 'flare:decisionaid-create' %}">
+    {% csrf_token %}
+    {% crispy form %}
+    </form>
+  {% endif %}
+{% endblock form %}
+
+{% block inline_javascript %}
+
+{% endblock inline_javascript %}
