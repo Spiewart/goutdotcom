@@ -81,6 +81,7 @@ class CKD(MedicalHistory):
 
 
 class Hypertension(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     medication = BooleanField(
         choices=BOOL_CHOICES,
         help_text="Are you on medications for high blood pressure?",

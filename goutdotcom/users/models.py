@@ -40,6 +40,29 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"username": self.username})
 
+    def has_ckd(self):
+        try:
+            return self.CKD_id is not None
+        except AttributeError:
+            return False
+
+    def has_erosions(self):
+        try:
+            return self.erosions_id is not None
+        except AttributeError:
+            return False
+
+    def has_tophi(self):
+        try:
+            return self.tophi_id is not None
+        except AttributeError:
+            return False
+
+    def has_stones(self):
+        try:
+            return self.urate_kidney_stones_id is not None
+        except AttributeError:
+            return False
 
 class PatientManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):

@@ -21,12 +21,14 @@
   <div class="row">
     <div class="col">
       <div class="container default-container">
-        <h1 class="nested-container" id="ult">ULT
-        <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button" style="float: right;">About</a>
+        <a href="{% url 'treatment:ult' %}">
+          <h1 class="nested-container" id="ult">
+            ULT
+        </a>
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
           <div class="btn-group" role="group">
             <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              Update
+              New
             </button>
             <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
               <li><a class="dropdown-item" href="{% url 'treatment:create' 'allopurinol' %}">Allopurinol</a></li>
@@ -127,8 +129,8 @@
     <div class="row">
       <div class="col">
         <div class="container default-container">
-          <h1 class="nested-container" id="flare">Flare
-          <a class="btn btn-primary btn-lg" href="{% url 'treatment:flare' %}" role="button" style="float: right;">About</a>
+          <h1 class="nested-container" id="flare">
+          <a href="{% url 'treatment:flare' %}">Flare</a>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
             <div class="btn-group" role="group">
               <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -331,8 +333,8 @@
     <div class="row">
       <div class="col">
         <div class="container default-container">
-          <h1 id="prophylaxis" class="nested-container">Prophylaxis
-          <a class="btn btn-primary btn-lg" href="{% url 'treatment:prophylaxis' %}" role="button" style="float: right;">About</a>
+          <h1 id="prophylaxis" class="nested-container">
+          <a href="{% url 'treatment:prophylaxis' %}">Prophylaxis</a>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
             <div class="btn-group" role="group">
               <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
