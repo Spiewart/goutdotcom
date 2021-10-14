@@ -1,0 +1,23 @@
+{% extends "base_form.html" %}
+{% load crispy_forms_tags %}
+{% load lab_extras %}
+
+{% block title %}New {{ treatment }}{% endblock %}
+
+{% block header %}
+<h1 class="nested-container">New {{ treatment }}</h1>
+{% endblock header %}
+
+{% block form %}
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'treatment:prophylaxis-create' treatment %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">
+            Create
+          </button>
+        </div>
+      </div>
+    </form>
+{% endblock form %}

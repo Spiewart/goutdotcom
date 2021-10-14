@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% load treatment_extras %}
+
+{% block title %}ULT{% endblock %}
+
+{% block content %}
+<div class="main container">
+  <div class="row">
+    <div class="col">
+      {% block header %}
+      {% endblock header %}
+      <br>
+      {% for list, set in lists.items %}
+        {% if set|length > 0 %}
+          {% for treatment in set %}
+            <div class="container nested-container">
+              <h2 class="default-container"><a href="{% url 'treatment:update' treatment|to_class_name treatment.pk %}">{{ treatment.generic_name|capfirst }}</a>
+                {% for brand_name in treatment.brand_names %}
+                ({{ brand_name|capfirst  }})
+                {% endfor %}
+              </h2>
+              <ul class="default-container ul-main-list">
+              {% if treatment.dose %}<li>{{ treatment.dose }} {% endif %}{% if treatment.freq %}{{ treatment.freq }} </li>{% endif %}
+              {% if treatment.date_started %}<li>Date started: {{ treatment.date_started }}</li>{% endif %}
+              {% if treatment.date_ended %}<li>Date ended: {{ treatment.date_ended }}</li>{% endif %}
+              <li>Class: {{ treatment.drug_class }}</li>
+              {% if treatment.as_prophylaxis %}<li>Prophylaxis</li>{% endif %}
+              {% if treatment.side_effects %}<li>Side effects: {{ treatment.side_effects }}</li>{% endif %}
+              {% if treatment.de_sensitized %}<li>Side effects: {{ treatment.de_sensitized }}</li>{% endif %}
+              {% if treatment.as_prophylaxis %}<li>Prophylaxis (against flares while starting ULT)</li>{% endif %}
+              </ul>
+            </div>
+            <br>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% block footer %}
+  {% endblock footer %}
+</main>
+{% endblock content %}

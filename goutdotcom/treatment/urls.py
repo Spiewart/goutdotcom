@@ -8,6 +8,7 @@ urlpatterns = [
     path("about/corticosteroids/", view=AboutCorticosteroids.as_view(), name="about-corticosteroids"),
     path("about/flare/", view=AboutFlare.as_view(), name="about-flare"),
     path("about/nsaids/", view=AboutNSAIDs.as_view(), name="about-NSAIDs"),
+    path("about/prophylaxis/", view=AboutProphylaxis.as_view(), name="about-prophylaxis"),
     path("about/ult/", view=AboutULT.as_view(), name="about-ult"),
     path("about/<treatment>", view=TreatmentAbout.as_view(), name="about"),
     path("flare/", FlareView.as_view(), name="flare"),
@@ -16,5 +17,6 @@ urlpatterns = [
     path("<treatment>/", view=TreatmentList.as_view(), name="list"),
     path("<treatment>/<int:pk>/", view=TreatmentDetail.as_view(), name="detail"),
     path("create/<treatment>/", view=TreatmentCreate.as_view(), name="create"),
+    path("create/ppx/<treatment>/", view=ProphylaxisCreate.as_view(), name="prophylaxis-create"),
     path("update/<treatment>/<int:pk>/", view=TreatmentUpdate.as_view(), name="update"),
 ]

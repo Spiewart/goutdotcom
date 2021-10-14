@@ -56,6 +56,10 @@ class AboutNSAIDs(TemplateView):
     template_name = "treatment/about_NSAIDs.html"
 
 
+class AboutProphylaxis(TemplateView):
+    template_name = "treatment/about_prophylaxis.html"
+
+
 class AboutULT(TemplateView):
     template_name = "treatment/about_ult.html"
 
@@ -109,12 +113,12 @@ class DashboardView(LoginRequiredMixin, ListView):
                 "methylprednisolone_list": Methylprednisolone.objects.filter(user=self.request.user).order_by(
                     "-created"
                 )[:1],
-                "colchicine_ppx_list": Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "ibuprofen_ppx_list": Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "celecoxib_ppx_list": Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "meloxicam_ppx_list": Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "naproxen_ppx_list": Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "prednisone_ppx_list": Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+                "colchicine_ppx_list": Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True)[:1],
+                "ibuprofen_ppx_list": Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True)[:1],
+                "celecoxib_ppx_list": Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True)[:1],
+                "meloxicam_ppx_list": Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True)[:1],
+                "naproxen_ppx_list": Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True)[:1],
+                "prednisone_ppx_list": Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True)[:1],
             }
         )
         return context
@@ -156,12 +160,14 @@ class ProphylaxisView(LoginRequiredMixin, ListView):
         context = super(ProphylaxisView, self).get_context_data(**kwargs)
         context.update(
             {
-                "colchicine_ppx_list": Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "ibuprofen_ppx_list": Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "celecoxib_ppx_list": Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "meloxicam_ppx_list": Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "naproxen_ppx_list": Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "prednisone_ppx_list": Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+                "lists": {
+                    "colchicine_ppx_list": Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
+                    "ibuprofen_ppx_list": Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
+                    "celecoxib_ppx_list": Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
+                    "meloxicam_ppx_list": Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
+                    "naproxen_ppx_list": Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
+                    "prednisone_ppx_list": Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+                },
             }
         )
         return context
@@ -179,15 +185,11 @@ class ULTView(LoginRequiredMixin, ListView):
         context = super(ULTView, self).get_context_data(**kwargs)
         context.update(
             {
-                "allopurinol_list": Allopurinol.objects.filter(user=self.request.user),
-                "febuxostat_list": Febuxostat.objects.filter(user=self.request.user),
-                "probenecid_list": Probenecid.objects.filter(user=self.request.user),
-                "colchicine_ppx_list": Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "ibuprofen_ppx_list": Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "celecoxib_ppx_list": Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "meloxicam_ppx_list": Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "naproxen_ppx_list": Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                "prednisone_ppx_list": Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+                "lists": {
+                    "allopurinol_list": Allopurinol.objects.filter(user=self.request.user),
+                    "febuxostat_list": Febuxostat.objects.filter(user=self.request.user),
+                    "probenecid_list": Probenecid.objects.filter(user=self.request.user),
+                },
             }
         )
         return context
@@ -195,6 +197,54 @@ class ULTView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
+
+
+class ProphylaxisCreate(LoginRequiredMixin, CreateView):
+    fields = ["dose", "freq", "side_effects"]
+
+    def get_form_class(self):
+        self.treatment = self.kwargs["treatment"]
+        if self.fields is not None and self.form_class:
+            raise ImproperlyConfigured("Specifying both 'fields' and 'form_class' is not permitted.")
+        if self.form_class:
+            return self.form_class
+        else:
+            if self.treatment is not None:
+                # Fetch model from URL 'lab' parameter
+                model = apps.get_model("treatment", model_name=self.treatment)
+                if model in prn_models:
+                    self.fields.append("date_started")
+                    self.fields.append("date_ended")
+            elif getattr(self, "object", None) is not None:
+                model = self.object.__class__
+            else:
+                model = self.get_queryset().model
+            if self.fields is None:
+                raise ImproperlyConfigured(
+                    "Using ModelFormMixin (base class of %s) without "
+                    "the 'fields' attribute is prohibited." % self.__class__.__name__
+                )
+            return modelform_factory(model, fields=self.fields)
+
+    def get_template_names(self):
+        template = "treatment/prophylaxis_form.html"
+        return template
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.as_prophylaxis = True
+        form.instance.prn = False
+        print(form.instance.as_prophylaxis)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(ProphylaxisCreate, self).get_context_data(**kwargs)
+        context.update(
+            {
+                "treatment": self.kwargs["treatment"],
+            }
+        )
+        return context
 
 
 class TreatmentCreate(LoginRequiredMixin, CreateView):

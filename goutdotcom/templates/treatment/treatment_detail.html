@@ -32,6 +32,9 @@
           {% if object.dose %}
           <li>{{ object.dose }} {% if object|to_class_name == "Colchicine" or "Meloxicam" %} mg {% endif %}{{ object.freq }} {% if object.prn == True %} as needed (PRN) {% endif %}</li>
           {% endif %}
+          {% if object.as_prophylaxis %}
+          <li>Prophylaxis</li>
+          {% endif %}
           {% if object.side_effects %}
           <li>Side effects: {{ object.side_effects }}</li>
           {% endif %}

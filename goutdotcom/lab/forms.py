@@ -61,5 +61,4 @@ class UrateFlareForm(UrateForm):
                 "date_drawn",
                 id="urate_fields",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )

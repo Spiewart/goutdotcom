@@ -303,8 +303,10 @@ function check_location() {
     $('label[for="lower_extremity_check"]').show();
 } else {
     $('#upper_extremity_check').hide();
+    $('#upper_extremity_check').prop("checked", false);
     $('label[for="upper_extremity_check"]').hide();
     $('#lower_extremity_check').hide();
+    $('#lower_extremity_check').prop("checked", false);
     $('label[for="lower_extremity_check"]').hide();
   }
 }
@@ -822,6 +824,9 @@ function check_labs() {
     $('#div_id_labs').show();
 } else {
     $('#div_id_labs').hide();
+    $('input', $('#div_id_labs')).each(function() {
+    this.prop("checked", false);
+    })
   }
 }
 

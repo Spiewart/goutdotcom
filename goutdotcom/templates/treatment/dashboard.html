@@ -1,4 +1,4 @@
-{% extends "treatment/base_treatment.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Treatment Dashboard{% endblock %}
@@ -341,13 +341,13 @@
                 New
               </button>
               <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'colchicine' %}">Colchicine</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'ibuprofen' %}">Ibuprofen</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'naproxen' %}">Naproxen</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'meloxicam' %}">Meloxicam</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'celecoxib' %}">Celecoxib</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'prednisone' %}">Prednisone</a></li>
-                <li><a class="dropdown-item" href="{% url 'treatment:create' 'prednisone' %}">Methylprednisolone</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'colchicine' %}">Colchicine</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'ibuprofen' %}">Ibuprofen</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'naproxen' %}">Naproxen</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'meloxicam' %}">Meloxicam</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'celecoxib' %}">Celecoxib</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'prednisone' %}">Prednisone</a></li>
+                <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'prednisone' %}">Methylprednisolone</a></li>
               </ul>
             </div>
           </div>
@@ -355,8 +355,8 @@
           <u><a href="#treatment">Back to Top</a></u>
             {% if colchicine_ppx_list %}
               {% for colchicine in colchicine_ppx_list %}
-              <div class="container user-ULT-list">
-                <h2><a href="{% url 'treatment:detail' 'colchicine' colchicine.pk %}">{{ colchicine.generic_name|capfirst }}</a>
+              <div class="container nested-container">
+                <h2 class="default-container"><a href="{% url 'treatment:detail' 'colchicine' colchicine.pk %}">{{ colchicine.generic_name|capfirst }}</a>
                 {% for brand_name in colchicine.brand_names %}
                   ({{ brand_name|capfirst  }})
                 {% endfor %}
@@ -373,12 +373,13 @@
                   {% endif %}
                 </ul>
               </div>
+              <br>
               {% endfor %}
             {% endif %}
             {% if ibuprofen_ppx_list %}
               {% for ibuprofen in ibuprofen_ppx_list %}
-              <div class="container user-ULT-list">
-                <h2><a href="{% url 'treatment:detail' 'ibuprofen' ibuprofen.pk %}">{{ ibuprofen.generic_name|capfirst }}</a>
+              <div class="container nested-container">
+                <h2 class="default-container"><a href="{% url 'treatment:detail' 'ibuprofen' ibuprofen.pk %}">{{ ibuprofen.generic_name|capfirst }}</a>
                 {% for brand_name in ibuprofen.brand_names %}
                   ({{ brand_name|capfirst  }})
                 {% endfor %}
@@ -395,12 +396,13 @@
                   {% endif %}
                 </ul>
               </div>
+              <br>
               {% endfor %}
             {% endif %}
             {% if celecoxib_ppx_list %}
               {% for celecoxib in celecoxib_ppx_list %}
-              <div class="container user-ULT-list">
-                <h2><a href="{% url 'treatment:detail' 'celecoxib' celecoxib.pk %}">{{ celecoxib.generic_name|capfirst }}</a>
+              <div class="container nested-container">
+                <h2 class="default-container"><a href="{% url 'treatment:detail' 'celecoxib' celecoxib.pk %}">{{ celecoxib.generic_name|capfirst }}</a>
                 {% for brand_name in celecoxib.brand_names %}
                   ({{ brand_name|capfirst  }})
                 {% endfor %}
@@ -417,12 +419,13 @@
                   {% endif %}
                 </ul>
               </div>
+              <br>
               {% endfor %}
             {% endif %}
             {% if meloxicam_ppx_list %}
               {% for meloxicam in meloxicam_ppx_list %}
-              <div class="container user-ULT-list">
-                <h2><a href="{% url 'treatment:detail' 'meloxicam' meloxicam.pk %}">{{ meloxicam.generic_name|capfirst }}</a>
+              <div class="container nested-container">
+                <h2 class="default-container"><a href="{% url 'treatment:detail' 'meloxicam' meloxicam.pk %}">{{ meloxicam.generic_name|capfirst }}</a>
                 {% for brand_name in meloxicam.brand_names %}
                   ({{ brand_name|capfirst  }})
                 {% endfor %}
@@ -439,12 +442,13 @@
                   {% endif %}
                 </ul>
               </div>
+              <br>
               {% endfor %}
             {% endif %}
             {% if naproxen_ppx_list %}
               {% for naproxen in naproxen_ppx_list %}
-              <div class="container user-ULT-list">
-                <h2><a href="{% url 'treatment:detail' 'naproxen' naproxen.pk %}">{{ naproxen.generic_name|capfirst }}</a>
+              <div class="container nested-container">
+                <h2 class="deafult-container"><a href="{% url 'treatment:detail' 'naproxen' naproxen.pk %}">{{ naproxen.generic_name|capfirst }}</a>
                 {% for brand_name in naproxen.brand_names %}
                   ({{ brand_name|capfirst  }})
                 {% endfor %}
@@ -461,12 +465,13 @@
                   {% endif %}
                 </ul>
               </div>
+              <br>
               {% endfor %}
             {% endif %}
             {% if prednisone_ppx_list %}
               {% for prednisone in prednisone_ppx_list %}
-              <div class="container user-ULT-list">
-                <h2><a href="{% url 'treatment:detail' 'prednisone' prednisone.pk %}">{{ prednisone.generic_name|capfirst }}</a>
+              <div class="container nested-container">
+                <h2 class="default-container"><a href="{% url 'treatment:detail' 'prednisone' prednisone.pk %}">{{ prednisone.generic_name|capfirst }}</a>
                 {% for brand_name in prednisone.brand_names %}
                   ({{ brand_name|capfirst  }})
                 {% endfor %}
@@ -483,11 +488,13 @@
                   {% endif %}
                 </ul>
               </div>
+              <br>
               {% endfor %}
             {% endif %}
         </div>
       </div>
     </div>
+    <u><a href="#treatment">Back to Top</a></u>
 </main>
 {% endblock content %}
 

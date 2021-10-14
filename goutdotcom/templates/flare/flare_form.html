@@ -32,6 +32,7 @@ New Flare
       {% crispy tinctureoftime_form %}
       {% crispy othertreat_form %}
       {% crispy urate_form %}
+      <input class="btn btn-primary btn-lg" type="submit" value="Submit">
     </form>
   {% else %}
     <form class="form-horizontal default-container" method="post" action="{% url 'flare:create' %}">
@@ -47,6 +48,7 @@ New Flare
     {% crispy methylprednisolone_form %}
     {% crispy tinctureoftime_form %}
     {% crispy othertreat_form %}
+    <input class="btn btn-primary btn-lg" type="submit" value="Submit">
     </form>
   {% endif %}
 {% endblock form %}
@@ -64,6 +66,11 @@ New Flare
     // toggles upper and lower extremity options when location checkbox is checked
     $('#location_check').change(check_location);
     check_location.call($('#location_check').get(0));
+    });
+  $(document).ready(function() {
+    // toggles upper extremity options when upper extremity checkbox is checked
+    $('#location_check').change(check_extremity);
+    check_extremity.call($('#location_check').get(0));
     });
   $(document).ready(function() {
     // toggles upper extremity options when upper extremity checkbox is checked

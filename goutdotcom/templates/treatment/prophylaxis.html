@@ -1,9 +1,31 @@
-{% extends "base.html" %}
+{% extends "treatment/treatment_group_base.html" %}
 {% load static %}
 {% load treatment_extras %}
 
-{% block content %}
-<main class="container">
+{% block title %}Prophylaxis{% endblock %}
 
-</main>
-{% endblock content %}
+{% block header %}
+<div class="container default-container">
+  <h1 class="nested-container">Prophylaxis<h1></h1>
+</div>
+{% endblock header %}
+
+{% block footer %}
+  <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-prophylaxis' %}" role="button">About</a>
+  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    <div class="btn-group" role="group">
+      <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        New
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+        <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'colchicine' %}">Colchicine</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'ibuprofen' %}">Ibuprofen</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'naproxen' %}">Naproxen</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'meloxicam' %}">Meloxicam</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'celecoxib' %}">Celecoxib</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'prednisone' %}">Prednisone</a></li>
+        <li><a class="dropdown-item" href="{% url 'treatment:prophylaxis-create' 'prednisone' %}">Methylprednisolone</a></li>
+      </ul>
+    </div>
+  </div>
+{% endblock footer %}
