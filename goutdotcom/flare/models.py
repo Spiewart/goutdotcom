@@ -4,8 +4,6 @@ from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
-from .choices import *
-
 from ..lab.models import Urate
 from ..treatment.models import (
     Celecoxib,
@@ -18,7 +16,7 @@ from ..treatment.models import (
     Prednisone,
     Tinctureoftime,
 )
-
+from .choices import *
 
 
 class Flare(TimeStampedModel):
@@ -45,9 +43,15 @@ class Flare(TimeStampedModel):
     duration = models.IntegerField(null=True, blank=True, help_text="How long did it last? (days)")
 
     labs = MultiSelectField(
-        choices=LAB_CHOICES, blank=True, null=True, help_text="Did you get your labs checked during your flare?"
+        choices=LAB_CHOICES, blank=True, null=True, help_text="Check if so"
     )
-    urate = models.OneToOneField(Urate, on_delete=models.CASCADE, help_text="What was the uric acid at the time of the flare?", blank=True, null=True,)
+    urate = models.OneToOneField(
+        Urate,
+        on_delete=models.CASCADE,
+        help_text="Typically reported in mg/dL",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         ordering = ["created"]

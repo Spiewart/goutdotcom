@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import ButtonHolder, Fieldset, Layout, Submit
+from crispy_forms.layout import ButtonHolder, Fieldset, HTML, Layout, Submit
 from datetimewidget.widgets import DateTimeWidget
 from django import forms
 
@@ -17,6 +17,7 @@ class UrateForm(forms.ModelForm):
             "autoclose": True,
             "pickerPosition": "bottom-left",
         }
+        labels = {"value": "Concentration (level)"}
         widgets = {
             # Use localization and bootstrap 3
             "date_drawn": DateTimeWidget(
@@ -56,7 +57,7 @@ class UrateFlareForm(UrateForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log a uric acid",
+                "Record your uric acid",
                 "value",
                 "date_drawn",
                 id="urate_fields",

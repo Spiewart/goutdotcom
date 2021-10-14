@@ -46,7 +46,7 @@ class Lab(TimeStampedModel):
 
 
 class Urate(Lab):
-    value = models.DecimalField(max_digits=3, decimal_places=1, help_text="Enter the uric acid")
+    value = models.DecimalField(max_digits=3, decimal_places=1, help_text="Typically reported in mg/dL")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "urate"
 

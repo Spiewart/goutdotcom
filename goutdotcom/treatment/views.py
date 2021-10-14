@@ -153,6 +153,8 @@ class FlareView(LoginRequiredMixin, ListView):
 
 
 class ProphylaxisView(LoginRequiredMixin, ListView):
+    """For creating prophylactic therapy medication objects. The model field as_prophylaxis is switched to True with form.is_valid(). I had to create a new view rather than inherit from TreatmentCreate because of form.is_valid() super inheritance. It also let me rewrite some of the form fields rendered, such as prn."""
+
     template_name = "treatment/prophylaxis.html"
     model = Colchicine
 

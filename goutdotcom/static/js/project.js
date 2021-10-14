@@ -308,6 +308,11 @@ function check_location() {
     $('#lower_extremity_check').hide();
     $('#lower_extremity_check').prop("checked", false);
     $('label[for="lower_extremity_check"]').hide();
+    $('#location_check_hr').hide();
+    $('input', $('#div_id_location')).each(function() {
+    var $this = $(this);
+    $this.prop("checked", false);
+    })
   }
 }
 
@@ -317,6 +322,9 @@ function check_extremity() {
   if ($('#lower_extremity_check').is(":checked")) {
     if ($('#upper_extremity_check').is(":checked")) {
       $('#div_id_location').show();
+      $('#id_location_0').show();
+      $('#id_location_0').parent().show();
+      $('label[for="id_location_0"]').show();
       $('#id_location_1').show();
       $('#id_location_1').parent().show();
       $('label[for="id_location_1"]').show();
@@ -413,9 +421,13 @@ function check_extremity() {
       $('#id_location_32').show();
       $('#id_location_32').parent().show();
       $('label[for="id_location_32"]').show();
+      $('#location_check_hr').show();
     }
     else {
       $('#div_id_location').show();
+      $('#id_location_0').show();
+      $('#id_location_0').parent().show();
+      $('label[for="id_location_0"]').show();
       $('#id_location_1').show();
       $('#id_location_1').parent().show();
       $('label[for="id_location_1"]').show();
@@ -512,11 +524,15 @@ function check_extremity() {
       $('#id_location_32').hide();
       $('#id_location_32').parent().hide();
       $('label[for="id_location_32"]').hide();
+      $('#location_check_hr').show();
     }
 }
   else if ($('#upper_extremity_check').is(":checked")) {
     if ($('#lower_extremity_check').is(":checked")) {
       $('#div_id_location').show();
+      $('#id_location_0').show();
+      $('#id_location_0').parent().show();
+      $('label[for="id_location_0"]').show();
       $('#id_location_1').show();
       $('#id_location_1').parent().show();
       $('label[for="id_location_1"]').show();
@@ -613,9 +629,13 @@ function check_extremity() {
       $('#id_location_32').show();
       $('#id_location_32').parent().show();
       $('label[for="id_location_32"]').show();
+      $('#location_check_hr').show();
     }
     else {
       $('#div_id_location').show();
+      $('#id_location_0').hide();
+      $('#id_location_0').parent().hide();
+      $('label[for="id_location_0"]').hide();
       $('#id_location_1').hide();
       $('#id_location_1').parent().hide();
       $('label[for="id_location_1"]').hide();
@@ -712,9 +732,13 @@ function check_extremity() {
       $('#id_location_32').show();
       $('#id_location_32').parent().show();
       $('label[for="id_location_32"]').show();
+      $('#location_check_hr').show();
     }
 }
   else {
+    $('#id_location_0').hide();
+    $('#id_location_0').parent().hide();
+    $('label[for="id_location_0"]').hide();
     $('#id_location_1').hide();
     $('#id_location_1').parent().hide();
     $('label[for="id_location_1"]').hide();
@@ -815,6 +839,7 @@ function check_extremity() {
     $('#id_location_32').hide();
     $('#id_location_32').parent().hide();
     $('label[for="id_location_32"]').hide();
+    $('#location_check_hr').hide();
   }
 }
 
@@ -825,7 +850,13 @@ function check_labs() {
 } else {
     $('#div_id_labs').hide();
     $('input', $('#div_id_labs')).each(function() {
-    this.prop("checked", false);
+    var $this = $(this);
+    $this.prop("checked", false);
+    })
+    $('#urate_fields').hide();
+    $('input', $('#urate_fields')).each(function() {
+    var $this = $(this);
+    $this.val('');
     })
   }
 }
@@ -846,8 +877,10 @@ function check_urate() {
     $('#urate_fields').show();
 } else {
     $('#urate_fields').hide();
-    $('#urate_fields').find('#id_urate-value').val('');
-    $('#urate_fields').find('#urate-date_drawn').val('');
+    $('input', $('#urate_fields')).each(function() {
+    var $this = $(this);
+    $this.val('');
+    })
   }
 }
 
@@ -891,6 +924,10 @@ function check_treatment() {
     $('#div_id_treatment').show();
 } else {
     $('#div_id_treatment').hide();
+    $('input', $('#div_id_treatment')).each(function() {
+    var $this = $(this);
+    $this.prop("checked", false);
+    })
   }
 }
 
@@ -900,11 +937,10 @@ function check_treatment_1() {
     $('#colchicine_for_flare').show();
 } else {
     $('#colchicine_for_flare').hide();
-    $('#colchicine_for_flare').find('#id_colchicine-dose').val('');
-    $('#colchicine_for_flare').find('#id_colchicine-freq').val('');
-    $('#colchicine_for_flare').find('#id_colchicine-date_started').val('');
-    $('#colchicine_for_flare').find('#id_colchicine-date_ended').val('');
-    $('#colchicine_for_flare').find('#id_colchicine-side_effects').val('');
+    $('input', $('#colchicine_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 
@@ -914,11 +950,10 @@ function check_treatment_2() {
     $('#ibuprofen_for_flare').show();
 } else {
     $('#ibuprofen_for_flare').hide();
-    $('#ibuprofen_for_flare').find('#id_ibuprofen-dose').val('');
-    $('#ibuprofen_for_flare').find('#id_ibuprofen-freq').val('');
-    $('#ibuprofen_for_flare').find('#id_ibuprofen-date_started').val('');
-    $('#ibuprofen_for_flare').find('#id_ibuprofen-date_ended').val('');
-    $('#ibuprofen_for_flare').find('#id_ibuprofen-side_effects').val('');
+    $('input', $('#ibuprofen_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 
@@ -928,11 +963,10 @@ function check_treatment_3() {
     $('#naproxen_for_flare').show();
 } else {
     $('#naproxen_for_flare').hide();
-    $('#naproxen_for_flare').find('#id_naproxen-dose').val('');
-    $('#naproxen_for_flare').find('#id_naproxen-freq').val('');
-    $('#naproxen_for_flare').find('#id_naproxen-date_started').val('');
-    $('#naproxen_for_flare').find('#id_naproxen-date_ended').val('');
-    $('#naproxen_for_flare').find('#id_naproxen-side_effects').val('');
+    $('input', $('#naproxen_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 
@@ -942,11 +976,10 @@ function check_treatment_4() {
     $('#celecoxib_for_flare').show();
 } else {
     $('#celecoxib_for_flare').hide();
-    $('#celecoxib_for_flare').find('#id_celecoxib-dose').val('');
-    $('#celecoxib_for_flare').find('#id_celecoxib-freq').val('');
-    $('#celecoxib_for_flare').find('#id_celecoxib-date_started').val('');
-    $('#celecoxib_for_flare').find('#id_celecoxib-date_ended').val('');
-    $('#celecoxib_for_flare').find('#id_celecoxib-side_effects').val('');
+    $('input', $('#celecoxib_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 
@@ -956,11 +989,10 @@ function check_treatment_5() {
     $('#meloxicam_for_flare').show();
 } else {
     $('#meloxicam_for_flare').hide();
-    $('#meloxicam_for_flare').find('#id_meloxicam-dose').val('');
-    $('#meloxicam_for_flare').find('#id_meloxicam-freq').val('');
-    $('#meloxicam_for_flare').find('#id_meloxicam-date_started').val('');
-    $('#meloxicam_for_flare').find('#id_meloxicam-date_ended').val('');
-    $('#meloxicam_for_flare').find('#id_meloxicam-side_effects').val('');
+    $('input', $('#meloxicam_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 
@@ -970,11 +1002,10 @@ function check_treatment_6() {
     $('#prednisone_for_flare').show();
 } else {
     $('#prednisone_for_flare').hide();
-    $('#prednisone_for_flare').find('#id_prednisone-dose').val('');
-    $('#prednisone_for_flare').find('#id_prednisone-freq').val('');
-    $('#prednisone_for_flare').find('#id_prednisone-date_started').val('');
-    $('#prednisone_for_flare').find('#id_prednisone-date_ended').val('');
-    $('#prednisone_for_flare').find('#id_prednisone-side_effects').val('');
+    $('input', $('#prednisone_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 
@@ -984,11 +1015,10 @@ function check_treatment_7() {
     $('#methylprednisolone_for_flare').show();
 } else {
     $('#methylprednisolone_for_flare').hide();
-    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-dose').val('');
-    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-freq').val('');
-    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-date_started').val('');
-    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-date_ended').val('');
-    $('#methylprednisolone_for_flare').find('#id_methylprednisolone-side_effects').val('');
+    $('input', $('#methylprednisolone_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 
@@ -998,12 +1028,10 @@ function check_treatment_8() {
     $('#tinctureoftime_for_flare').show();
 } else {
     $('#tinctureoftime_for_flare').hide();
-    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-duration').val('');
-    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-dose').val('');
-    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-freq').val('');
-    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-date_started').val('');
-    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-date_ended').val('');
-    $('#tinctureoftime_for_flare').find('#id_tinctureoftime-side_effects').val('');
+    $('input', $('#tinctureoftime_for_flare')).each(function() {
+    var $this = $(this);
+    $this.val('');
+  })
   }
 }
 

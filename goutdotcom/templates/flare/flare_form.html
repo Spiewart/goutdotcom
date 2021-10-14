@@ -22,32 +22,12 @@ New Flare
     <form class="form-horizontal default-container" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {% crispy form %}
-      {% crispy colchicine_form %}
-      {% crispy ibuprofen_form %}
-      {% crispy naproxen_form %}
-      {% crispy celecoxib_form %}
-      {% crispy meloxicam_form %}
-      {% crispy prednisone_form %}
-      {% crispy methylprednisolone_form %}
-      {% crispy tinctureoftime_form %}
-      {% crispy othertreat_form %}
-      {% crispy urate_form %}
       <input class="btn btn-primary btn-lg" type="submit" value="Submit">
     </form>
   {% else %}
     <form class="form-horizontal default-container" method="post" action="{% url 'flare:create' %}">
     {% csrf_token %}
     {% crispy form %}
-    {% crispy urate_form %}
-    {% crispy colchicine_form %}
-    {% crispy ibuprofen_form %}
-    {% crispy naproxen_form %}
-    {% crispy celecoxib_form %}
-    {% crispy meloxicam_form %}
-    {% crispy prednisone_form %}
-    {% crispy methylprednisolone_form %}
-    {% crispy tinctureoftime_form %}
-    {% crispy othertreat_form %}
     <input class="btn btn-primary btn-lg" type="submit" value="Submit">
     </form>
   {% endif %}
@@ -93,9 +73,11 @@ New Flare
     check_urate.call($('#id_labs_1').get(0));
     });
   $(document).ready(function() {
-    // set things up so my function will be called when treatment changes
+    // When treatment_check changes, will make sure to display different treatment fields and also to make sure nothing is checked if treatment_check is unchecked
     $('#treatment_check').change(check_treatment);
     check_treatment.call($('#treatment_check').get(0));
+    $('#treatment_check').change(check_treatment_1);
+    check_treatment_1.call($('#treatment_check').get(0));
     });
   $(document).ready(function() {
     // set things up so my function will be called when treatment changes
