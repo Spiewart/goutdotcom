@@ -66,10 +66,16 @@ class FlareForm(forms.ModelForm):
                     <input type="checkbox" id="location_check" name="location_check" value="location_check">
                     <label for="location_check">Location</label>
                     <br>
-                    <input type="checkbox" id="upper_extremity_check" name="upper_extremity_check" value="upper_extremity_check">
-                    <label for="upper_extremity_check">Upper Extremity</label>
+                    <div class="row">
+                    <div class="col">
                     <input type="checkbox" id="lower_extremity_check" name="lower_extremity_check" value="lower_extremity_check">
                     <label for="lower_extremity_check">Lower Extremity</label>
+                    </div>
+                    <div class="col">
+                    <input type="checkbox" id="upper_extremity_check" name="upper_extremity_check" value="upper_extremity_check">
+                    <label for="upper_extremity_check">Upper Extremity</label>
+                    </div>
+                    </div>
                     <hr id="location_check_hr" size="6" color="white">
                     """
                 ),

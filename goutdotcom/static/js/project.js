@@ -293,6 +293,15 @@ function check_first_flare() {
 }
 
 /* FLARE app JS flare_form.html */
+// function that checks what the initial location values are for flare UpdateView and de/populates form fields as needed
+function check_initial_location() {
+  if ($('#id_urate-value').val()) {
+    $('#lab_check').prop("checked", true);
+    $('#id_labs_1').prop("checked", true);
+} else {
+    $('#div_id_labs').hide();
+  }
+}
 
 // function that checks if the HTML button #location_check is checked and displays upper and lower extremity options
 function check_location() {
@@ -316,8 +325,7 @@ function check_location() {
   }
 }
 
-// function that checks if the HTML buttons #lower_extremity_check and #upper_extremity_check are checked and displays appropriate options
-// NEED TO BLANK VALUES WHEN UNCHECKED
+// function that checks if the HTML buttons #lower_extremity_check and #upper_extremity_check are checked and displays appropriate options, now BLANKs VALUES WHEN UNCHECKED
 function check_extremity() {
   if ($('#lower_extremity_check').is(":checked")) {
     if ($('#upper_extremity_check').is(":checked")) {
@@ -418,9 +426,6 @@ function check_extremity() {
       $('#id_location_31').show();
       $('#id_location_31').parent().show();
       $('label[for="id_location_31"]').show();
-      $('#id_location_32').show();
-      $('#id_location_32').parent().show();
-      $('label[for="id_location_32"]').show();
       $('#location_check_hr').show();
     }
     else {
@@ -473,57 +478,70 @@ function check_extremity() {
       $('#id_location_15').show();
       $('#id_location_15').parent().show();
       $('label[for="id_location_15"]').show();
-      $('#id_location_16').show();
-      $('#id_location_16').parent().show();
-      $('label[for="id_location_16"]').show();
+      $('#id_location_16').hide();
+      $('#id_location_16').prop('checked', false);
+      $('#id_location_16').parent().hide();
+      $('label[for="id_location_16"]').hide();
       $('#id_location_17').hide();
+      $('#id_location_17').prop('checked', false);
       $('#id_location_17').parent().hide();
       $('label[for="id_location_17"]').hide();
       $('#id_location_18').hide();
+      $('#id_location_18').prop('checked', false);
       $('#id_location_18').parent().hide();
       $('label[for="id_location_18"]').hide();
       $('#id_location_19').hide();
+      $('#id_location_19').prop('checked', false);
       $('#id_location_19').parent().hide();
       $('label[for="id_location_19"]').hide();
       $('#id_location_20').hide();
+      $('#id_location_20').prop('checked', false);
       $('#id_location_20').parent().hide();
       $('label[for="id_location_20"]').hide();
       $('#id_location_21').hide();
+      $('#id_location_21').prop('checked', false);
       $('#id_location_21').parent().hide();
       $('label[for="id_location_21"]').hide();
       $('#id_location_22').hide();
+      $('#id_location_22').prop('checked', false);
       $('#id_location_22').parent().hide();
       $('label[for="id_location_22"]').hide();
       $('#id_location_23').hide();
+      $('#id_location_23').prop('checked', false);
       $('#id_location_23').parent().hide();
       $('label[for="id_location_23"]').hide();
       $('#id_location_24').hide();
+      $('#id_location_24').prop('checked', false);
       $('#id_location_24').parent().hide();
       $('label[for="id_location_24"]').hide();
       $('#id_location_25').hide();
+      $('#id_location_25').prop('checked', false);
       $('#id_location_25').parent().hide();
       $('label[for="id_location_25"]').hide();
       $('#id_location_26').hide();
+      $('#id_location_26').prop('checked', false);
       $('#id_location_26').parent().hide();
       $('label[for="id_location_26"]').hide();
       $('#id_location_27').hide();
+      $('#id_location_27').prop('checked', false);
       $('#id_location_27').parent().hide();
       $('label[for="id_location_27"]').hide();
       $('#id_location_28').hide();
+      $('#id_location_28').prop('checked', false);
       $('#id_location_28').parent().hide();
       $('label[for="id_location_28"]').hide();
       $('#id_location_29').hide();
+      $('#id_location_29').prop('checked', false);
       $('#id_location_29').parent().hide();
       $('label[for="id_location_29"]').hide();
       $('#id_location_30').hide();
+      $('#id_location_30').prop('checked', false);
       $('#id_location_30').parent().hide();
       $('label[for="id_location_30"]').hide();
       $('#id_location_31').hide();
+      $('#id_location_31').prop('checked', false);
       $('#id_location_31').parent().hide();
       $('label[for="id_location_31"]').hide();
-      $('#id_location_32').hide();
-      $('#id_location_32').parent().hide();
-      $('label[for="id_location_32"]').hide();
       $('#location_check_hr').show();
     }
 }
@@ -626,64 +644,77 @@ function check_extremity() {
       $('#id_location_31').show();
       $('#id_location_31').parent().show();
       $('label[for="id_location_31"]').show();
-      $('#id_location_32').show();
-      $('#id_location_32').parent().show();
-      $('label[for="id_location_32"]').show();
       $('#location_check_hr').show();
     }
     else {
       $('#div_id_location').show();
       $('#id_location_0').hide();
+      $('#id_location_0').prop('checked', false);
       $('#id_location_0').parent().hide();
       $('label[for="id_location_0"]').hide();
       $('#id_location_1').hide();
+      $('#id_location_1').prop('checked', false);
       $('#id_location_1').parent().hide();
       $('label[for="id_location_1"]').hide();
       $('#id_location_2').hide();
+      $('#id_location_2').prop('checked', false);
       $('#id_location_2').parent().hide();
       $('label[for="id_location_2"]').hide();
       $('#id_location_3').hide();
+      $('#id_location_3').prop('checked', false);
       $('#id_location_3').parent().hide();
       $('label[for="id_location_3"]').hide();
       $('#id_location_4').hide();
+      $('#id_location_4').prop('checked', false);
       $('#id_location_4').parent().hide();
       $('label[for="id_location_4"]').hide();
       $('#id_location_5').hide();
+      $('#id_location_5').prop('checked', false);
       $('#id_location_5').parent().hide();
       $('label[for="id_location_5"]').hide();
       $('#id_location_6').hide();
+      $('#id_location_6').prop('checked', false);
       $('#id_location_6').parent().hide();
       $('label[for="id_location_6"]').hide();
       $('#id_location_7').hide();
+      $('#id_location_7').prop('checked', false);
       $('#id_location_7').parent().hide();
       $('label[for="id_location_7"]').hide();
       $('#id_location_8').hide();
+      $('#id_location_8').prop('checked', false);
       $('#id_location_8').parent().hide();
       $('label[for="id_location_8"]').hide();
       $('#id_location_9').hide();
+      $('#id_location_9').prop('checked', false);
       $('#id_location_9').parent().hide();
       $('label[for="id_location_9"]').hide();
       $('#id_location_10').hide();
+      $('#id_location_10').prop('checked', false);
       $('#id_location_10').parent().hide();
       $('label[for="id_location_10"]').hide();
       $('#id_location_11').hide();
+      $('#id_location_11').prop('checked', false);
       $('#id_location_11').parent().hide();
       $('label[for="id_location_11"]').hide();
       $('#id_location_12').hide();
+      $('#id_location_12').prop('checked', false);
       $('#id_location_12').parent().hide();
       $('label[for="id_location_12"]').hide();
       $('#id_location_13').hide();
+      $('#id_location_13').prop('checked', false);
       $('#id_location_13').parent().hide();
       $('label[for="id_location_13"]').hide();
       $('#id_location_14').hide();
+      $('#id_location_14').prop('checked', false);
       $('#id_location_14').parent().hide();
       $('label[for="id_location_14"]').hide();
       $('#id_location_15').hide();
+      $('#id_location_15').prop('checked', false);
       $('#id_location_15').parent().hide();
       $('label[for="id_location_15"]').hide();
-      $('#id_location_16').hide();
-      $('#id_location_16').parent().hide();
-      $('label[for="id_location_16"]').hide();
+      $('#id_location_16').show();
+      $('#id_location_16').parent().show();
+      $('label[for="id_location_16"]').show();
       $('#id_location_17').show();
       $('#id_location_17').parent().show();
       $('label[for="id_location_17"]').show();
@@ -729,116 +760,138 @@ function check_extremity() {
       $('#id_location_31').show();
       $('#id_location_31').parent().show();
       $('label[for="id_location_31"]').show();
-      $('#id_location_32').show();
-      $('#id_location_32').parent().show();
-      $('label[for="id_location_32"]').show();
       $('#location_check_hr').show();
     }
 }
   else {
     $('#id_location_0').hide();
+    $('#id_location_0').prop('checked', false);
     $('#id_location_0').parent().hide();
     $('label[for="id_location_0"]').hide();
     $('#id_location_1').hide();
+    $('#id_location_1').prop('checked', false);
     $('#id_location_1').parent().hide();
     $('label[for="id_location_1"]').hide();
     $('#id_location_2').hide();
+    $('#id_location_2').prop('checked', false);
     $('#id_location_2').parent().hide();
     $('label[for="id_location_2"]').hide();
     $('#id_location_3').hide();
+    $('#id_location_3').prop('checked', false);
     $('#id_location_3').parent().hide();
     $('label[for="id_location_3"]').hide();
     $('#id_location_4').hide();
+    $('#id_location_4').prop('checked', false);
     $('#id_location_4').parent().hide();
     $('label[for="id_location_4"]').hide();
     $('#id_location_5').hide();
+    $('#id_location_5').prop('checked', false);
     $('#id_location_5').parent().hide();
     $('label[for="id_location_5"]').hide();
     $('#id_location_6').hide();
+    $('#id_location_6').prop('checked', false);
     $('#id_location_6').parent().hide();
     $('label[for="id_location_6"]').hide();
     $('#id_location_7').hide();
+    $('#id_location_7').prop('checked', false);
     $('#id_location_7').parent().hide();
     $('label[for="id_location_7"]').hide();
     $('#id_location_8').hide();
+    $('#id_location_8').prop('checked', false);
     $('#id_location_8').parent().hide();
     $('label[for="id_location_8"]').hide();
     $('#id_location_9').hide();
+    $('#id_location_9').prop('checked', false);
     $('#id_location_9').parent().hide();
     $('label[for="id_location_9"]').hide();
     $('#id_location_10').hide();
+    $('#id_location_10').prop('checked', false);
     $('#id_location_10').parent().hide();
     $('label[for="id_location_10"]').hide();
     $('#id_location_11').hide();
+    $('#id_location_11').prop('checked', false);
     $('#id_location_11').parent().hide();
     $('label[for="id_location_11"]').hide();
     $('#id_location_12').hide();
+    $('#id_location_12').prop('checked', false);
     $('#id_location_12').parent().hide();
     $('label[for="id_location_12"]').hide();
     $('#id_location_13').hide();
+    $('#id_location_13').prop('checked', false);
     $('#id_location_13').parent().hide();
     $('label[for="id_location_13"]').hide();
     $('#id_location_14').hide();
+    $('#id_location_14').prop('checked', false);
     $('#id_location_14').parent().hide();
     $('label[for="id_location_14"]').hide();
     $('#id_location_15').hide();
+    $('#id_location_15').prop('checked', false);
     $('#id_location_15').parent().hide();
     $('label[for="id_location_15"]').hide();
     $('#id_location_16').hide();
+    $('#id_location_16').prop('checked', false);
     $('#id_location_16').parent().hide();
     $('label[for="id_location_16"]').hide();
-    $('#id_location_16').hide();
-    $('#id_location_16').parent().hide();
-    $('label[for="id_location_16"]').hide();
-    $('#div_id_location').hide();
     $('#id_location_17').hide();
+    $('#id_location_17').prop('checked', false);
     $('#id_location_17').parent().hide();
     $('label[for="id_location_17"]').hide();
     $('#id_location_18').hide();
+    $('#id_location_18').prop('checked', false);
     $('#id_location_18').parent().hide();
     $('label[for="id_location_18"]').hide();
     $('#id_location_19').hide();
+    $('#id_location_19').prop('checked', false);
     $('#id_location_19').parent().hide();
     $('label[for="id_location_19"]').hide();
     $('#id_location_20').hide();
+    $('#id_location_20').prop('checked', false);
     $('#id_location_20').parent().hide();
     $('label[for="id_location_20"]').hide();
     $('#id_location_21').hide();
+    $('#id_location_21').prop('checked', false);
     $('#id_location_21').parent().hide();
     $('label[for="id_location_21"]').hide();
     $('#id_location_22').hide();
+    $('#id_location_22').prop('checked', false);
     $('#id_location_22').parent().hide();
     $('label[for="id_location_22"]').hide();
     $('#id_location_23').hide();
+    $('#id_location_23').prop('checked', false);
     $('#id_location_23').parent().hide();
     $('label[for="id_location_23"]').hide();
     $('#id_location_24').hide();
+    $('#id_location_24').prop('checked', false);
     $('#id_location_24').parent().hide();
     $('label[for="id_location_24"]').hide();
     $('#id_location_25').hide();
+    $('#id_location_25').prop('checked', false);
     $('#id_location_25').parent().hide();
     $('label[for="id_location_25"]').hide();
     $('#id_location_26').hide();
+    $('#id_location_26').prop('checked', false);
     $('#id_location_26').parent().hide();
     $('label[for="id_location_26"]').hide();
     $('#id_location_27').hide();
+    $('#id_location_27').prop('checked', false);
     $('#id_location_27').parent().hide();
     $('label[for="id_location_27"]').hide();
     $('#id_location_28').hide();
+    $('#id_location_28').prop('checked', false);
     $('#id_location_28').parent().hide();
     $('label[for="id_location_28"]').hide();
     $('#id_location_29').hide();
+    $('#id_location_29').prop('checked', false);
     $('#id_location_29').parent().hide();
     $('label[for="id_location_29"]').hide();
     $('#id_location_30').hide();
+    $('#id_location_30').prop('checked', false);
     $('#id_location_30').parent().hide();
     $('label[for="id_location_30"]').hide();
     $('#id_location_31').hide();
+    $('#id_location_31').prop('checked', false);
     $('#id_location_31').parent().hide();
     $('label[for="id_location_31"]').hide();
-    $('#id_location_32').hide();
-    $('#id_location_32').parent().hide();
-    $('label[for="id_location_32"]').hide();
     $('#location_check_hr').hide();
   }
 }

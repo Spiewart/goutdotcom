@@ -2,50 +2,56 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container">
-  <div class="row">
-    <div class="col default-container">
-      <h1 class="nested-container">{{ request.user|capfirst  }}'s Flare
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:list' %}" role="button" style="float: right;">Flare List</a>
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:update' object.id %}" role="button" style="float: right;">Update</a></h1>
-      <p>Date: {{ flare.created }}</p>
-      {% if flare.location %}
-      <p>Location: {{ flare.location }}</p>
-      {% endif %}
-      {% if flare.duration %}
-      <p>Duration: {{ flare.duration }}  days</p>
-      {% endif %}
-      {% if flare.urate %}
-      <p>Uric acid: {{ flare.urate }}</p>
-      {% endif %}
-      {% if flare.treatment %}
-      <p>Treatment: {{ flare.treatment }}</p>
-      {% endif %}
+<main role="main" class="container-fluid default-container">
+      <div class="container nested-container">
+        <h1 class="default-container">{{ request.user|capfirst  }}'s Flare
+        <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'flare:list' %}" role="button" style="float: right;">Flare List</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'flare:update' object.id %}" role="button" style="float: right;">Update</a>
+        </h1>
+        <ul class="ul-main-list">
+        <li>Date: {{ flare.created }}</li>
+        {% if flare.location %}
+        <li>Location: {{ flare.location }}</li>
+        {% endif %}
+        {% if flare.duration %}
+        <li>Duration: {{ flare.duration }}  days</li>
+        {% endif %}
+        {% if flare.urate %}
+        <li>Uric acid: {{ flare.urate }}</li>
+        {% endif %}
+        {% if flare.treatment %}
+        <li>Treatment: {{ flare.treatment }}</li>
+        {% endif %}
+        </ul>
+      </div>
       {% if flare.colchicine %}
-        <h2 class="nested-container"><a href="{% url 'treatment:detail' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine.generic_name|capfirst }}</a>
-            {% for brand_name in flare.colchicine.brand_names %}
-              ({{ brand_name|capfirst  }}) </h2>
-            {% endfor %}
-            <ul>
-              <li>{{ flare.colchicine.dose }} mg {{ flare.colchicine.freq }}</li>
-              <li>Date started: {{ flare.colchicine.date_started }}</li>
-              {% if flare.colchicine.date_ended %}
-              <li>Date ended: {{ flare.colchicine.date_ended }}</li>
-              {% endif %}
-              <li>Class: {{ flare.colchicine.drug_class }}</li>
-              {% if flare.colchicine.side_effects %}
-              <li>Side effects: {{ flare.colchicine.side_effects }}
-              {% endif %}
-            </ul>
+        <div class="container nested-container">
+          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine.generic_name|capfirst }}</a>
+          {% for brand_name in flare.colchicine.brand_names %}
+            ({{ brand_name|capfirst  }}) </h2>
+          {% endfor %}
+          <ul class="ul-main-list">
+            <li>{{ flare.colchicine.dose }} mg {{ flare.colchicine.freq }}</li>
+            <li>Date started: {{ flare.colchicine.date_started }}</li>
+            {% if flare.colchicine.date_ended %}
+            <li>Date ended: {{ flare.colchicine.date_ended }}</li>
+            {% endif %}
+            <li>Class: {{ flare.colchicine.drug_class }}</li>
+            {% if flare.colchicine.side_effects %}
+            <li>Side effects: {{ flare.colchicine.side_effects }}
+            {% endif %}
+          </ul>
+        </div>
       {% endif %}
       {% if flare.meloxicam %}
-          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam.generic_name|capfirst }}</a>
+        <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'treatment:detail' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam.generic_name|capfirst }}</a>
           {% for brand_name in flare.meloxicam.brand_names %}
             ({{ brand_name|capfirst  }}) </h2>
           {% endfor %}
-          <ul>
+          <ul class="ul-main-list">
             {% if flare.meloxicam.dose %}
             <li>{{ flare.meloxicam.dose }} mg {{ flare.meloxicam.freq }}</li>
             {% endif %}
@@ -61,14 +67,15 @@
             <li>Side effects: {{ flare.meloxicam.side_effects }}
             {% endif %}
           </ul>
-        <br>
+        </div>
       {% endif %}
       {% if flare.ibuprofen %}
-          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen.generic_name|capfirst }}</a>
+        <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'treatment:detail' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen.generic_name|capfirst }}</a>
           {% for brand_name in flare.ibuprofen.brand_names %}
             ({{ brand_name|capfirst  }}) </h2>
           {% endfor %}
-          <ul>
+          <ul class="ul-main-list">
             {% if flare.ibuprofen.dose %}
             <li>{{ flare.ibuprofen.dose }} mg {{ flare.ibuprofen.freq }}</li>
             {% endif %}
@@ -84,13 +91,15 @@
             <li>Side effects: {{ flare.ibuprofen.side_effects }}
             {% endif %}
           </ul>
+        </div>
       {% endif %}
       {% if flare.naproxen %}
-          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen.generic_name|capfirst }}</a>
+        <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'treatment:detail' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen.generic_name|capfirst }}</a>
           {% for brand_name in flare.naproxen.brand_names %}
             ({{ brand_name|capfirst  }}) </h2>
           {% endfor %}
-          <ul>
+          <ul class="ul-main-list">
             <li>{{ flare.naproxen.dose }} mg {{ flare.naproxen.freq }}</li>
             <li>Date started: {{ flare.naproxen.date_started }}
             {% if flare.naproxen.date_ended %}
@@ -102,13 +111,15 @@
             <li>Side effects: {{ flare.naproxen.side_effects }}
             {% endif %}
           </ul>
+        </div>
       {% endif %}
       {% if flare.celecoxib %}
-          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib.generic_name|capfirst }}</a>
+        <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'treatment:detail' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib.generic_name|capfirst }}</a>
           {% for brand_name in flare.celecoxib.brand_names %}
             ({{ brand_name|capfirst  }}) </h2>
           {% endfor %}
-          <ul>
+          <ul class="ul-main-list">
             <li>{{ flare.celecoxib.dose }} mg {{ flare.celecoxib.freq }}</li>
             <li>Date started: {{ flare.celecoxib.date_started }}
             {% if flare.celecoxib.date_ended %}
@@ -120,9 +131,11 @@
             <li>Side effects: {{ flare.celecoxib.side_effects }}
             {% endif %}
           </ul>
+        </div>
       {% endif %}
       {% if flare.prednisone %}
-          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone.generic_name|capfirst }}</a>
+        <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'treatment:detail' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone.generic_name|capfirst }}</a>
           {% for brand_name in flare.prednisone.brand_names %}
             ({{ brand_name|capfirst  }}) </h2>
           {% endfor %}
@@ -138,9 +151,11 @@
             <li>Side effects: {{ flare.prednisone.side_effects }}
             {% endif %}
           </ul>
+        </div>
       {% endif %}
       {% if flare.methylprednisolone %}
-          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone.generic_name|capfirst }}</a>
+        <div class='container nested-container'>
+          <h2 class="default-container"><a href="{% url 'treatment:detail' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone.generic_name|capfirst }}</a>
           {% for brand_name in flare.methylprednisolone.brand_names %}
             ({{ brand_name|capfirst  }}) </h2>
           {% endfor %}
@@ -156,10 +171,16 @@
             <li>Side effects: {{ flare.methylprednisolone.side_effects }}
             {% endif %}
           </ul>
+        </div>
       {% endif %}
       {% if object.urate %}
-        <h2 class="nested-container"><a href="{% url 'lab:detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) at time of flare: {{ object.urate }}mg/dL</h2>
-      {% endif %}
+        <div class="container nested-container">
+          <h2 class="default-container"><a href="{% url 'lab:detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) </h2>
+          <ul class="ul-main-list">
+            <li>{{ object.urate }} mg/dL</li>
+          </ul>
+        </div>
+        {% endif %}
     </div>
   </div>
 </main>

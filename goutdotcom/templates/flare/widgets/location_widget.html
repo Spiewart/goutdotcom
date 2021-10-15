@@ -1,6 +1,22 @@
+<div class="row">
+  <div class="col">
 {% for value, text in form.location.field.choices %}
-  <div class="ui slider checkbox">
+  {% if forloop.counter0 <= 15 %}
+  <div class="ui radio checkbox">
     <input id="id_location_{{ forloop.counter0 }}" name="{{ form.location.name }}" type="checkbox" value="{{ value }}"{% if value in checked_locations %} checked="checked"{% endif %}>
     <label>{{ text }}</label>
   </div>
+  {% endif %}
 {% endfor %}
+  </div>
+  <div class="col">
+{% for value, text in form.location.field.choices %}
+  {% if forloop.counter0 > 15 %}
+  <div class="ui radio checkbox">
+    <input id="id_location_{{ forloop.counter0 }}" name="{{ form.location.name }}" type="checkbox" value="{{ value }}"{% if value in checked_locations %} checked="checked"{% endif %}>
+    <label>{{ text }}</label>
+  </div>
+  {% endif %}
+{% endfor %}
+  </div>
+</div>
