@@ -42,9 +42,7 @@ class Flare(TimeStampedModel):
 
     duration = models.IntegerField(null=True, blank=True, help_text="How long did it last? (days)")
 
-    labs = MultiSelectField(
-        choices=LAB_CHOICES, blank=True, null=True, help_text="Check if so"
-    )
+    labs = MultiSelectField(choices=LAB_CHOICES, blank=True, null=True, help_text="Check if so")
     urate = models.OneToOneField(
         Urate,
         on_delete=models.CASCADE,
@@ -76,7 +74,7 @@ class DecisionAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Are you in perfect health?",
         help_text="Meaning no chronic medical problems",
-        default=False,
+        default="",
         null=True,
         blank=True,
     )
@@ -85,7 +83,7 @@ class DecisionAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Is your flare in just a single joint?",
         help_text="Meaning just a toe, knee, etc.",
-        default=False,
+        default="",
         null=True,
         blank=True,
     )
@@ -93,7 +91,7 @@ class DecisionAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Do you have CKD?",
         help_text="Do you have CKD?",
-        default=False,
+        default="",
         null=True,
         blank=True,
     )
@@ -101,7 +99,7 @@ class DecisionAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Do you have diabetes?",
         help_text="Type I or type II",
-        default=False,
+        default="",
         null=True,
         blank=True,
     )
@@ -109,7 +107,7 @@ class DecisionAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Have you ever had a heart attack, stroke, congestive heart failure (CHF), Crohn's disease, ulcerative colitis, or a gastrointestinal bleed? Are you on blood thinners?",
         help_text="Contraindications to NSAIDs",
-        default=False,
+        default="",
         null=True,
         blank=True,
     )
@@ -117,7 +115,7 @@ class DecisionAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Do you have osteoporosis?",
         help_text="Brittle bones",
-        default=False,
+        default="",
         null=True,
         blank=True,
     )
@@ -125,14 +123,17 @@ class DecisionAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Are you on simvastatin, diltiazem, or clarithromycin?",
         help_text="Contraindications to colchicine",
-        default=False,
+        default="",
         null=True,
         blank=True,
     )
 
+    def monoarticular_aid(self):
+        if self.monoarticular == True:
+            return "Any monoarticular flare can be effectively treated with a corticosteroid injection by a rheumatologist or other provider."
+
     def decision_aid(self):
         colchicine = "colchicine"
-        injection = "injection"
         NSAID = "NSAID"
         steroids = "steroids"
         doctor = "doctor"

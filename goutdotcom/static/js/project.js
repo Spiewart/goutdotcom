@@ -229,7 +229,7 @@ function contraindications_profile_bleed() {
   }
 }
 /* ULT app JS */
-// function that hides/shows subsequent fields based upon first_flare value
+// function that adjusts value of freq_flares based off num_flares and uses check_first_flare() to hides/shows subsequent fields based upon first_flare value
 function one_flare() {
   if ($('#id_num_flares').val() == 'one') {
       $('#id_freq_flares').val('one');
@@ -243,6 +243,7 @@ function check_first_flare() {
   if ($('#id_num_flares').val().length == 0) {
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('');
+      $('#follow-up-questions').hide();
       $('#div_id_erosions').hide();
       $('#id_erosions').prop('checked', false);
       $('#div_id_tophi').hide();
@@ -257,6 +258,7 @@ function check_first_flare() {
   else if ($('#id_num_flares').val() == 'zero') {
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('');
+      $('#follow-up-questions').hide();
       $('#div_id_erosions').hide();
       $('#id_erosions').prop('checked', false);
       $('#div_id_tophi').hide();
@@ -271,6 +273,7 @@ function check_first_flare() {
   else if ($('#id_num_flares').val() == 'one') {
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('one');
+      $('#follow-up-questions').show();
       $('#div_id_erosions').show();
       $('#id_erosions').prop('checked', false);
       $('#div_id_tophi').show();
@@ -284,6 +287,7 @@ function check_first_flare() {
   }
   else {
       $('#div_id_freq_flares').show();
+      $('#follow-up-questions').show();
       $('#div_id_erosions').show();
       $('#div_id_tophi').show();
       $('#div_id_stones').show();
@@ -295,13 +299,30 @@ function check_first_flare() {
 /* FLARE app JS flare_form.html */
 // function that checks what the initial location values are for flare UpdateView and de/populates form fields as needed
 function check_initial_location() {
-  if ($('#id_urate-value').val()) {
-    $('#lab_check').prop("checked", true);
-    $('#id_labs_1').prop("checked", true);
-} else {
-    $('#div_id_labs').hide();
+  if ($('#id_location_0').is(":checked")) {
+    $('#location_check').prop("checked", true);
+    $('#lower_extremity_check').prop("checked", true);
   }
 }
+ /* $('input', $('#locations-col-1')).each(function() {
+  var $this = $(this);
+  if ($this.is(":checked")) {
+    $('#location_check').prop("checked", true);
+    $('#lower_extremity_check').show();
+    $('label[for="lower_extremity_check"]').show();
+    $('#lower_extremity_check').prop("checked", true);
+  }
+  })
+ $('input', $('#locations-col-2')).each(function() {
+  var $this = $(this);
+  if ($this.is(":checked")) {
+    $('#location_check').prop("checked", true);
+    $('#upper_extremity_check').show();
+    $('label[for="upper_extremity_check"]').show();
+    $('#upper_extremity_check').prop("checked", true);
+  }
+  })
+} */
 
 // function that checks if the HTML button #location_check is checked and displays upper and lower extremity options
 function check_location() {
@@ -1104,6 +1125,41 @@ function check_treatment_9() {
   }
 }
 
+// Function that loads on DecisionAid Create page, hides all fields other than the first (perfect_health)
+function decision_aid_initial() {
+  $('#div_id_monoarticular').hide();
+  $('#monoarticular-line').hide();
+  $('#div_id_ckd').hide();
+  $('#ckd-line').hide();
+  $('#div_id_diabetes').hide();
+  $('#diabetes-line').hide();
+  $('#div_id_NSAID_contraindication').hide();
+  $('#NSAID_contraindication-line').hide();
+  $('#div_id_osteoporosis').hide();
+  $('#osteoporosis-line').hide();
+  $('#div_id_colchicine_contraindication').hide();
+  $('#colchicine_contraindication-line').hide();
+  }
+
+function decision_aid_fields () {
+  if ($('#id_perfect_health').val() == "True") {
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').hide();
+  }
+  else if ($('#id_perfect_health').val() == "False") {
+    $('#div_id_monoarticular').show();
+    $('#div_id_ckd').show();
+    $('#ckd-line').show();
+    $('#div_id_diabetes').show();
+    $('#diabetes-line').show();
+    $('#div_id_NSAID_contraindication').show();
+    $('#NSAID_contraindication-line').show();
+    $('#div_id_osteoporosis').show();
+    $('#osteoporosis-line').show();
+    $('#div_id_colchicine_contraindication').show();
+    $('#colchicine_contraindication-line').show();
+  }
+}
 /* ULT app JS */
 // Long if / else if function displaying appropriate HTML form elements for ULT model Create and Update views
 // THIS LIKELY CAN BE DONE MORE INTELLIGENTLY BROKEN UP INTO SMALLER FUNCTIONS

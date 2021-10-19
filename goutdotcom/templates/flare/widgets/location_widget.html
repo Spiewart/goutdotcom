@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col">
+  <div class="col" id="locations-col-1">
 {% for value, text in form.location.field.choices %}
   {% if forloop.counter0 <= 15 %}
   <div class="ui radio checkbox">
@@ -9,7 +9,7 @@
   {% endif %}
 {% endfor %}
   </div>
-  <div class="col">
+  <div class="col" id="locations-col-2">
 {% for value, text in form.location.field.choices %}
   {% if forloop.counter0 > 15 %}
   <div class="ui radio checkbox">

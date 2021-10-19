@@ -5,25 +5,181 @@
 <main role="main" class="container">
   <div class="row">
     <div class="col default-container">
-      <h1 class="nested-container">{{ request.user|capfirst  }}'s Flare Treatment Recommendation
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:decisionaid-create' %}" role="button" style="float: right;">New Rec</a>
+      <h1 class="nested-container" id="rec">Flare Treatment
+      <a class="btn btn-primary btn-lg" href="{% url 'flare:decisionaid-create' %}" role="button" style="float: right;">New</a>
       <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
+      {% if request.user.is_authenticated %}
       <a class="btn btn-primary btn-lg" href="{% url 'flare:decisionaid-list' %}" role="button" style="float: right;">Rec History</a>
-      <p>Date: {{ object.created }}</p>
+      {% endif %}
+    </h1>
+        {% if object.decision_aid %}
+        <h2>Recommendation: {{ object.decision_aid }} (<a href="#options">Jump to Options/Dosing</a>)</h2>
+        {% endif %}
+        {% if request.user.is_anonymous %}
+        <p>{{ object.created }}</p>
+        {% elif request.user %}
+        <h3>{{ request.user|capfirst  }}</h3>
+        <p>{{ object.created }}</p>
+        {% endif %}
+        {% block quicklinks %}
+        <hr size="6" color="white">
+        <h2 class="nested-container">Quick Links</h2>
+        <ol>
+          <li><a href="#explanation">Explanation</a></li>
+          <li><a href="#methodology">Methodology</a></li>
+          <li><a href="#options">Options</a></li>
+          {% if object.decision_aid != "doctor" %}
+          <li><a href="#get">Get</a>
+              {% if object.decision_aid == "NSAID" %} NSAIDs
+              {% elif object.decision_aid == "steroids" %} corticosteroids
+              {% elif object.decision_aid == "colchicine" %} colchicine
+              {% endif %}
+          </li>
+          {% endif %}
+          <li><a href="#references">References</a></li>
+        </ol>
+        {% endblock quicklinks %}
+      <hr size="6" color="white">
+      <h2 class="nested-container" id="explanation">Explanation</h2>
+      {% if object.decision_aid %}
+        {% if object.decision_aid == "NSAID" %}
+        <p><a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s (non-steroidal antiinflammatory drugs are the most common gout treatment.
+        They are available over the counter, cheap, and are generally safe.</p>
+        <p>NSAIDs are likely recommended for you based off you being in a general good state of health.
+          Certain medical conditions, such as chronic kidney disease (CKD), a history of gastrointestinal (GI) bleeding, heart attack(s), stroke(s), or needing to be on a blood thinner are generally contraindications to use of NSAIDs.
+        </p>
+        <p>Some particularly bad gout flares are resistant to treatment with NSAIDs and are better treated with prescription medications and or joint injections.
+          These flares typically involve multiple joints, often large weight-bearing joints such as the ankle or knee, and are very disabling.
+        </p>
+        {% elif object.decision_aid == "steroids" %}
+        <p></p>
+        {% elif object.decision_aid == "colchicine" %}
+        {% elif object.decision_aid == "doctor" %}
+        {% endif %}
+      {% endif %}
+      {% if object.monoarticular == True %}
+        <p>Treatment: {{ object.monoarticular_aid }}</p>
+      {% endif %}
+      <hr size="6" color="white">
+      <h2 class="nested-container" id="methodology">Methodology</h2>
+      <h3>Perfect health</h3>
       {% if object.perfect_health == True %}
-      <p>In perfect health</p>
+      <p>You answered that you are in perfect health. This generally means that you can take any of the available treatments for gout.
+        NSAIDs are typically first line because of their being over the counter, safe, and cheap.
+      </p>
+      {% elif object.perfect_health == False %}
+      <p>You answered that you are not in perfect health. To make sure we recommend the safest, most effective therapy for you, more information is needed.</p>
+      {% else %}
+      <p>You didn't answer whether or not you are in perfect health. That's fine, but we need some information if we are going to make customized recommendations for treating your gout flare.</p>
+      {% endif %}
+
+      {% if object.decision_aid %}
       <p>Treatment: {{ object.decision_aid }}</p>
       {% endif %}
-      {% if flare.duration %}
-      <p>Duration: {{ flare.duration }}  days</p>
+      {% if object.ckd %}
+      {{ object.ckd }}
       {% endif %}
-      {% if flare.urate %}
-      <p>Uric acid: {{ flare.urate }}</p>
+      {% if object.diabetes %}
+      {{ object.diabetes }}
       {% endif %}
-      {% if flare.treatment %}
-      <p>Treatment: {{ flare.treatment }}</p>
+      {% if object.NSAID_contraindication %}
+      {{ object.NSAID_contraindication }}
       {% endif %}
-    </div>
+      {% if object.osteoporosis %}
+      {{ object.osteoporosis }}
+      {% endif %}
+      {% if object.colchicine_contraindication %}
+      {{ object.colchicine_contraindication }}
+      {% endif %}
+      <hr size="6" color="white">
+      {% if object.decision_aid != "doctor" %}
+      <h2 class="nested-container" id="options">Options</h2>
+        {% if object.decision_aid == "NSAID" %}
+          <div class="col">
+          <ul class="ul-sub-list">
+            <lh><u>Over the Counter</u></lh>
+            <li>
+              <a href="{% url 'treatment:about' 'naproxen' %}">Naproxen</a> (Aleve)
+              <ul>
+                <li>Recommended dosing for flare: 440 mg (2 tablets) twice daily until flare subsides.</li>
+              </ul>
+            </li>
+            <li>
+              <a href="{% url 'treatment:about' 'ibuprofen' %}">Ibuprofen</a> (Advil)
+              <ul>
+                <li>Recommended dosing for flare: 600-800 mg (3-4 tablets) three times daily until flare subsides.</li>
+              </ul>
+            </li>
+          </ul>
+          </div>
+          <div class="col">
+            <ul class="ul-sub-list">
+            <lh><u>Prescription</u></lh>
+            <li>
+              <a href="{% url 'treatment:about' 'meloxicam' %}">Meloxicam</a> (Mobic)
+              <ul>
+                <li>Recommended dosing for flare: 15 mg (1 tablet) daily until flare subsides.</li>
+              </ul>
+            </li>
+            </li>
+            <li>
+              <a href="{% url 'treatment:about' 'celecoxib' %}">Celecoxib</a> (Celebrex)
+              <ul>
+                <li>Recommended dosing for flare: 400 mg (2 tablets) twice daily until flare subsides.</li>
+              </ul>
+            </li>
+            </li>
+          </ul>
+          </div>
+        {% elif object.decision_aid == "steroids" %} corticosteroids
+        {% elif object.decision_aid == "colchicine" %} colchicine
+        {% endif %}
+       {% endif %}
+      <hr size="6" color="white">
+      {% if object.decision_aid != "doctor" %}
+      <h2 class="nested-container" id="get">Get
+        {% if object.decision_aid == "NSAID" %} NSAIDs
+        {% elif object.decision_aid == "steroids" %} corticosteroids
+        {% elif object.decision_aid == "colchicine" %} colchicine
+        {% endif %}
+      </h2>
+        {% if object.decision_aid == "NSAID" %}
+          <div class="col">
+          <ul class="ul-sub-list">
+            <lh><u>Over the Counter</u></lh>
+            <li>
+              <a href="{% url 'treatment:about' 'naproxen' %}">Naproxen</a>: 220 mg tablets (<a href="" target="_blank">Amazon</a>)
+            </li>
+            <li>
+              <a href="{% url 'treatment:about' 'ibuprofen' %}">Ibuprofen</a>: 200 mg tablets (<a href="" target="_blank">Amazon</a>)
+            </li>
+          </ul>
+          </div>
+          <div class="col">
+            <ul class="ul-sub-list">
+            <lh><u>Prescription</u></lh>
+            <li>
+              <a href="{% url 'treatment:about' 'meloxicam' %}">Meloxicam</a>: 15 mg tablets. You will need to see your provider for these.
+            </li>
+            <li>
+              <a href="{% url 'treatment:about' 'celecoxib' %}">Celecoxib</a> 200 mg tablets. You will need to see your provider for these.
+            </li>
+          </ul>
+          </div>
+        {% elif object.decision_aid == "steroids" %} corticosteroids
+        {% elif object.decision_aid == "colchicine" %} colchicine
+        {% endif %}
+  {% endif %}
+  <hr size="6" color="white">
+  {% block references %}
+      <h2 class="nested-container"><a id="references">References</a></h2>
+      <ol>
+        <li id=1>FitzGerald JD, Dalbeth N, Mikuls T, Brignardello-Petersen R, Guyatt G, Abeles AM, Gelber AC, Harrold LR, Khanna D, King C, Levy G, Libbey C, Mount D, Pillinger MH, Rosenthal A, Singh JA, Sims JE, Smith BJ, Wenger NS, Bae SS, Danve A, Khanna PP, Kim SC, Lenert A, Poon S, Qasim A, Sehra ST, Sharma TSK, Toprover M, Turgunbaev M, Zeng L, Zhang MA, Turner AS, Neogi T. 2020 American College of Rheumatology Guideline for the Management of Gout. Arthritis Care Res (Hoboken). 2020 Jun;72(6):744-760. doi: 10.1002/acr.24180. PMID: 32391934.<a href="https://pubmed.ncbi.nlm.nih.gov/32391934/" target="_blank"> https://doi.org/10.1525/9780520339484-005</a></li>
+      </ol>
+  {% endblock references %}
+  <hr size="6" color="white">
+  <u><a href="#rec">Back to Top</a></u>
   </div>
+</div>
 </main>
 {% endblock content %}

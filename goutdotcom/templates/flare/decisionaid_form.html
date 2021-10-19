@@ -32,5 +32,15 @@ New Flare
 {% endblock form %}
 
 {% block inline_javascript %}
-
+<script>
+$(document).ready(function() {
+  // sets up DecisionAid Create page by hiding all fields other than whether or not one is in perfect health
+  decision_aid_initial();
+  });
+$(document).ready(function() {
+  // checks if perfect_health is true and, if so, displays only monoarticular field, else displays long list of other fields to fill out
+  $('#div_id_perfect_health').change(decision_aid_fields);
+  decision_aid_fields.call($('#div_id_perfect_health').get(0));
+  });
+</script>
 {% endblock inline_javascript %}

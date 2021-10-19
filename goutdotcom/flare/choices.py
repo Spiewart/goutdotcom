@@ -99,4 +99,4 @@ TREATMENT_CHOICES = (
     (Othertreatment, "Other treatment"),
 )
 
-BOOL_CHOICES = ((True, "Yes"), (False, "No"))
+BOOL_CHOICES = (("", "-----"), (True, "Yes"), (False, "No"))

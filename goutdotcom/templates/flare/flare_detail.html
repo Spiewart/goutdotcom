@@ -26,11 +26,16 @@
         {% endif %}
         </ul>
       </div>
+      {% if flare.colchicine or flare.meloxicam or flare.ibuprofen or flare.celecoxib or flare.naproxen or flare.prednisone or flare.methylprednisolone %}
+      <div class="container">
+      <h2><u>Treatments</u></h2>
+      </div>
+      {% endif %}
       {% if flare.colchicine %}
         <div class="container nested-container">
-          <h2 class="nested-container"><a href="{% url 'treatment:detail' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine.generic_name|capfirst }}</a>
+          <h3 class="default-container"><a href="{% url 'treatment:detail' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine.generic_name|capfirst }}</a>
           {% for brand_name in flare.colchicine.brand_names %}
-            ({{ brand_name|capfirst  }}) </h2>
+            ({{ brand_name|capfirst  }})</h3>
           {% endfor %}
           <ul class="ul-main-list">
             <li>{{ flare.colchicine.dose }} mg {{ flare.colchicine.freq }}</li>
@@ -47,9 +52,9 @@
       {% endif %}
       {% if flare.meloxicam %}
         <div class="container nested-container">
-          <h2 class="default-container"><a href="{% url 'treatment:detail' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam.generic_name|capfirst }}</a>
+          <h3 class="default-container"><a href="{% url 'treatment:detail' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam.generic_name|capfirst }}</a>
           {% for brand_name in flare.meloxicam.brand_names %}
-            ({{ brand_name|capfirst  }}) </h2>
+            ({{ brand_name|capfirst  }}) </h3>
           {% endfor %}
           <ul class="ul-main-list">
             {% if flare.meloxicam.dose %}
@@ -71,9 +76,9 @@
       {% endif %}
       {% if flare.ibuprofen %}
         <div class="container nested-container">
-          <h2 class="default-container"><a href="{% url 'treatment:detail' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen.generic_name|capfirst }}</a>
+          <h3 class="default-container"><a href="{% url 'treatment:detail' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen.generic_name|capfirst }}</a>
           {% for brand_name in flare.ibuprofen.brand_names %}
-            ({{ brand_name|capfirst  }}) </h2>
+            ({{ brand_name|capfirst  }}) </h3>
           {% endfor %}
           <ul class="ul-main-list">
             {% if flare.ibuprofen.dose %}
@@ -95,9 +100,9 @@
       {% endif %}
       {% if flare.naproxen %}
         <div class="container nested-container">
-          <h2 class="default-container"><a href="{% url 'treatment:detail' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen.generic_name|capfirst }}</a>
+          <h3 class="default-container"><a href="{% url 'treatment:detail' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen.generic_name|capfirst }}</a>
           {% for brand_name in flare.naproxen.brand_names %}
-            ({{ brand_name|capfirst  }}) </h2>
+            ({{ brand_name|capfirst  }}) </h3>
           {% endfor %}
           <ul class="ul-main-list">
             <li>{{ flare.naproxen.dose }} mg {{ flare.naproxen.freq }}</li>
@@ -115,9 +120,9 @@
       {% endif %}
       {% if flare.celecoxib %}
         <div class="container nested-container">
-          <h2 class="default-container"><a href="{% url 'treatment:detail' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib.generic_name|capfirst }}</a>
+          <h3 class="default-container"><a href="{% url 'treatment:detail' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib.generic_name|capfirst }}</a>
           {% for brand_name in flare.celecoxib.brand_names %}
-            ({{ brand_name|capfirst  }}) </h2>
+            ({{ brand_name|capfirst  }}) </h3>
           {% endfor %}
           <ul class="ul-main-list">
             <li>{{ flare.celecoxib.dose }} mg {{ flare.celecoxib.freq }}</li>
@@ -135,9 +140,9 @@
       {% endif %}
       {% if flare.prednisone %}
         <div class="container nested-container">
-          <h2 class="default-container"><a href="{% url 'treatment:detail' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone.generic_name|capfirst }}</a>
+          <h3 class="default-container"><a href="{% url 'treatment:detail' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone.generic_name|capfirst }}</a>
           {% for brand_name in flare.prednisone.brand_names %}
-            ({{ brand_name|capfirst  }}) </h2>
+            ({{ brand_name|capfirst  }}) </h3>
           {% endfor %}
           <ul>
             <li>{{ flare.prednisone.dose }} mg {{ flare.prednisone.freq }}</li>
@@ -155,9 +160,9 @@
       {% endif %}
       {% if flare.methylprednisolone %}
         <div class='container nested-container'>
-          <h2 class="default-container"><a href="{% url 'treatment:detail' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone.generic_name|capfirst }}</a>
+          <h3 class="default-container"><a href="{% url 'treatment:detail' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone.generic_name|capfirst }}</a>
           {% for brand_name in flare.methylprednisolone.brand_names %}
-            ({{ brand_name|capfirst  }}) </h2>
+            ({{ brand_name|capfirst  }}) </h3>
           {% endfor %}
           <ul>
             <li>{{ flare.methylprednisolone.dose }} mg {{ flare.methylprednisolone.freq }}</li>
@@ -174,12 +179,20 @@
         </div>
       {% endif %}
       {% if object.urate %}
-        <div class="container nested-container">
-          <h2 class="default-container"><a href="{% url 'lab:detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) </h2>
-          <ul class="ul-main-list">
-            <li>{{ object.urate }} mg/dL</li>
-          </ul>
-        </div>
+      <div class="container">
+      <h2><u>Labs</u></h2>
+      </div>
+      {% endif %}
+        {% if object.urate %}
+          <div class="container nested-container">
+            <h3 class="default-container"><a href="{% url 'lab:detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) </h3>
+            <ul class="ul-main-list">
+              <li>{{ object.urate }} mg/dL</li>
+              {% if object.urate.date_drawn %}
+              <li>{{ object.urate.date_drawn }}</li>
+              {% endif %}
+            </ul>
+          </div>
         {% endif %}
     </div>
   </div>

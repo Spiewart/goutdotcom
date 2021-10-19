@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import ButtonHolder, Fieldset, Layout, Submit
+from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
 from django import forms
 
 from .choices import BOOL_CHOICES, FREQ_CHOICES, ULT_CHOICES
@@ -21,6 +21,7 @@ class ULTForm(forms.ModelForm):
         super(ULTForm, self).__init__(*args, **kwargs)
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
+        self.fields["ckd"].label = "CKD"
         self.helper = FormHelper(self)
 
         # You can dynamically adjust your layout
@@ -29,6 +30,14 @@ class ULTForm(forms.ModelForm):
                 "",
                 "num_flares",
                 "freq_flares",
+                HTML(
+                    """
+                    <div id="follow-up-questions">
+                    <hr size="6" color="white">
+                    <h3>Do you have any of the following?:</h3>
+                    </div>
+                    """
+                ),
                 "erosions",
                 "tophi",
                 "stones",

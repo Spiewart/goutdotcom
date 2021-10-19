@@ -29,12 +29,47 @@ class DecisionAidForm(forms.ModelForm):
             Fieldset(
                 "",
                 "perfect_health",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="perfect_health-line">
+                    """
+                ),
                 "monoarticular",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="monoarticular-line">
+                    """
+                ),
                 "ckd",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="ckd-line">
+                    """
+                ),
                 "diabetes",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="diabetes-line">
+                    """
+                ),
                 "NSAID_contraindication",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="NSAID_contraindication-line">
+                    """
+                ),
                 "osteoporosis",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="osteoporosis-line">
+                    """
+                ),
                 "colchicine_contraindication",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="colchicine_contraindication-line">
+                    """
+                ),
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
@@ -67,11 +102,11 @@ class FlareForm(forms.ModelForm):
                     <label for="location_check">Location</label>
                     <br>
                     <div class="row">
-                    <div class="col">
+                    <div class="col" id="location-col-1">
                     <input type="checkbox" id="lower_extremity_check" name="lower_extremity_check" value="lower_extremity_check">
                     <label for="lower_extremity_check">Lower Extremity</label>
                     </div>
-                    <div class="col">
+                    <div class="col" id="l location-col-2">
                     <input type="checkbox" id="upper_extremity_check" name="upper_extremity_check" value="upper_extremity_check">
                     <label for="upper_extremity_check">Upper Extremity</label>
                     </div>

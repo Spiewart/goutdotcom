@@ -15,6 +15,7 @@
   --main-nested-container-box-shadow: 10px 10px 5px rgb(240, 255, 29);
   --main-nested-container-padding: 5px;
   --main-master-sub-container-border-color: white;
+  --sub-list-padding: 0;
 }
 
 body {
@@ -124,7 +125,12 @@ body {
   list-style-position: inside;
 }
 
-
+.ul-sub-list {
+  color: rgb(231, 231, 231);
+  padding: var(--sub-list-padding);
+  background-color: var(--main-master-container-background-color);
+  list-style-position: inside;
+}
 // project specific CSS goes here
 
 ////////////////////////////////

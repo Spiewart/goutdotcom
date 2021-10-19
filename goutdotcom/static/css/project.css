@@ -14,7 +14,8 @@
   --main-nested-container-border-color: rgb(1, 14, 20);
   --main-nested-container-box-shadow: 10px 10px 5px rgb(240, 255, 29);
   --main-nested-container-padding: 5px;
-  --main-master-sub-container-border-color: white; }
+  --main-master-sub-container-border-color: white;
+  --sub-list-padding: 0; }
 
 body {
   background: var(--main-background); }
@@ -107,6 +108,12 @@ body {
   border-color: var(--main-master-container-border-color);
   color: #e7e7e7;
   padding: var(--main-master-container-padding);
+  background-color: var(--main-master-container-background-color);
+  list-style-position: inside; }
+
+.ul-sub-list {
+  color: #e7e7e7;
+  padding: var(--sub-list-padding);
   background-color: var(--main-master-container-background-color);
   list-style-position: inside; }
 
