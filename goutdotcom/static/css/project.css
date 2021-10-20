@@ -117,6 +117,13 @@ body {
   background-color: var(--main-master-container-background-color);
   list-style-position: inside; }
 
+.quick-link-list {
+  list-style: none;
+  padding: 0; }
+
+.quick-link-list > li {
+  display: inline; }
+
 .alert-debug {
   background-color: #fff;
   border-color: #d6e9c6;
