@@ -5,10 +5,19 @@
 <main role="main" class="container-fluid default-container">
       <div class="container nested-container">
         <h1 class="default-container">{{ request.user|capfirst  }}'s Flare
-        <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
-        <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
-        <a class="btn btn-primary btn-lg" href="{% url 'flare:list' %}" role="button" style="float: right;">Flare List</a>
-        <a class="btn btn-primary btn-lg" href="{% url 'flare:update' object.id %}" role="button" style="float: right;">Update</a>
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Flares
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+              <li><a class="dropdown-item" href="{% url 'flare:create' %}">New</a></li>
+              <li><a class="dropdown-item" href="{% url 'flare:about' %}">About</a></li>
+              <li><a class="dropdown-item" href="{% url 'flare:list' %}">List</a></li>
+              <li><a class="dropdown-item" href="{% url 'flare:update' object.id %}">Update</a></li>
+            </ul>
+          </div>
+        </div>
         </h1>
         <ul class="ul-main-list">
         <li>Date: {{ flare.created }}</li>

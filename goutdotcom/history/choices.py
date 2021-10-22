@@ -1,5 +1,7 @@
 BOOL_CHOICES = ((True, "Yes"), (False, "No"))
 
+CHF_BOOL_CHOICES = ((True, "Systolic"), (False, "Diastolic"))
+
 FATHER = "Father"
 MOTHER = "Mother"
 SISTER = "Sister"
@@ -12,8 +14,7 @@ GRANDPA = "Grandpa"
 GRANDMA = "Grandma"
 
 FAMILY_CHOICES = (
-    (FATHER
-     , "Father"),
+    (FATHER, "Father"),
     (MOTHER, "Mother"),
     (SISTER, "Sister"),
     (BROTHER, "Brother"),

@@ -18,6 +18,7 @@ urlpatterns = [
     path("profiles/", include(("goutdotcom.profiles.urls"), namespace="profiles")),
     path("lab/", include(("goutdotcom.lab.urls"), namespace="lab")),
     path("flare/", include(("goutdotcom.flare.urls"), namespace="flare")),
+    path("flareaid/", include(("goutdotcom.flareaid.urls"), namespace="flareaid")),
     path("history/", include(("goutdotcom.history.urls"), namespace="history")),
     path("ult/", include(("goutdotcom.ult.urls"), namespace="ult")),
     path("treatment/", include(("goutdotcom.treatment.urls"), namespace="treatment")),

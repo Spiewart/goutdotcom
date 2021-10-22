@@ -6,7 +6,12 @@ from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
-from goutdotcom.history.choices import BOOL_CHOICES, FAMILY_CHOICES, ORGAN_CHOICES
+from goutdotcom.history.choices import (
+    BOOL_CHOICES,
+    CHF_BOOL_CHOICES,
+    FAMILY_CHOICES,
+    ORGAN_CHOICES,
+)
 
 
 # Create your models here.
@@ -101,7 +106,7 @@ class Hypertension(MedicalHistory):
 
 class CHF(MedicalHistory):
     systolic = BooleanField(
-        choices=BOOL_CHOICES,
+        choices=CHF_BOOL_CHOICES,
         help_text="Do you have systolic (reduced ejection fraction) heart faliure? If you don't know, skip this or leave it blank.",
         verbose_name="Systolic or diastolic heart failure",
         null=True,
@@ -121,8 +126,8 @@ class Diabetes(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Type(models.IntegerChoices):
-        I = 1
-        II = 2
+        One = 1
+        Two = 2
 
     type = IntegerField(
         choices=Type.choices,

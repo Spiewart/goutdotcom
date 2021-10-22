@@ -78,6 +78,7 @@ LOCAL_APPS = [
     "goutdotcom.lab.apps.LabConfig",
     "goutdotcom.citations.apps.CitationsConfig",
     "goutdotcom.flare.apps.FlareConfig",
+    "goutdotcom.flareaid.apps.FlareAidConfig",
     "goutdotcom.history.apps.HistoryConfig",
     "goutdotcom.ult.apps.UltConfig",
     "goutdotcom.treatment.apps.TreatmentConfig",

@@ -6,8 +6,17 @@
   <div class="row">
     <div class="col">
       <h1 class="nested-container">Flares
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About Flares</a>
+             <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Flares
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+              <li><a class="dropdown-item" href="{% url 'flare:create' %}">New</a></li>
+              <li><a class="dropdown-item" href="{% url 'flare:about' %}">About</a></li>
+            </ul>
+          </div>
+        </div>
       </h1>
     </div>
   </div>

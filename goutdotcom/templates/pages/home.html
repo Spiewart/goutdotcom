@@ -4,7 +4,7 @@
 {% block content %}
 <div class="jumbotron-fluid default-container">
         <div class="row">
-          <div class="col">
+          <div class="col col-fluid">
             <h1 class="nested-container">Gouthelper</h1>
           <h2 class="lead">Educate Yourself, Don't Live with Gout</h2>
           <hr class="my-6" color="white">
@@ -12,29 +12,70 @@
         </div>
         <div class="row">
           <div class="col">
-            <div class="card-deck">
+            <div class="card-group">
               <div class="card text-center" id="card-homepage">
-                <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" alt="Card image cap">
-                <div class="card-body">
-                  <h2>Having a gout flare?</h2>
-                  <a href="{% url 'flare:decisionaid-create' %}" class="btn btn-primary">Treat it!</a>
+                <div class="card-header">
+                  <h2><b>Flares</b></h2>
                 </div>
-              </div>
-              <div class="card text-center" id="card-homepage">
                 <img class="card-img-top" src="https://www.stockvault.net/data/2016/08/23/208302/preview16.jpg" alt="Card image cap">
-                <div class="card-body">
-                  <h2>Lots of flares?</h2>
-                  <a href="{% url 'flare:about' %}" class="btn btn-primary">About Flares</a>
+                <div class="card-footer">
+                  <ul class="nav nav-pills card-footer-pills justify-content-center nav-fill flex-column flex-sm-row" id="homepage-nav-buttons">
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="#">About</a>
+                    </li>
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="{% url 'flareaid:create' %}">Treatment</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="#">Log</a>
+                    </li>
+                    {% endif %}
+                  </ul>
                 </div>
               </div>
               <div class="card text-center" id="card-homepage">
-                <img class="card-img-top" src="https://www.researchgate.net/profile/Tim-Jansen-2/publication/230618654/figure/fig4/AS:300405515931649@1448633664057/Chronic-tophaceous-gout-of-the-hand-showing-deforming-arthropathy-and-obvious-tophi.png" alt="Card image cap">
-                <div class="card-body">
-                  <h2>Is gout treatment for you?</h2>
-                  <a href="{% url 'ult:create' %}" class="btn btn-primary">ULT</a>
+                <div class="card-header">
+                  <h2><b>Gout</b></h2>
+                </div>
+                <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" alt="Card image cap">
+                <div class="card-footer">
+                  <ul class="nav nav-pills card-footer-pills justify-content-center nav-fill flex-column flex-sm-row" id="homepage-nav-buttons">
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="#">About</a>
+                    </li>
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="{% url 'flareaid:create' %}">Treatment</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="#">Log</a>
+                    </li>
+                    {% endif %}
+                  </ul>
                 </div>
               </div>
-            </div>
+              <div class="card text-center" id="card-homepage">
+                <div class="card-header">
+                  <h2><b>Gout</b></h2>
+                </div>
+                <img class="card-img-top" src="https://www.researchgate.net/profile/Tim-Jansen-2/publication/230618654/figure/fig4/AS:300405515931649@1448633664057/Chronic-tophaceous-gout-of-the-hand-showing-deforming-arthropathy-and-obvious-tophi.png" alt="Card image cap">
+                <div class="card-footer">
+                  <ul class="nav nav-pills card-footer-pills justify-content-center nav-fill flex-column flex-sm-row" id="homepage-nav-buttons">
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="#">About</a>
+                    </li>
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="{% url 'flareaid:create' %}">Treatment</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item mr-1">
+                      <a class="nav-link active" href="#">Log</a>
+                    </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
       </div>
   </div>
 </main>

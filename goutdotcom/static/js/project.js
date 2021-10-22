@@ -299,7 +299,8 @@ function check_first_flare() {
 /* FLARE app JS flare_form.html */
 // function that checks what the initial location values are for flare UpdateView and de/populates form fields as needed
 function check_initial_location() {
-  if ($('#id_location_0').is(":checked")) {
+  if ($("input[type=radio][name=id_location_0]:checked").val()) {
+    alert("got this far");
     $('#location_check').prop("checked", true);
     $('#lower_extremity_check').prop("checked", true);
   }
@@ -323,7 +324,7 @@ function check_initial_location() {
   }
   })
 } */
-
+/*
 // function that checks if the HTML button #location_check is checked and displays upper and lower extremity options
 function check_location() {
   if ($('#location_check').is(":checked")) {
@@ -916,7 +917,7 @@ function check_extremity() {
     $('#location_check_hr').hide();
   }
 }
-
+*/
 // function that checks if the HTML button #lab_check is checked and shows the optional labs Flare model field check boxes, used on #lab_check click
 function check_labs() {
   if ($('#lab_check').is(":checked")) {
@@ -1125,8 +1126,9 @@ function check_treatment_9() {
   }
 }
 
-// Function that loads on DecisionAid Create page, hides all fields other than the first (perfect_health)
-function decision_aid_initial() {
+/* FlareAid app JS */
+// Function that loads on FlareAid Create page, hides all fields other than the first (perfect_health)
+function flare_aid_initial() {
   $('#div_id_monoarticular').hide();
   $('#monoarticular-line').hide();
   $('#div_id_ckd').hide();
@@ -1141,7 +1143,7 @@ function decision_aid_initial() {
   $('#colchicine_contraindication-line').hide();
   }
 
-function decision_aid_fields () {
+function flare_aid_fields () {
   if ($('#id_perfect_health').val() == "True") {
     $('#div_id_monoarticular').show();
     $('#monoarticular-line').hide();

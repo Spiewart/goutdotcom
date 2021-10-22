@@ -30,6 +30,20 @@ body {
   margin: 0px;
   padding: 0px; }
 
+.jumbotron-about {
+  background: var(--main-nested-container-background);
+  border-style: var(--main-nested-container-border-style);
+  border-width: var(--main-nested-container-border-width);
+  border-color: #000846;
+  padding: var(--main-nested-container-padding);
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  height: 100vh;
+  background-size: cover;
+  border-radius: 0;
+  color: var(--main-master-container-background-color); }
+
 .asteriskField {
   display: none; }
 
@@ -45,7 +59,12 @@ body {
   width: 288px;
   width: 18rem;
   height: 100%;
-  color: var(--main-button-background-color); }
+  color: var(--main-master-container-background-color);
+  border-color: white;
+  border-width: 2px; }
+
+.nav-pills .nav-link.active {
+  background-color: var(--main-master-container-background-color); }
 
 .default-container {
   border-style: var(--main-master-container-border-style);
