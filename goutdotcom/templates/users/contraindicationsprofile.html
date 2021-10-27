@@ -1,0 +1,75 @@
+<div class="container nested-container">
+  <div class="container default-container">
+    <h2 class="nested-container">Contraindications</h2>
+    <div class="row">
+      {% if object.contraindicationsprofile.stroke.value %}
+      <div class="col-auto">
+        <h3>{{ object.contraindicationsprofile.stroke|capfirst }}</h3>
+        {% if object.contraindicationsprofile.number %}
+        <li>{{ object.contraindicationsprofile.number }} strokes</li>
+        {% endif %}
+        {% if object.contraindicationsprofile.date %}
+        <li>Date (of last): {{ object.contraindicationsprofile.date }}</li>
+        {% else %}
+        <li>Date of stroke not recorded</li>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% if object.contraindicationsprofile.heartattack.value %}
+      <div class="col-auto">
+        <h3>Myocarial Infarction (MI)</h3>
+        {% if object.contraindicationsprofile.heartattack.date %}
+        <li>Date (of last): {{ object.contraindicationsprofile.heartattack.date }}</li>
+        {% else %}
+        <li>Date of MI not recorded</li>
+        {% endif %}
+        {% if object.contraindicationsprofile.heartattack.stent %}
+        <li>Stent,
+          {% if object.contraindicationsprofile.heartattack.stent_date %}
+          date (of last): {{ object.contraindicationsprofile.heartattack.stent_date }}</li>
+          {% else %}
+          date not recorded</li>
+          {% endif %}
+        {% endif %}
+        {% if object.contraindicationsprofile.heartattack.cabg %}
+        <li>Coronary artery bypass grafting (CABG),
+          {% if object.contraindicationsprofile.heartattack.cabg_date %}
+          <li>date: {{ object.contraindicationsprofile.heartattack.cabg_date }}</li>
+          {% else %}
+          date not recorded</li>
+          {% endif %}
+        {% endif %}
+      </div>
+      {% endif %}
+      {% if object.contraindicationsprofile.bleed.value %}
+      <div class="col-auto">
+        <h3>Major Bleed</h3>
+        {% if object.contraindicationsprofile.bleed.date %}
+        <li>Date (of last): {{ object.contraindicationsprofile.bleed.date }}</li>
+        {% else %}
+        <li>Date of major bleed not recorded</li>
+        {% endif %}
+        {% if object.contraindicationsprofile.bleed.GIB %}
+        <li>Gastrointestinal (GI) bleed,
+          {% if object.contraindicationsprofile.bleed.GIB_date %}
+          ate : {{ object.contraindicationsprofile.bleed.GIB_date }}
+          {% else %}
+          date not recorded</li>
+          {% endif %}
+        {% endif %}
+        {% if object.contraindicationsprofile.bleed.CNS %}
+        <li>Intracranial bleed,
+          {% if object.contraindicationsprofile.bleed.CNS_date %}
+          date: {{ object.contraindicationsprofile.bleed.CNS_date }}</li>
+          {% else %}
+          date not recorded
+          {% endif %}
+        {% endif %}
+        {% if object.contraindicationsprofile.bleed.transfusion %}
+        <li>Required transfusion for bleeding</li>
+        {% endif %}
+      {% endif %}
+      </div>
+      </div>
+      </div>
+      </div>

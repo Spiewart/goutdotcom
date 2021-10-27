@@ -1,5 +1,6 @@
 :root {
   --main-background: linear-gradient(to left top, rgb(255, 34, 225), rgb(240, 255, 29));
+  --main-background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
   --main-button-background-color: rgb(62, 67, 71);
   --main-button-border-color: rgb(231, 231, 231);
   --main-master-container-background-color: rgb(0, 8, 70);

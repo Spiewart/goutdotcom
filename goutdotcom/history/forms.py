@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import ButtonHolder, Fieldset, Layout, Submit
+from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
 from datetimewidget.widgets import DateWidget
 from django import forms
 
@@ -48,7 +48,13 @@ class CKDForm(forms.ModelForm):
         self.helper.form_tag = False
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
-            Fieldset("CKD", "value", "stage", "dialysis", id="CKD_for_profile"),
+            Fieldset(
+                "CKD",
+                "value",
+                "stage",
+                "dialysis",
+                id="CKD_for_profile",
+            ),
         )
 
 

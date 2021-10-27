@@ -21,6 +21,7 @@
     "cSpell.words": [
         "cabg",
         "contraindicationsprofile",
+        "goutdotcom",
         "heartattack",
         "hyperuricemia",
         "inflammasome",
@@ -56,6 +57,13 @@
     "emmet.includeLanguages": {
       "django-html": "html"
     },
+  "beautify.language": {
+   "html": [
+       "htm",
+       "html",
+       "django-html"
+   ]
+},
     "auto-close-tag.activationOnLanguage": [
 
       "xml",

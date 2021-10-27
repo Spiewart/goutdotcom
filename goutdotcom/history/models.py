@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.fields import BooleanField, IntegerField
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
@@ -69,17 +70,29 @@ class CKD(MedicalHistory):
 
     stage = IntegerField(
         choices=Stage.choices,
-        help_text="What stage is your CKD? If you don't know, skip this or leave it blank.",
+        help_text=mark_safe(
+            "What <a href='https://www.kidney.org/sites/default/files/01-10-7278_HBG_CKD_Stages_Flyer_GFR.gif' target='_blank'>stage</a> is your CKD?? If you don't know, you probably aren't."
+        ),
         verbose_name="CKD stage",
         null=True,
         blank=True,
     )
-    dialysis = BooleanField(choices=BOOL_CHOICES, help_text="Are you on dialysis?", null=True, blank=True)
+
+    dialysis = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Are you on <a href='https://en.wikipedia.org/wiki/Hemodialysis' target='_blank'>dialysis</a>? If you don't know, you probably aren't."
+        ),
+        null=True,
+        blank=True,
+    )
     name = "CKD"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Do you have " + name + "?"),
-        verbose_name="Chronic kidney disease (CKD)",
+        help_text=mark_safe(
+            "Do you have CKD (<a href='https://en.wikipedia.org/wiki/Chronic_kidney_disease' target='_blank'>chronic kidney disease</a>)? If you don't know, skip this or leave it blank."
+        ),
+        verbose_name="Chronic Kidney Disease (CKD)",
         null=True,
         blank=True,
     )
@@ -89,7 +102,9 @@ class Hypertension(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     medication = BooleanField(
         choices=BOOL_CHOICES,
-        help_text="Are you on medications for high blood pressure?",
+        help_text=mark_safe(
+            "Are you on <a href='https://www.heart.org/en/health-topics/high-blood-pressure/changes-you-can-make-to-manage-high-blood-pressure/types-of-blood-pressure-medications' target='_blank'>medications</a> for high blood pressure? If you don't know, skip this or leave it blank."
+        ),
         verbose_name="Blood pressure medications",
         null=True,
         blank=True,
@@ -97,7 +112,9 @@ class Hypertension(MedicalHistory):
     name = "hypertension"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Do you have " + name + "?"),
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Hypertension' target='_blank'>hypertension</a>?"
+        ),
         verbose_name="Hypertension (high blood pressure)",
         null=True,
         blank=True,
@@ -107,7 +124,9 @@ class Hypertension(MedicalHistory):
 class CHF(MedicalHistory):
     systolic = BooleanField(
         choices=CHF_BOOL_CHOICES,
-        help_text="Do you have systolic (reduced ejection fraction) heart faliure? If you don't know, skip this or leave it blank.",
+        help_text=mark_safe(
+            "Do you have systolic (reduced <a href='https://en.wikipedia.org/wiki/Ejection_fraction' target='_blank'>ejection fraction</a>) heart failure? If you don't know, skip this or leave it blank."
+        ),
         verbose_name="Systolic or diastolic heart failure",
         null=True,
         blank=True,
@@ -115,8 +134,10 @@ class CHF(MedicalHistory):
     name = "CHF"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Do you have " + name + "?"),
-        verbose_name="Congestive heart failure (CHF)",
+        help_text=mark_safe(
+            "Do you have CHF (<a href='https://en.wikipedia.org/wiki/Heart_failure' target='_blank'>congestive heart failure</a>)? If you don't know, skip this or leave it blank."
+        ),
+        verbose_name="Congestive Heart Failure (CHF)",
         null=True,
         blank=True,
     )
@@ -131,15 +152,30 @@ class Diabetes(MedicalHistory):
 
     type = IntegerField(
         choices=Type.choices,
-        help_text="Do you have type I or type II diabetes?",
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Type_1_diabetes' target='_blank'>type I</a> or <a href='https://en.wikipedia.org/wiki/Type_2_diabetes' target='_blank'>type II</a> diabetes? If you don't know, skip this or leave it blank."
+        ),
         verbose_name="Type 1 or type 2 diabetes?",
         null=True,
         blank=True,
     )
-    insulin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on insulin?", null=True, blank=True)
+    insulin = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Are you on <a href='https://en.wikipedia.org/wiki/Insulin' target='_blank'>kidney stones</a>? If you don't know, skip this or leave it blank."
+        ),
+        null=True,
+        blank=True,
+    )
     name = "diabetes"
     value = BooleanField(
-        choices=BOOL_CHOICES, help_text=("Do you have " + name + "?"), verbose_name="Diabetes", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Diabetes' target='_blank'>diabetes</a>? If you don't know, skip this or leave it blank."
+        ),
+        verbose_name="Diabetes",
+        null=True,
+        blank=True,
     )
 
 
@@ -154,7 +190,7 @@ class OrganTransplant(MedicalHistory):
     name = "organ transplant"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Do you have " + name + "?"),
+        help_text=("Have you had an " + name + "?"),
         verbose_name="Organ transplant",
         null=True,
         blank=True,
@@ -166,7 +202,9 @@ class UrateKidneyStones(MedicalHistory):
     name = "urate kidney stones"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Do you have a history of " + name + "?"),
+        help_text=mark_safe(
+            "Have you had urate <a href='https://en.wikipedia.org/wiki/Kidney_stone_disease' target='_blank'>kidney stones</a>? If you don't know, skip this or leave it blank."
+        ),
         verbose_name="Urate Kidney Stones",
         null=True,
         blank=True,

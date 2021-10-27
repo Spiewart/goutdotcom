@@ -44,7 +44,7 @@ class FlareForm(forms.ModelForm):
                     <hr id="location_check_hr" size="6" color="white">
                     """
                 ),
-                Div(Field("location", template="flare/widgets/location_widget.html"), id="div_id_location"),
+                "location",
                 HTML(
                     """
                     <hr size="6" color="white">

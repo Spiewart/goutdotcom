@@ -1,0 +1,62 @@
+ <div class="container nested-container">
+   <div class="container default-container">
+     <h2 class="nested-container">Medical History</h2>
+     <div class="row">
+       {% if object.medicalprofile.CKD.value %}
+       <div class="col-auto">
+         <h3>{{ object.medicalprofile.CKD }}</h3>
+         {% if object.medicalprofile.CKD.stage %}
+         <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
+         {% endif %}
+         {% if object.medicalprofile.ckd.dialysis %}
+         <li>{{ object.medicalprofile.ckd.dialysis }}</li>
+         {% endif %}
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.hypertension.value %}
+       <div class="col-auto">
+         <h3>Hypertension</h3>
+         {% if object.medicalprofile.hypertension.medication %}
+         <li>Treated with medications</li>
+         {% endif %}
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.CHF.value %}
+       <div class="col-auto">
+         <h3>CHF (congestive heart failure)</h3>
+         {% if object.medicalprofile.CHF.systolic %}
+         <li>Systolic (reduced EF / ejection fraction)</li>
+         {% else %}
+         <li>Diastolic (normal EF / ejection fraction)</li>
+         {% endif %}
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.diabetes.value %}
+       <div class="col-auto">
+         <h3>Diabetes</h3>
+         {% if object.medicalprofile.diabetes.type %}
+         <li>Type {{ object.medicalprofile.diabetes.type }}</li>
+         {% endif %}
+         {% if object.medicalprofile.diabetes.insulin %}
+         <li>You take insulin</li>
+         {% endif %}
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.organ_transplant.value %}
+       <div class="col-auto">
+         <h3>Organ Transplant</h3>
+         {% if object.medicalprofile.organ_transplant.organ %}
+         <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
+         {% endif %}
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.urate_kidney_stones.value %}
+       <div class="col-auto">
+         <h3>Urate Kidney Stones</h3>
+       </div>
+       {% endif %}
+     </div>
+   </div>
+ </div>
+ </div>
+ </div>

@@ -1,0 +1,46 @@
+  <div class="container nested-container">
+    <div class="container default-container">
+      <h2 class="nested-container">Social History</h2>
+      <div class="row">
+        {% if object.socialprofile.alcohol.value %}
+        <div class="col-auto">
+          <h3>Alcohol</h3>
+          {% if object.socialprofile.alcohol.number %}
+          <li>Quantity per week: {{ object.socialprofile.alcohol.number }} <a
+              href="https://en.wikipedia.org/wiki/Standard_drink" target="_blank">drinks</a></li>
+          {% endif %}
+          {% if object.socialprofile.alcohol.beer or object.socialprofile.alcohol.wine or object.socialprofile.alcohol.liquor %}
+          <li>Types of Alcohol</li>
+          <ul>
+            {% if object.socialprofile.alcohol.beer %}
+            <li>Beer</li>
+            {% endif %}
+            {% if object.socialprofile.alcohol.wine %}
+            <li>Wine</li>
+            {% endif %}
+            {% if object.socialprofile.alcohol.liquor %}
+            <li>Liquor</li>
+            {% endif %}
+          </ul>
+          {% endif %}
+          {% else %}
+          <li>Alcohol use not recorded</li>
+          {% endif %}
+        </div>
+        {% if object.socialprofile.fructose.value %}
+        <div class="col">
+          <h3>Fructose</h3>
+        </div>
+        {% endif %}
+        {% if object.socialprofile.shellfish.value %}
+        <div class="col">
+          <h3>Shellfish</h3>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  </div>
+  </div>
+  </div>
