@@ -98,6 +98,40 @@ function medical_profile_organ_transplant() {
 }
 
 /* Contraindication model JS */
+// function that checks the value of contraindication (all) and displays sub-contraindication feels as appropriate
+function contraindications() {
+  if ($('#id_contraindication').val() == '') {
+      $('#div_id_stroke-value').hide();
+      $('#stroke_bar').hide()
+      $('#id_stroke-value').val('');
+      $('#div_id_heartattack-value').hide();
+      $('#heartattack_bar').hide()
+      $('#id_heartattack-value').val('');
+      $('#div_id_bleed-value').hide();
+      $('#bleed_bar').hide()
+      $('#id_bleed-value').val('');
+  }
+  else if ($('#id_contraindication').val() == 'False') {
+      $('#div_id_stroke-value').hide();
+      $('#stroke_bar').hide()
+      $('#id_stroke-value').val('');
+      $('#div_id_heartattack-value').hide();
+      $('#heartattack_bar').hide()
+      $('#id_heartattack-value').val('');
+      $('#div_id_bleed-value').hide();
+      $('#bleed_bar').hide()
+      $('#id_bleed-value').val('');
+  }
+  else {
+      $('#div_id_stroke-value').show();
+      $('#stroke_bar').show()
+      $('#div_id_heartattack-value').show();
+      $('#heartattack_bar').show()
+      $('#div_id_bleed-value').show();
+      $('#bleed_bar').show()
+  }
+}
+
 // function that searches for each MedicalProfile related 1to1 Stroke model and hides, empties subfields if the value is empty //
 function contraindications_profile_stroke() {
   if ($('#id_stroke-value').val() == '') {

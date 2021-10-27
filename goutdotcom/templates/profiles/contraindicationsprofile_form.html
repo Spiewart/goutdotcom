@@ -5,7 +5,16 @@
 {% block title %}{{ user.username|capfirst }}'s Contraindications Update{% endblock title %}
 
 {% block header %}
-<h1 class="nested-container">{{ user.username|capfirst }}'s Contraindications</h1>
+<h1 class="nested-container">{{ user.username|capfirst }}'s NSAID Contraindications</h1>
+{% if form.instance.pk %}
+<h2>Update your <a href="https://www.cancer.gov/publications/dictionaries/cancer-terms/def/contraindication"
+    target="_blank">contraindications</a> to <a href="{% url 'treatment:about-NSAIDs' %}" target="_blank">NSAIDs</a> (non-steroidal antiinflammatory drugs)</h2>
+{% else %}
+<h2>Do you have any of the following <a
+    href="https://www.cancer.gov/publications/dictionaries/cancer-terms/def/contraindication"
+    target="_blank">contraindications</a> to <a href="{% url 'treatment:about-NSAIDs' %}" target="_blank">NSAIDs</a> (non-steroidal antiinflammatory drugs)?</h2>
+{% endif %}
+<hr size="6" color="white" />
 {% endblock header %}
 
 {% block form %}
@@ -14,8 +23,11 @@
       {% csrf_token %}
       {{ form|crispy }}
       {{ stroke_form|crispy }}
+      <hr size="6" color="white" id="stroke_bar" />
       {{ heartattack_form|crispy }}
+      <hr size="6" color="white" id="heartattack_bar" />
       {{ bleed_form|crispy }}
+      <hr size="6" color="white" id="bleed_bar" />
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary btn-lg">Update</button>
@@ -26,9 +38,13 @@
     <form class="form-horizontal" method="post" action="{% url 'profiles:create-contraindications' %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
+      <hr size="6" color="white" />
       {{ stroke_form|crispy }}
+      <hr size="6" color="white" id="stroke_bar" />
       {{ heartattack_form|crispy }}
+      <hr size="6" color="white" id="heartattack_bar" />
       {{ bleed_form|crispy }}
+      <hr size="6" color="white" id="bleed_bar" />
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary">Create</button>
@@ -41,6 +57,9 @@
 {% block inline_javascript %}
 <script>
 // functions to load when the page loads
+$(document).ready(function() {
+contraindications();
+});
 $(document).ready(function() {
   contraindications_profile_stroke();
 });
@@ -57,6 +76,17 @@ $(document).ready(function() {
   contraindications_profile_cabg();
 });
 // functions to run when form field is changed
+$(document).ready(function() {
+// toggles contraindications subfields when contraindications is changed
+  $('#id_contraindication').change(contraindications);
+  contraindications.call($('#id_contraindication').get(0));
+  $('#id_contraindication').change(contraindications_profile_stroke);
+  contraindications_profile_stroke.call($('#id_contraindication').get(0));
+  $('#id_contraindication').change(contraindications_profile_heartattack);
+  contraindications_profile_heartattack.call($('#id_contraindication').get(0));
+  $('#id_contraindication').change(contraindications_profile_bleed);
+  contraindications_profile_bleed.call($('#id_contraindication').get(0));
+});
 $(document).ready(function() {
   // toggles Stroke subfields when Stroke is changed
   $('#id_stroke-value').change(contraindications_profile_stroke);

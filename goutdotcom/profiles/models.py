@@ -34,7 +34,7 @@ class ContraindicationsProfile(TimeStampedModel):
     )
     contraindication = BooleanField(
         choices=BOOL_CHOICES,
-        help_text="Have you ever had a heart stroke, heart attack, or major bleeding event?",
+        help_text="Have you ever had a stroke, heart attack, or major bleeding event?",
         null=True,
         blank=True,
     )

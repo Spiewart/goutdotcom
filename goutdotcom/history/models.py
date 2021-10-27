@@ -295,7 +295,9 @@ class Stroke(VascularHistory):
     name = "stroke"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Have you ever had a " + name + "?"),
+        help_text=mark_safe(
+            "Have you ever had <a href='https://en.wikipedia.org/wiki/Stroke' target='_blank'>stroke</a>? If you don't know, skip this or leave it blank."
+        ),
         verbose_name="stroke",
         null=True,
         blank=True,
@@ -306,13 +308,21 @@ class HeartAttack(VascularHistory):
     name = "heart attack"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Have you ever had a " + name + "?"),
+        help_text=mark_safe(
+            "Have you ever had <a href='https://en.wikipedia.org/wiki/Myocardial_infarction' target='_blank'>heart attack</a>? If you don't know, skip this or leave it blank."
+        ),
         verbose_name="heart attack",
         null=True,
         blank=True,
     )
     stent = BooleanField(
-        choices=BOOL_CHOICES, help_text="Have you had stents placed?", verbose_name="stent", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Have you had one or more <a href='https://en.wikipedia.org/wiki/Stent' target='_blank'>stent</a> placed? If you don't know, skip this or leave it blank."
+        ),
+        verbose_name="stent",
+        null=True,
+        blank=True,
     )
     stent_date = models.DateTimeField(
         help_text="When was the last time you has a stent?",
@@ -321,7 +331,13 @@ class HeartAttack(VascularHistory):
         blank=True,
     )
     cabg = BooleanField(
-        choices=BOOL_CHOICES, help_text="Have you had bypass?", verbose_name="cabg", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Have you had <a href='https://en.wikipedia.org/wiki/Coronary_artery_bypass_surgery' target='_blank'>bypass</a>? If you don't know, skip this or leave it blank."
+        ),
+        verbose_name="cabg",
+        null=True,
+        blank=True,
     )
     cabg_date = models.DateTimeField(
         help_text="When did you have a bypass?",
@@ -336,12 +352,19 @@ class Bleed(VascularHistory):
     name = "bleed"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Have you ever had a " + name + "?"),
+        help_text=("Have you ever had a major " + name + "?"),
         verbose_name="major bleed",
         null=True,
         blank=True,
     )
-    GIB = BooleanField(choices=BOOL_CHOICES, help_text="Have you had a gastrointestinal bleed?", null=True, blank=True)
+    GIB = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Have you ever had <a href='https://en.wikipedia.org/wiki/Gastrointestinal_bleeding' target='_blank'>gastrointestinal bleeding</a>? If you don't know, skip this or leave it blank."
+        ),
+        null=True,
+        blank=True,
+    )
     GIB_date = models.DateTimeField(
         help_text="When was the last time you has a gastrointestinal bleed?",
         default=timezone.now,
