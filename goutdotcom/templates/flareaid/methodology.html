@@ -1,0 +1,121 @@
+      <hr size="6" color="white">
+      <h2 class="nested-container" id="methodology">Methodology</h2>
+      {% if object.decision_aid == "doctor" %}
+      <h3><u>Doctor</u></h3>
+      <p>You are recommended to see a physician or other qualified medical professional to deal with your gout flare. Unfortunately, your combination of medical problems makes it too complicated to not decide how best to treat your flare electronically. You need to review your history, discuss the risks and benefits, and review the safest way to treat your flare with your provider.</p>
+      {% endif %}
+      <h3><u>Perfect health</u></h3>
+      {% if object.perfect_health == True %}
+      <p>You answered that you are in perfect health. This generally means that you can take any of the available
+        treatments for gout.
+        NSAIDs are typically first line because of their being over the counter, safe, and cheap.
+      </p>
+      {% elif object.perfect_health == False %}
+      <p>You answered that you are not in perfect health. To make sure we recommend the safest, most effective therapy
+        for you, more information is needed.</p>
+      {% else %}
+      <p>You didn't answer whether or not you are in perfect health. That's fine, but we need some information if we are
+        going to make customized recommendations for treating your gout flare.</p>
+      {% endif %}
+      <h3><u>Monoarticular</u></h3>
+      {% if object.monoarticular == True %}
+      <p>Your flare was monoarticular, meaning only a single joint was involved.
+        This type of flare can be treated with a <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a>
+        injection into the joint directly. Somtimes this results in a more rapid return to normalcy.
+        This can be done by your rheumatologist or other provider.</p>
+      {% elif object.monoarticular == False %}
+      <p>You reported that your flare was <b>NOT</b> monoarticular (in a single joint). Most providers don't recommending
+        injecting multi-joint gout flares. Rather, systemic treatment with oral systemic medications is recommended.</p>
+      {% else %}
+      <p>You didn't mention if your flare was monoarticular (single joint involved). Monoarticular flares can be treated
+        with a <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a> injection, but systemic treatments
+        work too.</p>
+      {% endif %}
+      <h3><u>CKD</u> (Chronic Kidney Disease)</h3>
+      {% if object.ckd == True %}
+      <p>You reported having CKD.
+        This is a relative contraindication to the use of <a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s and <a
+          href="{% url 'treatment:about' 'colchicine' %}">colchicine</a>, though sometimes colchicine is used at reduced
+        doses in patients with CKD.
+      </p>
+      {% elif object.ckd == False %}
+      <p>You reported not having CKD. That's great because many of the medications used for gout flares (as well as
+        long-term management) are metabolized (broken down) by the kidney.</p>
+      {% else %}
+      <p>You didn't report whether or not you have CKD. This is an important piece of medical information for us to have
+        because many of the medications used for gout flares (as well as long-term management) are metabolized (broken
+        down) by the kidney and should be used carefully or not at all in the setting of CKD.</p>
+      {% endif %}
+      <h3><u>Diabetes</u></h3>
+      {% if object.diabetes == True %}
+      <p>You indicated that you have diabetes.
+        This is mostly pertinent if you are considering taking steroids as a treatment for your gout flares, as they can
+        cause your blood sugars to rise (<a href="https://en.wikipedia.org/wiki/Hyperglycemia"
+          target="_blank">hyperglycemia</a>).
+      </p>
+      {% elif object.diabetes == False %}
+      <p>You indicated that you don't have diabetes.
+        You can more safely take steroids for gout flares, though they are still not usually the first choice.
+      </p>
+      {% else %}
+      <p>You didn't indicate whether or not you have diabetes. That's OK, just keep in mind that steroids, which are
+        often used for gout flares, can cause elevated blood sugars (<a
+          href="https://en.wikipedia.org/wiki/Hyperglycemia" target="_blank">hyperglycemia</a>).
+      </p>
+      {% endif %}
+      <h3><u>NSAID Contraindications</u></h3>
+      {% if object.NSAID_contraindication == True %}
+      <p>You indicated that you have or have had one or more relative contraindications to non-steroidal
+        antiinflammatory drugs (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s).
+        It's good you let us know this, because NSAIDs are often the first treatment used for gout flares.
+      </p>
+      <p>Not all of the contraindications listed are <i>absolute</i> contraindications to NSAIDs, but we would need more
+        information before considering them and this should best be done via consulting with your doctor.</p>
+      {% elif object.NSAID_contraindication == False %}
+      <p>You indicated you don't have any relative or absolute contraindications to non-steroidal antiinflammatory drugs
+        (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s). That's great, because they are very effective for
+        gout flares.</p>
+      {% else %}
+      <p>You didn't indicate whether or not you have any relative contraindications to non-steroidal antiinflammatory
+        drugs (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s). This can be problematic because NSAIDs are very
+        commonly used for gout flares.</p>
+      {% endif %}
+      <h3><u>Osteoporosis</u></h3>
+      {% if object.osteoporosis == True %}
+      <p>You have <a href="https://en.wikipedia.org/wiki/Osteoporosis" target="_blank">osteoporosis</a>. This is
+        important because <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a>, when used long-term, are
+        associated with osteoporosis and thus are generally avoided in this condition.</p>
+      {% elif object.osteoporosis == False %}
+      <p>You don't have <a href="https://en.wikipedia.org/wiki/Osteoporosis" target="_blank">osteoporosis</a>. That's a
+        good thing in the event you need <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a> for your
+        gout flare.</p>
+      {% else %}
+      <p>You didn't indicate whether or not you have <a href="https://en.wikipedia.org/wiki/Osteoporosis"
+          target="_blank">osteoporosis</a>. That's fine, we still typically treat gout flares with the most effective
+        medication possible given the short duration of therapy.</p>
+      {% endif %}
+      <h3 id="colchicine_contraindications"><u>Colchicine Contraindications</u></h3>
+      {% if object.colchicine_contraindication == True %}
+      <p>You reported a relative contraindication to colchicine. Most commonly this is chronic kidney disease, as
+        colchicine is metabolized by the kidney and can build up, increasing the risk of side effects, in patients with
+        CKD.</p>
+      <p>Colchicine also interacts with several medications (<a href="https://en.wikipedia.org/wiki/Simvastatin"
+          target="_blank">simvastatin</a>, <a href="https://en.wikipedia.org/wiki/Clarithromycin"
+          target="_blank">clarithromycin</a>, <a
+          href="https://en.wikipedia.org/wiki/Diltiazem#cite_note-dilt-inhibit1-20" target="_blank">diltiazem</a>) that
+        require physician or pharmacist consultation prior to initiation of colchicine.</p>
+      {% elif object.colchicine_contraindication == False %}
+      <p>You don't have any contraindications to colchicine. These are typically CKD or being on a medication that
+        interacts with colchicine, such as <a href="https://en.wikipedia.org/wiki/Simvastatin"
+          target="_blank">simvastatin</a>, <a href="https://en.wikipedia.org/wiki/Clarithromycin"
+          target="_blank">clarithromycin</a>, <a
+          href="https://en.wikipedia.org/wiki/Diltiazem#cite_note-dilt-inhibit1-20" target="_blank">diltiazem</a>.</p>
+      {% else %}
+      <p>You didn't report whether or not you have any contraindications to colchicine. That's fine, we will avoid
+        recommending this for you even though it is effective for gout flares. It is metabolized by the kidney and thus
+        must be used cautiously in patients with CKD. It also has several medication interactions including: <a
+          href="https://en.wikipedia.org/wiki/Simvastatin" target="_blank">simvastatin</a>, <a
+          href="https://en.wikipedia.org/wiki/Clarithromycin" target="_blank">clarithromycin</a>, <a
+          href="https://en.wikipedia.org/wiki/Diltiazem#cite_note-dilt-inhibit1-20" target="_blank">diltiazem</a>.</p>
+      {% endif %}
+

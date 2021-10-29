@@ -17,64 +17,23 @@
                 <div class="card-header">
                   <h2><b>Flares</b></h2>
                 </div>
+                <a href="{% url 'flareaid:create' %}">
                 <img class="card-img-top" src="../static/images/MSU_Crystals_1920x1280_forweb.jpg" alt="Card image cap">
-                <div class="card-footer">
-                  <ul class="nav nav-pills card-footer-pills justify-content-center nav-fill flex-column flex-sm-row" id="homepage-nav-buttons">
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="#">About</a>
-                    </li>
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="{% url 'flareaid:create' %}">Treatment</a>
-                    </li>
-                    {% if request.user.is_authenticated %}
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="#">Log</a>
-                    </li>
-                    {% endif %}
-                  </ul>
-                </div>
+                </a>
               </div>
               <div class="card text-center" id="card-homepage">
                 <div class="card-header">
-                  <h2><b>Gout</b></h2>
+                  <h2><b>Prevention</b></h2>
                 </div>
+                <a href="{% url 'ult:create' %}">
                 <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Gout2010.JPG/1280px-Gout2010.JPG" alt="Card image cap">
-                <div class="card-footer">
-                  <ul class="nav nav-pills card-footer-pills justify-content-center nav-fill flex-column flex-sm-row" id="homepage-nav-buttons">
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="#">About</a>
-                    </li>
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="{% url 'flareaid:create' %}">Treatment</a>
-                    </li>
-                    {% if request.user.is_authenticated %}
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="#">Log</a>
-                    </li>
-                    {% endif %}
-                  </ul>
-                </div>
+                </a>
               </div>
               <div class="card text-center" id="card-homepage">
                 <div class="card-header">
-                  <h2><b>Gout</b></h2>
+                  <h2><b>Blog</b></h2>
                 </div>
                 <img class="card-img-top" src="https://www.researchgate.net/profile/Tim-Jansen-2/publication/230618654/figure/fig4/AS:300405515931649@1448633664057/Chronic-tophaceous-gout-of-the-hand-showing-deforming-arthropathy-and-obvious-tophi.png" alt="Card image cap">
-                <div class="card-footer">
-                  <ul class="nav nav-pills card-footer-pills justify-content-center nav-fill flex-column flex-sm-row" id="homepage-nav-buttons">
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="#">About</a>
-                    </li>
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="{% url 'flareaid:create' %}">Treatment</a>
-                    </li>
-                    {% if request.user.is_authenticated %}
-                    <li class="nav-item mr-1">
-                      <a class="nav-link active" href="#">Log</a>
-                    </li>
-                    {% endif %}
-                  </ul>
-                </div>
               </div>
       </div>
   </div>

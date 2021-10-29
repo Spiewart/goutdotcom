@@ -81,6 +81,7 @@ LOCAL_APPS = [
     "goutdotcom.flareaid.apps.FlareAidConfig",
     "goutdotcom.history.apps.HistoryConfig",
     "goutdotcom.ult.apps.UltConfig",
+    "goutdotcom.ultaid.apps.ULTAidConfig",
     "goutdotcom.treatment.apps.TreatmentConfig",
     "goutdotcom.vitals.apps.VitalsConfig",
 ]

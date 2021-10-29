@@ -5,6 +5,7 @@ from django_extensions.db.models import TimeStampedModel
 
 from .choices import *
 
+
 # Create your models here.
 class FlareAid(TimeStampedModel):
     """Goal is to create a model that can make a recommendation for flare treatment."""
@@ -17,7 +18,7 @@ class FlareAid(TimeStampedModel):
 
     perfect_health = models.BooleanField(
         choices=BOOL_CHOICES,
-        verbose_name="Are you in perfect health?",
+        verbose_name="Besides having gout, are you in perfect health?",
         help_text="Meaning no chronic medical problems",
         default="",
         null=True,
@@ -64,7 +65,7 @@ class FlareAid(TimeStampedModel):
         null=True,
         blank=True,
     )
-    colchicine_contraindication = models.BooleanField(
+    colchicine_interactions = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Are you on simvastatin, diltiazem, or clarithromycin?",
         help_text="Contraindications to colchicine",
@@ -82,9 +83,12 @@ class FlareAid(TimeStampedModel):
         NSAID = "NSAID"
         steroids = "steroids"
         doctor = "doctor"
+        needinfo = "Need More Information"
 
         if self.perfect_health == True:
             return NSAID
+        elif self.perfect_health is None:
+            return needinfo
 
         if self.ckd == True:
             if self.diabetes == True:

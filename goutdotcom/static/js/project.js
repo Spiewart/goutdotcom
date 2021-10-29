@@ -97,6 +97,41 @@ function medical_profile_organ_transplant() {
   }
 }
 
+/* SocialHistory model JS */
+// function that checks whether or not the user has selected that they drink alcohol or not (id_alcohol_value) and adjusts the subfields accordingly
+function alcohol () {
+  if ($('#id_alcohol_value').val() == '') {
+      $('#div_id_stroke-value').hide();
+      $('#stroke_bar').hide()
+      $('#id_stroke-value').val('');
+      $('#div_id_heartattack-value').hide();
+      $('#heartattack_bar').hide()
+      $('#id_heartattack-value').val('');
+      $('#div_id_bleed-value').hide();
+      $('#bleed_bar').hide()
+      $('#id_bleed-value').val('');
+  }
+  else if ($('#id_alcohol_value').val() == 'False') {
+      $('#div_id_stroke-value').hide();
+      $('#stroke_bar').hide()
+      $('#id_stroke-value').val('');
+      $('#div_id_heartattack-value').hide();
+      $('#heartattack_bar').hide()
+      $('#id_heartattack-value').val('');
+      $('#div_id_bleed-value').hide();
+      $('#bleed_bar').hide()
+      $('#id_bleed-value').val('');
+  }
+  else {
+      $('#div_id_stroke-value').show();
+      $('#stroke_bar').show()
+      $('#div_id_heartattack-value').show();
+      $('#heartattack_bar').show()
+      $('#div_id_bleed-value').show();
+      $('#bleed_bar').show()
+  }
+}
+
 /* Contraindication model JS */
 // function that checks the value of contraindication (all) and displays sub-contraindication feels as appropriate
 function contraindications() {

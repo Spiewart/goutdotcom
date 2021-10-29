@@ -360,6 +360,7 @@ class GoutForm(forms.ModelForm):
 
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
+        self.fields["value"].label = "Gout Family History"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         # You can dynamically adjust your layout

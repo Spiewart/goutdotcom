@@ -1,0 +1,98 @@
+    <h2 class="nested-container">Rationale</h2>
+    <h3><u>Number of Flares</u>: {{ object.num_flares }}</h3>
+    {% if object.num_flares == 'zero' %}
+    <p>Not ever having a gout flare is a strong recommendation against using urate-lowering therapy.</p>
+    {% elif object.num_flares == 'one' %}
+    <p>ULT is generally not recommended for an individual's first gout flare.
+    This is because the time that passes between flares will sometimes be as long as years and it is not
+    necessarily worth it to take a medication daily to prevent infrequent attacks.</p>
+    {% else %}
+    {% if object.freq_flares %}
+    {% if object.freq_flares == "one" %}
+    <p>If you've had more than one flare, the decision to treat is generally based on <a href="#frequency">how
+    frequently</a> you are getting them.</p>
+    {% elif object.freq_flares == "Two or more" %}
+    <p>If you are having more than one gout flare per year, ULT is strongly recommended.
+    This is to prevent the pain and disability of recurrent flares.
+    Also, individuals who get more than one flare per year are more likely to have their gout accelerate,
+    becoming more frequent, disabling, and causing long-term joint damage.
+    </p>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    <h3 id="frequency"><u>Frequency of Flares</u>: {{ object.freq_flares }} / year</h3>
+    {% if object.freq_flares == 'one' %}
+    <p>Generally, only having 1 flare per year isn't burdensome enough to warrant daily medication on an
+    indefinite basis.
+    There are, however, exceptions to this, such as when you have erosions, tophi, hyperuricemia, CKD, or urate
+    kidney stones.</p>
+    {% elif object.freq_flares == 'two or more' %}
+    <p>Having more than one gout flare per year is a strong indication for ULT.</p>
+    {% endif %}
+    <h3><u>Erosions</u>:
+    {% if object.erosions == True %}
+    present
+    {% elif object.erosions == False %}
+    absent
+    {% else %}
+    unknown
+    {% endif %}
+    </h3>
+    <p>These are often found on x-rays your doctor performed on the joints that you report having gout in.
+    They can also be seen on <a href="https://en.wikipedia.org/wiki/CT_scan" target="_blank">CT</a> scans, <a
+    href="https://radiopaedia.org/cases/90545?lang=us" target="_blank">MRIs</a>, and ultrasounds of your gouty
+    joints.
+    </p>
+    <p>Erosions are an indication for urate-lowering therapy.
+    This is important for your long-term health because erosions are permanent changes to the bone and
+    cartilage.
+    They can be prevented with ULT, but once present can't be reversed.</p>
+    <h3><u>Tophi</u>:
+    {% if object.tophi == True %}
+    present
+    {% elif object.tophi == False %}
+    absent
+    {% else %}
+    unknown
+    {% endif %}
+    </h3>
+    <p>Tophi are an indication for <a class="link-primary" href="{% url 'treatment:about-ult' %}">ULT</a> because
+    they can cause permanent damage to the bone and cartilage they are adjacent to.
+    They can also break down, drain, and become infected.
+    </p>
+    <h3><u>Uric Acid Kidney Stones</u>:
+    {% if object.stones == True %}
+    present
+    {% elif object.stones == False %}
+    absent
+    {% else %}
+    unknown
+    {% endif %}
+    </h3>
+    <p>Kidney stones are terrible. If you have uric acid kidney stones and gout, using ULT to get rid of both is a
+    no-brainer (conditional recommendation).</p>
+    <h3><u>Chronic Kidney Disease</u>:
+    {% if object.ckd == True %}
+    present
+    {% elif object.ckd == False %}
+    absent
+    {% else %}
+    unknown
+    {% endif %}
+    </h3>
+    <p>Chronic kidney disease (CKD) is associated with incident and progressive gout (<a href="#2">2</a>, <a
+    href="#3">3</a>).</p>
+    <h3><u>Hyperuricemia</u>:
+    {% if object.uric_acid == True %}
+    present
+    {% elif object.uric_acid == False %}
+    absent
+    {% else %}
+    unknown
+    {% endif %}
+    </h3>
+    <p>Hyperuricemia (elevated blood levels of uric acid) is a conditional indication for ULT if you have had a
+    gout flare.</p>
+    <hr class="my-6" color="white">
+
+

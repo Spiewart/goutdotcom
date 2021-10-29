@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import ButtonHolder, Fieldset, HTML, Layout, Submit
+from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
 from datetimewidget.widgets import DateTimeWidget
 from django import forms
 
