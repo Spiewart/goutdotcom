@@ -1,0 +1,29 @@
+{% extends "base_form.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block header %}
+{% if form.instance.pk %}
+<h1 class="nested-container">Your ULT plan?</h1>
+{% else %}
+<h1 class="nested-container">Make a ULT plan</h1>
+{% endif %}
+{% endblock header %}
+
+{% block form %}
+{% if form.instance.pk %}
+<form class="form-horizontal" method="post" action="{% url 'ultaid:update' object.pk %}">
+  {% csrf_token %}
+  {% crispy form %}
+</form>
+{% else %}
+<form class="form-horizontal" method="post" action="{% url 'ultaid:create' %}">
+  {% csrf_token %}
+  {% crispy form %}
+</form>
+{% endif %}
+{% endblock form %}
+
+{% block inline_javascript %}
+
+{% endblock inline_javascript %}

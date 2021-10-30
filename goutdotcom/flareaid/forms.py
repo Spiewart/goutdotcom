@@ -15,7 +15,7 @@ class FlareAidForm(forms.ModelForm):
             "diabetes",
             "NSAID_contraindication",
             "osteoporosis",
-            "colchicine_contraindication",
+            "colchicine_interactions",
         )
 
     def __init__(self, *args, **kwargs):

@@ -3,6 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from .models import *
 
+
 class FlareAidAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
@@ -13,7 +14,7 @@ class FlareAidAdmin(admin.ModelAdmin):
         'diabetes',
         'NSAID_contraindication',
         'osteoporosis',
-        'colchicine_contraindication',
+        'colchicine_interactions',
         'monoarticular_aid',
         'decision_aid',
         'pk',

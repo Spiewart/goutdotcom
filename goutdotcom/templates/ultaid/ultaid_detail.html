@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="container">
+  <div class="row">
+    <div class="col default-container">
+      {% block header %}
+      {% include 'ultaid/header.html' %}
+      {% endblock header %}
+      {% block rationale %}
+
+      {% endblock rationale %}
+      {% block references %}
+      <h2 class="nested-container"><a id="references">References</a></h2>
+      {% endblock references %}
+    </div>
+  </div>
+</main>
+{% block footer %}
+<footer>
+</footer>
+{% endblock footer %}
+</main>
+{% endblock content %}

@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 
 
-class UltAidConfig(AppConfig):
-    name = 'goutdotcom.ultaid'
-
+class ULTAidConfig(AppConfig):
+    name = "goutdotcom.ultaid"

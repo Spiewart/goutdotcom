@@ -2,7 +2,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
 from django import forms
 
-from .choices import BOOL_CHOICES, FREQ_CHOICES, ULT_CHOICES
 from .models import ULT
 
 
