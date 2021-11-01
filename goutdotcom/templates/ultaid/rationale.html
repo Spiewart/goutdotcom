@@ -1,0 +1,71 @@
+<h2 class="nested-container">Rationale</h2>
+<h3><u>CKD</u>: {% if object.ckd == True %} present {% elif object.ckd == False %} absent {% else %} not
+  reported{% endif %}</h3>
+<p>Many medications, including those used for gout prevention (allopurinol and febuxostat) are excreted (metabolized) by the kidney.
+Advanced CKD requires starting with a lower dose and increasing the dose more slowly and carefully.</p>
+{% if object.ckd == True %}
+  <h3><u>Stage</u>: {% if object.stage %}{{ object.stage }} {% else %} not reported {% endif %}</h3>
+  <p>The stage of chronic kidney disease is an estimation of how much kidney function you have. Advanced stages require lower doses and more care when starting preventative therapy for gout.</p>
+  <h3><u>Dialysis</u>: {% if object.dialysis == True %}present {% elif object.dialysis == False %} absent {% else %} not reported {% endif %}</h3>
+  <p>Dialysis, while a drag in many respects, is great for gout. Uric acid is filtered out by dialysis, so your gout will be effectively managed without medications.</p>
+{% endif %}
+<h3><u>Medication Interactions</u>:
+{% if object.XOI_interactions == True %}
+present
+{% elif object.XOI_interactions == False %}
+absent
+{% else %}
+not reported
+{% endif %}
+</h3>
+<p>While not very commonnly used, azathioprine and 6-mercaptopurine have a very serious interaction with the most effective therapies for gout prevention (allopuirnol and febuxostat).
+If you are on either azathioprine or 6-mercaptopurine, it is VERY important you discuss you gout care with a rheumatologist.
+</p>
+<h3><u>Organ Transplant</u>:
+{% if object.organ_transplant == True %}
+
+{% elif object.organ_transplant == False %}
+
+{% else %}
+
+{% endif %}
+</h3>
+<p>Organ transplants make everything hard. If you have had one, you absolutely need to discuss your gout management with a rheumatologist.</p>
+<h3><u>Allopurinol Hypersensitivity</u>:
+{% if object.allopurinol_hypersensitivity == True %}
+present
+{% elif object.allopurinol_hypersensitivity == False %}
+absent
+{% else %}
+not reported
+{% endif %}
+</h3>
+<p>Allopurinol is generally well tolerated, but it does have a rare and serious side effect known as <a
+    href="https://pubmed.ncbi.nlm.nih.gov/159913/" target="_blank">allopurinol hypersensitivity
+    syndrome</a>.
+  If you have had this, or had a drug rash or other side effect, from allopurinol in the past, you need to discuss
+  your gout care with a rheumatologist. Historically, patients who needed allopurinol but had a history of side
+  effects were <a href="https://pubmed.ncbi.nlm.nih.gov/11212165/" target="_blank">de-sensitized</a>. In the modern era, we just use febuxostat instead.
+</p>
+<h3><u>Febuxostat Hypersensitivity</u>:
+  {% if object.febuxostat_hypersensitivity == True %}
+  present
+  {% elif object.febuxostat_hypersensitivity == False %}
+  absent
+  {% else %}
+  not reported
+  {% endif %}
+</h3>
+<p>Similar to allopurinol, some patients have reactions to febuxostat that preclude its use. It is uncommon to start a patient on febuxostat before allopurinol, so if you aren't able to tolerate both allopurinol and febuxostat your gout care will need to be discussed with a rheumatologist.
+</p>
+<h3><u>Cardiac History</u>:
+  {% if object.MACE == True %}
+  present
+  {% elif object.MACE == False %}
+  absent
+  {% else %}
+  unknown
+  {% endif %}
+</h3>
+<p>Large clinical trials of febuxostat were associated with an increased risk of serious cardiovascular events, such as heart attacks, as well as mortality due to cardiac causes. Whether this is a true side effect is hotly debated. If you are prescribed febuxostat and have a history of heart disease, you should discuss the risks and benefits with your doctor.</p>
+<hr class="my-6" color="white">

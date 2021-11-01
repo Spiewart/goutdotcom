@@ -6,20 +6,20 @@
   <div class="row">
     <div class="col default-container">
       {% block header %}
-      {% include 'ultaid/header.html' %}
+        {% include 'ultaid/header.html' %}
       {% endblock header %}
       {% block rationale %}
-
+        {% include 'ultaid/rationale.html' %}
       {% endblock rationale %}
       {% block references %}
-      <h2 class="nested-container"><a id="references">References</a></h2>
+        {% include 'ultaid/references.html' %}
       {% endblock references %}
     </div>
   </div>
 </main>
 {% block footer %}
-<footer>
-</footer>
+  <footer>
+  </footer>
 {% endblock footer %}
 </main>
 {% endblock content %}

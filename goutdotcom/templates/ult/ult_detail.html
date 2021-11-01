@@ -22,15 +22,7 @@
 </div>
 </div>
 </main>
-  <footer>
-
-  {% if object.calculator == "abstain" %}
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
-  {% elif object.calculator == "conditional" %}
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
-  {% else %}
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:ult' %}" role="button">About</a>
-  {% endif %}
-  </footer>
+<footer>
+</footer>
 </main>
 {% endblock content %}

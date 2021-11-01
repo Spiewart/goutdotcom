@@ -86,7 +86,38 @@ class ULTAid(TimeStampedModel):
     )
 
     def decision_aid(self):
-        pass
+        ult_choice = {
+            "drug": "allopurinol",
+            "dose": "100 mg",
+            "goal_urate": "6.0 mg/dL",
+            "dialysis": False,
+            "rheumatologist": False,
+        }
+        if self.XOI_interactions == True or self.organ_transplant == True:
+            ult_choice["rheumatologist"] = True
+
+        if self.ckd == True:
+            if self.dialysis == True:
+                ult_choice["dialysis"] = True
+
+        if self.allopurinol_hypersensitivity == True:
+            if self.febuxostat_hypersensitivity == True or self.MACE == True:
+                ult_choice["rheumatologist"] = True
+            ult_choice["drug"] = "febuxostat"
+            if self.stage >= 3:
+                ult_choice["dose"] = "20 mg"
+            else:
+                ult_choice["dose"] = "40 mg"
+            return ult_choice
+
+        if self.febuxostat_hypersensitivity == True:
+            if self.allopurinol_hypersensitivity == True:
+                ult_choice["rheumatologist"] = True
+            if self.stage >= 3:
+                ult_choice["dose"] = "50 mg"
+            return ult_choice
+
+        return ult_choice
 
     def get_absolute_url(self):
         return reverse("ultaid:detail", kwargs={"pk": self.pk})
