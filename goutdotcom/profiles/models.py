@@ -3,6 +3,8 @@ import datetime
 from django.conf import settings
 from django.db import models
 from django.db.models.fields import BooleanField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
@@ -63,6 +65,18 @@ class ContraindicationsProfile(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
 
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def create_user_contraindications_profile(sender, instance, created, **kwargs):
+        if created:
+            new_profile = ContraindicationsProfile.objects.create(user=instance)
+            new_profile.stroke = Stroke.objects.create(user=instance)
+            new_profile.heartattack = HeartAttack.objects.create(user=instance)
+            new_profile.bleed = Bleed.objects.create(user=instance)
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def save_user_contraindications_profile(sender, instance, **kwargs):
+        instance.contraindicationsprofile.save()
+
 
 class FamilyProfile(TimeStampedModel):
     user = models.OneToOneField(
@@ -75,6 +89,16 @@ class FamilyProfile(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def create_user_family_profile(sender, instance, created, **kwargs):
+        if created:
+            new_profile = FamilyProfile.objects.create(user=instance)
+            new_profile.gout = Gout.objects.create(user=instance)
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def save_user_family_profile(sender, instance, **kwargs):
+        instance.familyprofile.save()
 
 
 class PatientProfile(TimeStampedModel):
@@ -149,6 +173,17 @@ class PatientProfile(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
 
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def create_user_patient_profile(sender, instance, created, **kwargs):
+        if created:
+            new_profile = PatientProfile.objects.create(user=instance)
+            new_profile.weight = Weight.objects.create(user=instance)
+            new_profile.height = Height.objects.create(user=instance)
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def save_user_patient_profile(sender, instance, **kwargs):
+        instance.patientprofile.save()
+
 
 class MedicalProfile(TimeStampedModel):
     user = models.OneToOneField(
@@ -190,6 +225,21 @@ class MedicalProfile(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
 
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def create_user_medical_profile(sender, instance, created, **kwargs):
+        if created:
+            new_profile = MedicalProfile.objects.create(user=instance)
+            new_profile.CKD = CKD.objects.create(user=instance)
+            new_profile.hypertension = Hypertension.objects.create(user=instance)
+            new_profile.CHF = CHF.objects.create(user=instance)
+            new_profile.diabetes = Diabetes.objects.create(user=instance)
+            new_profile.organ_transplant = OrganTransplant.objects.create(user=instance)
+            new_profile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def save_user_medical_profile(sender, instance, **kwargs):
+        instance.medicalprofile.save()
+
 
 class SocialProfile(TimeStampedModel):
     user = models.OneToOneField(
@@ -217,6 +267,18 @@ class SocialProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def create_user_social_profile(sender, instance, created, **kwargs):
+        if created:
+            new_profile = SocialProfile.objects.create(user=instance)
+            new_profile.alcohol = Alcohol.objects.create(user=instance)
+            new_profile.fructose = Fructose.objects.create(user=instance)
+            new_profile.shellfish = Shellfish.objects.create(user=instance)
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def save_user_social_profile(sender, instance, **kwargs):
+        instance.socialprofile.save()
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})

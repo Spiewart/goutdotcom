@@ -1,6 +1,6 @@
   <div class="container nested-container">
     <div class="container default-container">
-      <h2 class="nested-container">Social History</h2>
+      <h2 class="nested-container"><a href="{% url 'profiles:update-social' request.user request.user.socialprofile.pk %}">Social History</a></h2>
       <div class="row">
         {% if object.socialprofile.alcohol.value %}
         <div class="col-auto">
@@ -24,7 +24,6 @@
           </ul>
           {% endif %}
           {% else %}
-          <li>Alcohol use not recorded</li>
           {% endif %}
         </div>
         {% if object.socialprofile.fructose.value %}
@@ -40,7 +39,7 @@
       </div>
     </div>
   </div>
-  {% endif %}
+
   </div>
   </div>
   </div>

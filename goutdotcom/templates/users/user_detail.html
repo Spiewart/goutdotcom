@@ -19,49 +19,14 @@
         {% include "users/contraindicationsprofile.html" %}
       {% endif %}
       {% if object.socialprofile %}
-        {% include "users/socialprofie.html" %}
+        {% include "users/socialprofile.html" %}
+      {% endif %}
+      {% if object.familyprofile %}
+        {% include "users/familyprofile.html" %}
       {% endif %}
     </div>
   </div>
 </main>
 <footer>
-  <div class="container">
-    {% if object == request.user %}
-    <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button">My Info</a>
-    <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
-    {% if request.user.patientprofile %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}"
-      role="button">Profile</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create' %}" role="button">Create Profile</a>
-    {% endif %}
-    {% if request.user.medicalprofile %}
-    <a class="btn btn-primary btn-lg"
-      href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}" role="button">Medical</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-medical' %}" role="button">Medical</a>
-    {% endif %}
-    {% if request.user.contraindicationsprofile %}
-    <a class="btn btn-primary btn-lg"
-      href="{% url 'profiles:update-contraindications' request.user request.user.medicalprofile.pk %}"
-      role="button">Contraindications</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-contraindications' %}"
-      role="button">Contraindications</a>
-    {% endif %}
-    {% if request.user.familyprofile %}
-    <a class="btn btn-primary btn-lg"
-      href="{% url 'profiles:update-family' request.user request.user.familyprofile.pk %}" role="button">Family</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-family' %}" role="button">Family</a>
-    {% endif %}
-    {% if request.user.socialprofile %}
-    <a class="btn btn-primary btn-lg"
-      href="{% url 'profiles:update-social' request.user request.user.socialprofile.pk %}" role="button">Social</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:create-social' %}" role="button">Social</a>
-    {% endif %}
-    {% endif %}
-  </div>
 </footer>
 {% endblock content %}

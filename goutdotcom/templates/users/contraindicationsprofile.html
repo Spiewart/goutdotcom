@@ -1,6 +1,6 @@
 <div class="container nested-container">
   <div class="container default-container">
-    <h2 class="nested-container">Contraindications</h2>
+    <h2 class="nested-container"><a href="{% url 'profiles:update-contraindications' request.user request.user.contraindicationsprofile.pk %}">Contraindications</a></h2>
     <div class="row">
       {% if object.contraindicationsprofile.stroke.value %}
       <div class="col-auto">

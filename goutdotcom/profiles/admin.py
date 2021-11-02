@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     ContraindicationsProfile,
+    FamilyProfile,
     MedicalProfile,
     PatientProfile,
     SocialProfile,
@@ -15,6 +16,13 @@ class ContraindicationsProfileAdmin(admin.ModelAdmin):
         "stroke",
         "heartattack",
         "bleed",
+    )
+
+
+class FamilyProfileAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "gout",
     )
 
 
@@ -54,6 +62,7 @@ class SocialProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ContraindicationsProfile, ContraindicationsProfileAdmin)
+admin.site.register(FamilyProfile, FamilyProfileAdmin)
 admin.site.register(MedicalProfile, MedicalProfileAdmin)
 admin.site.register(PatientProfile, PatientProfileAdmin)
 admin.site.register(SocialProfile, SocialProfileAdmin)

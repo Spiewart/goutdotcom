@@ -1,13 +1,18 @@
-<h1 class="nested-container">{{ object.username|capfirst}}'s Profile</h1>
+<h1 class="nested-container">{{ object.username|capfirst}}'s <a href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}">Profile</a>
+{% if object == request.user %}
+<a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button" style="float: right;">My Info</a>
+<a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button" style="float: right;">E-Mail</a>
+{% endif %}
+</h1>
 <hr size="6" color="white">
+<h3><u>Bio</u></h3>
 {% if object.patientprofile.bio %}
-  <h3 class="nested-container">Bio</h3>
   <p>{{ object.patientprofile.bio }}</p>
 {% else %}
-  <h3>Enter a <a href="{% url 'profiles:update' 'request.user' object.patientprofile.pk %}">bio</a></h3>
+  <p>Your bio is sadly empty...</p>
 {% endif %}
 <hr size="6" color="white">
-<h3 class="nested-container">Demographics</h3>
+<h3><u>Demographics</u></h3>
 <div class="row">
   {% if object.name %}
     <div class="col-auto">
@@ -55,7 +60,7 @@
               {{ object.patientprofile.height }}</a></li>
         </div>
         {% endif %}
-        {% if object.patientprofile.weight and object.patientprofile.height %}
+        {% if object.patientprofile.weight.value and object.patientprofile.height.value %}
         <div class="col-auto">
           <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
         </div>

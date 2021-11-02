@@ -7,8 +7,6 @@ from django_extensions.db.models import TimeStampedModel
 from .choices import *
 
 # Create your models here.
-
-
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 

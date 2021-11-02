@@ -1,6 +1,6 @@
  <div class="container nested-container">
    <div class="container default-container">
-     <h2 class="nested-container">Medical History</h2>
+     <h2 class="nested-container"><a href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}">Medical History</a></h2>
      <div class="row">
        {% if object.medicalprofile.CKD.value %}
        <div class="col-auto">
