@@ -18,6 +18,7 @@ from .models import (
     Gout,
     HeartAttack,
     Hypertension,
+    Hyperuricemia,
     OrganTransplant,
     Shellfish,
     Stroke,
@@ -78,6 +79,26 @@ class HypertensionForm(forms.ModelForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Hypertension", "value", "medication", id="hypertension_for_profile"),
+        )
+
+
+class HyperuricemiaForm(forms.ModelForm):
+    prefix = "hyperuricemia"
+
+    class Meta:
+        model = Hyperuricemia
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(HyperuricemiaForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Hyperuricemia", "value", id="hyperuricemia_for_profile"),
         )
 
 

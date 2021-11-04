@@ -64,10 +64,10 @@ class FlareAidForm(forms.ModelForm):
                     <hr size="6" color="white" id="osteoporosis-line">
                     """
                 ),
-                "colchicine_contraindication",
+                "colchicine_interactions",
                 HTML(
                     """
-                    <hr size="6" color="white" id="colchicine_contraindication-line">
+                    <hr size="6" color="white" id="colchicine_interactions-line">
                     """
                 ),
             ),

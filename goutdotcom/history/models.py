@@ -11,6 +11,7 @@ from goutdotcom.history.choices import (
     BOOL_CHOICES,
     CHF_BOOL_CHOICES,
     FAMILY_CHOICES,
+    LAST_MODIFIED_CHOICES,
     ORGAN_CHOICES,
 )
 
@@ -24,6 +25,7 @@ class History(TimeStampedModel):
 
     name = "history"
     value = BooleanField(choices=BOOL_CHOICES, help_text=("Do you have a " + name + "?"), null=True, blank=True)
+    last_modified = models.CharField(choices=LAST_MODIFIED_CHOICES, max_length=75, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -216,8 +218,8 @@ class Erosions(MedicalHistory):
     name = "erosions"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Do you have a history of " + name + "?"),
-        verbose_name="Do you have erosions on your x-rays?",
+        help_text=("Do you have erosions on your x-rays?"),
+        verbose_name="Erosions",
         null=True,
         blank=True,
     )
@@ -228,8 +230,20 @@ class Tophi(MedicalHistory):
     name = "tophi"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Do you have a history of " + name + "?"),
-        verbose_name="Do you have tophi on your x-rays?",
+        help_text=("Do you have gouty tophi?"),
+        verbose_name="Tophi",
+        null=True,
+        blank=True,
+    )
+
+
+class Hyperuricemia(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    name = "hyperuricemia"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have a history of elevated levels (> 9.0 mg/dL) of uric acid in your blood?"),
+        verbose_name="Hyperuricemia",
         null=True,
         blank=True,
     )

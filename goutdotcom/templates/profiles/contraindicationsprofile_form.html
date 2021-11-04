@@ -22,6 +22,7 @@
     <form class="form-horizontal" method="post" action="{% url 'profiles:update-contraindications' request.user object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
+      <hr size="6" color="white" />
       {{ stroke_form|crispy }}
       <hr size="6" color="white" id="stroke_bar" />
       {{ heartattack_form|crispy }}

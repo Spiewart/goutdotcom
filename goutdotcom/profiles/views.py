@@ -2,7 +2,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
-from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
 from goutdotcom.history.forms import (
@@ -11,13 +10,16 @@ from goutdotcom.history.forms import (
     CHFForm,
     CKDForm,
     DiabetesForm,
+    ErosionsForm,
     FructoseForm,
     GoutForm,
     HeartAttackForm,
     HypertensionForm,
+    HyperuricemiaForm,
     OrganTransplantForm,
     ShellfishForm,
     StrokeForm,
+    TophiForm,
     UrateKidneyStonesForm,
 )
 from goutdotcom.history.models import (
@@ -26,13 +28,16 @@ from goutdotcom.history.models import (
     Alcohol,
     Bleed,
     Diabetes,
+    Erosions,
     Fructose,
     Gout,
     HeartAttack,
     Hypertension,
+    Hyperuricemia,
     OrganTransplant,
     Shellfish,
     Stroke,
+    Tophi,
     UrateKidneyStones,
 )
 from goutdotcom.profiles.forms import (
@@ -268,26 +273,35 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     form_class = MedicalProfileForm
     CKD_form_class = CKDForm
     hypertension_form_class = HypertensionForm
+    hyperuricemia_form_class = HyperuricemiaForm
     CHF_form_class = CHFForm
     diabetes_form_class = DiabetesForm
+    erosions_form_class = ErosionsForm
     organ_transplant_form_class = OrganTransplantForm
     urate_kidney_stone_form_class = UrateKidneyStonesForm
+    tohpi_form_class = TophiForm
 
     def get_context_data(self, **kwargs):
         context = super(MedicalProfileCreate, self).get_context_data(**kwargs)
         context.update({"user": self.request.user})
-        if "CKD_form" not in context:
-            context["CKD_form"] = self.CKD_form_class(self.request.GET)
-        if "hypertension_form" not in context:
-            context["hypertension_form"] = self.hypertension_form_class(self.request.GET)
         if "CHF_form" not in context:
             context["CHF_form"] = self.CHF_form_class(self.request.GET)
+        if "CKD_form" not in context:
+            context["CKD_form"] = self.CKD_form_class(self.request.GET)
         if "diabetes_form" not in context:
-            context["diabetes_form"] = self.diabetes_form_class(self.request.GET)
+            context["diabetes_form"] = self.erosions_form_class(self.request.GET)
+        if "erosions_form" not in context:
+            context["erosions_form"] = self.erosions_form_class(self.request.GET)
+        if "hypertension_form" not in context:
+            context["hypertension_form"] = self.hyperuricemia_form_class(self.request.GET)
+        if "hyperuricemia_form" not in context:
+            context["hyperuricemia_form"] = self.hyperuricemia_form_class(self.request.GET)
         if "organ_transplant_form" not in context:
             context["organ_transplant_form"] = self.organ_transplant_form_class(self.request.GET)
         if "urate_kidney_stones_form" not in context:
-            context["urate_kidney_stones_form"] = self.urate_kidney_stone_form_class(self.request.GET)
+            context["urate_kidney_stones_form"] = self.tophi_form_class(self.request.GET)
+        if "tophi_form" not in context:
+            context["tophi_form"] = self.tophi_form_class(self.request.GET)
         return context
 
     def get_object(self, queryset=None):
@@ -297,42 +311,66 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=MedicalProfile())
-        CKD_form = self.CKD_form_class(request.POST, instance=CKD())
-        hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
         CHF_form = self.CHF_form_class(request.POST, instance=CHF())
+        CKD_form = self.CKD_form_class(request.POST, instance=CKD())
         diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
+        erosions_form = self.erosions_form_class(request.POST, instance=Erosions())
+        hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
+        hyperuricemia_form = self.hyperuricemia_form_class(request.POST, instance=Hyperuricemia())
         organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=OrganTransplant())
         urate_kidney_stones_form = self.urate_kidney_stone_form_class(request.POST, instance=UrateKidneyStones())
+        tophi_form = self.tohpi_form_class(request.POST, instance=Tophi())
 
         if (
             form.is_valid()
-            and CKD_form.is_valid()
-            and hypertension_form.is_valid()
             and CHF_form.is_valid()
+            and CKD_form.is_valid()
             and diabetes_form.is_valid()
+            and erosions_form.is_valid()
+            and hypertension_form.is_valid()
+            and hypertension_form.is_valid()
             and organ_transplant_form.is_valid()
             and urate_kidney_stones_form.is_valid()
+            and tophi_form.is_valid()
         ):
             medical_profile_data = form.save(commit=False)
             medical_profile_data.user = request.user
-            CKD_data = CKD_form.save(commit=False)
-            CKD_data.user = request.user
-            CKD_data.save()
-            hypertension_data = hypertension_form.save(commit=False)
-            hypertension_data.user = request.user
-            hypertension_data.save()
             CHF_data = CHF_form.save(commit=False)
+            CHF_data.last_modified = "MedicalProfile"
             CHF_data.user = request.user
             CHF_data.save()
+            CKD_data = CKD_form.save(commit=False)
+            CKD_data.last_modified = "MedicalProfile"
+            CKD_data.user = request.user
+            CKD_data.save()
             diabetes_data = diabetes_form.save(commit=False)
+            diabetes_data.last_modified = "MedicalProfile"
             diabetes_data.user = request.user
             diabetes_data.save()
+            erosions_data = erosions_form.save(commit=False)
+            erosions_data.last_modified = "MedicalProfile"
+            erosions_data.user = request.user
+            erosions_data.save()
+            hypertension_data = hypertension_form.save(commit=False)
+            hypertension_data.last_modified = "MedicalProfile"
+            hypertension_data.user = request.user
+            hypertension_data.save()
+            hyperuricemia_data = hyperuricemia_form.save(commit=False)
+            hyperuricemia_data.last_modified = "MedicalProfile"
+            hyperuricemia_data.user = request.user
+            hyperuricemia_data.save()
             organ_transplant_data = organ_transplant_form.save(commit=False)
+            organ_transplant_data.last_modified = "MedicalProfile"
             organ_transplant_data.user = request.user
             organ_transplant_data.save()
             urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
+            urate_kidney_stones_data.last_modified = "MedicalProfile"
             urate_kidney_stones_data.user = request.user
             urate_kidney_stones_data.save()
+            tophi_data = tophi_form.save(commit=False)
+            tophi_data.last_modified = "MedicalProfile"
+            tophi_data.user = request.user
+            tophi_data.save()
             medical_profile_data.CKD = CKD_data
             medical_profile_data.hypertension = hypertension_data
             medical_profile_data.CHF = CHF_data
@@ -345,12 +383,15 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
-                    CKD_form=CKD_form,
-                    hypertension_form=hypertension_form,
                     CHF_form=CHF_form,
+                    CKD_form=CKD_form,
                     diabetes_form=diabetes_form,
+                    erosions_form=erosions_form,
+                    hypertension_form=hypertension_form,
+                    hyperuricemia_form=hyperuricemia_form,
                     organ_transplant_form=organ_transplant_form,
                     urate_kidney_stones_form=urate_kidney_stones_form,
+                    tophi_form=tophi_form,
                 )
             )
 
@@ -360,34 +401,44 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
     form_class = MedicalProfileForm
     CKD_form_class = CKDForm
     hypertension_form_class = HypertensionForm
+    hyperuricemia_form_class = HyperuricemiaForm
     CHF_form_class = CHFForm
     diabetes_form_class = DiabetesForm
+    erosions_form_class = ErosionsForm
     organ_transplant_form_class = OrganTransplantForm
     urate_kidney_stone_form_class = UrateKidneyStonesForm
+    tophi_form_class = TophiForm
 
     def get_context_data(self, **kwargs):
         context = super(MedicalProfileUpdate, self).get_context_data(**kwargs)
         context.update({"user": self.request.user})
+        # Adds related model forms to context for rendering
         if self.request.POST:
-            context["CKD_form"] = CKDForm(self.request.POST, instance=self.object.CKD)
-            context["hypertension_form"] = HypertensionForm(self.request.POST, instance=self.object.hypertension)
             context["CHF_form"] = CHFForm(self.request.POST, instance=self.object.CHF)
+            context["CKD_form"] = CKDForm(self.request.POST, instance=self.object.CKD)
             context["diabetes_form"] = DiabetesForm(self.request.POST, instance=self.object.diabetes)
+            context["erosions_form"] = ErosionsForm(self.request.POST, instance=self.object.erosions)
+            context["hypertension_form"] = HypertensionForm(self.request.POST, instance=self.object.hypertension)
+            context["hyperuricemia_form"] = HyperuricemiaForm(self.request.POST, instance=self.object.hyperuricemia)
             context["organ_transplant_form"] = OrganTransplantForm(
                 self.request.POST, instance=self.object.organ_transplant
             )
             context["urate_kidney_stones_form"] = UrateKidneyStonesForm(
                 self.request.POST, instance=self.object.urate_kidney_stones
             )
+            context["tophi_form"] = TophiForm(self.request.POST, instance=self.object.tophi)
         else:
             context["CKD_form"] = self.CKD_form_class(instance=self.object.CKD)
-            context["hypertension_form"] = self.hypertension_form_class(instance=self.object.hypertension)
             context["CHF_form"] = self.CHF_form_class(instance=self.object.CHF)
             context["diabetes_form"] = self.diabetes_form_class(instance=self.object.diabetes)
+            context["erosions_form"] = self.erosions_form_class(instance=self.object.erosions)
+            context["hypertension_form"] = self.hypertension_form_class(instance=self.object.hypertension)
+            context["hyperuricemia_form"] = self.hyperuricemia_form_class(instance=self.object.hyperuricemia)
             context["organ_transplant_form"] = self.organ_transplant_form_class(instance=self.object.organ_transplant)
             context["urate_kidney_stones_form"] = self.urate_kidney_stone_form_class(
                 instance=self.object.urate_kidney_stones
             )
+            context["tophi_form"] = self.tophi_form_class(instance=self.object.tophi)
         return context
 
     def get_object(self, queryset=None):
@@ -403,36 +454,66 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=self.object)
         CKD_form = self.CKD_form_class(request.POST, instance=self.object.CKD)
-        hypertension_form = self.hypertension_form_class(request.POST, instance=self.object.hypertension)
         CHF_form = self.CHF_form_class(request.POST, instance=self.object.CHF)
         diabetes_form = self.diabetes_form_class(request.POST, instance=self.object.diabetes)
+        erosions_form = self.erosions_form_class(request.POST, instance=self.object.erosions)
+        hypertension_form = self.hypertension_form_class(request.POST, instance=self.object.hypertension)
+        hyperuricemia_form = self.hyperuricemia_form_class(request.POST, instance=self.object.hyperuricemia)
         organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=self.object.organ_transplant)
         urate_kidney_stones_form = self.urate_kidney_stone_form_class(
             request.POST, instance=self.object.urate_kidney_stones
         )
+        tophi_form = self.tophi_form_class(request.POST, instance=self.object.tophi)
 
         if (
             form.is_valid()
             and CKD_form.is_valid()
-            and hypertension_form.is_valid()
             and CHF_form.is_valid()
             and diabetes_form.is_valid()
+            and erosions_form.is_valid()
+            and hypertension_form.is_valid()
+            and hyperuricemia_form.is_valid()
             and organ_transplant_form.is_valid()
             and urate_kidney_stones_form.is_valid()
+            and tophi_form.is_valid()
         ):
             medical_profile_data = form.save(commit=False)
-            CKD_data = CKD_form.save()
-            hypertension_data = hypertension_form.save()
-            CHF_data = CHF_form.save()
-            diabetes_data = diabetes_form.save()
-            organ_transplant_data = organ_transplant_form.save()
-            urate_kidney_stones_data = urate_kidney_stones_form.save()
+            CHF_data = CHF_form.save(commit=False)
+            CHF_data.last_modified = "MedicalProfile"
+            CHF_data.save()
+            CKD_data = CKD_form.save(commit=False)
+            CKD_data.last_modified = "MedicalProfile"
+            CKD_data.save()
+            diabetes_data = diabetes_form.save(commit=False)
+            diabetes_data.last_modified = "MedicalProfile"
+            diabetes_data.save()
+            erosions_data = erosions_form.save(commit=False)
+            erosions_data.last_modified = "MedicalProfile"
+            erosions_data.save()
+            hypertension_data = hypertension_form.save(commit=False)
+            hypertension_data.last_modified = "MedicalProfile"
+            hypertension_data.save()
+            hyperuricemia_data = hyperuricemia_form.save(commit=False)
+            hyperuricemia_data.last_modified = "MedicalProfile"
+            hyperuricemia_data.save()
+            organ_transplant_data = organ_transplant_form.save(commit=False)
+            organ_transplant_data.last_modified = "MedicalProfile"
+            organ_transplant_data.save()
+            urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
+            urate_kidney_stones_data.last_modified = "MedicalProfile"
+            urate_kidney_stones_data.save()
+            tophi_data = tophi_form.save(commit=False)
+            tophi_data.last_modified = "MedicalProfile"
+            tophi_data.save()
             medical_profile_data.ckd = CKD_data
-            medical_profile_data.hypertension = hypertension_data
             medical_profile_data.CHF = CHF_data
             medical_profile_data.diabetes = diabetes_data
+            medical_profile_data.erosions = erosions_data
+            medical_profile_data.hypertension = hypertension_data
+            medical_profile_data.hyperuricemia = hyperuricemia_data
             medical_profile_data.organ_transplant = organ_transplant_data
             medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
+            medical_profile_data.tophi = tophi_data
             medical_profile_data.save()
             return HttpResponseRedirect(self.request.user.get_absolute_url())
         else:
@@ -440,11 +521,14 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
                 self.get_context_data(
                     form=form,
                     CKD_form=CKD_form,
-                    hypertension_form=hypertension_form,
                     CHF_form=CHF_form,
                     diabetes_form=diabetes_form,
+                    erosions_form=erosions_form,
+                    hypertension_form=hypertension_form,
+                    hyperuricemia_form=hypertension_form,
                     organ_transplant_form=organ_transplant_form,
                     urate_kidney_stones_form=urate_kidney_stones_form,
+                    tophi_form=tophi_form,
                 )
             )
 

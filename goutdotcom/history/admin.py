@@ -11,6 +11,7 @@ class CKDAdmin(admin.ModelAdmin):
         "value",
         "stage",
         "dialysis",
+        "last_modified",
         "created",
         "pk",
     )
@@ -21,6 +22,15 @@ class HypertensionAdmin(admin.ModelAdmin):
         "user",
         "value",
         "medication",
+        "created",
+        "pk",
+    )
+
+
+class HyperuricemiaAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
         "created",
         "pk",
     )
@@ -226,6 +236,7 @@ class GoutAdmin(admin.ModelAdmin):
 
 admin.site.register(CKD, CKDAdmin)
 admin.site.register(Hypertension, HypertensionAdmin)
+admin.site.register(Hyperuricemia, HyperuricemiaAdmin)
 admin.site.register(CHF, CHFAdmin)
 admin.site.register(Diabetes, DiabetesAdmin)
 admin.site.register(Erosions, ErosionsAdmin)

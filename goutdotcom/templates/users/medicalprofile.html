@@ -8,9 +8,10 @@
          {% if object.medicalprofile.CKD.stage %}
          <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
          {% endif %}
-         {% if object.medicalprofile.ckd.dialysis %}
-         <li>{{ object.medicalprofile.ckd.dialysis }}</li>
+         {% if object.medicalprofile.CKD.dialysis %}
+         <li>{{ object.medicalprofile.CKD.dialysis }}</li>
          {% endif %}
+         <li>{{ object.medicalprofile.CKD.last_modified }}</li>
        </div>
        {% endif %}
        {% if object.medicalprofile.hypertension.value %}
@@ -19,6 +20,11 @@
          {% if object.medicalprofile.hypertension.medication %}
          <li>Treated with medications</li>
          {% endif %}
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.hyperuricemia.value %}
+       <div class="col-auto">
+         <h3>Hyperuricemia</h3>
        </div>
        {% endif %}
        {% if object.medicalprofile.CHF.value %}
@@ -42,6 +48,11 @@
          {% endif %}
        </div>
        {% endif %}
+       {% if object.medicalprofile.erosions.value %}
+       <div class="col-auto">
+         <h3>Erosions</h3>
+       </div>
+       {% endif %}
        {% if object.medicalprofile.organ_transplant.value %}
        <div class="col-auto">
          <h3>Organ Transplant</h3>
@@ -53,6 +64,11 @@
        {% if object.medicalprofile.urate_kidney_stones.value %}
        <div class="col-auto">
          <h3>Urate Kidney Stones</h3>
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.tophi.value %}
+       <div class="col-auto">
+         <h3>Tophi</h3>
        </div>
        {% endif %}
      </div>

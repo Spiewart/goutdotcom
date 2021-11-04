@@ -41,3 +41,23 @@ ORGAN_CHOICES = (
     (PANCREAS, "Pancreas"),
     (FACE, "Face"),
 )
+
+CONTRAINDICATIONSPROFILE = "ContraindicationsProfile"
+FLAREAID = "FlareAid"
+FLAREDIAGNOSIS = "FlareDiagnosis"
+FAMILYPROFILE = "FamilyProfile"
+MEDICALPROFILE = "MedicalProfile"
+SOCIALPROFILE = "SocialProfile"
+ULT = "ULT"
+ULTAID = "ULTAid"
+
+LAST_MODIFIED_CHOICES = (
+    (CONTRAINDICATIONSPROFILE, "ContraindicationsProfile"),
+    (FLAREAID, "FlareAid"),
+    (FLAREDIAGNOSIS, "FlareDiagnosis"),
+    (FAMILYPROFILE, "FamilyProfile"),
+    (MEDICALPROFILE, "MedicalProfile"),
+    (SOCIALPROFILE, "SocialProfile"),
+    (ULT, "ULT"),
+    (ULTAID, "ULTAid"),
+)

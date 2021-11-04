@@ -29,12 +29,15 @@ class FamilyProfileAdmin(admin.ModelAdmin):
 class MedicalProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "CKD",
-        "hypertension",
         "CHF",
+        "CKD",
         "diabetes",
+        "erosions",
+        "hypertension",
+        "hyperuricemia",
         "organ_transplant",
         "urate_kidney_stones",
+        "tophi",
     )
 
 

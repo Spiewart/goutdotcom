@@ -14,13 +14,16 @@ from goutdotcom.history.models import (
     Alcohol,
     Bleed,
     Diabetes,
+    Erosions,
     Fructose,
     Gout,
     HeartAttack,
     Hypertension,
+    Hyperuricemia,
     OrganTransplant,
     Shellfish,
     Stroke,
+    Tophi,
     UrateKidneyStones,
 )
 from goutdotcom.profiles.choices import BOOL_CHOICES, races, sexes
@@ -205,11 +208,21 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    hyperuricemia = models.OneToOneField(
+        Hyperuricemia,
+        on_delete=models.CASCADE,
+        help_text="Do you have blood uric acid levels greater than 9.0 mg/dL?",
+        null=True,
+        blank=True,
+    )
     CHF = models.OneToOneField(
         CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True
     )
     diabetes = models.OneToOneField(
         Diabetes, on_delete=models.CASCADE, help_text="Do you have diabetes?", null=True, blank=True
+    )
+    erosions = models.OneToOneField(
+        Erosions, on_delete=models.CASCADE, help_text="Do you have gouty erosions?", null=True, blank=True
     )
     organ_transplant = models.OneToOneField(
         OrganTransplant, on_delete=models.CASCADE, help_text="Have you had an organ transplant?", null=True, blank=True
@@ -221,6 +234,9 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    tophi = models.OneToOneField(
+        Tophi, on_delete=models.CASCADE, help_text="Do you have gouty tophi?", null=True, blank=True
+    )
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
@@ -231,10 +247,13 @@ class MedicalProfile(TimeStampedModel):
             new_profile = MedicalProfile.objects.create(user=instance)
             new_profile.CKD = CKD.objects.create(user=instance)
             new_profile.hypertension = Hypertension.objects.create(user=instance)
+            new_profile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
             new_profile.CHF = CHF.objects.create(user=instance)
             new_profile.diabetes = Diabetes.objects.create(user=instance)
+            new_profile.erosions = Erosions.objects.create(user=instance)
             new_profile.organ_transplant = OrganTransplant.objects.create(user=instance)
             new_profile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
+            new_profile.tophi = Tophi.objects.create(user=instance)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_medical_profile(sender, instance, **kwargs):

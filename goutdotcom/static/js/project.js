@@ -1208,8 +1208,8 @@ function flare_aid_initial() {
   $('#NSAID_contraindication-line').hide();
   $('#div_id_osteoporosis').hide();
   $('#osteoporosis-line').hide();
-  $('#div_id_colchicine_contraindication').hide();
-  $('#colchicine_contraindication-line').hide();
+  $('#div_id_colchicine_interactions').hide();
+  $('#colchicine_interactions-line').hide();
   }
 
 function flare_aid_fields () {
@@ -1227,8 +1227,8 @@ function flare_aid_fields () {
     $('#NSAID_contraindication-line').show();
     $('#div_id_osteoporosis').show();
     $('#osteoporosis-line').show();
-    $('#div_id_colchicine_contraindication').show();
-    $('#colchicine_contraindication-line').show();
+    $('#div_id_colchicine_interactions').show();
+    $('#colchicine_interactions-line').show();
   }
 }
 /* ULT app JS */
