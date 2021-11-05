@@ -4,8 +4,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from ..history.forms import CKDForm
-from ..history.models import CKD
+from ..history.forms import AnticoagulationForm, BleedForm, CKDForm, ColchicineInteractionsForm, DiabetesForm, HeartAttackForm, IBDForm, OsteoporosisForm, StrokeForm
+from ..history.models import Anticoagulation, Bleed, CKD, ColchicineInteractions, Diabetes, HeartAttack, IBD, Osteoporosis, Stroke
 from .forms import FlareAidForm
 from .models import FlareAid
 
@@ -14,7 +14,15 @@ from .models import FlareAid
 class FlareAidCreate(CreateView):
     model = FlareAid
     form_class = FlareAidForm
+    anticoagulation_form_class = AnticoagulationForm
+    bleed_form_class = BleedForm
     CKD_form_class = CKDForm
+    colchicine_interactions_form_class = ColchicineInteractionsForm
+    diabetes_form_class = DiabetesForm
+    heartattack_form_class = HeartAttackForm
+    IBD_form_class = IBDForm
+    osteoporosis_form_class = OsteoporosisForm
+    stroke_form_class = StrokeForm
 
     def form_valid(self, form):
         if self.request.user.is_authenticated:
@@ -26,8 +34,27 @@ class FlareAidCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(FlareAidCreate, self).get_context_data(**kwargs)
+        ## IS IF NOT IN CONTEXT STATEMENT NECESSARY? TEST IT BY DELETING
+        ## WHAT IF USER IS NOT LOGGED IN? CHECK CONTEXT
+        # Add FlareAid OnetoOne related model objects from the MedicalProfile for the logged in User
+        if "anticoagulation_form" not in context:
+            context["anticoagulation_form"] = self.anticoagulation_form_class(instance=self.request.user.medicalprofile.anticoagulation)
+        if "bleed_form" not in context:
+            context["bleed_form"] = self.bleed_form_class(instance=self.request.user.medicalprofile.bleed)
         if "CKD_form" not in context:
             context["CKD_form"] = self.CKD_form_class(instance=self.request.user.medicalprofile.CKD)
+        if "colchicine_interactions_form" not in context:
+            context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(instance=self.request.user.medicalprofile.colchicine_interactions)
+        if "diabetes_form" not in context:
+            context["diabetes_form"] = self.diabetes_form_class(instance=self.request.user.medicalprofile.diabetes)
+        if "heartattack_form" not in context:
+            context["heartattack_form"] = self.heartattack_form_class(instance=self.request.user.medicalprofile.heartattack)
+        if "IBD_form" not in context:
+            context["IBD_form"] = self.IBD_form_class(instance=self.request.user.medicalprofile.IBD)
+        if "osteoporosis_form" not in context:
+            context["osteoporosis_form"] = self.osteoporosis_form_class(instance=self.request.user.medicalprofile.osteoporosis)
+        if "stroke_form" not in context:
+            context["stroke_form"] = self.stroke_form_class(instance=self.request.user.medicalprofile.stroke)
         return context
 
     def get_form_kwargs(self):
@@ -40,28 +67,117 @@ class FlareAidCreate(CreateView):
 
         if form.is_valid():
             flareaid_data = form.save(commit=False)
+            ## WOULD LIKE TO CONSOLIDATE REQUEST.USER ADD TO RIGHT BEFORE SAVE(), THEN CAN COMBINE THE REST
             # Check if user is authenticated and pull CKD data from MedicalProfile if so
             if request.user.is_authenticated:
                 flareaid_data.user = request.user
+                anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=request.user.medicalprofile.CKD)
+                anticoagulation_data = anticoagulation_form.save(commit=False)
+                anticoagulation_data.last_modified = "FlareAid"
+                anticoagulation_data.save()
+                bleed_form = self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed)
+                bleed_data = bleed_form.save(commit=False)
+                bleed_data.last_modified = "FlareAid"
+                bleed_data.save()
                 CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD)
                 ckd_data = CKD_form.save(commit=False)
                 ckd_data.last_modified = "FlareAid"
-                ckd_data = CKD_form.save()
+                ckd_data.save()
+                colchicine_interactions_form = self.colchicine_interactions_form_class(request.POST, instance=request.user.medicalprofile.colchicine_interactions)
+                colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
+                colchicine_interactions_data.last_modified = "FlareAid"
+                colchicine_interactions_data.save()
+                diabetes_form = self.diabetes_form_class(request.POST, instance=request.user.mecicalprofile.diabetes)
+                diabetes_data = diabetes_form.save(commit=False)
+                diabetes_data.last_modified = "FlareAid"
+                diabetes_data.save()
+                heartattack_form = self.heartattack_form_class(request.POST, instance=request.user.medicalprofile.heartattack)
+                heartattack_data = heartattack_form.save(commit=False)
+                heartattack_data.last_modified = "FlareAid"
+                heartattack_data.save()
+                IBD_form = self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD)
+                IBD_data = IBD_form.save(commit=False)
+                IBD_data.last_modified = "FlareAid"
+                IBD_data.save()
+                osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=request.user.medicalprofile.IBD)
+                osteoporosis_data = osteoporosis_form.save(commit=False)
+                osteoporosis_data.last_modified = "FlareAid"
+                osteoporosis_data.save()
+                stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke)
+                stroke_data = stroke_form.save(commit=False)
+                stroke_data.last_modified = "FlareAid"
+                stroke_data.save()
+                flareaid_data.anticoagulation = anticoagulation_data
+                flareaid_data.bleed = bleed_data
                 flareaid_data.ckd = ckd_data
+                flareaid_data.colchicine_interactions = colchicine_interactions_data
+                flareaid_data.diabetes = diabetes_data
+                flareaid_data.heartattack = heartattack_data
+                flareaid_data.ibd = IBD_data
+                flareaid_data.osteoporosis = osteoporosis_data
+                flareaid_data.stroke = stroke_data
                 flareaid_data.save()
             else:
-                CKD_form = self.CKD_form_class(request.POST, instance=CKD())
+                anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=request.user.medicalprofile.CKD)
+                anticoagulation_data = anticoagulation_form.save(commit=False)
+                anticoagulation_data.last_modified = "FlareAid"
+                anticoagulation_data.save()
+                bleed_form = self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed)
+                bleed_data = bleed_form.save(commit=False)
+                bleed_data.last_modified = "FlareAid"
+                bleed_data.save()
+                CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD)
                 ckd_data = CKD_form.save(commit=False)
                 ckd_data.last_modified = "FlareAid"
                 ckd_data.save()
+                colchicine_interactions_form = self.colchicine_interactions_form_class(request.POST, instance=request.user.medicalprofile.colchicine_interactions)
+                colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
+                colchicine_interactions_data.last_modified = "FlareAid"
+                colchicine_interactions_data.save()
+                diabetes_form = self.diabetes_form_class(request.POST, instance=request.user.mecicalprofile.diabetes)
+                diabetes_data = diabetes_form.save(commit=False)
+                diabetes_data.last_modified = "FlareAid"
+                diabetes_data.save()
+                heartattack_form = self.heartattack_form_class(request.POST, instance=request.user.medicalprofile.heartattack)
+                heartattack_data = heartattack_form.save(commit=False)
+                heartattack_data.last_modified = "FlareAid"
+                heartattack_data.save()
+                IBD_form = self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD)
+                IBD_data = IBD_form.save(commit=False)
+                IBD_data.last_modified = "FlareAid"
+                IBD_data.save()
+                osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=request.user.medicalprofile.IBD)
+                osteoporosis_data = osteoporosis_form.save(commit=False)
+                osteoporosis_data.last_modified = "FlareAid"
+                osteoporosis_data.save()
+                stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke)
+                stroke_data = stroke_form.save(commit=False)
+                stroke_data.last_modified = "FlareAid"
+                stroke_data.save()
+                flareaid_data.anticoagulation = anticoagulation_data
+                flareaid_data.bleed = bleed_data
                 flareaid_data.ckd = ckd_data
+                flareaid_data.colchicine_interactions = colchicine_interactions_data
+                flareaid_data.diabetes = diabetes_data
+                flareaid_data.heartattack = heartattack_data
+                flareaid_data.ibd = IBD_data
+                flareaid_data.osteoporosis = osteoporosis_data
+                flareaid_data.stroke = stroke_data
                 flareaid_data.save()
             return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": flareaid_data.pk}))
         else:
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
+                    anticoagulation_form=self.anticoagulation_form_class(request.POST, instance=Anticoagulation()),
+                    bleed_form=self.bleed_form_class(request.POST, instance=Bleed()),
                     CKD_form=self.CKD_form_class(request.POST, instance=CKD()),
+                    colchicine_interactions_form=self.colchicine_interactions_form_class(request.POST, instance=ColchicineInteractions()),
+                    diabetes_form=self.diabetes_form_class(request.POST, instance=Diabetes()),
+                    heartattack_form=self.heartattack_form_class(request.POST, instance=HeartAttack()),
+                    IBD_form=self.IBD_form_class(request.POST, instance=IBD()),
+                    osteoporosis_form=self.osteoporosis_form_class(request.POST, instance=Osteoporosis()),
+                    stroke_form=self.stroke_form_class(request.POST, instance=Stroke()),
                 )
             )
 

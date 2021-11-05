@@ -12,7 +12,9 @@ from goutdotcom.history.models import (
     CHF,
     CKD,
     Alcohol,
+    Anticoagulation,
     Bleed,
+    ColchicineInteractions,
     Diabetes,
     Erosions,
     Fructose,
@@ -20,11 +22,14 @@ from goutdotcom.history.models import (
     HeartAttack,
     Hypertension,
     Hyperuricemia,
+    IBD,
     OrganTransplant,
+    Osteoporosis,
     Shellfish,
     Stroke,
     Tophi,
     UrateKidneyStones,
+    XOIInteractions,
 )
 from goutdotcom.profiles.choices import BOOL_CHOICES, races, sexes
 from goutdotcom.users.models import models
@@ -37,33 +42,6 @@ class ContraindicationsProfile(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    contraindication = BooleanField(
-        choices=BOOL_CHOICES,
-        help_text="Have you ever had a stroke, heart attack, or major bleeding event?",
-        null=True,
-        blank=True,
-    )
-    stroke = models.OneToOneField(
-        Stroke,
-        on_delete=models.CASCADE,
-        help_text="Have you had a stroke?",
-        null=True,
-        blank=True,
-    )
-    heartattack = models.OneToOneField(
-        HeartAttack,
-        on_delete=models.CASCADE,
-        help_text="Have you had a heart attack?",
-        null=True,
-        blank=True,
-    )
-    bleed = models.OneToOneField(
-        Bleed,
-        on_delete=models.CASCADE,
-        help_text="Have you had a major bleeding event?",
-        null=True,
-        blank=True,
-    )
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
@@ -72,9 +50,7 @@ class ContraindicationsProfile(TimeStampedModel):
     def create_user_contraindications_profile(sender, instance, created, **kwargs):
         if created:
             new_profile = ContraindicationsProfile.objects.create(user=instance)
-            new_profile.stroke = Stroke.objects.create(user=instance)
-            new_profile.heartattack = HeartAttack.objects.create(user=instance)
-            new_profile.bleed = Bleed.objects.create(user=instance)
+
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_contraindications_profile(sender, instance, **kwargs):
@@ -215,6 +191,13 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    IBD = models.OneToOneField(
+        IBD,
+        on_delete=models.CASCADE,
+        help_text="Do you have IBD (inflammatory bowel disease=Crohn's disease or ulcerative colitis)?",
+        null=True,
+        blank=True,
+    )
     CHF = models.OneToOneField(
         CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True
     )
@@ -227,6 +210,9 @@ class MedicalProfile(TimeStampedModel):
     organ_transplant = models.OneToOneField(
         OrganTransplant, on_delete=models.CASCADE, help_text="Have you had an organ transplant?", null=True, blank=True
     )
+    osteoporosis = models.OneToOneField(
+        Osteoporosis, on_delete=models.CASCADE, help_text="Do you have osteoporosis?", null=True, blank=True
+    )
     urate_kidney_stones = models.OneToOneField(
         UrateKidneyStones,
         on_delete=models.CASCADE,
@@ -237,6 +223,41 @@ class MedicalProfile(TimeStampedModel):
     tophi = models.OneToOneField(
         Tophi, on_delete=models.CASCADE, help_text="Do you have gouty tophi?", null=True, blank=True
     )
+    anticoagulation = models.OneToOneField(
+        Anticoagulation,
+        on_delete=models.CASCADE,
+        help_text="Are you on anticoagulation?",
+        null=True,
+        blank=True,
+    )
+    bleed = models.OneToOneField(
+        Bleed,
+        on_delete=models.CASCADE,
+        help_text="Have you had a major bleeding event?",
+        null=True,
+        blank=True,
+    )
+    colchicine_interaction = models.OneToOneField(
+        ColchicineInteractions,
+        on_delete=models.CASCADE,
+        help_text="Are you on a medication that interacts with colchicine, such as simvastatin, clarithromycin, or diltiazem?",
+        null=True,
+        blank=True,
+    )
+    heartattack = models.OneToOneField(
+        HeartAttack,
+        on_delete=models.CASCADE,
+        help_text="Have you had a heart attack?",
+        null=True,
+        blank=True,
+    )
+    stroke = models.OneToOneField(
+        Stroke,
+        on_delete=models.CASCADE,
+        help_text="Have you had a stroke?",
+        null=True,
+        blank=True,
+    )
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
@@ -245,13 +266,20 @@ class MedicalProfile(TimeStampedModel):
     def create_user_medical_profile(sender, instance, created, **kwargs):
         if created:
             new_profile = MedicalProfile.objects.create(user=instance)
+            new_profile.anticoagulation = Anticoagulation.objects.create(user=instance)
+            new_profile.bleed = Bleed.objects.create(user=instance)
             new_profile.CKD = CKD.objects.create(user=instance)
+            new_profile.colchicine_interactions = ColchicineInteractions.objects.create(user=instance)
             new_profile.hypertension = Hypertension.objects.create(user=instance)
             new_profile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
             new_profile.CHF = CHF.objects.create(user=instance)
             new_profile.diabetes = Diabetes.objects.create(user=instance)
             new_profile.erosions = Erosions.objects.create(user=instance)
+            new_profile.heartattack = HeartAttack.objects.create(user=instance)
+            new_profile.IBD = IBD.objects.create(user=instance)
             new_profile.organ_transplant = OrganTransplant.objects.create(user=instance)
+            new_profile.osteoporosis = Osteoporosis.objects.create(user=instance)
+            new_profile.stroke = Stroke.objects.create(user=instance)
             new_profile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
             new_profile.tophi = Tophi.objects.create(user=instance)
 

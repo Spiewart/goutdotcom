@@ -11,10 +11,6 @@ class FlareAidForm(forms.ModelForm):
         fields = (
             "perfect_health",
             "monoarticular",
-            "diabetes",
-            "NSAID_contraindication",
-            "osteoporosis",
-            "colchicine_interactions",
         )
 
     def __init__(self, *args, **kwargs):
@@ -47,25 +43,23 @@ class FlareAidForm(forms.ModelForm):
                     <hr size="6" color="white" id="ckd-line">
                     """
                 ),
-                "diabetes",
                 HTML(
                     """
-                    <hr size="6" color="white" id="diabetes-line">
+                    {% load crispy_forms_tags %}
+                    {% crispy colchicine_interactions_form %}
                     """
                 ),
-                "NSAID_contraindication",
                 HTML(
                     """
-                    <hr size="6" color="white" id="NSAID_contraindication-line">
+                    <hr size="6" color="white" id="colchicine_interactions-line">
                     """
                 ),
-                "osteoporosis",
                 HTML(
                     """
-                    <hr size="6" color="white" id="osteoporosis-line">
+                    {% load crispy_forms_tags %}
+                    {% crispy colchicine_interactions_form %}
                     """
                 ),
-                "colchicine_interactions",
                 HTML(
                     """
                     <hr size="6" color="white" id="colchicine_interactions-line">

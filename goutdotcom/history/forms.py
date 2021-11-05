@@ -6,6 +6,7 @@ from django import forms
 from .models import (
     CHF,
     CKD,
+    IBD,
     Alcohol,
     Anticoagulation,
     Bleed,
@@ -20,6 +21,7 @@ from .models import (
     Hypertension,
     Hyperuricemia,
     OrganTransplant,
+    Osteoporosis,
     Shellfish,
     Stroke,
     Tophi,
@@ -29,6 +31,44 @@ from .models import (
 
 
 ### Medical History ModelForms ###
+class AnticoagulationForm(forms.ModelForm):
+    prefix = "Anticoagulation"
+
+    class Meta:
+        model = Anticoagulation
+        fields = (
+            "value",
+            "apixaban",
+            "clopidogrel",
+            "dabigatran",
+            "enoxaparin",
+            "rivaroxaban",
+            "warfarin",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(AnticoagulationForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                "Anticoagulation",
+                "value",
+                "apixaban",
+                "clopidogrel",
+                "dabigatran",
+                "enoxaparin",
+                "rivaroxaban",
+                "warfarin",
+                id="anticoagulation_for_profile",
+            ),
+        )
+
+
 class CKDForm(forms.ModelForm):
     prefix = "CKD"
 
@@ -55,6 +95,36 @@ class CKDForm(forms.ModelForm):
                 "stage",
                 "dialysis",
                 id="CKD_for_profile",
+            ),
+        )
+
+
+class ColchicineInteractionsForm(forms.ModelForm):
+    prefix = "Colchicine Interactions"
+
+    class Meta:
+        model = ColchicineInteractions
+        fields = (
+            "value",
+            "clarithromycin",
+            "simvastatin",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(ColchicineInteractionsForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset(
+                "Colchicine Interactions",
+                "value",
+                "clarithromycin",
+                "simvastatin",
+                id="colchicine_interactions_for_profile",
             ),
         )
 
@@ -99,6 +169,46 @@ class HyperuricemiaForm(forms.ModelForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Hyperuricemia", "value", id="hyperuricemia_for_profile"),
+        )
+
+
+class IBDForm(forms.ModelForm):
+    prefix = "IBD"
+
+    class Meta:
+        model = IBD
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(IBDForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Inflammatory Bowel Disease", "value", id="IBD_for_profile"),
+        )
+
+
+class OsteoporosisForm(forms.ModelForm):
+    prefix = "Osteoporosis"
+
+    class Meta:
+        model = Osteoporosis
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(OsteoporosisForm, self).__init__(*args, **kwargs)
+
+        # If you pass FormHelper constructor a form instance
+        # It builds a default layout with all its fields
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("Osteoporosis", "value", id="osteoporosis_for_profile"),
         )
 
 

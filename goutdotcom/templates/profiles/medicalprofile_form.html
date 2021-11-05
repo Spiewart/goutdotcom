@@ -12,12 +12,19 @@
 {% block form %}
 {% if form.instance.pk %}
 <form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user object.pk %}" enctype="multipart/form-data">
-  {% csrf_token %} {{ form|crispy }} {{ CKD_form|crispy }}
+  {% csrf_token %} {{ form|crispy }}
+  {{ CKD_form|crispy }}
   <hr size="6" color="white" />
   {{ hypertension_form|crispy }}
   <hr size="6" color="white" />
   {{ hyperuricemia_form|crispy }}
   <hr size="6" color="white" />
+  {{ stroke_form|crispy }}
+  <hr size="6" color="white" id="stroke_bar" />
+  {{ heartattack_form|crispy }}
+  <hr size="6" color="white" id="heartattack_bar" />
+  {{ bleed_form|crispy }}
+  <hr size="6" color="white" id="bleed_bar" />
   {{ CHF_form|crispy }}
   <hr size="6" color="white" />
   {{ diabetes_form|crispy }}
@@ -44,6 +51,12 @@
   <hr size="6" color="white" />
   {{ hyperuricemia_form|crispy }}
   <hr size="6" color="white" />
+  {{ stroke_form|crispy }}
+  <hr size="6" color="white" id="stroke_bar" />
+  {{ heartattack_form|crispy }}
+  <hr size="6" color="white" id="heartattack_bar" />
+  {{ bleed_form|crispy }}
+  <hr size="6" color="white" id="bleed_bar" />
   {{ CHF_form|crispy }}
   <hr size="6" color="white" />
   {{ diabetes_form|crispy }}

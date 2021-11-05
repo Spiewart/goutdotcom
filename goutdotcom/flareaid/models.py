@@ -3,7 +3,17 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
-from ..history.models import CKD
+from ..history.models import (
+    CKD,
+    IBD,
+    Anticoagulation,
+    Bleed,
+    ColchicineInteractions,
+    Diabetes,
+    HeartAttack,
+    Osteoporosis,
+    Stroke,
+)
 from .choices import *
 
 
@@ -34,41 +44,57 @@ class FlareAid(TimeStampedModel):
         null=True,
         blank=True,
     )
+    anticoagulation = models.ForeignKey(
+        Anticoagulation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    bleed = models.ForeignKey(
+        Bleed,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     ckd = models.ForeignKey(
         CKD,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    diabetes = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Do you have diabetes?",
-        help_text="Type I or type II",
-        default="",
+    colchicine_interactions = models.ForeignKey(
+        ColchicineInteractions,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    NSAID_contraindication = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Have you ever had a heart attack, stroke, congestive heart failure (CHF), Crohn's disease, ulcerative colitis, or a gastrointestinal bleed? Are you on blood thinners?",
-        help_text="Contraindications to NSAIDs",
-        default="",
+    diabetes = models.ForeignKey(
+        Diabetes,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    osteoporosis = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Do you have osteoporosis?",
-        help_text="Brittle bones",
-        default="",
+    heartattack = models.ForeignKey(
+        HeartAttack,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    colchicine_interactions = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Are you on simvastatin, diltiazem, or clarithromycin?",
-        help_text="Contraindications to colchicine",
-        default="",
+    IBD = models.ForeignKey(
+        IBD,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    osteoporosis = models.ForeignKey(
+        Osteoporosis,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    stroke = models.ForeignKey(
+        Stroke,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -89,16 +115,22 @@ class FlareAid(TimeStampedModel):
         elif self.perfect_health is None:
             return needinfo
 
-        if self.ckd == True:
-            if self.diabetes == True:
+        if self.ckd.value == True:
+            if self.diabetes.value == True:
                 return doctor
             else:
                 return steroids
 
-        if self.NSAID_contraindication == True:
-            if self.ckd == True:
+        if (
+            self.bleed.value == True
+            or self.heartattack.value == True
+            or self.stroke.value == True
+            or self.anticoagulation.value == True
+            or self.IBD.value == True
+        ):
+            if self.ckd.value == True:
                 return steroids
-            if self.colchicine_contraindication == True:
+            if self.colchicine_interactions.value == True:
                 return steroids
             else:
                 return colchicine

@@ -224,6 +224,31 @@ class Erosions(MedicalHistory):
         blank=True,
     )
 
+class Osteoporosis(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    name = "osteoporosis"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Osteoporosis' target='_blank'>osteoporosis</a>? If you don't know, skip this or leave it blank."
+        ),
+        verbose_name="Osteoporosis",
+        null=True,
+        blank=True,
+    )
+
+class IBD(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    name = "Inflammatory Bowel Disease"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Inflammatory_bowel_disease' target='_blank'>IBD</a> (inflammatory bowel disease=Crohn's disease or ulcerative colitis)? If you don't know, skip this or leave it blank."
+        ),
+        verbose_name="Inflammatory Bowel Disease",
+        null=True,
+        blank=True,
+    )
 
 class Tophi(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)

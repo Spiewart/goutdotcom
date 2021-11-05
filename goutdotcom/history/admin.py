@@ -36,6 +36,24 @@ class HyperuricemiaAdmin(admin.ModelAdmin):
     )
 
 
+class IBDAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+
+
+class OsteoporosisAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+
+
 class CHFAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -241,7 +259,9 @@ admin.site.register(CHF, CHFAdmin)
 admin.site.register(Diabetes, DiabetesAdmin)
 admin.site.register(Erosions, ErosionsAdmin)
 admin.site.register(Fructose, FructoseAdmin)
+admin.site.register(IBD, IBDAdmin)
 admin.site.register(OrganTransplant, OrganTransplantAdmin)
+admin.site.register(Osteoporosis, OsteoporosisAdmin)
 admin.site.register(UrateKidneyStones, UrateKidneyStonesAdmin)
 admin.site.register(Diuretics, DiureticsAdmin)
 admin.site.register(Cyclosporine, CyclosporineAdmin)
