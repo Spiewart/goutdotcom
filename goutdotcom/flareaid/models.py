@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
+from ..history.models import CKD
 from .choices import *
 
 
@@ -33,11 +34,9 @@ class FlareAid(TimeStampedModel):
         null=True,
         blank=True,
     )
-    ckd = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Do you have CKD?",
-        help_text="Do you have CKD?",
-        default="",
+    ckd = models.ForeignKey(
+        CKD,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )

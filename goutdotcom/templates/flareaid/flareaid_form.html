@@ -16,11 +16,7 @@
   {% csrf_token %} {% crispy form %}
 </form>
 {% else %}
-<form
-  class="form-horizontal default-container"
-  method="post"
-  action="{% url 'flareaid:create' %}"
->
+<form class="form-horizontal default-container" method="post" action="{% url 'flareaid:create' %}">
   {% csrf_token %} {% crispy form %}
 </form>
 {% endif %}

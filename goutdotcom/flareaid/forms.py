@@ -11,7 +11,6 @@ class FlareAidForm(forms.ModelForm):
         fields = (
             "perfect_health",
             "monoarticular",
-            "ckd",
             "diabetes",
             "NSAID_contraindication",
             "osteoporosis",
@@ -19,12 +18,9 @@ class FlareAidForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)  # pop the 'user' from kwargs dictionary
         super(FlareAidForm, self).__init__(*args, **kwargs)
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
-
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
                 "",
@@ -40,7 +36,12 @@ class FlareAidForm(forms.ModelForm):
                     <hr size="6" color="white" id="monoarticular-line">
                     """
                 ),
-                "ckd",
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
+                    {% crispy CKD_form %}
+                    """
+                ),
                 HTML(
                     """
                     <hr size="6" color="white" id="ckd-line">

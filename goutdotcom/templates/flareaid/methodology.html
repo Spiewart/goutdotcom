@@ -32,13 +32,13 @@
         work too.</p>
       {% endif %}
       <h3><u>CKD</u> (Chronic Kidney Disease)</h3>
-      {% if object.ckd == True %}
+      {% if object.ckd.value == True %}
       <p>You reported having CKD.
         This is a relative contraindication to the use of <a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s and <a
           href="{% url 'treatment:about' 'colchicine' %}">colchicine</a>, though sometimes colchicine is used at reduced
         doses in patients with CKD.
       </p>
-      {% elif object.ckd == False %}
+      {% elif object.ckd.value == False %}
       <p>You reported not having CKD. That's great because many of the medications used for gout flares (as well as
         long-term management) are metabolized (broken down) by the kidney.</p>
       {% else %}

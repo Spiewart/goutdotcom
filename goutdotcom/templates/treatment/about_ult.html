@@ -4,4 +4,13 @@
 
 {% block header %}
 <h1 class="nested-container">Urate-lowering therapy</h1>
+<p>Urate-lowering therapy (ULT) is the cornerstone of gout prevention.
+<a href="{% url 'lab:about' 'urate' %}">Uric acid</a> gets in the body from our diet and our body's own production of it.
+It is eliminated by the kidneys.
+The two most common (and effective)ULT therapies are <a href="{% url 'treatment:about' 'allopurinol' %}">allopurinol</a> and <a href="{% url 'treatment:about' 'febuxostat' %}">febuxostat (Uloric)</a>.
+They work by preventing our body's production of uric acid.</p>
 {% endblock header %}
+
+{% block biology %}
+<p>Urate-lowering therapy (ULT)</p>
+{% endblock biology %}

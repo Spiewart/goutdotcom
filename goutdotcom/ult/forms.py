@@ -96,12 +96,18 @@ class ULTForm(forms.ModelForm):
                 self.helper.layout[0].remove("uric_acid")
             if user.medicalprofile.hyperuricemia.value == False:
                 self.helper.layout[0].remove("uric_acid")
-            if user.medicalprofile.CKD.value == True:
-                # and user.medicalprofile.urate_kidney_stones.value
-                # and user.medicalprofile.erosions.value
-                # and user.medicalprofile.tophi.value
-                # and user.medicalprofile.hyperuricemia.value
-                # ):
+            if (
+                user.medicalprofile.CKD.value == True
+                or False
+                and user.medicalprofile.urate_kidney_stones.value == True
+                or False
+                and user.medicalprofile.erosions.value == True
+                or False
+                and user.medicalprofile.tophi.value == True
+                or False
+                and user.medicalprofile.hyperuricemia.value == True
+                or False
+            ):
                 for item in self.helper.layout[0]:
                     print(item)
                 del self.helper.layout[0][2]
