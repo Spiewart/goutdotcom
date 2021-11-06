@@ -1198,37 +1198,86 @@ function check_treatment_9() {
 /* FlareAid app JS */
 // Function that loads on FlareAid Create page, hides all fields other than the first (perfect_health)
 function flare_aid_initial() {
-  $('#div_id_monoarticular').hide();
-  $('#monoarticular-line').hide();
-  $('#div_id_ckd').hide();
-  $('#ckd-line').hide();
-  $('#div_id_diabetes').hide();
-  $('#diabetes-line').hide();
-  $('#div_id_NSAID_contraindication').hide();
-  $('#NSAID_contraindication-line').hide();
-  $('#div_id_osteoporosis').hide();
-  $('#osteoporosis-line').hide();
-  $('#div_id_colchicine_interactions').hide();
-  $('#colchicine_interactions-line').hide();
+  if ($('#id_anticoagulation-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
   }
+  else if ($('#id_bleed-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else if ($('#id_CKD-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else if ($('#id_colchicine_interactions-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else if ($('#id_diabetes-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else if ($('#id_heartattack-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else if ($('#id_IBD-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else if ($('#id_osteoporosis-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else if ($('#id_stroke-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#div_id_monoarticular').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+  else {
+    $('#div_id_monoarticular').hide();
+    $('#monoarticular-line').hide();
+    $('#subfields').hide();
+  }
+}
 
 function flare_aid_fields () {
   if ($('#id_perfect_health').val() == "True") {
     $('#div_id_monoarticular').show();
-    $('#monoarticular-line').hide();
+    $('#monoarticular-line').show();
   }
   else if ($('#id_perfect_health').val() == "False") {
     $('#div_id_monoarticular').show();
-    $('#div_id_ckd').show();
-    $('#ckd-line').show();
-    $('#div_id_diabetes').show();
-    $('#diabetes-line').show();
-    $('#div_id_NSAID_contraindication').show();
-    $('#NSAID_contraindication-line').show();
-    $('#div_id_osteoporosis').show();
-    $('#osteoporosis-line').show();
-    $('#div_id_colchicine_interactions').show();
-    $('#colchicine_interactions-line').show();
+    $('#monoarticular-line').show();
+    $('#subfields').show();
+  }
+}
+
+function flare_aid_dialysis () {
+  if ($('#id_CKD-value').is(":checked")) {
+    $('#div_id_CKD-dialysis').show();
+  }
+  else {
+    $('#div_id_CKD-dialysis').hide();
+    $('#id_CKD-dialysis').prop("checked", false);
   }
 }
 /* ULT app JS */

@@ -69,6 +69,25 @@ class AnticoagulationForm(forms.ModelForm):
         )
 
 
+class AnticoagulationSimpleForm(AnticoagulationForm):
+    class Meta:
+        model = Anticoagulation
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(AnticoagulationSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "value",
+                id="anticoagulation_for_profile",
+            ),
+        )
+
+
 class CKDForm(forms.ModelForm):
     prefix = "CKD"
 
@@ -93,6 +112,30 @@ class CKDForm(forms.ModelForm):
                 "CKD",
                 "value",
                 "stage",
+                "dialysis",
+                id="CKD_for_profile",
+            ),
+        )
+
+
+class CKDSimpleForm(CKDForm):
+    class Meta:
+        model = CKD
+        fields = (
+            "value",
+            "dialysis",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(CKDSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["dialysis"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "value",
                 "dialysis",
                 id="CKD_for_profile",
             ),
@@ -124,6 +167,25 @@ class ColchicineInteractionsForm(forms.ModelForm):
                 "value",
                 "clarithromycin",
                 "simvastatin",
+                id="colchicine_interactions_for_profile",
+            ),
+        )
+
+
+class ColchicineInteractionsSimpleForm(ColchicineInteractionsForm):
+    class Meta:
+        model = ColchicineInteractions
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(ColchicineInteractionsSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "value",
                 id="colchicine_interactions_for_profile",
             ),
         )
@@ -181,14 +243,21 @@ class IBDForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(IBDForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Inflammatory Bowel Disease", "value", id="IBD_for_profile"),
+        )
+
+
+class IBDSimpleForm(IBDForm):
+    def __init__(self, *args, **kwargs):
+        super(IBDSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="IBD_for_profile"),
         )
 
 
@@ -201,14 +270,21 @@ class OsteoporosisForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OsteoporosisForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Osteoporosis", "value", id="osteoporosis_for_profile"),
+        )
+
+
+class OsteoporosisSimpleForm(OsteoporosisForm):
+    def __init__(self, *args, **kwargs):
+        super(OsteoporosisSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="osteoporosis_for_profile"),
         )
 
 
@@ -248,14 +324,25 @@ class DiabetesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DiabetesForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Diabetes", "value", "type", "insulin", id="diabetes_for_profile"),
+        )
+
+
+class DiabetesSimpleForm(DiabetesForm):
+    class Meta:
+        model = Diabetes
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(DiabetesSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="diabetes_for_profile"),
         )
 
 
@@ -268,12 +355,8 @@ class ErosionsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ErosionsForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Erosions", "value", id="erosions_for_profile"),
         )
@@ -292,11 +375,8 @@ class OrganTransplantForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OrganTransplantForm, self).__init__(*args, **kwargs)
         self.fields["organ"].required = False
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Organ Transplant", "value", "organ", id="organ_transplant_for_profile"),
         )
@@ -311,12 +391,8 @@ class TophiForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TophiForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Tophi", "value", id="tophi_for_profile"),
         )
@@ -331,19 +407,14 @@ class UrateKidneyStonesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UrateKidneyStonesForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Uric Acid Kidney Stones", "value", id="urate_kidney_stones_for_profile"),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
-### Contraindications ModelForms ###
 class StrokeForm(forms.ModelForm):
     prefix = "stroke"
 
@@ -355,20 +426,30 @@ class StrokeForm(forms.ModelForm):
             "date",
         )
         widgets = {
-            # Use localization and bootstrap 3
             "date": DateWidget(attrs={"id": "stroke_date.pk"}, usel10n=True, bootstrap_version=3),
         }
 
     def __init__(self, *args, **kwargs):
         super(StrokeForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Stroke", "value", "number", "date", id="stroke_for_contraindications"),
+        )
+
+
+class StrokeSimpleForm(StrokeForm):
+    class Meta:
+        model = Stroke
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(StrokeSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="stroke_for_contraindications"),
         )
 
 
@@ -391,7 +472,6 @@ class HeartAttackForm(forms.ModelForm):
             "pickerPosition": "bottom-left",
         }
         widgets = {
-            # Use localization and bootstrap 3
             "date": DateWidget(attrs={"id": "heartattack_date.pk"}, usel10n=True, bootstrap_version=3),
             "stent_date": DateWidget(attrs={"id": "stent_date.pk"}, usel10n=True, bootstrap_version=3),
             "cabg_date": DateWidget(attrs={"id": "cabg_date.pk"}, usel10n=True, bootstrap_version=3),
@@ -399,12 +479,8 @@ class HeartAttackForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HeartAttackForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
                 "Heart Attack",
@@ -415,6 +491,28 @@ class HeartAttackForm(forms.ModelForm):
                 "stent_date",
                 "cabg",
                 "cabg_date",
+                id="heart_attack_for_contraindications",
+            ),
+        )
+
+
+class HeartAttackSimpleForm(HeartAttackForm):
+    class Meta:
+        model = HeartAttack
+        fields = (
+            "value",
+            "number",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(HeartAttackSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "value",
                 id="heart_attack_for_contraindications",
             ),
         )
@@ -440,7 +538,6 @@ class BleedForm(forms.ModelForm):
             "pickerPosition": "bottom-left",
         }
         widgets = {
-            # Use localization and bootstrap 3
             "date": DateWidget(
                 options=dateTimeOptions, attrs={"id": "bleed_date.pk"}, usel10n=True, bootstrap_version=3
             ),
@@ -454,12 +551,8 @@ class BleedForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BleedForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
                 "Bleed (major)",
@@ -471,6 +564,26 @@ class BleedForm(forms.ModelForm):
                 "CNS",
                 "CNS_date",
                 "transfusion",
+                id="bleed_for_profile",
+            ),
+        )
+
+
+class BleedSimpleForm(BleedForm):
+    class Meta:
+        model = Bleed
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(BleedSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "value",
                 id="bleed_for_contraindications",
             ),
         )
@@ -488,13 +601,9 @@ class GoutForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GoutForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.fields["value"].label = "Gout Family History"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Gout", "value", id="gout_for_profile"),
         )
@@ -516,12 +625,8 @@ class AlcoholForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AlcoholForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Alcohol", "value", "number", "wine", "beer", "liquor", id="alcohol_for_profile"),
         )
@@ -536,12 +641,8 @@ class FructoseForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FructoseForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Fructose", "value", id="fructose_for_profile"),
         )
@@ -556,12 +657,8 @@ class ShellfishForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ShellfishForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset("Shellfish", "value", id="shellfish_for_profile"),
         )

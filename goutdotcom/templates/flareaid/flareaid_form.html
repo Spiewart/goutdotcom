@@ -32,5 +32,10 @@
     $("#div_id_perfect_health").change(flare_aid_fields);
     flare_aid_fields.call($("#div_id_perfect_health").get(0));
   });
+  $(document).ready(function () {
+  // checks if perfect_health is true and, if so, displays only monoarticular field, else displays long list of other
+  $("#id_CKD-value").change(flare_aid_dialysis);
+  flare_aid_dialysis.call($("#id_CKD-value").get(0));
+  });
 </script>
 {% endblock inline_javascript %}

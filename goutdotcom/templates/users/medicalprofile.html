@@ -2,6 +2,30 @@
    <div class="container default-container">
      <h2 class="nested-container"><a href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}">Medical History</a></h2>
      <div class="row">
+    {% if object.medicalprofile.anticoagulation.value %}
+    <div class="col-auto">
+      <h3>{{ object.medicalprofile.anticoagulation|capfirst }}</h3>
+      {% if object.medicalprofile.anticoagulation.apixaban %}
+      <li>Apixaban</li>
+      {% endif %}
+      {% if object.medicalprofile.anticoagulation.clopidogrel %}
+      <li>Clopidogrel (Plavix)</li>
+      {% endif %}
+      {% if object.medicalprofile.anticoagulation.dabigatran %}
+      <li>Dabigatran</li>
+      {% endif %}
+      {% if object.medicalprofile.anticoagulation.enoxaparin %}
+      <li>Enoxaparin</li>
+      {% endif %}
+      {% if object.medicalprofile.anticoagulation.rivaroxaban %}
+      <li>Rivaroxaban</li>
+      {% endif %}
+      {% if object.medicalprofile.anticoagulation.warfarin %}
+      <li>Warfarin (Coumadin)</li>
+      {% endif %}
+      <li>{{ object.medicalprofile.anticoagulation.last_modified }}</li>
+    </div>
+    {% endif %}
        {% if object.medicalprofile.CKD.value %}
        <div class="col-auto">
          <h3>{{ object.medicalprofile.CKD }}</h3>
@@ -12,6 +36,12 @@
          <li>{{ object.medicalprofile.CKD.dialysis }}</li>
          {% endif %}
          <li>{{ object.medicalprofile.CKD.last_modified }}</li>
+       </div>
+       {% endif %}
+       {% if object.medicalprofile.heartattack.value %}
+       <div class="col-auto">
+         <h3>Heart Attack</h3>
+         <li>{{ object.medicalprofile.heartattack.last_modified }}</li>
        </div>
        {% endif %}
        {% if object.medicalprofile.hypertension.value %}

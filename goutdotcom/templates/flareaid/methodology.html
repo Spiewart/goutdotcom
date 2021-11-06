@@ -46,6 +46,21 @@
         because many of the medications used for gout flares (as well as long-term management) are metabolized (broken
         down) by the kidney and should be used carefully or not at all in the setting of CKD.</p>
       {% endif %}
+      {% if object.ckd.value == True %}
+      <h3><u>Dialysis</u></h3>
+      {% if object.ckd.dialysis == True %}
+      <p>You reported that you're on dialysis.
+        This is a contraindication to the use of <a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s and <a
+          href="{% url 'treatment:about' 'colchicine' %}">colchicine</a>.
+      </p>
+      {% elif object.ckd.dialysis == False %}
+      <p>You reported you're not on dialysis. That's also great because dialsis means you shouldn't take <a
+          href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s or <a
+            href="{% url 'treatment:about' 'colchicine' %}">colchicine</a> for your gout (or anything else).</p>
+      {% else %}
+      <p>You didn't report whether or not you're on dialysis. That's fine, but if you are: that's super important for us (and your providers) to know.</p>
+      {% endif %}
+      {% endif %}
       <h3><u>Diabetes</u></h3>
       {% if object.diabetes == True %}
       <p>You indicated that you have diabetes.

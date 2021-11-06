@@ -5,15 +5,15 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from ..history.forms import (
-    AnticoagulationForm,
-    BleedForm,
-    CKDForm,
-    ColchicineInteractionsForm,
-    DiabetesForm,
-    HeartAttackForm,
-    IBDForm,
-    OsteoporosisForm,
-    StrokeForm,
+    AnticoagulationSimpleForm,
+    BleedSimpleForm,
+    CKDSimpleForm,
+    ColchicineInteractionsSimpleForm,
+    DiabetesSimpleForm,
+    HeartAttackSimpleForm,
+    IBDSimpleForm,
+    OsteoporosisSimpleForm,
+    StrokeSimpleForm,
 )
 from ..history.models import (
     CKD,
@@ -34,15 +34,15 @@ from .models import FlareAid
 class FlareAidCreate(CreateView):
     model = FlareAid
     form_class = FlareAidForm
-    anticoagulation_form_class = AnticoagulationForm
-    bleed_form_class = BleedForm
-    CKD_form_class = CKDForm
-    colchicine_interactions_form_class = ColchicineInteractionsForm
-    diabetes_form_class = DiabetesForm
-    heartattack_form_class = HeartAttackForm
-    IBD_form_class = IBDForm
-    osteoporosis_form_class = OsteoporosisForm
-    stroke_form_class = StrokeForm
+    anticoagulation_form_class = AnticoagulationSimpleForm
+    bleed_form_class = BleedSimpleForm
+    CKD_form_class = CKDSimpleForm
+    colchicine_interactions_form_class = ColchicineInteractionsSimpleForm
+    diabetes_form_class = DiabetesSimpleForm
+    heartattack_form_class = HeartAttackSimpleForm
+    IBD_form_class = IBDSimpleForm
+    osteoporosis_form_class = OsteoporosisSimpleForm
+    stroke_form_class = StrokeSimpleForm
 
     def form_valid(self, form):
         if self.request.user.is_authenticated:

@@ -290,7 +290,15 @@ class Cyclosporine(MedicationHistory):
 
 
 class Anticoagulation(MedicationHistory):
-    value = BooleanField(choices=BOOL_CHOICES, help_text="Are you on anticoagulation?", null=True, blank=True)
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name="Anticoagulation",
+        help_text=mark_safe(
+            "Are you on <a href='https://en.wikipedia.org/wiki/Anticoagulant' target='_blank'>anticoagulation</a> (blood thinners)</a>)?"
+        ),
+        null=True,
+        blank=True,
+    )
     apixaban = BooleanField(choices=BOOL_CHOICES, help_text="Are you on apixaban / Eliquis?", null=True, blank=True)
 
     clopidogrel = BooleanField(
@@ -322,7 +330,10 @@ class XOIInteractions(MedicationHistory):
 class ColchicineInteractions(MedicationHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text="Are you on any medications that could interact with colchicine? (clarithromycin, simvastatin, diltiazem)",
+        help_text=mark_safe(
+            "Are you on any medications that could <a href='https://www.rxlist.com/colchicine-drug.htm#interactions' target='_blank'>interact</a> with colchicine? (common ones are simvastatin, atorvastatin, oral <a href='https://en.wikipedia.org/wiki/Antifungal' target='_blank'>antifungals</a>)?"
+        ),
+        verbose_name="Colchicine Medication Interactions",
         null=True,
         blank=True,
     )
@@ -391,7 +402,9 @@ class Bleed(VascularHistory):
     name = "bleed"
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Have you ever had a major " + name + "?"),
+        help_text=mark_safe(
+            "Have you ever had a major bleed (<a href='https://en.wikipedia.org/wiki/Gastrointestinal_bleeding' target='_blank'>gastrointestinal bleeding</a> (GI), <a href='https://en.wikipedia.org/wiki/Peptic_ulcer_disease' target='_blank'>peptic ulcer disease</a>, brain (CNS))"
+        ),
         verbose_name="major bleed",
         null=True,
         blank=True,
