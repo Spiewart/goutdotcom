@@ -162,7 +162,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     bleed_form_class = BleedForm
     CHF_form_class = CHFForm
     CKD_form_class = CKDForm
-    colchicine_interactins_form_class = ColchicineInteractionsForm
+    colchicine_interactions_form_class = ColchicineInteractionsForm
     diabetes_form_class = DiabetesForm
     erosions_form_class = ErosionsForm
     heartattack_form_class = HeartAttackForm
@@ -188,7 +188,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
         if "CKD_form" not in context:
             context["CKD_form"] = self.CKD_form_class(self.request.GET)
         if "colchicine_interactions_form" not in context:
-            context["colchicine_interactions_form"] = self.colchicine_interactins_form_class(self.request.GET)
+            context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(self.request.GET)
         if "diabetes_form" not in context:
             context["diabetes_form"] = self.erosions_form_class(self.request.GET)
         if "erosions_form" not in context:
@@ -225,7 +225,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
         bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
         CHF_form = self.CHF_form_class(request.POST, instance=CHF())
         CKD_form = self.CKD_form_class(request.POST, instance=CKD())
-        colchicine_interactions_form = self.colchicine_interactins_form_class(
+        colchicine_interactions_form = self.colchicine_interactions_form_class(
             request.POST, instance=ColchicineInteractions()
         )
         diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
@@ -238,7 +238,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
         osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=Osteoporosis())
         stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
         urate_kidney_stones_form = self.urate_kidney_stone_form_class(request.POST, instance=UrateKidneyStones())
-        tophi_form = self.tohpi_form_class(request.POST, instance=Tophi())
+        tophi_form = self.tophi_form_class(request.POST, instance=Tophi())
 
         if (
             form.is_valid()
@@ -368,7 +368,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
     bleed_form_class = BleedForm
     CHF_form_class = CHFForm
     CKD_form_class = CKDForm
-    colchicine_interactins_form_class = ColchicineInteractionsForm
+    colchicine_interactions_form_class = ColchicineInteractionsForm
     diabetes_form_class = DiabetesForm
     erosions_form_class = ErosionsForm
     heartattack_form_class = HeartAttackForm
@@ -415,7 +415,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             context["bleed_form"] = self.bleed_form_class(instance=self.object.bleed)
             context["CKD_form"] = self.CKD_form_class(instance=self.object.CKD)
             context["CHF_form"] = self.CHF_form_class(instance=self.object.CHF)
-            context["colchicine_interactions_form"] = self.colchicine_interactins_form_class(
+            context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
                 instance=self.object.colchicine_interactions
             )
             context["diabetes_form"] = self.diabetes_form_class(instance=self.object.diabetes)
@@ -450,7 +450,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
         bleed_form = self.bleed_form_class(request.POST, instance=self.object.bleed)
         CKD_form = self.CKD_form_class(request.POST, instance=self.object.CKD)
         CHF_form = self.CHF_form_class(request.POST, instance=self.object.CHF)
-        colchicine_interactions_form = self.colchicine_interactins_form_class(
+        colchicine_interactions_form = self.colchicine_interactions_form_class(
             request.POST, instance=self.object.colchicine_interactions
         )
         diabetes_form = self.diabetes_form_class(request.POST, instance=self.object.diabetes)
@@ -517,7 +517,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             hyperuricemia_data = hyperuricemia_form.save(commit=False)
             hyperuricemia_data.last_modified = "MedicalProfile"
             hyperuricemia_data.save()
-            IBD_data = IBDForm.save(commit=False)
+            IBD_data = IBD_form.save(commit=False)
             IBD_data.last_modified = "MedicalProfile"
             IBD_data.save()
             organ_transplant_data = organ_transplant_form.save(commit=False)

@@ -11,6 +11,7 @@ from django_extensions.db.models import TimeStampedModel
 from goutdotcom.history.models import (
     CHF,
     CKD,
+    IBD,
     Alcohol,
     Anticoagulation,
     Bleed,
@@ -22,7 +23,6 @@ from goutdotcom.history.models import (
     HeartAttack,
     Hypertension,
     Hyperuricemia,
-    IBD,
     OrganTransplant,
     Osteoporosis,
     Shellfish,
@@ -237,7 +237,7 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
-    colchicine_interaction = models.OneToOneField(
+    colchicine_interactions = models.OneToOneField(
         ColchicineInteractions,
         on_delete=models.CASCADE,
         help_text="Are you on a medication that interacts with colchicine, such as simvastatin, clarithromycin, or diltiazem?",

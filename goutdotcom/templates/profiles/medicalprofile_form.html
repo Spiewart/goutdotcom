@@ -13,6 +13,16 @@
 {% if form.instance.pk %}
 <form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user object.pk %}" enctype="multipart/form-data">
   {% csrf_token %} {{ form|crispy }}
+  {{ anticoagulation_form|crispy }}
+  <hr size="6" color="white" />
+  {{ heartattack_form|crispy }}
+  <hr size="6" color="white" />
+  {{ stroke_form|crispy }}
+  <hr size="6" color="white" />
+  {{ IBD_form|crispy }}
+  <hr size="6" color="white" />
+  {{ colchicine_interactions|crispy }}
+  <hr size="6" color="white" />
   {{ CKD_form|crispy }}
   <hr size="6" color="white" />
   {{ hypertension_form|crispy }}
@@ -46,6 +56,17 @@
 {% else %}
 <form class="form-horizontal" method="post" action="{% url 'profiles:create-medical' %}" enctype="multipart/form-data">
   {% csrf_token %} {{ form|crispy }} {{ CKD_form|crispy }}
+  {{ anticoagulation_form|crispy }}
+  <hr size="6" color="white" />
+  {{ heartattack_form|crispy }}
+  <hr size="6" color="white" />
+  {{ stroke_form|crispy }}
+  <hr size="6" color="white" />
+  {{ IBD_form|crispy }}
+  <hr size="6" color="white" />
+  {{ colchicine_interactions|crispy }}
+  <hr size="6" color="white" />
+  {{ CKD_form|crispy }}
   <hr size="6" color="white" />
   {{ hypertension_form|crispy }}
   <hr size="6" color="white" />

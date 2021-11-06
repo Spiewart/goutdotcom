@@ -10,15 +10,6 @@ from .models import (
 
 
 # Register your models here.
-class ContraindicationsProfileAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "stroke",
-        "heartattack",
-        "bleed",
-    )
-
-
 class FamilyProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -29,13 +20,19 @@ class FamilyProfileAdmin(admin.ModelAdmin):
 class MedicalProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
+        "anticoagulation",
+        "bleed",
         "CHF",
         "CKD",
+        "colchicine_interactions",
         "diabetes",
         "erosions",
         "hypertension",
         "hyperuricemia",
+        "IBD",
         "organ_transplant",
+        "osteoporosis",
+        "stroke",
         "urate_kidney_stones",
         "tophi",
     )
@@ -64,7 +61,6 @@ class SocialProfileAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(ContraindicationsProfile, ContraindicationsProfileAdmin)
 admin.site.register(FamilyProfile, FamilyProfileAdmin)
 admin.site.register(MedicalProfile, MedicalProfileAdmin)
 admin.site.register(PatientProfile, PatientProfileAdmin)

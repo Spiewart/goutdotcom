@@ -35,6 +35,28 @@ class FlareAidForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
+                    {% crispy anticoagulation_form %}
+                    """
+                ),
+                HTML(
+                    """
+                    <hr size="6" color="white" id="anticoagulation-line">
+                    """
+                ),
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
+                    {% crispy bleed_form %}
+                    """
+                ),
+                HTML(
+                    """
+                    <hr size="6" color="white" id="bleed-line">
+                    """
+                ),
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
                     {% crispy CKD_form %}
                     """
                 ),
@@ -57,12 +79,56 @@ class FlareAidForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
-                    {% crispy colchicine_interactions_form %}
+                    {% crispy diabetes_form %}
                     """
                 ),
                 HTML(
                     """
-                    <hr size="6" color="white" id="colchicine_interactions-line">
+                    <hr size="6" color="white" id="diabetes-line">
+                    """
+                ),
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
+                    {% crispy heartattack_form %}
+                    """
+                ),
+                HTML(
+                    """
+                    <hr size="6" color="white" id="heartattack-line">
+                    """
+                ),
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
+                    {% crispy IBD_form %}
+                    """
+                ),
+                HTML(
+                    """
+                    <hr size="6" color="white" id="IBD-line">
+                    """
+                ),
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
+                    {% crispy osteoporosis_form %}
+                    """
+                ),
+                HTML(
+                    """
+                    <hr size="6" color="white" id="osteoporosis-line">
+                    """
+                ),
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
+                    {% crispy stroke_form %}
+                    """
+                ),
+                HTML(
+                    """
+                    <hr size="6" color="white" id="stroke-line">
                     """
                 ),
             ),

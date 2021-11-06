@@ -18,10 +18,7 @@ from goutdotcom.history.choices import (
 
 # Create your models here.
 class History(TimeStampedModel):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 
     name = "history"
     value = BooleanField(choices=BOOL_CHOICES, help_text=("Do you have a " + name + "?"), null=True, blank=True)
@@ -224,6 +221,7 @@ class Erosions(MedicalHistory):
         blank=True,
     )
 
+
 class Osteoporosis(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     name = "osteoporosis"
@@ -237,6 +235,7 @@ class Osteoporosis(MedicalHistory):
         blank=True,
     )
 
+
 class IBD(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     name = "Inflammatory Bowel Disease"
@@ -249,6 +248,7 @@ class IBD(MedicalHistory):
         null=True,
         blank=True,
     )
+
 
 class Tophi(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
