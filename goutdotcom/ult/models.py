@@ -3,8 +3,9 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
+from ..history.models import CKD, Erosions, Hyperuricemia, Tophi, UrateKidneyStones
 from .choices import *
-from ..history.models import CKD, Erosions, UrateKidneyStones, Tophi
+
 
 # Create your models here.
 class ULT(TimeStampedModel):
@@ -51,11 +52,9 @@ class ULT(TimeStampedModel):
         null=True,
         blank=True,
     )
-    uric_acid = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Is your uric acid over 9.0?",
-        help_text="If you don't know, that's OK!",
-        default=False,
+    hyperuricemia = models.ForeignKey(
+        Hyperuricemia,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )

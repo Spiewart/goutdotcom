@@ -312,56 +312,21 @@ function check_first_flare() {
   if ($('#id_num_flares').val().length == 0) {
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('');
-      $('#follow-up-questions').hide();
-      $('#div_id_erosions').hide();
-      $('#id_erosions').prop('checked', false);
-      $('#div_id_tophi').hide();
-      $('#id_tophi').prop('checked', false);
-      $('#div_id_stones').hide();
-      $('#id_stones').prop('checked', false);
-      $('#div_id_ckd').hide();
-      $('#id_ckd').prop('checked', false);
-      $('#div_id_uric_acid').hide();
-      $('#id_uric_acid').prop('checked', false);
+      $('#subfields').hide();
   }
   else if ($('#id_num_flares').val() == 'zero') {
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('');
-      $('#follow-up-questions').hide();
-      $('#div_id_erosions').hide();
-      $('#id_erosions').prop('checked', false);
-      $('#div_id_tophi').hide();
-      $('#id_tophi').prop('checked', false);
-      $('#div_id_stones').hide();
-      $('#id_stones').prop('checked', false);
-      $('#div_id_ckd').hide();
-      $('#id_ckd').prop('checked', false);
-      $('#div_id_uric_acid').hide();
-      $('#id_uric_acid').prop('checked', false);
+      $('#subfields').hide();
   }
   else if ($('#id_num_flares').val() == 'one') {
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('one');
-      $('#follow-up-questions').show();
-      $('#div_id_erosions').show();
-      $('#id_erosions').prop('checked', false);
-      $('#div_id_tophi').show();
-      $('#id_tophi').prop('checked', false);
-      $('#div_id_stones').show();
-      $('#id_stones').prop('checked', false);
-      $('#div_id_ckd').show();
-      $('#id_ckd').prop('checked', false);
-      $('#div_id_uric_acid').show();
-      $('#id_uric_acid').prop('checked', false);
+      $('#subfields').show();
   }
   else {
       $('#div_id_freq_flares').show();
-      $('#follow-up-questions').show();
-      $('#div_id_erosions').show();
-      $('#div_id_tophi').show();
-      $('#div_id_stones').show();
-      $('#div_id_ckd').show();
-      $('#div_id_uric_acid').show();
+      $('#subfields').show();
   }
 }
 

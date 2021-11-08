@@ -223,14 +223,11 @@ class HyperuricemiaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HyperuricemiaForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
-            Fieldset("Hyperuricemia", "value", id="hyperuricemia_for_profile"),
+            Fieldset("", "value", id="hyperuricemia_for_profile"),
         )
 
 
@@ -355,10 +352,11 @@ class ErosionsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ErosionsForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Fieldset("Erosions", "value", id="erosions_for_profile"),
+            Fieldset("", "value", id="erosions_for_profile"),
         )
 
 
@@ -391,10 +389,11 @@ class TophiForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TophiForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Fieldset("Tophi", "value", id="tophi_for_profile"),
+            Fieldset("", "value", id="tophi_for_profile"),
         )
 
 
@@ -407,11 +406,11 @@ class UrateKidneyStonesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UrateKidneyStonesForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Fieldset("Uric Acid Kidney Stones", "value", id="urate_kidney_stones_for_profile"),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
+            Fieldset("", "value", id="urate_kidney_stones_for_profile"),
         )
 
 

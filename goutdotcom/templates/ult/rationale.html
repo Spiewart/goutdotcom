@@ -30,9 +30,9 @@
     <p>Having more than one gout flare per year is a strong indication for ULT.</p>
     {% endif %}
     <h3><u>Erosions</u>:
-    {% if object.erosions == True %}
+    {% if object.erosions.value == True %}
     present
-    {% elif object.erosions == False %}
+    {% elif object.erosions.value == False %}
     absent
     {% else %}
     unknown
@@ -48,9 +48,9 @@
     cartilage.
     They can be prevented with ULT, but once present can't be reversed.</p>
     <h3><u>Tophi</u>:
-    {% if object.tophi == True %}
+    {% if object.tophi.value == True %}
     present
-    {% elif object.tophi == False %}
+    {% elif object.tophi.value == False %}
     absent
     {% else %}
     unknown
@@ -61,9 +61,9 @@
     They can also break down, drain, and become infected.
     </p>
     <h3><u>Uric Acid Kidney Stones</u>:
-    {% if object.stones == True %}
+    {% if object.stones.value == True %}
     present
-    {% elif object.stones == False %}
+    {% elif object.stones.value == False %}
     absent
     {% else %}
     unknown
@@ -72,9 +72,9 @@
     <p>Kidney stones are terrible. If you have uric acid kidney stones and gout, using ULT to get rid of both is a
     no-brainer (conditional recommendation).</p>
     <h3><u>Chronic Kidney Disease</u>:
-    {% if object.ckd == True %}
+    {% if object.ckd.value == True %}
     present
-    {% elif object.ckd == False %}
+    {% elif object.ckd.value == False %}
     absent
     {% else %}
     unknown
@@ -83,9 +83,9 @@
     <p>Chronic kidney disease (CKD) is associated with incident and progressive gout (<a href="#2">2</a>, <a
     href="#3">3</a>).</p>
     <h3><u>Hyperuricemia</u>:
-    {% if object.uric_acid == True %}
+    {% if object.hyperuricemia.value == True %}
     present
-    {% elif object.uric_acid == False %}
+    {% elif object.hyperuricemia.value == False %}
     absent
     {% else %}
     unknown

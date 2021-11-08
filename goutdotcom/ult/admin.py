@@ -13,11 +13,11 @@ class ULTAdmin(admin.ModelAdmin):
         "tophi",
         "stones",
         "ckd",
-        "uric_acid",
+        "hyperuricemia",
         "calculator",
         "modified",
     )
-    ordering = ('-modified',)
+    ordering = ("-modified",)
 
 
 admin.site.register(ULT, ULTAdmin)
