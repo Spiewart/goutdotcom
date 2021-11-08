@@ -30,7 +30,6 @@ from .forms import FlareAidForm
 from .models import FlareAid
 
 
-# Create your views here.
 class FlareAidCreate(CreateView):
     model = FlareAid
     form_class = FlareAidForm
@@ -47,7 +46,6 @@ class FlareAidCreate(CreateView):
     def form_valid(self, form):
         if self.request.user.is_authenticated:
             form.instance.user = self.request.user
-            form.instance.ckd = self.request.user.medicalprofile.ckd
             return super().form_valid(form)
         else:
             return super().form_valid(form)
@@ -105,11 +103,6 @@ class FlareAidCreate(CreateView):
             if "stroke_form" not in context:
                 context["stroke_form"] = self.stroke_form_class(self.request.GET)
             return context
-
-    def get_form_kwargs(self):
-        kwargs = super(FlareAidCreate, self).get_form_kwargs()
-        kwargs["user"] = self.request.user  # pass the 'user' in kwargs
-        return kwargs
 
     def post(self, request):
         form = self.form_class(request.POST, instance=FlareAid())
@@ -240,15 +233,15 @@ class FlareAidCreate(CreateView):
                         diabetes_form=self.diabetes_form_class(
                             request.POST, instance=request.user.medicalprofile.diabetes
                         ),
-                    ),
-                    heartattack_form=self.heartattack_form_class(
-                        request.POST, instance=request.user.medicalprofile.heartattack
-                    ),
-                    IBD_form=self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD),
-                    osteoporosis_form=self.osteoporosis_form_class(
-                        request.POST, instance=request.user.medicalprofile.osteoporosis
-                    ),
-                    stroke_form=self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
+                        heartattack_form=self.heartattack_form_class(
+                            request.POST, instance=request.user.medicalprofile.heartattack
+                        ),
+                        IBD_form=self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD),
+                        osteoporosis_form=self.osteoporosis_form_class(
+                            request.POST, instance=request.user.medicalprofile.osteoporosis
+                        ),
+                        stroke_form=self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
+                    )
                 )
             else:
                 return self.render_to_response(

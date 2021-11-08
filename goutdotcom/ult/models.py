@@ -4,7 +4,7 @@ from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
 from .choices import *
-
+from ..history.models import CKD, Erosions, UrateKidneyStones, Tophi
 
 # Create your models here.
 class ULT(TimeStampedModel):
@@ -27,35 +27,27 @@ class ULT(TimeStampedModel):
         null=True,
         blank=True,
     )
-    erosions = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Do you have erosions on your x-rays?",
-        help_text="If you don't know, that's OK!",
-        default=False,
+    erosions = models.ForeignKey(
+        Erosions,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    tophi = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Do you have tophi?",
-        help_text="If you don't know, that's OK!",
-        default=False,
+    tophi = models.ForeignKey(
+        Tophi,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    stones = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Have you ever had kidney stones made of uric acid?",
-        help_text="If you don't know, that's OK!",
-        default=False,
+    stones = models.ForeignKey(
+        UrateKidneyStones,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    ckd = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Do you have chronic kidney disease (CKD) stage III or greater?",
-        help_text="If you don't know, that's OK!",
-        default=False,
+    ckd = models.ForeignKey(
+        CKD,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -74,21 +66,21 @@ class ULT(TimeStampedModel):
         conditional = "Conditional"
 
         if self.num_flares == "one":
-            if self.erosions == True or self.tophi == True:
+            if self.erosions.value == True or self.tophi.value == True:
                 return go_forth
-            elif self.ckd == True or self.uric_acid == True or self.stones == True:
+            elif self.ckd.value == True or self.uric_acid == True or self.stones.value == True:
                 return conditional
             else:
                 return abstain
         if self.num_flares == "zero":
-            if self.erosions == True or self.tophi == True:
+            if self.erosions.value == True or self.tophi.value == True:
                 return go_forth
             else:
                 return abstain
         if self.freq_flares == "two or more":
             return go_forth
         if self.freq_flares == "one":
-            if self.erosions == True or self.tophi == True:
+            if self.erosions.value == True or self.tophi.value == True:
                 return go_forth
             elif self.num_flares != "zero" or "one":
                 return conditional
