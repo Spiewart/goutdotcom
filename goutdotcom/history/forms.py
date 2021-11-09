@@ -1,3 +1,4 @@
+from crispy_forms.bootstrap import InlineCheckboxes
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
 from datetimewidget.widgets import DateWidget
@@ -48,12 +49,10 @@ class AnticoagulationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AnticoagulationForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
+
         self.helper.layout = Layout(
             Fieldset(
                 "Anticoagulation",
@@ -101,9 +100,8 @@ class CKDForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CKDForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["dialysis"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         # You can dynamically adjust your layout
@@ -155,9 +153,9 @@ class ColchicineInteractionsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ColchicineInteractionsForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["clarithromycin"].widget = forms.CheckboxInput()
+        self.fields["simvastatin"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         # You can dynamically adjust your layout
@@ -203,14 +201,13 @@ class HypertensionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HypertensionForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["medication"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
-            Fieldset("Hypertension", "value", "medication", id="hypertension_for_profile"),
+            Fieldset("", "value", "medication", id="hypertension_for_profile"),
         )
 
 
@@ -240,6 +237,7 @@ class IBDForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(IBDForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -267,6 +265,7 @@ class OsteoporosisForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OsteoporosisForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -297,14 +296,13 @@ class CHFForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CHFForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["systolic"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
-            Fieldset("CHF", "value", "systolic", id="CHF_for_profile"),
+            Fieldset("", "value", "systolic", id="CHF_for_profile"),
         )
 
 
@@ -321,6 +319,7 @@ class DiabetesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DiabetesForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -372,11 +371,12 @@ class OrganTransplantForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OrganTransplantForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.fields["organ"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Fieldset("Organ Transplant", "value", "organ", id="organ_transplant_for_profile"),
+            Fieldset("", "value", InlineCheckboxes("organ"), id="organ_transplant_for_profile"),
         )
 
 
@@ -430,6 +430,7 @@ class StrokeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(StrokeForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -498,10 +499,7 @@ class HeartAttackForm(forms.ModelForm):
 class HeartAttackSimpleForm(HeartAttackForm):
     class Meta:
         model = HeartAttack
-        fields = (
-            "value",
-            "number",
-        )
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(HeartAttackSimpleForm, self).__init__(*args, **kwargs)

@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "datetimewidget",
     "multiselectfield",
+    "sorl.thumbnail",
 ]
 
 LOCAL_APPS = [

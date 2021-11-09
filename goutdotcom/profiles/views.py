@@ -6,23 +6,23 @@ from django.views.generic import CreateView, UpdateView
 
 from goutdotcom.history.forms import (
     AlcoholForm,
-    AnticoagulationForm,
-    BleedForm,
+    AnticoagulationSimpleForm,
+    BleedSimpleForm,
     CHFForm,
     CKDForm,
     ColchicineInteractionsForm,
-    DiabetesForm,
+    DiabetesSimpleForm,
     ErosionsForm,
     FructoseForm,
     GoutForm,
-    HeartAttackForm,
+    HeartAttackSimpleForm,
     HypertensionForm,
     HyperuricemiaForm,
     IBDForm,
     OrganTransplantForm,
     OsteoporosisForm,
     ShellfishForm,
-    StrokeForm,
+    StrokeSimpleForm,
     TophiForm,
     UrateKidneyStonesForm,
 )
@@ -158,20 +158,20 @@ class FamilyProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
 class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
-    anticoagulation_form_class = AnticoagulationForm
-    bleed_form_class = BleedForm
+    anticoagulation_form_class = AnticoagulationSimpleForm
+    bleed_form_class = BleedSimpleForm
     CHF_form_class = CHFForm
     CKD_form_class = CKDForm
     colchicine_interactions_form_class = ColchicineInteractionsForm
-    diabetes_form_class = DiabetesForm
+    diabetes_form_class = DiabetesSimpleForm
     erosions_form_class = ErosionsForm
-    heartattack_form_class = HeartAttackForm
+    heartattack_form_class = HeartAttackSimpleForm
     hypertension_form_class = HypertensionForm
     hyperuricemia_form_class = HyperuricemiaForm
     IBD_form_class = IBDForm
     organ_transplant_form_class = OrganTransplantForm
     osteoporosis_form_class = OsteoporosisForm
-    stroke_form_class = StrokeForm
+    stroke_form_class = StrokeSimpleForm
     urate_kidney_stone_form_class = UrateKidneyStonesForm
     tophi_form_class = TophiForm
 
@@ -364,20 +364,20 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
 class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
-    anticoagulation_form_class = AnticoagulationForm
-    bleed_form_class = BleedForm
+    anticoagulation_form_class = AnticoagulationSimpleForm
+    bleed_form_class = BleedSimpleForm
     CHF_form_class = CHFForm
     CKD_form_class = CKDForm
     colchicine_interactions_form_class = ColchicineInteractionsForm
-    diabetes_form_class = DiabetesForm
+    diabetes_form_class = DiabetesSimpleForm
     erosions_form_class = ErosionsForm
-    heartattack_form_class = HeartAttackForm
+    heartattack_form_class = HeartAttackSimpleForm
     hypertension_form_class = HypertensionForm
     hyperuricemia_form_class = HyperuricemiaForm
     IBD_form_class = IBDForm
     organ_transplant_form_class = OrganTransplantForm
     osteoporosis_form_class = OsteoporosisForm
-    stroke_form_class = StrokeForm
+    stroke_form_class = StrokeSimpleForm
     urate_kidney_stone_form_class = UrateKidneyStonesForm
     tophi_form_class = TophiForm
 
@@ -386,18 +386,18 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
         context.update({"user": self.request.user})
         # Adds related model forms to context for rendering
         if self.request.POST:
-            context["anticoagulation_form"] = AnticoagulationForm(
+            context["anticoagulation_form"] = AnticoagulationSimpleForm(
                 self.request.POST, instance=self.object.anticoagulation
             )
-            context["bleed_form"] = BleedForm(self.request.POST, instance=self.object.bleed)
+            context["bleed_form"] = BleedSimpleForm(self.request.POST, instance=self.object.bleed)
             context["CHF_form"] = CHFForm(self.request.POST, instance=self.object.CHF)
             context["CKD_form"] = CKDForm(self.request.POST, instance=self.object.CKD)
             context["colchicine_interactions_form"] = ColchicineInteractionsForm(
                 self.request.POST, instance=self.object.colchicine_interactions
             )
-            context["diabetes_form"] = DiabetesForm(self.request.POST, instance=self.object.diabetes)
+            context["diabetes_form"] = DiabetesSimpleForm(self.request.POST, instance=self.object.diabetes)
             context["erosions_form"] = ErosionsForm(self.request.POST, instance=self.object.erosions)
-            context["heartattack_form"] = HeartAttackForm(self.request.POST, instance=self.object.heartattack)
+            context["heartattack_form"] = HeartAttackSimpleForm(self.request.POST, instance=self.object.heartattack)
             context["hypertension_form"] = HypertensionForm(self.request.POST, instance=self.object.hypertension)
             context["hyperuricemia_form"] = HyperuricemiaForm(self.request.POST, instance=self.object.hyperuricemia)
             context["IBD_form"] = IBDForm(self.request.POST, instance=self.object.IBD)
@@ -405,7 +405,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
                 self.request.POST, instance=self.object.organ_transplant
             )
             context["osteoporosis_form"] = OsteoporosisForm(self.request.POST, instance=self.object.osteoporosis)
-            context["stroke_form"] = StrokeForm(self.request.POST, instance=self.object.stroke)
+            context["stroke_form"] = StrokeSimpleForm(self.request.POST, instance=self.object.stroke)
             context["urate_kidney_stones_form"] = UrateKidneyStonesForm(
                 self.request.POST, instance=self.object.urate_kidney_stones
             )

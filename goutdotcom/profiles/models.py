@@ -2,11 +2,13 @@ import datetime
 
 from django.conf import settings
 from django.db import models
-from django.db.models.fields import BooleanField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
+from PIL import Image
+
+from sorl.thumbnail import ImageField
 
 from goutdotcom.history.models import (
     CHF,
@@ -50,7 +52,6 @@ class ContraindicationsProfile(TimeStampedModel):
     def create_user_contraindications_profile(sender, instance, created, **kwargs):
         if created:
             new_profile = ContraindicationsProfile.objects.create(user=instance)
-
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_contraindications_profile(sender, instance, **kwargs):
@@ -104,6 +105,17 @@ class PatientProfile(TimeStampedModel):
     height = models.OneToOneField(
         Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True
     )
+
+    # This auto-adjusts the image size to 300 px by 300 px. In the future, need to add a JS library / widget for drag/drop/preview (Dropzone https://www.dropzone.dev/js/)
+    #def save(self):
+        #super().save()
+
+        #img = Image.open(self.picture.path)
+
+        #if img.height > 300 or img.width > 300:
+           # new_img = (300, 300)
+            #img.thumbnail(new_img)
+            #img.save(self.picture.path)
 
     def get_age(self):
         if self.date_of_birth:

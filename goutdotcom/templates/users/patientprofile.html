@@ -1,3 +1,5 @@
+{% load thumbnail %}
+
 <h1 class="nested-container">{{ object.username|capfirst}}'s <a href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}">Profile</a>
 {% if object == request.user %}
 <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button" style="float: right;">My Info</a>
@@ -68,10 +70,14 @@
       </div>
       </div>
       {% if object.patientprofile.picture %}
+        {% thumbnail object.patientprofile.picture "300x300" crop="center" as im %}
         <div class="media">
-          <img src="{{ object.patientprofile.picture.url }}" id="profilepic" width="250" height="250"
+          <img src="{{ im.url }}" id="profilepic"
+            width="{{ im.width }}"" height="
+            {{ im.height }}"
             alt="{{ object.username|capfirst }}'s Picture">
         </div>
+        {% endthumbnail %}
       {% endif %}
       </div>
       </div>
