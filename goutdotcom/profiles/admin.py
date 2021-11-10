@@ -1,12 +1,6 @@
 from django.contrib import admin
 
-from .models import (
-    ContraindicationsProfile,
-    FamilyProfile,
-    MedicalProfile,
-    PatientProfile,
-    SocialProfile,
-)
+from .models import FamilyProfile, MedicalProfile, PatientProfile, SocialProfile
 
 
 # Register your models here.

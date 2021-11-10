@@ -21,7 +21,13 @@ class History(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 
     name = "history"
-    value = BooleanField(choices=BOOL_CHOICES, help_text=("Do you have a " + name + "?"), null=True, blank=True)
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=("Do you have a " + name + "?"),
+        null=True,
+        blank=True,
+        default=False,
+    )
     last_modified = models.CharField(choices=LAST_MODIFIED_CHOICES, max_length=75, null=True, blank=True)
 
     class Meta:
@@ -94,6 +100,7 @@ class CKD(MedicalHistory):
         verbose_name="Chronic Kidney Disease (CKD)",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -107,6 +114,7 @@ class Hypertension(MedicalHistory):
         verbose_name="Blood pressure medications",
         null=True,
         blank=True,
+        default=False,
     )
     name = "hypertension"
     value = BooleanField(
@@ -139,6 +147,7 @@ class CHF(MedicalHistory):
         verbose_name="Congestive Heart Failure (CHF)",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -165,6 +174,7 @@ class Diabetes(MedicalHistory):
         ),
         null=True,
         blank=True,
+        default=False,
     )
     name = "diabetes"
     value = BooleanField(
@@ -175,6 +185,7 @@ class Diabetes(MedicalHistory):
         verbose_name="Diabetes",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -193,6 +204,7 @@ class OrganTransplant(MedicalHistory):
         verbose_name="Organ transplant",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -207,6 +219,7 @@ class UrateKidneyStones(MedicalHistory):
         verbose_name="Urate Kidney Stones",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -219,6 +232,7 @@ class Erosions(MedicalHistory):
         verbose_name="Erosions",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -233,6 +247,7 @@ class Osteoporosis(MedicalHistory):
         verbose_name="Osteoporosis",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -247,6 +262,7 @@ class IBD(MedicalHistory):
         verbose_name="Inflammatory Bowel Disease",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -259,6 +275,7 @@ class Tophi(MedicalHistory):
         verbose_name="Tophi",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -271,17 +288,46 @@ class Hyperuricemia(MedicalHistory):
         verbose_name="Hyperuricemia",
         null=True,
         blank=True,
+        default=False,
     )
 
 
 class Diuretics(MedicationHistory):
     hydrochlorothiazide = BooleanField(
-        choices=BOOL_CHOICES, help_text="Are you on hydrochlorothiazide?", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text="Are you on hydrochlorothiazide?",
+        null=True,
+        blank=True,
+        default=False,
     )
-    furosemide = BooleanField(choices=BOOL_CHOICES, help_text="Are you on Lasix / furosemide?", null=True, blank=True)
-    bumetanide = BooleanField(choices=BOOL_CHOICES, help_text="Are you on Bumex / bumetanide?", null=True, blank=True)
-    torsemide = BooleanField(choices=BOOL_CHOICES, help_text="Are you on torsemide?", null=True, blank=True)
-    metolazone = BooleanField(choices=BOOL_CHOICES, help_text="Are you on metolazone?", null=True, blank=True)
+    furosemide = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on Lasix / furosemide?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    bumetanide = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on Bumex / bumetanide?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    torsemide = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on torsemide?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    metolazone = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on metolazone?",
+        null=True,
+        blank=True,
+        default=False,
+    )
     name = "diuretics"
 
 
@@ -298,18 +344,50 @@ class Anticoagulation(MedicationHistory):
         ),
         null=True,
         blank=True,
+        default=False,
     )
-    apixaban = BooleanField(choices=BOOL_CHOICES, help_text="Are you on apixaban / Eliquis?", null=True, blank=True)
-
+    apixaban = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on apixaban / Eliquis?",
+        null=True,
+        blank=True,
+        default=False,
+    )
     clopidogrel = BooleanField(
-        choices=BOOL_CHOICES, help_text="Are you on clopidogrel / Plavix?", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text="Are you on clopidogrel / Plavix?",
+        null=True,
+        blank=True,
+        default=False,
     )
-    dabigatran = BooleanField(choices=BOOL_CHOICES, help_text="Are you on dabigatran / Pradaxa?", null=True, blank=True)
-    enoxaparin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on enoxaparin / Lovenox?", null=True, blank=True)
+    dabigatran = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on dabigatran / Pradaxa?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    enoxaparin = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on enoxaparin / Lovenox?",
+        null=True,
+        blank=True,
+        default=False,
+    )
     rivaroxaban = BooleanField(
-        choices=BOOL_CHOICES, help_text="Are you on rivaroxaban / Xarelto?", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text="Are you on rivaroxaban / Xarelto?",
+        null=True,
+        blank=True,
+        default=False,
     )
-    warfarin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on warfarin / Coumadin?", null=True, blank=True)
+    warfarin = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on warfarin / Coumadin?",
+        null=True,
+        blank=True,
+        default=False,
+    )
     name = "anticoagulation"
 
 
@@ -319,10 +397,21 @@ class XOIInteractions(MedicationHistory):
         help_text="Are you on any medications that could interact with allopurinol or febuxostat? (6-mercaptopurine, azathioprine)?",
         null=True,
         blank=True,
+        default=False,
     )
-    six_mp = BooleanField(choices=BOOL_CHOICES, help_text="Are you on 6-mercaptopurine / 6-MP?", null=True, blank=True)
+    six_mp = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on 6-mercaptopurine / 6-MP?",
+        null=True,
+        blank=True,
+        default=False,
+    )
     azathioprine = BooleanField(
-        choices=BOOL_CHOICES, help_text="Are you on azathioprine / Imuran?", null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text="Are you on azathioprine / Imuran?",
+        null=True,
+        blank=True,
+        default=False,
     )
     name = "allopurinol interactions"
 
@@ -336,9 +425,22 @@ class ColchicineInteractions(MedicationHistory):
         verbose_name="Colchicine Medication Interactions",
         null=True,
         blank=True,
+        default=False,
     )
-    clarithromycin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on clarithromycin", null=True, blank=True)
-    simvastatin = BooleanField(choices=BOOL_CHOICES, help_text="Are you on simvastatin?", null=True, blank=True)
+    clarithromycin = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on clarithromycin",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    simvastatin = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Are you on simvastatin?",
+        null=True,
+        blank=True,
+        default=False,
+    )
 
 
 class Stroke(VascularHistory):
@@ -351,6 +453,7 @@ class Stroke(VascularHistory):
         verbose_name="stroke",
         null=True,
         blank=True,
+        default=False,
     )
 
 
@@ -364,6 +467,7 @@ class HeartAttack(VascularHistory):
         verbose_name="heart attack",
         null=True,
         blank=True,
+        default=False,
     )
     stent = BooleanField(
         choices=BOOL_CHOICES,
@@ -373,6 +477,7 @@ class HeartAttack(VascularHistory):
         verbose_name="stent",
         null=True,
         blank=True,
+        default=False,
     )
     stent_date = models.DateTimeField(
         help_text="When was the last time you has a stent?",
@@ -388,6 +493,7 @@ class HeartAttack(VascularHistory):
         verbose_name="cabg",
         null=True,
         blank=True,
+        default=False,
     )
     cabg_date = models.DateTimeField(
         help_text="When did you have a bypass?",
@@ -408,6 +514,7 @@ class Bleed(VascularHistory):
         verbose_name="major bleed",
         null=True,
         blank=True,
+        default=False,
     )
     GIB = BooleanField(
         choices=BOOL_CHOICES,
@@ -416,6 +523,7 @@ class Bleed(VascularHistory):
         ),
         null=True,
         blank=True,
+        default=False,
     )
     GIB_date = models.DateTimeField(
         help_text="When was the last time you has a gastrointestinal bleed?",
@@ -423,11 +531,98 @@ class Bleed(VascularHistory):
         null=True,
         blank=True,
     )
-    CNS = BooleanField(choices=BOOL_CHOICES, help_text="Have you had an intracranial bleed?", null=True, blank=True)
-    CNS_date = models.DateTimeField(
-        help_text="When was the last time you had an intracranial bleed?", default=timezone.now, null=True, blank=True
+    CNS = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Have you had an intracranial bleed?",
+        null=True,
+        blank=True,
+        default=False,
     )
-    transfusion = BooleanField(choices=BOOL_CHOICES, help_text="Did you require a transfusion?", null=True, blank=True)
+    CNS_date = models.DateTimeField(
+        help_text="When was the last time you had an intracranial bleed?",
+        default=timezone.now,
+        null=True,
+        blank=True,
+    )
+    transfusion = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Did you require a transfusion?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+
+
+class AllopurinolHypersensitivity(MedicalHistory):
+    name = "Allopurinol Hypersensitivity"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had a side effect or reaction to allopurinol?"),
+        verbose_name="Allopurinol Hypersensitivity",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    rash = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had a rash side effect due to allopurinol?."),
+        verbose_name="Allopurinol Rash",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    transaminitis = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had elevated liver function tests as a side effect of allopurinol?."),
+        verbose_name="Allopurinol Transaminitis",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    cytopenia = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had low blood counts as a side effect of allopurinol?."),
+        verbose_name="Allopurinol Cytopenia",
+        null=True,
+        blank=True,
+        default=False,
+    )
+
+
+class FebuxostatHypersensitivity(MedicalHistory):
+    name = "Febuxostat Hypersensitivity"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had a side effect or reaction to febuxostat?"),
+        verbose_name="Febuxostat Hypersensitivity",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    rash = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had a rash side effect due to febuxostat?."),
+        verbose_name="Febuxostat Rash",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    transaminitis = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had elevated liver function tests as a side effect of febuxostat?."),
+        verbose_name="Febuxostat Transaminitis",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    cytopenia = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe("Have you ever had low blood counts as a side effect of febuxostat?."),
+        verbose_name="Febuxostat Cytopenia",
+        null=True,
+        blank=True,
+        default=False,
+    )
 
 
 class SocialHistory(History):
@@ -443,11 +638,35 @@ class Alcohol(SocialHistory):
         verbose_name="alcohol",
         null=True,
         blank=True,
+        default=False,
     )
-    number = models.IntegerField(help_text="How many drinks do you have per week?", null=True, blank=True)
-    wine = BooleanField(choices=BOOL_CHOICES, help_text="Do you drink wine?", null=True, blank=True)
-    beer = BooleanField(choices=BOOL_CHOICES, help_text="Do you drink beer?", null=True, blank=True)
-    liquor = BooleanField(choices=BOOL_CHOICES, help_text="Do you drink liquor?", null=True, blank=True)
+    number = models.IntegerField(
+        help_text="How many drinks do you have per week?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    wine = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Do you drink wine?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    beer = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Do you drink beer?",
+        null=True,
+        blank=True,
+        default=False,
+    )
+    liquor = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text="Do you drink liquor?",
+        null=True,
+        blank=True,
+        default=False,
+    )
     name = "alcohol"
 
 
@@ -457,6 +676,7 @@ class Fructose(SocialHistory):
         help_text="Do you eat a lot of fructose such as the sugar found in soda/pop, processed candies, or juices?",
         null=True,
         blank=True,
+        default=False,
         verbose_name="fructose",
     )
     name = "fructose"
@@ -468,6 +688,7 @@ class Shellfish(SocialHistory):
         help_text="Do you eat a lot of shellfish?",
         null=True,
         blank=True,
+        default=False,
         verbose_name="shellfish",
     )
     name = "shellfish"
@@ -476,7 +697,11 @@ class Shellfish(SocialHistory):
 class FamilyHistory(History):
     name = "family history"
     value = BooleanField(
-        choices=BOOL_CHOICES, help_text=("Do you have a family history of " + str(name) + "?"), null=True, blank=True
+        choices=BOOL_CHOICES,
+        help_text=("Do you have a family history of " + str(name) + "?"),
+        null=True,
+        blank=True,
+        default=False,
     )
     family_member = MultiSelectField(
         choices=FAMILY_CHOICES, help_text=("Which family members had " + str(name) + "?"), default=True, null=True
@@ -493,4 +718,5 @@ class Gout(FamilyHistory):
         help_text="Do you have a family history of gout?",
         null=True,
         blank=True,
+        default=False,
     )

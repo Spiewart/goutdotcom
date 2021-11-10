@@ -1228,11 +1228,17 @@ function flare_aid_fields () {
   if ($('#id_perfect_health').val() == "True") {
     $('#div_id_monoarticular').show();
     $('#monoarticular-line').show();
+    $('#subfields').hide();
   }
   else if ($('#id_perfect_health').val() == "False") {
     $('#div_id_monoarticular').show();
     $('#monoarticular-line').show();
     $('#subfields').show();
+  }
+  else {
+    $('#div_id_monoarticular').hide();
+    $('#monoarticular-line').hide();
+    $('#subfields').hide();
   }
 }
 

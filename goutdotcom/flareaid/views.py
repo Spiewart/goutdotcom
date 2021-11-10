@@ -110,7 +110,7 @@ class FlareAidCreate(CreateView):
         if form.is_valid():
             flareaid_data = form.save(commit=False)
             ## WOULD LIKE TO CONSOLIDATE REQUEST.USER ADD TO RIGHT BEFORE SAVE(), THEN CAN COMBINE THE REST
-            # Check if user is authenticated and pull CKD data from MedicalProfile if so
+            # Check if user is authenticated and pull OnetoOne related model data from MedicalProfile if so
             if request.user.is_authenticated:
                 flareaid_data.user = request.user
                 anticoagulation_form = self.anticoagulation_form_class(

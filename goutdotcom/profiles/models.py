@@ -7,7 +7,6 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 from PIL import Image
-
 from sorl.thumbnail import ImageField
 
 from goutdotcom.history.models import (
@@ -15,11 +14,13 @@ from goutdotcom.history.models import (
     CKD,
     IBD,
     Alcohol,
+    AllopurinolHypersensitivity,
     Anticoagulation,
     Bleed,
     ColchicineInteractions,
     Diabetes,
     Erosions,
+    FebuxostatHypersensitivity,
     Fructose,
     Gout,
     HeartAttack,
@@ -39,25 +40,6 @@ from goutdotcom.vitals.models import Height, Weight
 
 
 # Create your models here.
-class ContraindicationsProfile(TimeStampedModel):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
-
-    def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.user_username})
-
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_user_contraindications_profile(sender, instance, created, **kwargs):
-        if created:
-            new_profile = ContraindicationsProfile.objects.create(user=instance)
-
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def save_user_contraindications_profile(sender, instance, **kwargs):
-        instance.contraindicationsprofile.save()
-
-
 class FamilyProfile(TimeStampedModel):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -105,17 +87,6 @@ class PatientProfile(TimeStampedModel):
     height = models.OneToOneField(
         Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True
     )
-
-    # This auto-adjusts the image size to 300 px by 300 px. In the future, need to add a JS library / widget for drag/drop/preview (Dropzone https://www.dropzone.dev/js/)
-    #def save(self):
-        #super().save()
-
-        #img = Image.open(self.picture.path)
-
-        #if img.height > 300 or img.width > 300:
-           # new_img = (300, 300)
-            #img.thumbnail(new_img)
-            #img.save(self.picture.path)
 
     def get_age(self):
         if self.date_of_birth:
@@ -181,11 +152,27 @@ class MedicalProfile(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    allopurinol_hypersensitivity = models.OneToOneField(
+        AllopurinolHypersensitivity,
+        on_delete=models.CASCADE,
+        help_text="Have you ever had an adverse reaction to allopurinol?",
+        verbose_name="Allopurinol Hypersensitivity",
+        null=True,
+        blank=True,
+    )
     CKD = models.OneToOneField(
         CKD,
         on_delete=models.CASCADE,
         help_text="Do you have chronic kidney disease (CKD)?",
         verbose_name="CKD",
+        null=True,
+        blank=True,
+    )
+    febuxostat_hypersensitivity = models.OneToOneField(
+        FebuxostatHypersensitivity,
+        on_delete=models.CASCADE,
+        help_text="Have you ever had an adverse reaction to febuxostat?",
+        verbose_name="Febuxostat Hypersensitivity",
         null=True,
         blank=True,
     )
@@ -270,6 +257,13 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    XOI_interactions = models.OneToOneField(
+        XOIInteractions,
+        on_delete=models.CASCADE,
+        help_text="Are you on 6-mercaptopurine or azathioprine?",
+        null=True,
+        blank=True,
+    )
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
@@ -278,15 +272,17 @@ class MedicalProfile(TimeStampedModel):
     def create_user_medical_profile(sender, instance, created, **kwargs):
         if created:
             new_profile = MedicalProfile.objects.create(user=instance)
+            new_profile.allopurinol_hypersensitivity = AllopurinolHypersensitivity.objects.create(user=instance)
             new_profile.anticoagulation = Anticoagulation.objects.create(user=instance)
             new_profile.bleed = Bleed.objects.create(user=instance)
             new_profile.CKD = CKD.objects.create(user=instance)
-            new_profile.colchicine_interactions = ColchicineInteractions.objects.create(user=instance)
-            new_profile.hypertension = Hypertension.objects.create(user=instance)
-            new_profile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
             new_profile.CHF = CHF.objects.create(user=instance)
+            new_profile.colchicine_interactions = ColchicineInteractions.objects.create(user=instance)
             new_profile.diabetes = Diabetes.objects.create(user=instance)
             new_profile.erosions = Erosions.objects.create(user=instance)
+            new_profile.febuxostat_hypersensitivity = FebuxostatHypersensitivity.objects.create(user=instance)
+            new_profile.hypertension = Hypertension.objects.create(user=instance)
+            new_profile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
             new_profile.heartattack = HeartAttack.objects.create(user=instance)
             new_profile.IBD = IBD.objects.create(user=instance)
             new_profile.organ_transplant = OrganTransplant.objects.create(user=instance)
@@ -294,6 +290,7 @@ class MedicalProfile(TimeStampedModel):
             new_profile.stroke = Stroke.objects.create(user=instance)
             new_profile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
             new_profile.tophi = Tophi.objects.create(user=instance)
+            new_profile.XOI_interactions = XOIInteractions.objects.create(user=instance)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_medical_profile(sender, instance, **kwargs):

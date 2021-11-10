@@ -2,8 +2,19 @@ from django.contrib import admin
 
 from .models import *
 
-# Register your models here.
 
+# Register your models here.
+class AllopurinolHypersensitivityAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "rash",
+        "transaminitis",
+        "cytopenia",
+        "last_modified",
+        "created",
+        "pk",
+    )
 
 class CKDAdmin(admin.ModelAdmin):
     list_display = (
@@ -16,6 +27,17 @@ class CKDAdmin(admin.ModelAdmin):
         "pk",
     )
 
+class FebuxostatHypersensitivityAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "rash",
+        "transaminitis",
+        "cytopenia",
+        "last_modified",
+        "created",
+        "pk",
+    )
 
 class HypertensionAdmin(admin.ModelAdmin):
     list_display = (
@@ -252,12 +274,14 @@ class GoutAdmin(admin.ModelAdmin):
     )
 
 
+admin.site.register(AllopurinolHypersensitivity, AllopurinolHypersensitivityAdmin)
 admin.site.register(CKD, CKDAdmin)
 admin.site.register(Hypertension, HypertensionAdmin)
 admin.site.register(Hyperuricemia, HyperuricemiaAdmin)
 admin.site.register(CHF, CHFAdmin)
 admin.site.register(Diabetes, DiabetesAdmin)
 admin.site.register(Erosions, ErosionsAdmin)
+admin.site.register(FebuxostatHypersensitivity, FebuxostatHypersensitivityAdmin)
 admin.site.register(Fructose, FructoseAdmin)
 admin.site.register(IBD, IBDAdmin)
 admin.site.register(OrganTransplant, OrganTransplantAdmin)

@@ -9,6 +9,7 @@ from .models import (
     CKD,
     IBD,
     Alcohol,
+    AllopurinolHypersensitivity,
     Anticoagulation,
     Bleed,
     ColchicineInteractions,
@@ -16,6 +17,7 @@ from .models import (
     Diabetes,
     Diuretics,
     Erosions,
+    FebuxostatHypersensitivity,
     Fructose,
     Gout,
     HeartAttack,
@@ -101,6 +103,8 @@ class CKDForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CKDForm, self).__init__(*args, **kwargs)
         self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["stage"].empty_label = None
+        self.fields["stage"].widget = forms.RadioSelect()
         self.fields["dialysis"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -154,8 +158,6 @@ class ColchicineInteractionsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ColchicineInteractionsForm, self).__init__(*args, **kwargs)
         self.fields["value"].widget = forms.CheckboxInput()
-        self.fields["clarithromycin"].widget = forms.CheckboxInput()
-        self.fields["simvastatin"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         # You can dynamically adjust your layout
@@ -583,6 +585,114 @@ class BleedSimpleForm(BleedForm):
                 "value",
                 id="bleed_for_contraindications",
             ),
+        )
+
+
+class AllopurinolHypersensitivityForm(forms.ModelForm):
+    prefix = "AllopruinolHypersensitivity"
+
+    class Meta:
+        model = AllopurinolHypersensitivity
+        fields = (
+            "value",
+            "rash",
+            "transaminitis",
+            "cytopenia",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(AllopurinolHypersensitivityForm, self).__init__(*args, **kwargs)
+        self.fields["value"].label = "Allopurinol Side Effects"
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "Allopurinol Hypersensitivity",
+                "value",
+                "rash",
+                "transaminitis",
+                "cytopenia",
+                id="allopurinolhypersensitivity_for_profile",
+            ),
+        )
+
+
+class AllopurinolHypersensitivitySimpleForm(AllopurinolHypersensitivityForm):
+    class Meta:
+        model = AllopurinolHypersensitivity
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(AllopurinolHypersensitivityForm, self).__init__(*args, **kwargs)
+        self.fields["value"].label = "Allopurinol Side Effects"
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="gout_for_profile"),
+        )
+
+
+class FebuxostatHypersensitivityForm(forms.ModelForm):
+    prefix = "FebuxostatHypersensitivity"
+
+    class Meta:
+        model = FebuxostatHypersensitivity
+        fields = (
+            "value",
+            "rash",
+            "transaminitis",
+            "cytopenia",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(FebuxostatHypersensitivityForm, self).__init__(*args, **kwargs)
+        self.fields["value"].label = "Febuxostat Side Effects"
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "Febuxostat Hypersensitivity",
+                "value",
+                "rash",
+                "transaminitis",
+                "cytopenia",
+                id="febuxostathypersensitivity_for_profile",
+            ),
+        )
+
+
+class FebuxostatHypersensitivitySimpleForm(FebuxostatHypersensitivityForm):
+    class Meta:
+        model = FebuxostatHypersensitivity
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(FebuxostatHypersensitivityForm, self).__init__(*args, **kwargs)
+        self.fields["value"].label = "Febuxostat Side Effects"
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="febuxostathypersensitivity_for_profile"),
+        )
+
+
+class XOIInteractionsSimpleForm(forms.ModelForm):
+    class Meta:
+        model = XOIInteractions
+        fields = ("value",)
+
+    def __init__(self, *args, **kwargs):
+        super(XOIInteractionsSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["value"].label = "XOI Interactions"
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="XOIInteractions_for_profile"),
         )
 
 

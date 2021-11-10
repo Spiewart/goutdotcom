@@ -4,81 +4,70 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django_extensions.db.models import TimeStampedModel
 
+from goutdotcom.history.models import HeartAttack
+
+from ..history.models import (
+    CKD,
+    AllopurinolHypersensitivity,
+    FebuxostatHypersensitivity,
+    HeartAttack,
+    OrganTransplant,
+    Stroke,
+    XOIInteractions,
+)
 from .choices import *
+
 
 # Create your models here.
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
-    class Stage(models.IntegerChoices):
-        I = 1
-        II = 2
-        III = 3
-        IV = 4
-        V = 5
-
-    ckd = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Do you have CKD?",
-        help_text="Do you have CKD?",
-        default="",
+    ckd = models.ForeignKey(
+        CKD,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    stage = models.IntegerField(
-        choices=Stage.choices,
-        help_text=mark_safe(
-            "What <a href='https://www.kidney.org/sites/default/files/01-10-7278_HBG_CKD_Stages_Flyer_GFR.gif' target='_blank'>stage</a> is your CKD?? If you don't know, you probably aren't."
-        ),
-        verbose_name="CKD stage",
+    XOI_interactions = models.ForeignKey(
+        XOIInteractions,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    dialysis = models.BooleanField(
-        choices=BOOL_CHOICES,
-        help_text=mark_safe(
-            "Are you on <a href='https://en.wikipedia.org/wiki/Hemodialysis' target='_blank'>dialysis</a>? If you don't know, you probably aren't."
-        ),
+    organ_transplant = models.ForeignKey(
+        OrganTransplant,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    XOI_interactions = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Are you on azathioprine or 6-mercaptopurine?",
-        help_text="Are you on azathioprine or 6-mercaptopurine?",
-        default="",
+    allopurinol_hypersensitivity = models.ForeignKey(
+        AllopurinolHypersensitivity,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-    )
-    organ_transplant = models.BooleanField(
-        choices=BOOL_CHOICES,
-        verbose_name="Have you had an organ transplant?",
-        help_text="Have you had an organ transplant?",
-        default="",
-        null=True,
-        blank=True,
-    )
-    allopurinol_hypersensitivity = models.BooleanField(
-        choices=BOOL_CHOICES,
         help_text=mark_safe(
             "Have you ever had a <a href='https://www.nhs.uk/medicines/allopurinol/#:~:text=to%20avoid%20dehydration.-,Serious%20side%20effects,-Skin%20rashes' target='_blank'>drug-reaction to allopurinol</a>?"
         ),
+    )
+
+    febuxostat_hypersensitivity = models.ForeignKey(
+        FebuxostatHypersensitivity,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-    )
-    febuxostat_hypersensitivity = models.BooleanField(
-        choices=BOOL_CHOICES,
         help_text=mark_safe(
             "Have you ever had a <a href='https://www.rheumatology.org/I-Am-A/Patient-Caregiver/Treatments/Febuxostat-Uloric#:~:text=Side%20Effects,not%20be%20stopped.' target='_blank'>drug-reaction to febuxostat</a>?"
         ),
+    )
+    heartattack = models.ForeignKey(
+        HeartAttack,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    MACE = models.BooleanField(
-        choices=BOOL_CHOICES,
-        help_text=mark_safe(
-            "Have you ever had <a href='https://en.wikipedia.org/wiki/Myocardial_infarction' target='_blank'>heart attack</a> or <a href='https://en.wikipedia.org/wiki/Stroke' target='_blank'>stroke</a>?"
-        ),
+    stroke = models.ForeignKey(
+        Stroke,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -91,28 +80,34 @@ class ULTAid(TimeStampedModel):
             "dialysis": False,
             "rheumatologist": False,
         }
-        if self.XOI_interactions == True or self.organ_transplant == True:
+        if self.XOI_interactions.value == True or self.organ_transplant.value == True:
             ult_choice["rheumatologist"] = True
 
-        if self.ckd == True:
-            if self.dialysis == True:
+        if self.ckd.value == True:
+            if self.ckd.dialysis == True:
                 ult_choice["dialysis"] = True
 
-        if self.allopurinol_hypersensitivity == True:
-            if self.febuxostat_hypersensitivity == True or self.MACE == True:
+        if self.allopurinol_hypersensitivity.value == True:
+            if (
+                self.febuxostat_hypersensitivity.value == True
+                or self.heartattack.value == True
+                or self.stroke.value == True
+            ):
                 ult_choice["rheumatologist"] = True
             ult_choice["drug"] = "febuxostat"
-            if self.stage >= 3:
-                ult_choice["dose"] = "20 mg"
+            if self.ckd.stage != None:
+                if self.ckd.stage >= 3:
+                    ult_choice["dose"] = "20 mg"
             else:
                 ult_choice["dose"] = "40 mg"
             return ult_choice
 
-        if self.febuxostat_hypersensitivity == True:
-            if self.allopurinol_hypersensitivity == True:
+        if self.febuxostat_hypersensitivity.value == True:
+            if self.allopurinol_hypersensitivity.value == True:
                 ult_choice["rheumatologist"] = True
-            if self.stage >= 3:
-                ult_choice["dose"] = "50 mg"
+            if self.ckd.stage != None:
+                if self.ckd.stage >= 3:
+                    ult_choice["dose"] = "50 mg"
             return ult_choice
 
         return ult_choice

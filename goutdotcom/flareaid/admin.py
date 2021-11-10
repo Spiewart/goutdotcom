@@ -16,7 +16,7 @@ class FlareAidAdmin(admin.ModelAdmin):
         "colchicine_interactions",
         "diabetes",
         "heartattack",
-        "IBD",
+        "ibd",
         "osteoporosis",
         "stroke",
         "monoarticular_aid",

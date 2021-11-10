@@ -79,10 +79,15 @@
             </li>
             <li class="nav-item"></li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'flareaid:create' %}">Flares</a>
+              <a class="nav-link" href="{% url 'flareaid:create' %}"
+                >FlareAid</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'ult:create' %}">Prevention</a>
+              <a class="nav-link" href="{% url 'ult:create' %}">ULT</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ultaid:create' %}">ULTAid</a>
             </li>
             <li class="nav-item">{% if request.user.is_authenticated %}</li>
 
@@ -145,8 +150,8 @@
     </div>
     <!-- /container -->
 
-    {% block modal %}{% endblock modal %} {% block inline_javascript %}
-    {# Script tags with only code, no src (defer by default) #}
+    {% block modal %}{% endblock modal %} {% block inline_javascript %} {#
+    Script tags with only code, no src (defer by default) #}
     {% endblock inline_javascript %}
   </body>
 </html>

@@ -80,7 +80,7 @@ class FlareAid(TimeStampedModel):
         null=True,
         blank=True,
     )
-    IBD = models.ForeignKey(
+    ibd = models.ForeignKey(
         IBD,
         on_delete=models.SET_NULL,
         null=True,
@@ -126,7 +126,7 @@ class FlareAid(TimeStampedModel):
             or self.heartattack.value == True
             or self.stroke.value == True
             or self.anticoagulation.value == True
-            or self.IBD.value == True
+            #or self.ibd.value == True
         ):
             if self.ckd.value == True:
                 return steroids
