@@ -76,7 +76,7 @@ class CKD(MedicalHistory):
     stage = IntegerField(
         choices=Stage.choices,
         help_text=mark_safe(
-            "What <a href='https://www.kidney.org/sites/default/files/01-10-7278_HBG_CKD_Stages_Flyer_GFR.gif' target='_blank'>stage</a> is your CKD?? If you don't know, you probably aren't."
+            "What <a href='https://www.kidney.org/sites/default/files/01-10-7278_HBG_CKD_Stages_Flyer_GFR.gif' target='_blank'>stage</a> is your CKD??"
         ),
         verbose_name="CKD stage",
         null=True,
@@ -87,7 +87,7 @@ class CKD(MedicalHistory):
     dialysis = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Are you on <a href='https://en.wikipedia.org/wiki/Hemodialysis' target='_blank'>dialysis</a>? If you don't know, you probably aren't."
+            "Are you on <a href='https://en.wikipedia.org/wiki/Hemodialysis' target='_blank'>dialysis</a>?"
         ),
         null=True,
         blank=True,
@@ -96,7 +96,7 @@ class CKD(MedicalHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Do you have CKD (<a href='https://en.wikipedia.org/wiki/Chronic_kidney_disease' target='_blank'>chronic kidney disease</a>)? If you don't know, skip this or leave it blank."
+            "Do you have CKD (<a href='https://en.wikipedia.org/wiki/Chronic_kidney_disease' target='_blank'>chronic kidney disease</a>)?"
         ),
         verbose_name="Chronic Kidney Disease (CKD)",
         null=True,
@@ -110,7 +110,7 @@ class Hypertension(MedicalHistory):
     medication = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Are you on <a href='https://www.heart.org/en/health-topics/high-blood-pressure/changes-you-can-make-to-manage-high-blood-pressure/types-of-blood-pressure-medications' target='_blank'>medications</a> for high blood pressure? If you don't know, skip this or leave it blank."
+            "Are you on <a href='https://www.heart.org/en/health-topics/high-blood-pressure/changes-you-can-make-to-manage-high-blood-pressure/types-of-blood-pressure-medications' target='_blank'>medications</a> for high blood pressure?"
         ),
         verbose_name="Blood pressure medications",
         null=True,
@@ -162,7 +162,7 @@ class Diabetes(MedicalHistory):
     type = IntegerField(
         choices=Type.choices,
         help_text=mark_safe(
-            "Do you have <a href='https://en.wikipedia.org/wiki/Type_1_diabetes' target='_blank'>type I</a> or <a href='https://en.wikipedia.org/wiki/Type_2_diabetes' target='_blank'>type II</a> diabetes? If you don't know, skip this or leave it blank."
+            "Do you have <a href='https://en.wikipedia.org/wiki/Type_1_diabetes' target='_blank'>type I</a> or <a href='https://en.wikipedia.org/wiki/Type_2_diabetes' target='_blank'>type II</a> diabetes?"
         ),
         verbose_name="Type 1 or type 2 diabetes?",
         null=True,
@@ -171,7 +171,7 @@ class Diabetes(MedicalHistory):
     insulin = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Are you on <a href='https://en.wikipedia.org/wiki/Insulin' target='_blank'>kidney stones</a>? If you don't know, skip this or leave it blank."
+            "Are you on <a href='https://en.wikipedia.org/wiki/Insulin' target='_blank'>kidney stones</a>?"
         ),
         null=True,
         blank=True,
@@ -181,7 +181,7 @@ class Diabetes(MedicalHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Do you have <a href='https://en.wikipedia.org/wiki/Diabetes' target='_blank'>diabetes</a>? If you don't know, skip this or leave it blank."
+            "Do you have <a href='https://en.wikipedia.org/wiki/Diabetes' target='_blank'>diabetes</a>?"
         ),
         verbose_name="Diabetes",
         null=True,
@@ -215,7 +215,7 @@ class UrateKidneyStones(MedicalHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Have you had urate <a href='https://en.wikipedia.org/wiki/Kidney_stone_disease' target='_blank'>kidney stones</a>? If you don't know, skip this or leave it blank."
+            "Have you had urate <a href='https://en.wikipedia.org/wiki/Kidney_stone_disease' target='_blank'>kidney stones</a>?"
         ),
         verbose_name="Urate Kidney Stones",
         null=True,
@@ -243,7 +243,7 @@ class Osteoporosis(MedicalHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Do you have <a href='https://en.wikipedia.org/wiki/Osteoporosis' target='_blank'>osteoporosis</a>? If you don't know, skip this or leave it blank."
+            "Do you have <a href='https://en.wikipedia.org/wiki/Osteoporosis' target='_blank'>osteoporosis</a>?"
         ),
         verbose_name="Osteoporosis",
         null=True,
@@ -258,7 +258,7 @@ class IBD(MedicalHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Do you have <a href='https://en.wikipedia.org/wiki/Inflammatory_bowel_disease' target='_blank'>IBD</a> (inflammatory bowel disease=Crohn's disease or ulcerative colitis)? If you don't know, skip this or leave it blank."
+            "Do you have <a href='https://en.wikipedia.org/wiki/Inflammatory_bowel_disease' target='_blank'>IBD</a> (inflammatory bowel disease=Crohn's disease or ulcerative colitis)?"
         ),
         verbose_name="Inflammatory Bowel Disease",
         null=True,
@@ -395,7 +395,10 @@ class Anticoagulation(MedicationHistory):
 class XOIInteractions(MedicationHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text="Are you on any medications that could interact with allopurinol or febuxostat? (6-mercaptopurine, azathioprine)?",
+        help_text="Are you on mercaptopurine (6-MP, Purixan), azathioprine (Imuran)?",
+        help_text=mark_safe(
+            "Are you on <a href='https://en.wikipedia.org/wiki/Mercaptopurine' target='_blank'>mercaptopurine</a> (6-MP, Purixan), <a href='https://en.wikipedia.org/wiki/Azathioprine' target='_blank'>azathioprine</a> (AZA, Imuran)?"
+        ),
         null=True,
         blank=True,
         default=False,
@@ -449,7 +452,7 @@ class Stroke(VascularHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Have you ever had <a href='https://en.wikipedia.org/wiki/Stroke' target='_blank'>stroke</a>? If you don't know, skip this or leave it blank."
+            "Have you ever had <a href='https://en.wikipedia.org/wiki/Stroke' target='_blank'>stroke</a>?"
         ),
         verbose_name="stroke",
         null=True,
@@ -463,7 +466,7 @@ class HeartAttack(VascularHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Have you ever had <a href='https://en.wikipedia.org/wiki/Myocardial_infarction' target='_blank'>heart attack</a>? If you don't know, skip this or leave it blank."
+            "Have you ever had <a href='https://en.wikipedia.org/wiki/Myocardial_infarction' target='_blank'>heart attack</a>?"
         ),
         verbose_name="heart attack",
         null=True,
@@ -473,7 +476,7 @@ class HeartAttack(VascularHistory):
     stent = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Have you had one or more <a href='https://en.wikipedia.org/wiki/Stent' target='_blank'>stent</a> placed? If you don't know, skip this or leave it blank."
+            "Have you had one or more <a href='https://en.wikipedia.org/wiki/Stent' target='_blank'>stent</a> placed?"
         ),
         verbose_name="stent",
         null=True,
@@ -489,7 +492,7 @@ class HeartAttack(VascularHistory):
     cabg = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Have you had <a href='https://en.wikipedia.org/wiki/Coronary_artery_bypass_surgery' target='_blank'>bypass</a>? If you don't know, skip this or leave it blank."
+            "Have you had <a href='https://en.wikipedia.org/wiki/Coronary_artery_bypass_surgery' target='_blank'>bypass</a>?"
         ),
         verbose_name="cabg",
         null=True,
@@ -520,7 +523,7 @@ class Bleed(VascularHistory):
     GIB = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Have you ever had <a href='https://en.wikipedia.org/wiki/Gastrointestinal_bleeding' target='_blank'>gastrointestinal bleeding</a>? If you don't know, skip this or leave it blank."
+            "Have you ever had <a href='https://en.wikipedia.org/wiki/Gastrointestinal_bleeding' target='_blank'>gastrointestinal bleeding</a>?"
         ),
         null=True,
         blank=True,
