@@ -80,7 +80,8 @@ class CKD(MedicalHistory):
         ),
         verbose_name="CKD stage",
         null=True,
-        blank=True,
+        blank=False,
+        default=None,
     )
 
     dialysis = BooleanField(

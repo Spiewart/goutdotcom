@@ -228,6 +228,7 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
 
         if form.is_valid():
             ult_data = form.save(commit=False)
+            ### IS ASSIGNING THE USER REQUIRED? I THINK NOT -- TRY IT
             ult_data.user = request.user
             CKD_data = CKD_form.save(commit=False)
             CKD_data.last_modified = "ULT"

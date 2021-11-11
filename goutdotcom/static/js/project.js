@@ -308,6 +308,7 @@ function one_flare() {
   }
 }
 
+// function that checks how many gout flares are reported, hides unnecessary subfields if number of flares is blank, zero, or one, shows subfields otherwise, shows frequency of flares option if number of flares > 1
 function check_first_flare() {
   if ($('#id_num_flares').val().length == 0) {
       $('#div_id_freq_flares').hide();
@@ -328,6 +329,15 @@ function check_first_flare() {
       $('#div_id_freq_flares').show();
       $('#subfields').show();
   }
+}
+
+function check_subfields() {
+// function that checks whether the user already has some MedicalProfile fields that are shown on the ULT form
+  $('#subfields input[type=checkbox]').each(function() {
+    if ($(this).is(":checked")) {
+      $('#subfields').show();
+    }
+  })
 }
 
 /* FLARE app JS flare_form.html */
@@ -1251,8 +1261,8 @@ function flare_aid_dialysis () {
     $('#id_CKD-dialysis').prop("checked", false);
   }
 }
-/* ULT app JS */
-// Long if / else if function displaying appropriate HTML form elements for ULT model Create and Update views
+/* Flare app JS */
+// Long if / else if function displaying appropriate HTML form elements for Flare model Create and Update views
 // THIS LIKELY CAN BE DONE MORE INTELLIGENTLY BROKEN UP INTO SMALLER FUNCTIONS
 function urate_decider() {
   if ($('#urate-decision').val() == "No") {

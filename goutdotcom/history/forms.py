@@ -89,38 +89,9 @@ class AnticoagulationSimpleForm(AnticoagulationForm):
         )
 
 
-class CKDForm(forms.ModelForm):
+class CKDSimpleForm(forms.ModelForm):
     prefix = "CKD"
 
-    class Meta:
-        model = CKD
-        fields = (
-            "value",
-            "stage",
-            "dialysis",
-        )
-
-    def __init__(self, *args, **kwargs):
-        super(CKDForm, self).__init__(*args, **kwargs)
-        self.fields["value"].widget = forms.CheckboxInput()
-        self.fields["stage"].empty_label = None
-        self.fields["stage"].widget = forms.RadioSelect()
-        self.fields["dialysis"].widget = forms.CheckboxInput()
-        self.helper = FormHelper(self)
-        self.helper.form_tag = False
-        # You can dynamically adjust your layout
-        self.helper.layout = Layout(
-            Fieldset(
-                "CKD",
-                "value",
-                "stage",
-                "dialysis",
-                id="CKD_for_profile",
-            ),
-        )
-
-
-class CKDSimpleForm(CKDForm):
     class Meta:
         model = CKD
         fields = (
@@ -134,11 +105,40 @@ class CKDSimpleForm(CKDForm):
         self.fields["dialysis"].widget = forms.CheckboxInput()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
                 "",
                 "value",
                 "dialysis",
+                id="CKD_for_profile",
+            ),
+        )
+
+
+class CKDForm(CKDSimpleForm):
+    class Meta:
+        model = CKD
+        fields = (
+            "value",
+            "dialysis",
+            "stage",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(CKDForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.fields["dialysis"].widget = forms.CheckboxInput()
+        self.fields["stage"].empty_label = None
+        self.fields["stage"].widget = forms.RadioSelect()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "value",
+                "dialysis",
+                "stage",
                 id="CKD_for_profile",
             ),
         )

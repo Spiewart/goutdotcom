@@ -33,6 +33,8 @@
       check_first_flare.call($('#id_num_flares').get(0));
     $('#id_num_flares').change(one_flare);
       one_flare.call($('#id_num_flares').get(0));
+    // Check for checked subfields after loading other functions, otherwise the first two will hide the subfields
+    check_subfields();
     });
 </script>
 {% endblock inline_javascript %}
