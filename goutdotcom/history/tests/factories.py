@@ -1,25 +1,180 @@
 import factory
 import factory.fuzzy
 import pytest
-from factory import Faker
 from factory.django import DjangoModelFactory
 
-from goutdotcom.users.models import User
-
-from ...users.models import User
-from ...users.tests.factories import UserFactory
-from ..choices import BOOL_CHOICES, LAST_MODIFIED_CHOICES
+from ..choices import (
+    BOOL_CHOICES,
+    CHF_BOOL_CHOICES,
+    LAST_MODIFIED_CHOICES,
+    ORGAN_CHOICES,
+)
 from ..models import *
 
 pytestmark = pytest.mark.django_db
 
+# All factories utilizing choices need index 0 [0] to access value for each choice field, index 1 [1] is the label
+class AllopurinolHypersensitivityFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    rash = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    transaminitis = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    cytopenia = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = AllopurinolHypersensitivity
+
 
 class CKDFactory(DjangoModelFactory):
-    user = factory.SubFactory(UserFactory)
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     dialysis = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
-    stage = factory.fuzzy.FuzzyChoice(choices=CKD.stage.choices.choices)
+    # Need to access CKD.Stage.choices for IntegerChoices (enum)
+    stage = factory.fuzzy.FuzzyChoice(CKD.Stage.choices, getter=lambda c: c[0])
     last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
 
     class Meta:
         model = CKD
+
+
+class FebuxostatHypersensitivityFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    rash = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    transaminitis = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    cytopenia = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = FebuxostatHypersensitivity
+
+
+class HypertensionFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    medication = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Hypertension
+
+
+class HyperuricemiaFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Hyperuricemia
+
+
+class IBDFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = IBD
+
+
+class CHFFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    systolic = factory.fuzzy.FuzzyChoice(CHF_BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = CHF
+
+
+class DiabetesFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    type = factory.fuzzy.FuzzyChoice(Diabetes.Type.choices, getter=lambda c: c[0])
+    insulin = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Diabetes
+
+
+class ErosionsFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Erosions
+
+
+class OrganTransplantFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    organ = factory.fuzzy.FuzzyChoice(ORGAN_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = OrganTransplant
+
+
+class OsteoporosisFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Osteoporosis
+
+
+class UrateKidneyStonesFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = UrateKidneyStones
+
+
+class TophiFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Tophi
+
+
+class AnticoagulationFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Anticoagulation
+
+
+class BleedFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Bleed
+
+
+class ColchicineInteractionsFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = ColchicineInteractions
+
+
+class HeartAttackFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = HeartAttack
+
+
+class StrokeFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Stroke
+
+
+class XOIInteractionsFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = XOIInteractions
