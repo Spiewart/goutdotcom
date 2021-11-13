@@ -297,6 +297,12 @@ function contraindications_profile_bleed() {
       $('#div_id_bleed-transfusion').show();
   }
 }
+
+/* ULTAid app JS */
+// function that checks whether or not CKD is checked and hides/shows dialysis/stage fields as appropriate
+function CKD_checker() {
+  
+}
 /* ULT app JS */
 // function that adjusts value of freq_flares based off num_flares and uses check_first_flare() to hides/shows subsequent fields based upon first_flare value
 function one_flare() {

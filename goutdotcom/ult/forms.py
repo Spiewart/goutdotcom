@@ -20,11 +20,15 @@ class ULTForm(forms.ModelForm):
                 "",
                 "num_flares",
                 "freq_flares",
+                HTML(
+                    """
+                    <hr size="6" color="white">
+                    """
+                ),
                 Div(
                     HTML(
                         """
                     <div id="follow-up-questions">
-                    <hr size="6" color="white">
                     <h3>Do you have any of the following?:</h3>
                     </div>
                     """
@@ -33,30 +37,35 @@ class ULTForm(forms.ModelForm):
                         """
                         {% load crispy_forms_tags %}
                         {% crispy CKD_form %}
+                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy erosions_form %}
+                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy hyperuricemia_form %}
+                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy tophi_form %}
+                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy urate_kidney_stones_form %}
+                        <hr size="6" color="white">
                         """
                     ),
                     css_id="subfields",

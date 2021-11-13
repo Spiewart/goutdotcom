@@ -63,7 +63,10 @@ class ULT(TimeStampedModel):
         go_forth = "Indicated"
         abstain = "Not Indicated"
         conditional = "Conditional"
+        dialysis = "Dialysis"
 
+        if self.ckd.dialysis == True:
+            return dialysis
         if self.num_flares == "one":
             if self.erosions.value == True or self.tophi.value == True:
                 return go_forth

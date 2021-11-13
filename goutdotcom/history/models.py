@@ -133,7 +133,7 @@ class CHF(MedicalHistory):
     systolic = BooleanField(
         choices=CHF_BOOL_CHOICES,
         help_text=mark_safe(
-            "Do you have systolic (reduced <a href='https://en.wikipedia.org/wiki/Ejection_fraction' target='_blank'>ejection fraction</a>) heart failure? If you don't know, skip this or leave it blank."
+            "Do you have systolic (reduced <a href='https://en.wikipedia.org/wiki/Ejection_fraction' target='_blank'>ejection fraction</a>) heart failure?"
         ),
         verbose_name="Systolic or diastolic heart failure",
         null=True,
@@ -143,7 +143,7 @@ class CHF(MedicalHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(
-            "Do you have CHF (<a href='https://en.wikipedia.org/wiki/Heart_failure' target='_blank'>congestive heart failure</a>)? If you don't know, skip this or leave it blank."
+            "Do you have CHF (<a href='https://en.wikipedia.org/wiki/Heart_failure' target='_blank'>congestive heart failure</a>)?"
         ),
         verbose_name="Congestive Heart Failure (CHF)",
         null=True,
@@ -395,7 +395,6 @@ class Anticoagulation(MedicationHistory):
 class XOIInteractions(MedicationHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
-        help_text="Are you on mercaptopurine (6-MP, Purixan), azathioprine (Imuran)?",
         help_text=mark_safe(
             "Are you on <a href='https://en.wikipedia.org/wiki/Mercaptopurine' target='_blank'>mercaptopurine</a> (6-MP, Purixan), <a href='https://en.wikipedia.org/wiki/Azathioprine' target='_blank'>azathioprine</a> (AZA, Imuran)?"
         ),
