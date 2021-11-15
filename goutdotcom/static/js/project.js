@@ -301,7 +301,7 @@ function contraindications_profile_bleed() {
 /* ULTAid app JS */
 // function that checks whether or not CKD is checked and hides/shows dialysis/stage fields as appropriate
 function CKD_checker() {
-  
+
 }
 /* ULT app JS */
 // function that adjusts value of freq_flares based off num_flares and uses check_first_flare() to hides/shows subsequent fields based upon first_flare value
@@ -344,6 +344,17 @@ function check_subfields() {
       $('#subfields').show();
     }
   })
+}
+
+function check_ckd() {
+// function that checks whether CKD is checked or not, shows dialysis field or hides/empties it
+  if ($('#id_CKD-value').is(":checked")) {
+      $('#div_id_CKD-dialysis').show();
+  }
+  else {
+    $('#div_id_CKD-dialysis').hide();
+    $('#id_CKD-dialysis').prop("checked", false);
+  }
 }
 
 /* FLARE app JS flare_form.html */

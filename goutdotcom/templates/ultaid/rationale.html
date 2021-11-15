@@ -1,18 +1,18 @@
 <h2 class="nested-container">Rationale</h2>
-<h3><u>CKD</u>: {% if object.ckd == True %} present {% elif object.ckd == False %} absent {% else %} not
+<h3><u>CKD</u>: {% if object.ckd.value == True %} present {% elif object.ckd.value == False %} absent {% else %} not
   reported{% endif %}</h3>
 <p>Many medications, including those used for gout prevention (allopurinol and febuxostat) are excreted (metabolized) by the kidney.
 Advanced CKD requires starting with a lower dose and increasing the dose more slowly and carefully.</p>
-{% if object.ckd == True %}
-  <h3><u>Stage</u>: {% if object.stage %}{{ object.stage }} {% else %} not reported {% endif %}</h3>
+{% if object.ckd.value == True %}
+  <h3><u>Stage</u>: {% if object.ckd.stage %}{{ object.ckd.stage }} {% else %} not reported {% endif %}</h3>
   <p>The stage of chronic kidney disease is an estimation of how much kidney function you have. Advanced stages require lower doses and more care when starting preventative therapy for gout.</p>
-  <h3><u>Dialysis</u>: {% if object.dialysis == True %}present {% elif object.dialysis == False %} absent {% else %} not reported {% endif %}</h3>
+  <h3><u>Dialysis</u>: {% if object.ckd.dialysis == True %}present {% elif object.ckd.dialysis == False %} absent {% else %} not reported {% endif %}</h3>
   <p>Dialysis, while a drag in many respects, is great for gout. Uric acid is filtered out by dialysis, so your gout will be effectively managed without medications.</p>
 {% endif %}
 <h3><u>Medication Interactions</u>:
-{% if object.XOI_interactions == True %}
+{% if object.XOI_interactions.value == True %}
 present
-{% elif object.XOI_interactions == False %}
+{% elif object.XOI_interactions.value == False %}
 absent
 {% else %}
 not reported
@@ -22,19 +22,19 @@ not reported
 If you are on either azathioprine or 6-mercaptopurine, it is VERY important you discuss you gout care with a rheumatologist.
 </p>
 <h3><u>Organ Transplant</u>:
-{% if object.organ_transplant == True %}
-
-{% elif object.organ_transplant == False %}
-
+{% if object.organ_transplant.value == True %}
+present
+{% elif object.organ_transplant.value == False %}
+absent
 {% else %}
-
+not reported
 {% endif %}
 </h3>
 <p>Organ transplants make everything hard. If you have had one, you absolutely need to discuss your gout management with a rheumatologist.</p>
 <h3><u>Allopurinol Hypersensitivity</u>:
-{% if object.allopurinol_hypersensitivity == True %}
+{% if object.allopurinol_hypersensitivity.value == True %}
 present
-{% elif object.allopurinol_hypersensitivity == False %}
+{% elif object.allopurinol_hypersensitivity.value == False %}
 absent
 {% else %}
 not reported
@@ -48,9 +48,9 @@ not reported
   effects were <a href="https://pubmed.ncbi.nlm.nih.gov/11212165/" target="_blank">de-sensitized</a>. In the modern era, we just use febuxostat instead.
 </p>
 <h3><u>Febuxostat Hypersensitivity</u>:
-  {% if object.febuxostat_hypersensitivity == True %}
+  {% if object.febuxostat_hypersensitivity.value == True %}
   present
-  {% elif object.febuxostat_hypersensitivity == False %}
+  {% elif object.febuxostat_hypersensitivity.value == False %}
   absent
   {% else %}
   not reported
@@ -59,13 +59,18 @@ not reported
 <p>Similar to allopurinol, some patients have reactions to febuxostat that preclude its use. It is uncommon to start a patient on febuxostat before allopurinol, so if you aren't able to tolerate both allopurinol and febuxostat your gout care will need to be discussed with a rheumatologist.
 </p>
 <h3><u>Cardiac History</u>:
-  {% if object.MACE == True %}
-  present
-  {% elif object.MACE == False %}
-  absent
-  {% else %}
-  unknown
+{% if object.heartattack.value == True or object.stroke.value == True %}
+  {% if object.heartattack.value == True %}
+  Heart Attack
   {% endif %}
+  {% if object.stroke.value == True %}
+  Stroke
+  {% endif %}
+{% elif object.heartattack.value == False or object.stroke.value == False %}
+absent
+{% else %}
+not reported
+{% endif %}
 </h3>
 <p>Large clinical trials of febuxostat were associated with an increased risk of serious cardiovascular events, such as heart attacks, as well as mortality due to cardiac causes. Whether this is a true side effect is hotly debated. If you are prescribed febuxostat and have a history of heart disease, you should discuss the risks and benefits with your doctor.</p>
 <hr class="my-6" color="white">

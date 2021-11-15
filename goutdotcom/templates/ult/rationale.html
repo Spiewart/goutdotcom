@@ -82,6 +82,10 @@
     </h3>
     <p>Chronic kidney disease (CKD) is associated with incident and progressive gout (<a href="#2">2</a>, <a
     href="#3">3</a>).</p>
+    {% if object.ckd.dialysis == True %}
+    <h3><u>Dialysis</u>: present</h3>
+      <p>You are on dialysis. Dialysis removes uric acid from the blood stream and serves as ULT for you.</p>
+    {% endif %}
     <h3><u>Hyperuricemia</u>:
     {% if object.hyperuricemia.value == True %}
     present

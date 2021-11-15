@@ -86,6 +86,9 @@ class ULTAid(TimeStampedModel):
         if self.ckd.value == True:
             if self.ckd.dialysis == True:
                 ult_choice["dialysis"] = True
+            if self.ckd.stage != None:
+                if self.ckd.stage >= 3:
+                    ult_choice["dose"] = "50 mg"
 
         if self.allopurinol_hypersensitivity.value == True:
             if (

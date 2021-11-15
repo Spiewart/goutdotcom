@@ -62,13 +62,13 @@
       {% endif %}
       {% endif %}
       <h3><u>Diabetes</u></h3>
-      {% if object.diabetes == True %}
+      {% if object.diabetes.value == True %}
       <p>You indicated that you have diabetes.
         This is mostly pertinent if you are considering taking steroids as a treatment for your gout flares, as they can
         cause your blood sugars to rise (<a href="https://en.wikipedia.org/wiki/Hyperglycemia"
           target="_blank">hyperglycemia</a>).
       </p>
-      {% elif object.diabetes == False %}
+      {% elif object.diabetes.value == False %}
       <p>You indicated that you don't have diabetes.
         You can more safely take steroids for gout flares, though they are still not usually the first choice.
       </p>
@@ -96,11 +96,11 @@
         commonly used for gout flares.</p>
       {% endif %}
       <h3><u>Osteoporosis</u></h3>
-      {% if object.osteoporosis == True %}
+      {% if object.osteoporosis.value == True %}
       <p>You have <a href="https://en.wikipedia.org/wiki/Osteoporosis" target="_blank">osteoporosis</a>. This is
         important because <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a>, when used long-term, are
         associated with osteoporosis and thus are generally avoided in this condition.</p>
-      {% elif object.osteoporosis == False %}
+      {% elif object.osteoporosis.value == False %}
       <p>You don't have <a href="https://en.wikipedia.org/wiki/Osteoporosis" target="_blank">osteoporosis</a>. That's a
         good thing in the event you need <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a> for your
         gout flare.</p>
@@ -110,7 +110,7 @@
         medication possible given the short duration of therapy.</p>
       {% endif %}
       <h3 id="colchicine_contraindications"><u>Colchicine Contraindications</u></h3>
-      {% if object.colchicine_contraindication == True %}
+      {% if object.colchicine_interactions.value == True %}
       <p>You reported a relative contraindication to colchicine. Most commonly this is chronic kidney disease, as
         colchicine is metabolized by the kidney and can build up, increasing the risk of side effects, in patients with
         CKD.</p>
@@ -119,7 +119,7 @@
           target="_blank">clarithromycin</a>, <a
           href="https://en.wikipedia.org/wiki/Diltiazem#cite_note-dilt-inhibit1-20" target="_blank">diltiazem</a>) that
         require physician or pharmacist consultation prior to initiation of colchicine.</p>
-      {% elif object.colchicine_contraindication == False %}
+      {% elif object.colchicine_interactions.value == False %}
       <p>You don't have any contraindications to colchicine. These are typically CKD or being on a medication that
         interacts with colchicine, such as <a href="https://en.wikipedia.org/wiki/Simvastatin"
           target="_blank">simvastatin</a>, <a href="https://en.wikipedia.org/wiki/Clarithromycin"

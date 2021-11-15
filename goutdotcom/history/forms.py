@@ -130,6 +130,7 @@ class CKDForm(CKDSimpleForm):
         self.fields["value"].widget = forms.CheckboxInput()
         self.fields["dialysis"].widget = forms.CheckboxInput()
         self.fields["stage"].empty_label = None
+        self.fields["stage"].required = False
         self.fields["stage"].widget = forms.RadioSelect()
         self.helper = FormHelper(self)
         self.helper.form_tag = False

@@ -28,6 +28,10 @@ created {{ object.created }}
   Generally, there is some scientific evidence that you will benefit, but it is not as robust as a strong recommendation.
   It is more a matter of expert opinion.</p>
 <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.</p>
+{% elif object.calculator == "Dialysis" %}
+<h1 class="nested-container">Dialysis is ULT</h1>
+<h2><a href="{% url 'treatment:about-ult' %}">ULT</a> (urate-lowering therapy): dialysis.</h2>
+<p>Dialysis removes uric acid from your body, thus you don't need medication for this purpose.</p>
 {% else %}
 <h1 class="nested-container">ULT Not Indicated</h1>
 <h2>Recommended Against</h2>
