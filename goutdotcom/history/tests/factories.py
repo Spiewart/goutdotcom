@@ -14,6 +14,18 @@ from ..models import *
 pytestmark = pytest.mark.django_db
 
 # All factories utilizing choices need index 0 [0] to access value for each choice field, index 1 [1] is the label
+class AlcoholFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    number = factory.Faker("pyint", min_value=0, max_value=100)
+    wine = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    beer = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    liquor = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Alcohol
+
+
 class AllopurinolHypersensitivityFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     rash = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
@@ -46,6 +58,12 @@ class FebuxostatHypersensitivityFactory(DjangoModelFactory):
     class Meta:
         model = FebuxostatHypersensitivity
 
+class FructoseFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Fructose
 
 class HypertensionFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
@@ -70,6 +88,14 @@ class IBDFactory(DjangoModelFactory):
 
     class Meta:
         model = IBD
+
+
+class GoutFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Gout
 
 
 class CHFFactory(DjangoModelFactory):
@@ -115,6 +141,12 @@ class OsteoporosisFactory(DjangoModelFactory):
     class Meta:
         model = Osteoporosis
 
+class ShellfishFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Shellfish
 
 class UrateKidneyStonesFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])

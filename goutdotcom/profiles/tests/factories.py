@@ -5,6 +5,7 @@ from factory import Faker
 from factory.django import DjangoModelFactory
 
 from goutdotcom.history.tests.factories import (
+    AlcoholFactory,
     AllopurinolHypersensitivityFactory,
     AnticoagulationFactory,
     BleedFactory,
@@ -14,18 +15,21 @@ from goutdotcom.history.tests.factories import (
     DiabetesFactory,
     ErosionsFactory,
     FebuxostatHypersensitivityFactory,
+    FructoseFactory,
     HeartAttackFactory,
     HypertensionFactory,
     HyperuricemiaFactory,
     IBDFactory,
+    GoutFactory,
     OrganTransplantFactory,
     OsteoporosisFactory,
+    ShellfishFactory,
     StrokeFactory,
     TophiFactory,
     UrateKidneyStonesFactory,
     XOIInteractionsFactory,
 )
-from goutdotcom.profiles.models import MedicalProfile, PatientProfile, races, sexes
+from goutdotcom.profiles.models import FamilyProfile, MedicalProfile, PatientProfile, SocialProfile, races, sexes
 from goutdotcom.users.models import User
 from goutdotcom.users.tests.factories import UserFactory
 from goutdotcom.vitals.tests.factories import HeightFactory, WeightFactory
@@ -35,14 +39,21 @@ pytestmark = pytest.mark.django_db
 GENDER_CHOICES = [x[0] for x in sexes]
 RACE_CHOICES = [x[0] for x in races]
 
+@factory.django.mute_signals(post_save)
+class FamilyProfileFactory(DjangoModelFactory):
+    class Meta:
+        model = FamilyProfile
 
+    user = factory.SubFactory(UserFactory)
+    gout = factory.SubFactory(GoutFactory, user=factory.SelfAttribute("..user"))
+
+@factory.django.mute_signals(post_save)
 class PatientProfileFactory(DjangoModelFactory):
     class Meta:
         model = PatientProfile
 
     user = factory.SubFactory(UserFactory)
     date_of_birth = Faker("date_of_birth")
-    drinks_per_week = Faker("pyint", min_value=1, max_value=110)
     gender = factory.Iterator(GENDER_CHOICES)
     race = factory.Iterator(RACE_CHOICES)
     height = factory.SubFactory(HeightFactory, user=factory.SelfAttribute("..user"))
@@ -78,3 +89,14 @@ class MedicalProfileFactory(DjangoModelFactory):
     heartattack = factory.SubFactory(HeartAttackFactory, user=factory.SelfAttribute("..user"))
     stroke = factory.SubFactory(StrokeFactory, user=factory.SelfAttribute("..user"))
     XOI_interactions = factory.SubFactory(XOIInteractionsFactory, user=factory.SelfAttribute("..user"))
+
+
+@factory.django.mute_signals(post_save)
+class SocialProfileFactory(DjangoModelFactory):
+    class Meta:
+        model = SocialProfile
+
+    user = factory.SubFactory(UserFactory)
+    alcohol = factory.SubFactory(AlcoholFactory, user=factory.SelfAttribute("..user"))
+    fructose = factory.SubFactory(FructoseFactory, user=factory.SelfAttribute("..user"))
+    shellfish = factory.SubFactory(ShellfishFactory, user=factory.SelfAttribute("..user"))

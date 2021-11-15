@@ -1,3 +1,5 @@
+@use 'base';
+@use 'aid_detail';
 :root {
   --main-background: linear-gradient(to left top, rgb(255, 34, 225), rgb(240, 255, 29));
   --main-background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
@@ -19,7 +21,8 @@
   --sub-list-padding: 0; }
 
 body {
-  background: var(--main-background); }
+  background: -webkit-gradient(linear, right bottom, left top, from(white), to(#a8b400));
+  background: linear-gradient(to left top, white, #a8b400); }
 
 .jumbotron {
   background: var(--main-nested-container-background);

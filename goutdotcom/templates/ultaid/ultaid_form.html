@@ -24,6 +24,17 @@
 {% endif %}
 {% endblock form %}
 
-{% block inline_javascript %}
 
+{% block inline_javascript %}
+<script>
+// this is executed once when the page loads
+  $(document).ready(function() {
+  // set things up so my function will be called when first_flare
+  $('#id_CKD-value').change(CKD_checker);
+  CKD_checker.call($('#id_CKD-value').get(0));
+  $('#id_organ_transplant-value').change(transplant_checker);
+  transplant_checker.call($('#id_organ_transplant-value').get(0));
+  });
+</script>
 {% endblock inline_javascript %}
+

@@ -301,8 +301,39 @@ function contraindications_profile_bleed() {
 /* ULTAid app JS */
 // function that checks whether or not CKD is checked and hides/shows dialysis/stage fields as appropriate
 function CKD_checker() {
-
+// function that checks whether CKD is checked or not, shows dialysis and stage fields or hides/empties them
+  if ($('#id_CKD-value').is(":checked")) {
+      $('#div_id_CKD-dialysis').show();
+      $('#div_id_CKD-stage').show();
+  }
+  else {
+    $('#div_id_CKD-dialysis').hide();
+    $('#id_CKD-dialysis').prop("checked", false);
+    $('#div_id_CKD-stage').hide();
+    $('#id_CKD-stage_1').prop("checked", false);
+    $('#id_CKD-stage_2').prop("checked", false);
+    $('#id_CKD-stage_3').prop("checked", false);
+    $('#id_CKD-stage_4').prop("checked", false);
+    $('#id_CKD-stage_5').prop("checked", false);
+  }
 }
+
+function transplant_checker() {
+// function that checks whether CKD is checked or not, shows dialysis and stage fields or hides/empties them
+  if ($('#id_organ_transplant-value').is(":checked")) {
+      $('#div_id_organ_transplant-organ').show();
+  }
+  else {
+    $('#div_id_organ_transplant-organ').hide();
+    $('#id_organ_transplant-organ_1').prop("checked", false);
+    $('#id_organ_transplant-organ_2').prop("checked", false);
+    $('#id_organ_transplant-organ_3').prop("checked", false);
+    $('#id_organ_transplant-organ_4').prop("checked", false);
+    $('#id_organ_transplant-organ_5').prop("checked", false);
+    $('#id_organ_transplant-organ_6').prop("checked", false);
+  }
+}
+
 /* ULT app JS */
 // function that adjusts value of freq_flares based off num_flares and uses check_first_flare() to hides/shows subsequent fields based upon first_flare value
 function one_flare() {

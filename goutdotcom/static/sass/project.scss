@@ -1,3 +1,89 @@
+@use 'base';
+@use 'aid_detail';
+// Main Colors
+$main-background: linear-gradient(to left top, rgb(255, 255, 255), rgb(168, 180, 0));
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+
+
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+// Main Colors
+
+
+body {
+  font-family: 'Lato', sans-serif;
+  color: #333;
+  line-height: 1.6;
+  background: $main-background;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+h1, h2 {
+  font-weight: 300;
+  line-height: 1.2;
+  margin: 10px 0;
+}
+
+p {
+  margin: 10px 0;
+}
+
+img {
+  width: 100%;
+}
+
+.navbar {
+  background-color: #047aed;
+  color: #fff;
+  height: 70px;
+}
+
+.navbar .flex {
+  justify-content: space-between;
+}
+
+.navbar ul {
+  display: flex;
+}
+
+.navbar a {
+  color: #fff;
+  padding: 10px;
+  margin: 0 5px;
+}
+
+.navbar a:hover {
+  border-bottom: 2px #fff solid;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow: auto;
+  padding: 0 40px;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 :root {
   --main-background: linear-gradient(to left top, rgb(255, 34, 225), rgb(240, 255, 29));
   --main-background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
@@ -19,9 +105,7 @@
   --sub-list-padding: 0;
 }
 
-body {
-  background: var(--main-background);
-}
+
 
 .jumbotron {
   background: var(--main-nested-container-background);
@@ -79,9 +163,9 @@ body {
   border-style: var(--main-master-container-border-style);
   border-width: var(--main-master-container-border-width);
   border-color: var(--main-master-container-border-color);
-  color: rgb(231, 231, 231);
+  color: $aid-container-color;
   padding: var(--main-master-container-padding);
-  background-color: var(--main-master-container-background-color);
+  background-color: $aid-container-background;
 }
 
 .sub-default-container {
@@ -92,10 +176,6 @@ body {
 
 .hyperlink:hover {
   color: black;
-}
-
-.navbar {
-  background: var(--main-nested-container-background);
 }
 
 .nested-container {

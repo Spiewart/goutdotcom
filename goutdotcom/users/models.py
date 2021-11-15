@@ -64,6 +64,7 @@ class User(AbstractUser):
         except AttributeError:
             return False
 
+
 class PatientManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)

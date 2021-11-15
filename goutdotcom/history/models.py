@@ -4,6 +4,7 @@ from django.db.models.fields import BooleanField, IntegerField
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
@@ -67,11 +68,11 @@ class CKD(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Stage(models.IntegerChoices):
-        I = 1
-        II = 2
-        III = 3
-        IV = 4
-        V = 5
+        I = 1, _('I')
+        II = 2, _('II')
+        III = 3, _('III')
+        IV = 4, _('IV')
+        V = 5, _('V')
 
     stage = IntegerField(
         choices=Stage.choices,

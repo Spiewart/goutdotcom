@@ -139,7 +139,7 @@ class CKDForm(CKDSimpleForm):
                 "",
                 "value",
                 "dialysis",
-                "stage",
+                InlineCheckboxes("stage"),
                 id="CKD_for_profile",
             ),
         )

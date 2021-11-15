@@ -79,14 +79,14 @@
       </p>
       {% endif %}
       <h3><u>NSAID Contraindications</u></h3>
-      {% if object.NSAID_contraindication == True %}
+      {% if object.heartattack.value == True or object.stroke.value == True or object.IBD.value == True or object.anticoagulation.value == True or object.CKD.value == True or object.bleed.value == True %}
       <p>You indicated that you have or have had one or more relative contraindications to non-steroidal
         antiinflammatory drugs (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s).
         It's good you let us know this, because NSAIDs are often the first treatment used for gout flares.
       </p>
       <p>Not all of the contraindications listed are <i>absolute</i> contraindications to NSAIDs, but we would need more
         information before considering them and this should best be done via consulting with your doctor.</p>
-      {% elif object.NSAID_contraindication == False %}
+      {% elif object.heartattack.value == False and object.stroke.value == False and object.IBD.value == False and object.anticoagulation.value == False and object.CKD.value == False and object.bleed.value == False %}
       <p>You indicated you don't have any relative or absolute contraindications to non-steroidal antiinflammatory drugs
         (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s). That's great, because they are very effective for
         gout flares.</p>

@@ -3,10 +3,11 @@ from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 
 from goutdotcom.users.tests.factories import UserFactory
-from goutdotcom.vitals.models import Weight, Height
+from goutdotcom.vitals.models import Height, Weight
 from goutdotcom.vitals.tests.factories import WeightFactory
 
 from ..views import IndexView, VitalCreate, VitalDetail
+
 
 class TestDetailView(TestCase):
     def setUp(self):
@@ -27,7 +28,8 @@ class TestDetailView(TestCase):
     def test_get_object(self):
         request = self.factory.get(self.detail_url)
         request.user = self.user
-        ### response with fake Weight object's name, pk for VitalDetail view
+        ### response with fake Weight object's name, pk for VitalDetail vie
+        # w
         view = VitalDetail(kwargs={'vital':self.weight.name, 'pk':self.weight.pk})
         view.model = apps.get_model('vitals', model_name=view.kwargs['vital'])
         view.request = request
