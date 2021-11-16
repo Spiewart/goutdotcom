@@ -70,7 +70,7 @@ class ULT(TimeStampedModel):
         if self.num_flares == "one":
             if self.erosions.value == True or self.tophi.value == True:
                 return go_forth
-            elif self.ckd.value == True or self.uric_acid == True or self.stones.value == True:
+            elif self.ckd.value == True or self.hyperuricemia == True or self.stones.value == True:
                 return conditional
             else:
                 return abstain

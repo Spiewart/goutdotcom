@@ -2,12 +2,11 @@
 {% load static %}
 
 {% block content %}
-<div class="jumbotron-fluid default-container">
+<section class="p-0 text-center">
+<div class="container container-homepage">
         <div class="row">
           <div class="col col-fluid">
-            <h1 class="nested-container">Gouthelper</h1>
-          <h2 class="lead">Educate Yourself, Don't Live with Gout</h2>
-          <hr class="my-6" color="white">
+            <h1>Don't Live with <span class="text-warning">Gout<span></h1>
           </div>
         </div>
         <div class="row">
@@ -37,5 +36,21 @@
               </div>
       </div>
   </div>
+</section>
 </main>
 {% endblock content %}
+{% block inline_javascript %}
+<script>
+jQuery(function($) {
+  var path = window.location.href;
+  $('li a').each(function() {
+  if (this.href === path) {
+  $(this).addClass('active');
+  }
+  else {
+  $(this).removeClass('active');
+  }
+  });
+});
+</script>
+{% endblock inline_javascript %}

@@ -4,9 +4,9 @@
 {% if form.instance.pk %} Update Flare {% else %} New Flare {% endif %} {% endblock%}
 {% block header %}
 {% if form.instance.pk %}
-<h1 class="nested-container">Update Flare Aid</h1>
+<h1 class="flareaid-form">Update Flare Aid</h1>
 {% else %}
-<h1 class="nested-container">New Flare Aid</h1>
+<h1>New Flare Aid</h1>
 {% endif %} {% endblock header %} {% block form %} {% if form.instance.pk %}
 <form
   class="form-horizontal default-container"
@@ -36,6 +36,17 @@
   // checks if perfect_health is true and, if so, displays only monoarticular field, else displays long list of other
   $("#id_CKD-value").change(flare_aid_dialysis);
   flare_aid_dialysis.call($("#id_CKD-value").get(0));
+  });
+  jQuery(function($) {
+    var path = window.location.href;
+    $('li a').each(function() {
+    if (this.href === path) {
+    $(this).addClass('active');
+    }
+    else {
+    $(this).removeClass('active');
+    }
+    });
   });
 </script>
 {% endblock inline_javascript %}

@@ -54,7 +54,7 @@
 
   <body>
     <div class="mb-1">
-      <nav class="navbar navbar-expand-md navbar-light bg-light">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark py-1">
         <button
           class="navbar-toggler navbar-toggler-right"
           type="button"
@@ -69,7 +69,7 @@
         <a class="navbar-brand" href="{% url 'home' %}">Gouthelper</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'home' %}"
                 >Home <span class="sr-only">(current)</span></a
               >
@@ -79,9 +79,8 @@
             </li>
             <li class="nav-item"></li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'flareaid:create' %}"
-                >FlareAid</a
-              >
+              <a class="nav-link link-flareaid" href="{% url 'flareaid:create' %}"
+                >FlareAid</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'ult:create' %}">ULT</a>
@@ -90,20 +89,17 @@
               <a class="nav-link" href="{% url 'ultaid:create' %}">ULTAid</a>
             </li>
             <li class="nav-item">{% if request.user.is_authenticated %}</li>
-
             <li class="nav-item">
               {# URL provided by django-allauth/account/urls.py #}
               <a
                 class="nav-link"
                 href="{% url 'users:detail' request.user.username  %}"
-                >{% trans "Dashboard" %}</a
-              >
+                >{% trans "Dashboard" %}</a>
             </li>
             <li class="nav-item">
               {# URL provided by django-allauth/account/urls.py #}
               <a class="nav-link" href="{% url 'account_logout' %}"
-                >{% trans "Sign Out" %}</a
-              >
+                >{% trans "Sign Out" %}</a>
             </li>
             {% else %}
             <li class="nav-item">
@@ -130,7 +126,7 @@
       </nav>
     </div>
 
-    <div class="container-fluid">
+    <div class="container-fluid px-0">
       {% if messages %} {% for message in messages %}
       <div
         class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
@@ -144,14 +140,17 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      {% endfor %} {% endif %} {% block content %}
+      {% endfor %} {% endif %}
+      {% block content %}
       <p>Use this document as a way to quick start any new project.</p>
       {% endblock content %}
     </div>
     <!-- /container -->
 
-    {% block modal %}{% endblock modal %} {% block inline_javascript %}
-    {# Script tags with only code, no src (defer by default) #}
+    {% block modal %}
+    {% endblock modal %}
+    {% block inline_javascript %}
+    {#Script tags with only code, no src (defer by default) #}
     {% endblock inline_javascript %}
   </body>
 </html>

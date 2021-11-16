@@ -45,3 +45,17 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 </form>
 
 {% endblock %}
+{% block inline_javascript %}
+<script>
+  jQuery(function ($) {
+    var path = window.location.href;
+    $('li a').each(function () {
+      if (this.href === path) {
+        $(this).addClass('active');
+      } else {
+        $(this).removeClass('active');
+      }
+    });
+  });
+</script>
+{% endblock inline_javascript %}

@@ -4,9 +4,9 @@
 
 {% block header %}
 {% if form.instance.pk %}
-<h1 class="nested-container">Do you still need urate-lowering therapy (ULT)?</h1>
+<h1>Do you still need urate-lowering therapy (ULT)?</h1>
 {% else %}
-<h1 class="nested-container">Do you need urate-lowering therapy (ULT)?</h1>
+<h1>Do you need urate-lowering therapy (ULT)?</h1>
 {% endif %}
 {% endblock header %}
 
@@ -37,6 +37,16 @@
       check_ckd.call($('#id_CKD-value').get(0));
     // Check for checked subfields after loading other functions, otherwise the first two will hide the subfields
     check_subfields();
+    });
+    jQuery(function ($) {
+      var path = window.location.href;
+      $('li a').each(function () {
+        if (this.href === path) {
+          $(this).addClass('active');
+        } else {
+          $(this).removeClass('active');
+        }
+      });
     });
 </script>
 {% endblock inline_javascript %}

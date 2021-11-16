@@ -1,111 +1,56 @@
-@use 'base';
-@use 'aid_detail';
-// Main Colors
-$main-background: linear-gradient(to left top, rgb(255, 255, 255), rgb(168, 180, 0));
+$background-color: rgba(255, 253, 115, 0.877);
+$content-color: rgba(0, 34, 128, 0.863);
+$h1-form-color: rgb(119, 146, 0);
+$text-color: rgb(231, 231, 231);
 
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
-
-
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-// Main Colors
-
-
+// Body Main Style
 body {
-  font-family: 'Lato', sans-serif;
-  color: #333;
-  line-height: 1.6;
-  background: $main-background;
-}
-
-ul {
-  list-style-type: none;
-}
-
-a {
-  text-decoration: none;
-  color: #333;
-}
-
-h1, h2 {
-  font-weight: 300;
-  line-height: 1.2;
-  margin: 10px 0;
-}
-
-p {
-  margin: 10px 0;
-}
-
-img {
-  width: 100%;
-}
-
-.navbar {
-  background-color: #047aed;
-  color: #fff;
-  height: 70px;
-}
-
-.navbar .flex {
-  justify-content: space-between;
-}
-
-.navbar ul {
-  display: flex;
-}
-
-.navbar a {
-  color: #fff;
-  padding: 10px;
-  margin: 0 5px;
-}
-
-.navbar a:hover {
-  border-bottom: 2px #fff solid;
+  background-color: $background-color;
 }
 
 .container {
-  max-width: 1100px;
-  margin: 0 auto;
-  overflow: auto;
-  padding: 0 40px;
+  color: rgb(224, 224, 238);
+  padding: 20px;
 }
 
-.flex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.content-container {
+  background-color: $content-color;
+  padding: 20px;
+}
+
+input[type="checkbox"] {
+  float: left;
+  width: 20px
+}
+
+h1 {
+  color: $text-color;
+  padding: 5px;
+}
+
+.card {
+  background: $content-color;
+  width: 18rem;
   height: 100%;
+  color: rgb(231, 231, 231);
+  border-color: rgb(138, 35, 35);
+  border-width: 2px;
 }
 
-:root {
-  --main-background: linear-gradient(to left top, rgb(255, 34, 225), rgb(240, 255, 29));
-  --main-background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
-  --main-button-background-color: rgb(62, 67, 71);
-  --main-button-border-color: rgb(231, 231, 231);
-  --main-master-container-background-color: rgb(0, 8, 70);
-  --main-master-container-border-style: solid;
-  --main-master-container-border-width: medium;
-  --main-master-container-border-color: rgb(0, 0, 0);
-  --main-master-container-box-shadow: 10px 10px 5px rgb(47, 52, 124);
-  --main-master-container-padding: 5px;
-  --main-nested-container-background: linear-gradient(to right bottom, rgb(255, 34, 225), rgb(240, 255, 29));
-  --main-nested-container-border-style: solid;
-  --main-nested-container-border-width: medium;
-  --main-nested-container-border-color: rgb(1, 14, 20);
-  --main-nested-container-box-shadow: 10px 10px 5px rgb(240, 255, 29);
-  --main-nested-container-padding: 5px;
-  --main-master-sub-container-border-color: white;
-  --sub-list-padding: 0;
+.btn {
+  background-color: rgb(255, 34, 225);
+  border-color: rgb(138, 35, 35);
 }
 
+.active, .btn:hover {
+  background-color: rgb(226, 10, 10);
+}
 
+// navbar styling
+
+.form-horizontal .custom-control {
+  padding: 0px;
+}
 
 .jumbotron {
   background: var(--main-nested-container-background);
@@ -137,36 +82,15 @@ img {
   display: none;
 }
 
-.btn {
-  background-color: var(--main-button-background-color);
-  border-color: var(--main-button-border-color);
-}
 
-.btn:hover {
-  background-color: var(--main-button-border-color);
-}
 
-#card-homepage {
-  background: var(--main-nested-container-background);
-  width: 18rem;
-  height: 100%;
-  color: var(--main-master-container-background-color);
-  border-color: white;
-  border-width: 2px;
-}
+
 
 .nav-pills .nav-link.active {
-  background-color: var(--main-master-container-background-color);
+  background-color: green;
 }
 
-.default-container {
-  border-style: var(--main-master-container-border-style);
-  border-width: var(--main-master-container-border-width);
-  border-color: var(--main-master-container-border-color);
-  color: $aid-container-color;
-  padding: var(--main-master-container-padding);
-  background-color: $aid-container-background;
-}
+
 
 .sub-default-container {
   color: rgb(231, 231, 231);
@@ -176,15 +100,6 @@ img {
 
 .hyperlink:hover {
   color: black;
-}
-
-.nested-container {
-  background: var(--main-nested-container-background);
-  border-style: var(--main-nested-container-border-style);
-  border-width: var(--main-nested-container-border-width);
-  border-color: var(--main-nested-container-border-color);
-  color: rgb(231, 231, 231);
-  padding: var(--main-nested-container-padding);
 }
 
 

@@ -4,9 +4,9 @@
 
 {% block header %}
 {% if form.instance.pk %}
-<h1 class="nested-container">Your ULT plan?</h1>
+<h1>Your ULT plan?</h1>
 {% else %}
-<h1 class="nested-container">Make a ULT plan</h1>
+<h1>Make a ULT plan</h1>
 {% endif %}
 {% endblock header %}
 
@@ -34,6 +34,16 @@
   CKD_checker.call($('#id_CKD-value').get(0));
   $('#id_organ_transplant-value').change(transplant_checker);
   transplant_checker.call($('#id_organ_transplant-value').get(0));
+  });
+  jQuery(function ($) {
+    var path = window.location.href;
+    $('li a').each(function () {
+    if (this.href === path) {
+    $(this).addClass('active');
+    } else {
+    $(this).removeClass('active');
+    }
+    });
   });
 </script>
 {% endblock inline_javascript %}
