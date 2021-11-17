@@ -8,11 +8,11 @@
     <div class="col">
       <main>
         {% block vital_title %}
-        <h1 class="nested-container">
+        <h1 class="content-heading">
           {{ object|to_class_name }} ({{ object.date_recorded.date }})
         </h1>
         {% endblock vital_title %}
-        <div class="container nested-container">
+        <div class="container content-heading">
           {% if object.name == 'height' %}
             <li>{{ object.convert_inches_to_feet }}</li>
           {% else %}

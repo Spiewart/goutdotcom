@@ -8,7 +8,7 @@
         <div class="column">
             <div class="container-fluid default-container">
                 {% block header %}
-                <h1 class="nested-container"><a id="{{ treatment }}">{{ treatment|capfirst }}</a>
+                <h1 class="content-heading"><a id="{{ treatment }}">{{ treatment|capfirst }}</a>
                 <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About</a>
                 {% if request.user.is_authenticated %}
                   {% if treatment|lower == 'allopurinol' or treatment.generic_name == 'febuxostat' or treatment.generic_name == 'probenecid'%}
@@ -35,21 +35,21 @@
                   </ol>
                 {% endblock quicklinks %}
                 <hr size="6" color="white">
-                <h2 class="nested-container"><a id="biology">Biology</a></h2>
+                <h2 class="content-heading"><a id="biology">Biology</a></h2>
                 {% block biology %}{% endblock biology %}
                 <hr size="6" color="white">
-                <h2 class="nested-container"><a id="pharmacology">Pharmacology</a></h2>
+                <h2 class="content-heading"><a id="pharmacology">Pharmacology</a></h2>
                 {% block pharmacology %}{% endblock pharmacology %}
                 <hr size="6" color="white">
                 {% block dosing %}{% endblock dosing %}
                 {% block sideeffects %}{% endblock sideeffects %}
-                <h2 class="nested-container"><a id="history">History</a></h2>
+                <h2 class="content-heading"><a id="history">History</a></h2>
                 {% block history %}{% endblock history %}
                 <hr size="6" color="white">
-                <h2 class="nested-container"><a id="ingout">In Gout</a></h2>
+                <h2 class="content-heading"><a id="ingout">In Gout</a></h2>
                 {% block ingout %}{% endblock ingout %}
                 <hr size="6" color="white">
-                <h2 class="nested-container"><a id="references">References</a></h2>
+                <h2 class="content-heading"><a id="references">References</a></h2>
                 {% block references %}{% endblock references %}
                 <u><a href="#{{ lab }}">Back to Top</a></u>
             </div>

@@ -1,21 +1,43 @@
 $background-color: rgba(255, 253, 115, 0.877);
 $content-color: rgba(0, 34, 128, 0.863);
-$h1-form-color: rgb(119, 146, 0);
-$text-color: rgb(231, 231, 231);
+$h1-container-color: rgba(255, 253, 115, 0.877);
+$content-text-color: rgb(231, 231, 231);
+$border-color: rgb(231, 231, 231);
+$active-button-color: rgba(180, 1, 224, 0.678);
 
 // Body Main Style
 body {
   background-color: $background-color;
 }
 
-.container {
-  color: rgb(224, 224, 238);
-  padding: 20px;
-}
-
 .content-container {
   background-color: $content-color;
   padding: 20px;
+  color: $content-text-color;
+
+  h1, h2 {
+    background-color: $h1-container-color;
+    color: $content-color;
+    padding: 5px;
+  };
+
+  .btn {
+    background-color: $background-color;
+    border-color: $border-color;
+    color: $content-color;
+  }
+
+  .active,
+  .btn:hover {
+    background-color: $active-button-color;
+    color: $content-color;
+  };
+}
+
+.content-heading {
+  background-color: $h1-container-color;
+  color: $content-color;
+  padding: 5px;
 }
 
 input[type="checkbox"] {
@@ -24,16 +46,59 @@ input[type="checkbox"] {
 }
 
 h1 {
-  color: $text-color;
+  background-color: $content-color;
+  color: $content-text-color;
   padding: 5px;
+}
+
+// For FlareAid, ULTAid, ULT create/update forms
+.aidcreateupdate-form {
+  background-color: $content-color;
+  padding: 20px;
+  color: $content-text-color;
+
+  h1, h2 {
+    background-color: $h1-container-color;
+    color: $content-color;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px;
+  };
+
+  hr {
+    padding: 0px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .btn {
+    background-color: $background-color;
+    border-color: $border-color;
+    color: $content-color;
+  }
+
+  .button {
+    margin-top: 5px;
+    padding: 10px;
+  };
+
+  .active, .btn:hover {
+    background-color: $active-button-color;
+    color: $content-color;
+  };
+
+  .form-group {
+    margin: 0px;
+    padding: 0px;
+  };
 }
 
 .card {
   background: $content-color;
   width: 18rem;
   height: 100%;
-  color: rgb(231, 231, 231);
-  border-color: rgb(138, 35, 35);
+  color: $content-text-color;
+  border-color: rgb(0, 0, 0);
   border-width: 2px;
 }
 
@@ -43,32 +108,27 @@ h1 {
 }
 
 .active, .btn:hover {
-  background-color: rgb(226, 10, 10);
-}
-
-// navbar styling
-
-.form-horizontal .custom-control {
-  padding: 0px;
+  background-color: $background-color;
+  color: $content-color;
 }
 
 .jumbotron {
-  background: var(--main-nested-container-background);
-  border-style: var(--main-nested-container-border-style);
-  border-width: var(--main-nested-container-border-width);
-  border-color: var(--main-nested-container-border-color);
-  padding: var(--main-nested-container-padding);
+  background: var(--main-content-heading-background);
+  border-style: var(--main-content-heading-border-style);
+  border-width: var(--main-content-heading-border-width);
+  border-color: var(--main-content-heading-border-color);
+  padding: var(--main-content-heading-padding);
   width: 100%;
   margin: 0px;
   padding: 0px;
 }
 
 .jumbotron-about {
-  background: var(--main-nested-container-background);
-  border-style: var(--main-nested-container-border-style);
-  border-width: var(--main-nested-container-border-width);
+  background: var(--main-content-heading-background);
+  border-style: var(--main-content-heading-border-style);
+  border-width: var(--main-content-heading-border-width);
   border-color: rgb(0, 8, 70);
-  padding: var(--main-nested-container-padding);
+  padding: var(--main-content-heading-padding);
   width: 100%;
   margin: 0px;
   padding: 0px;
@@ -95,7 +155,7 @@ h1 {
 .sub-default-container {
   color: rgb(231, 231, 231);
   padding: var(--main-master-container-padding);
-  background-color: var(--main-nested-container-background-color);
+  background-color: var(--main-content-heading-background-color);
 }
 
 .hyperlink:hover {
@@ -104,11 +164,11 @@ h1 {
 
 
 .list-items-small {
-  background: var(--main-nested-container-background);
-  border-style: var(--main-nested-container-border-style);
-  border-width: var(--main-nested-container-border-width);
-  border-color: var(--main-nested-container-border-color);
-  padding: var(--main-nested-container-padding);
+  background: var(--main-content-heading-background);
+  border-style: var(--main-content-heading-border-style);
+  border-width: var(--main-content-heading-border-width);
+  border-color: var(--main-content-heading-border-color);
+  padding: var(--main-content-heading-padding);
   margin: 5px;
   list-style-type: square;
 }

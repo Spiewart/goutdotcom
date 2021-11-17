@@ -7,7 +7,7 @@
   {% if object_list %}
     <header class="page-header">
     {% block lab_title %}
-        <h1 class="nested-container">{{ object_list|list_to_name }}s
+        <h1 class="content-heading">{{ object_list|list_to_name }}s
     {% endblock lab_title %}
     {% block buttons %}
     <a class="btn btn-primary" href="{% url 'lab:about' lab %}" role="button" style="float: right;">About: {{ lab|capfirst }}</a>
@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col">
           {% for lab in object_list %}
-              <div class="container nested-container">
+              <div class="container content-heading">
                   <h2 class="default-container">{{ lab.value }} {{ lab.units }} <a href="{{ lab.get_absolute_url }}" class="hyperlink">{{ lab.date_drawn.date }}</a></h2>
                   {% if lab.name == 'creatinine' %}
                   <li class="gdc-list">eGFR: {{ lab.eGFR_calculator }}</li>

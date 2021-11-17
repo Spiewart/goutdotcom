@@ -1,6 +1,6 @@
-<div class="container nested-container">
+<div class="container content-heading">
   <div class="container default-container">
-    <h2 class="nested-container"><a href="{% url 'profiles:update-social' request.user request.user.socialprofile.pk %}">Social History</a></h2>
+    <h2 class="content-heading"><a href="{% url 'profiles:update-social' request.user request.user.socialprofile.pk %}">Social History</a></h2>
     <div class="row">
       {% if object.socialprofile.alcohol.value %}
       <div class="col-auto">

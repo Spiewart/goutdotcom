@@ -3,7 +3,7 @@
 
 {% block content %}
 <main role="main" class="container-fluid default-container">
-      <div class="container nested-container">
+      <div class="container content-heading">
         <h1 class="default-container">{{ request.user|capfirst  }}'s Flare
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
           <div class="btn-group" role="group">
@@ -41,7 +41,7 @@
       </div>
       {% endif %}
       {% if flare.colchicine %}
-        <div class="container nested-container">
+        <div class="container content-heading">
           <h3 class="default-container"><a href="{% url 'treatment:detail' 'colchicine' flare.colchicine.pk %}">{{ flare.colchicine.generic_name|capfirst }}</a>
           {% for brand_name in flare.colchicine.brand_names %}
             ({{ brand_name|capfirst  }})</h3>
@@ -60,7 +60,7 @@
         </div>
       {% endif %}
       {% if flare.meloxicam %}
-        <div class="container nested-container">
+        <div class="container content-heading">
           <h3 class="default-container"><a href="{% url 'treatment:detail' 'meloxicam' flare.meloxicam.pk %}">{{ flare.meloxicam.generic_name|capfirst }}</a>
           {% for brand_name in flare.meloxicam.brand_names %}
             ({{ brand_name|capfirst  }}) </h3>
@@ -84,7 +84,7 @@
         </div>
       {% endif %}
       {% if flare.ibuprofen %}
-        <div class="container nested-container">
+        <div class="container content-heading">
           <h3 class="default-container"><a href="{% url 'treatment:detail' 'ibuprofen' flare.ibuprofen.pk %}">{{ flare.ibuprofen.generic_name|capfirst }}</a>
           {% for brand_name in flare.ibuprofen.brand_names %}
             ({{ brand_name|capfirst  }}) </h3>
@@ -108,7 +108,7 @@
         </div>
       {% endif %}
       {% if flare.naproxen %}
-        <div class="container nested-container">
+        <div class="container content-heading">
           <h3 class="default-container"><a href="{% url 'treatment:detail' 'naproxen' flare.naproxen.pk %}">{{ flare.naproxen.generic_name|capfirst }}</a>
           {% for brand_name in flare.naproxen.brand_names %}
             ({{ brand_name|capfirst  }}) </h3>
@@ -128,7 +128,7 @@
         </div>
       {% endif %}
       {% if flare.celecoxib %}
-        <div class="container nested-container">
+        <div class="container content-heading">
           <h3 class="default-container"><a href="{% url 'treatment:detail' 'celecoxib' flare.celecoxib.pk %}">{{ flare.celecoxib.generic_name|capfirst }}</a>
           {% for brand_name in flare.celecoxib.brand_names %}
             ({{ brand_name|capfirst  }}) </h3>
@@ -148,7 +148,7 @@
         </div>
       {% endif %}
       {% if flare.prednisone %}
-        <div class="container nested-container">
+        <div class="container content-heading">
           <h3 class="default-container"><a href="{% url 'treatment:detail' 'prednisone' flare.prednisone.pk %}">{{ flare.prednisone.generic_name|capfirst }}</a>
           {% for brand_name in flare.prednisone.brand_names %}
             ({{ brand_name|capfirst  }}) </h3>
@@ -168,7 +168,7 @@
         </div>
       {% endif %}
       {% if flare.methylprednisolone %}
-        <div class='container nested-container'>
+        <div class='container content-heading'>
           <h3 class="default-container"><a href="{% url 'treatment:detail' 'methylprednisolone' flare.methylprednisolone.pk %}">{{ flare.methylprednisolone.generic_name|capfirst }}</a>
           {% for brand_name in flare.methylprednisolone.brand_names %}
             ({{ brand_name|capfirst  }}) </h3>
@@ -193,7 +193,7 @@
       </div>
       {% endif %}
         {% if object.urate %}
-          <div class="container nested-container">
+          <div class="container content-heading">
             <h3 class="default-container"><a href="{% url 'lab:detail' 'urate' object.urate.pk %}">Urate</a> (uric acid) </h3>
             <ul class="ul-main-list">
               <li>{{ object.urate }} mg/dL</li>

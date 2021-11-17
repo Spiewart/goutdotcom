@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col default-container">
       {% block header %}
-      <h1 class="nested-container" id="rec">Flare Treatment
+      <h1 class="content-heading" id="rec">Flare Treatment
       {% if object.decision_aid != "Need More Information" %}
       <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button" style="float: right;">New</a>
       {% if request.user.is_authenticated %}
@@ -23,7 +23,7 @@
       {% endblock recommendation %}
       {% block quicklinks %}
       <hr size="6" color="white">
-      <h2 class="nested-container">Quick Links</h2>
+      <h2 class="content-heading">Quick Links</h2>
       <ol id="quick-link-list">
         <li><a href="#explanation">Explanation</a></li>
         <li><a href="#methodology">Methodology</a></li>
@@ -44,7 +44,7 @@
         {% include 'flareaid/options.html' %}
       {% endblock options %}
       {% block references %}
-      <h2 class="nested-container"><a id="references">References</a></h2>
+      <h2 class="content-heading"><a id="references">References</a></h2>
       <ol>
         <li id=1>FitzGerald JD, Dalbeth N, Mikuls T, Brignardello-Petersen R, Guyatt G, Abeles AM, Gelber AC, Harrold LR, Khanna D, King C, Levy G, Libbey C, Mount D, Pillinger MH, Rosenthal A, Singh JA, Sims JE, Smith BJ, Wenger NS, Bae SS, Danve A, Khanna PP, Kim SC, Lenert A, Poon S, Qasim A, Sehra ST, Sharma TSK, Toprover M, Turgunbaev M, Zeng L, Zhang MA, Turner AS, Neogi T. 2020 American College of Rheumatology Guideline for the Management of Gout. Arthritis Care Res (Hoboken). 2020 Jun;72(6):744-760. doi: 10.1002/acr.24180. PMID: 32391934.<a href="https://pubmed.ncbi.nlm.nih.gov/32391934/" target="_blank"> https://doi.org/10.1525/9780520339484-005</a></li>
       </ol>

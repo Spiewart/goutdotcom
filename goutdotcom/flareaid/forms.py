@@ -42,64 +42,60 @@ class FlareAidForm(forms.ModelForm):
                         """
                         {% load crispy_forms_tags %}
                         {% crispy anticoagulation_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy bleed_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy CKD_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy colchicine_interactions_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy diabetes_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy heartattack_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy IBD_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy osteoporosis_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy stroke_form %}
-                        <hr size="6" color="white" id="perfect_health-line">
                         """
+                    ),
+                    HTML(
+                        """
+                    <hr size="6" color="white">
+                    """
                     ),
                     css_id="subfields",
                 ),

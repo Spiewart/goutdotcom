@@ -1,21 +1,64 @@
 body {
   background-color: rgba(255, 253, 115, 0.877); }
 
-.container {
-  color: #e0e0ee;
-  padding: 20px; }
-
 .content-container {
   background-color: rgba(0, 34, 128, 0.863);
-  padding: 20px; }
+  padding: 20px;
+  color: #e7e7e7; }
+  .content-container h1, .content-container h2 {
+    background-color: rgba(255, 253, 115, 0.877);
+    color: rgba(0, 34, 128, 0.863);
+    padding: 5px; }
+  .content-container .btn {
+    background-color: rgba(255, 253, 115, 0.877);
+    border-color: #e7e7e7;
+    color: rgba(0, 34, 128, 0.863); }
+  .content-container .active,
+  .content-container .btn:hover {
+    background-color: rgba(180, 1, 224, 0.678);
+    color: rgba(0, 34, 128, 0.863); }
+
+.content-heading {
+  background-color: rgba(255, 253, 115, 0.877);
+  color: rgba(0, 34, 128, 0.863);
+  padding: 5px; }
 
 input[type="checkbox"] {
   float: left;
   width: 20px; }
 
 h1 {
+  background-color: rgba(0, 34, 128, 0.863);
   color: #e7e7e7;
   padding: 5px; }
+
+.aidcreateupdate-form {
+  background-color: rgba(0, 34, 128, 0.863);
+  padding: 20px;
+  color: #e7e7e7; }
+  .aidcreateupdate-form h1, .aidcreateupdate-form h2 {
+    background-color: rgba(255, 253, 115, 0.877);
+    color: rgba(0, 34, 128, 0.863);
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px; }
+  .aidcreateupdate-form hr {
+    padding: 0px;
+    margin-top: 5px;
+    margin-bottom: 5px; }
+  .aidcreateupdate-form .btn {
+    background-color: rgba(255, 253, 115, 0.877);
+    border-color: #e7e7e7;
+    color: rgba(0, 34, 128, 0.863); }
+  .aidcreateupdate-form .button {
+    margin-top: 5px;
+    padding: 10px; }
+  .aidcreateupdate-form .active, .aidcreateupdate-form .btn:hover {
+    background-color: rgba(180, 1, 224, 0.678);
+    color: rgba(0, 34, 128, 0.863); }
+  .aidcreateupdate-form .form-group {
+    margin: 0px;
+    padding: 0px; }
 
 .card {
   background: rgba(0, 34, 128, 0.863);
@@ -23,7 +66,7 @@ h1 {
   width: 18rem;
   height: 100%;
   color: #e7e7e7;
-  border-color: #8a2323;
+  border-color: black;
   border-width: 2px; }
 
 .btn {
@@ -31,27 +74,25 @@ h1 {
   border-color: #8a2323; }
 
 .active, .btn:hover {
-  background-color: #e20a0a; }
-
-.form-horizontal .custom-control {
-  padding: 0px; }
+  background-color: rgba(255, 253, 115, 0.877);
+  color: rgba(0, 34, 128, 0.863); }
 
 .jumbotron {
-  background: var(--main-nested-container-background);
-  border-style: var(--main-nested-container-border-style);
-  border-width: var(--main-nested-container-border-width);
-  border-color: var(--main-nested-container-border-color);
-  padding: var(--main-nested-container-padding);
+  background: var(--main-content-heading-background);
+  border-style: var(--main-content-heading-border-style);
+  border-width: var(--main-content-heading-border-width);
+  border-color: var(--main-content-heading-border-color);
+  padding: var(--main-content-heading-padding);
   width: 100%;
   margin: 0px;
   padding: 0px; }
 
 .jumbotron-about {
-  background: var(--main-nested-container-background);
-  border-style: var(--main-nested-container-border-style);
-  border-width: var(--main-nested-container-border-width);
+  background: var(--main-content-heading-background);
+  border-style: var(--main-content-heading-border-style);
+  border-width: var(--main-content-heading-border-width);
   border-color: #000846;
-  padding: var(--main-nested-container-padding);
+  padding: var(--main-content-heading-padding);
   width: 100%;
   margin: 0px;
   padding: 0px;
@@ -69,17 +110,17 @@ h1 {
 .sub-default-container {
   color: #e7e7e7;
   padding: var(--main-master-container-padding);
-  background-color: var(--main-nested-container-background-color); }
+  background-color: var(--main-content-heading-background-color); }
 
 .hyperlink:hover {
   color: black; }
 
 .list-items-small {
-  background: var(--main-nested-container-background);
-  border-style: var(--main-nested-container-border-style);
-  border-width: var(--main-nested-container-border-width);
-  border-color: var(--main-nested-container-border-color);
-  padding: var(--main-nested-container-padding);
+  background: var(--main-content-heading-background);
+  border-style: var(--main-content-heading-border-style);
+  border-width: var(--main-content-heading-border-width);
+  border-color: var(--main-content-heading-border-color);
+  padding: var(--main-content-heading-padding);
   margin: 5px;
   list-style-type: square; }
 

@@ -6,7 +6,7 @@
         <div class="column">
             <div class="container-fluid default-container">
                 {% block header %}
-                <h1 class="nested-container"><a id="Flares">Flares</a>
+                <h1 class="content-heading"><a id="Flares">Flares</a>
                 {% if request.user.is_authenticated %}
                 <a class="btn btn-primary btn-lg" href="{% url 'flare:list' %}" role="button" style="float: right;">My Flares</a>
                 <a class="btn btn-primary btn-lg" href="{% url 'flare:create' %}" role="button" style="float: right;">New Flare</a>
@@ -18,7 +18,7 @@
                 {% endblock intro %}
                 <hr size="6" color="navy">
                     {% block quicklinks %}
-                    <h2 class="nested-container">Quick Links</h2>
+                    <h2 class="content-heading">Quick Links</h2>
                     <ol>
                         <li><a href="#basics">The Basics</a></li>
                         <li><a href="#pathophysiology">Pathophysiology</a></li>
@@ -29,7 +29,7 @@
                     {% endblock quicklinks %}
                 <hr size="6" color="white">
                 {% block basics %}
-                  <h2 class="nested-container"><a id="basics">Basics</a></h2>
+                  <h2 class="content-heading"><a id="basics">Basics</a></h2>
                   <h3><u>Pain</u></h3>
                   <p>The cardinal symptom of gout flares is pain.
                   The pain is typically characterized as starting "mild" as "an itch" or "a tickle" before bedtime.
@@ -76,7 +76,7 @@
                   <hr size="6" color="white">
                 {% endblock basics %}
                 {% block pathophysiology %}
-                <h2 class="nested-container"><a id="pathophysiology">Biology</a></h2>
+                <h2 class="content-heading"><a id="pathophysiology">Biology</a></h2>
                 <h3><u>Inflammation</u></h3>
                 The involvement of uric acid in human biology has been appreciated in a crude, by modern standards, fashion for hundreds of years (<a href="#1">1</a>).
                 The first and landmark paper describing urate crystals in gouty joints (<a href="#2">2</a>) was published by McCarty et al in 1961.
@@ -90,15 +90,15 @@
                 <hr size="6" color="white">
                 {% endblock pathophysiology %}
                 {% block causes %}
-                <h2 class="nested-container"><a id="causes">Causes</a></h2>
+                <h2 class="content-heading"><a id="causes">Causes</a></h2>
                 <hr size="6" color="white">
                 {% endblock causes %}
                 {% block history %}
-                <h2 class="nested-container"><a id="history">History</a></h2>
+                <h2 class="content-heading"><a id="history">History</a></h2>
                 <hr size="6" color="white">
                 {% endblock history %}
                 {% block references %}
-                <h2 class="nested-container"><a id="references">References</a></h2>
+                <h2 class="content-heading"><a id="references">References</a></h2>
                 <ol>
                   <li id=1>Nuki, G., Simkin, P.A. A concise history of gout and hyperuricemia and their treatment. <i>Arthritis Res Ther</i> <strong>8</strong>, S1 (2006). <a href="https://doi.org/10.1186/ar1906" target="_blank">https://doi.org/10.1186/ar1906</a></li>
                   <li id=2>McCarty DJ, Hollander JL: Identification of urate crystals in gouty synovial fluid. <i>Ann Intern Med.</i> 1961, 54: 452-460. <a href="https://www.acpjournals.org/doi/10.7326/0003-4819-54-3-452" target="_blank">https://doi.org/10.7326/0003-4819-54-3-452</a></li>

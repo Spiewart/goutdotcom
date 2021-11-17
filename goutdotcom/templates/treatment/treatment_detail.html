@@ -7,7 +7,7 @@
   <div class="row">
     <div class="col">
         {% block treatment_title %}
-        <h1 class="nested-container">
+        <h1 class="content-heading">
           {{ object|to_class_name }}
           {% block buttons %}
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
@@ -39,7 +39,7 @@
   </div>
   <div class="row">
     <div class="col">
-      <div class="container nested-container">
+      <div class="container content-heading">
         <ul>
           {% if object.dose %}
           <li>{{ object.dose }} {% if object|to_class_name == "Colchicine" or "Meloxicam" %} mg {% endif %}{{ object.freq }} {% if object.prn == True %} as needed (PRN) {% endif %}</li>

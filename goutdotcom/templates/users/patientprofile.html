@@ -1,6 +1,6 @@
 {% load thumbnail %}
 
-<h1 class="nested-container">{{ object.username|capfirst}}'s <a href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}">Profile</a>
+<h1 class="content-heading">{{ object.username|capfirst}}'s <a href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}">Profile</a>
 {% if object == request.user %}
 <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button" style="float: right;">My Info</a>
 <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button" style="float: right;">E-Mail</a>

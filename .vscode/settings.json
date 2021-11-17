@@ -37,7 +37,7 @@
         "urate"
     ],
     "[django-html]": {
-
+        "editor.formatOnSave": false,
         "editor.quickSuggestions": {
             "other": true,
             "comments": true,
@@ -89,7 +89,7 @@
     ],
     "editor.linkedEditing": true,
     "html.format.contentUnformatted": "",
-    "html.format.enable": false
+    "html.format.enable": false,
 }
 
 

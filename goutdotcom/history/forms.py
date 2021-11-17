@@ -1,6 +1,6 @@
 from crispy_forms.bootstrap import InlineCheckboxes
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
+from crispy_forms.layout import HTML, ButtonHolder, Div, Fieldset, Layout, Submit
 from datetimewidget.widgets import DateWidget
 from django import forms
 

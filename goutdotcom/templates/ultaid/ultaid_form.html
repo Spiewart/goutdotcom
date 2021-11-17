@@ -12,12 +12,12 @@
 
 {% block form %}
 {% if form.instance.pk %}
-<form class="form-horizontal" method="post" action="{% url 'ultaid:update' object.pk %}">
+<form method="post" action="{% url 'ultaid:update' object.pk %}">
   {% csrf_token %}
   {% crispy form %}
 </form>
 {% else %}
-<form class="form-horizontal" method="post" action="{% url 'ultaid:create' %}">
+<form method="post" action="{% url 'ultaid:create' %}">
   {% csrf_token %}
   {% crispy form %}
 </form>

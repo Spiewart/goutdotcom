@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.fields import BooleanField
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django_extensions.db.models import TimeStampedModel
@@ -21,6 +22,17 @@ from .choices import *
 # Create your models here.
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+
+    decider = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Is your gout bad enough to need urate-lowering therapy (ULT)?"
+        ),
+        verbose_name="Need ULT?",
+        null=True,
+        blank=True,
+        default=False,
+    )
 
     ckd = models.ForeignKey(
         CKD,
@@ -79,6 +91,7 @@ class ULTAid(TimeStampedModel):
             "goal_urate": "6.0 mg/dL",
             "dialysis": False,
             "rheumatologist": False,
+            "unwilling": False,
         }
         if self.XOI_interactions.value == True or self.organ_transplant.value == True:
             ult_choice["rheumatologist"] = True

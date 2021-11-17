@@ -7,14 +7,14 @@
     <header class="row">
         <div class="col">
                 {% block vital_title %}
-                   <h1 class="nested-container">{{ request.user|capfirst }}'s {{ object_list|list_to_name }}s</h1>
+                   <h1 class="content-heading">{{ request.user|capfirst }}'s {{ object_list|list_to_name }}s</h1>
                 {% endblock vital_title %}
         </div>
     </header>
     <main class="row">
         <div class="col">
             {% for vital in object_list %}
-                <div class="container nested-container">
+                <div class="container content-heading">
                 <h2 class="default-container">{{ vital.value }} {{ vital.units }} <a href="{{ vital.get_absolute_url }}" class="hyperlink">{{ vital.date_recorded.date }}</a></h2>
                     <p></p>
                 </div>

@@ -5,7 +5,7 @@
 {% block title %}{{ user.username|capfirst }}'s Contraindications Update{% endblock title %}
 
 {% block header %}
-<h1 class="nested-container">{{ user.username|capfirst }}'s NSAID Contraindications</h1>
+<h1 class="content-heading">{{ user.username|capfirst }}'s NSAID Contraindications</h1>
 {% if form.instance.pk %}
 <h2>Update your <a href="https://www.cancer.gov/publications/dictionaries/cancer-terms/def/contraindication"
     target="_blank">contraindications</a> to <a href="{% url 'treatment:about-NSAIDs' %}" target="_blank">NSAIDs</a> (non-steroidal antiinflammatory drugs)</h2>

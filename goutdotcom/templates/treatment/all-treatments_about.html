@@ -6,7 +6,7 @@
     <div class="jumbotron-fluid default-container">
         <div class="row">
           <div class="col">
-            <h1 class="nested-container">Gout Treatment
+            <h1 class="content-heading">Gout Treatment
             {% if request.user.is_authenticated %}
             <a class="btn btn-primary" href="{% url 'treatment:dashboard' %}" role="button" style="float: right;">Your Treatments</a>
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
@@ -36,7 +36,7 @@
       </div>
       <div class="row">
         <div class="col-sm">
-            <h3 class="nested-container">Flare Treatment <a class="btn btn-primary" href="{% url 'treatment:about-flare' %}" role="button">About</a></h3>
+            <h3 class="content-heading">Flare Treatment <a class="btn btn-primary" href="{% url 'treatment:about-flare' %}" role="button">About</a></h3>
             <p>Gout flares are the main driver of treatment. This is obvious due to how painful and disabling <a class="link-primary" href="{% url 'flare:about' %}">flares</a> are.
                Flare treatment shortens the duration of flares, which are initially 5-7 days of excrutiating pain and disability.
                Unfortunately, they do not eliminate the flares entirely (you need preventative therapy for this).
@@ -69,7 +69,7 @@
             </ol>
         </div>
         <div class="col-sm">
-            <h3 class="nested-container">Gout Prevention <a class="btn btn-primary" href="{% url 'treatment:about-ult' %}" role="button">About</a></h3></h3>
+            <h3 class="content-heading">Gout Prevention <a class="btn btn-primary" href="{% url 'treatment:about-ult' %}" role="button">About</a></h3></h3>
             <p>Long term management of gout is extremely effective. It can essentially eliminate gout flares. However it does involve continued use of medications</p>
             <p>Luckily, the medications are extremely safe and well tolerated.</p>
             <ol>

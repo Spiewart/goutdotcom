@@ -19,17 +19,22 @@ class ULTForm(forms.ModelForm):
             Fieldset(
                 "",
                 "num_flares",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="num_flares-line">
+                    """
+                ),
                 "freq_flares",
                 HTML(
                     """
-                    <hr size="6" color="white">
+                    <hr size="6" color="white" id="freq_flares-line">
                     """
                 ),
                 Div(
                     HTML(
                         """
                     <div id="follow-up-questions">
-                    <h3>Do you have any of the following?:</h3>
+                    <h2>Do you have any of the following?:</h2>
                     </div>
                     """
                     ),
@@ -37,36 +42,36 @@ class ULTForm(forms.ModelForm):
                         """
                         {% load crispy_forms_tags %}
                         {% crispy CKD_form %}
-                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy erosions_form %}
-                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy hyperuricemia_form %}
-                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy tophi_form %}
-                        <hr size="6" color="white">
                         """
                     ),
                     HTML(
                         """
                         {% load crispy_forms_tags %}
                         {% crispy urate_kidney_stones_form %}
-                        <hr size="6" color="white">
                         """
+                    ),
+                    HTML(
+                        """
+                    <hr size="6" color="white" id="subfields-line">
+                    """
                     ),
                     css_id="subfields",
                 ),

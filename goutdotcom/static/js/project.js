@@ -348,23 +348,35 @@ function one_flare() {
 // function that checks how many gout flares are reported, hides unnecessary subfields if number of flares is blank, zero, or one, shows subfields otherwise, shows frequency of flares option if number of flares > 1
 function check_first_flare() {
   if ($('#id_num_flares').val().length == 0) {
+      $('#num_flares-line').show();
       $('#div_id_freq_flares').hide();
+      $('#freq_flares-line').hide();
       $('#div_id_freq_flares').val('');
       $('#subfields').hide();
+      $('#subfields-line').hide();
   }
   else if ($('#id_num_flares').val() == 'zero') {
+      $('#num_flares-line').show();
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('');
+      $('#freq_flares-line').hide();
       $('#subfields').hide();
+      $('#subfields-line').hide();
   }
   else if ($('#id_num_flares').val() == 'one') {
+      $('#num_flares-line').show();
       $('#div_id_freq_flares').hide();
       $('#div_id_freq_flares').val('one');
+      $('#freq_flares-line').hide();
       $('#subfields').show();
+      $('#subfields-line').show();
   }
   else {
+      $('#num_flares-line').show();
       $('#div_id_freq_flares').show();
+      $('#freq_flares-line').show();
       $('#subfields').show();
+      $('#subfields-line').show();
   }
 }
 
@@ -373,6 +385,7 @@ function check_subfields() {
   $('#subfields input[type=checkbox]').each(function() {
     if ($(this).is(":checked")) {
       $('#subfields').show();
+      $('#subfields-line').show();
     }
   })
 }

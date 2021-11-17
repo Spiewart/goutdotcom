@@ -7,7 +7,7 @@
   {% if object_list %}
     <header>
       {% block treatment_title %}
-        <h1 class="nested-container">{{ object_list|list_to_name }}s
+        <h1 class="content-heading">{{ object_list|list_to_name }}s
           {% block buttons %}
           <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' treatment %}" role="button" style="float: right;">About</a>
           <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button" style="float: right;">New</a>
@@ -19,7 +19,7 @@
       <div class="row">
         <div class="col">
           {% for treatment in object_list %}
-            <div class="container nested-container">
+            <div class="container content-heading">
               <ul>
                 {% if treatment.dose %}
                 <li>{{ treatment.dose }} {% if object_list|list_to_name == "Colchicine" or "Meloxicam" %} mg {% endif %}{{ treatment.freq }} {% if treatment.prn == True %} as needed (PRN) {% endif %}</li>

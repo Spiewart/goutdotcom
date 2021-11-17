@@ -5,7 +5,7 @@
 <main role="main" class="container default-container">
   <div class="row">
     <div class="col">
-      <h1 class="nested-container">Flares
+      <h1 class="content-heading">Flares
              <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
           <div class="btn-group" role="group">
             <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -24,7 +24,7 @@
       <div class="col">
       {% if page_obj %}
         {% for flare in page_obj %}
-          <div class="container nested-container">
+          <div class="container content-heading">
             <a href="{% url 'flare:detail' flare.pk %}"><h2 class="default-container">Date: {{ flare.created }}</h2></a>
             <ul class="ul-main-list">
               {% if flare.location %}

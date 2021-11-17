@@ -4,7 +4,7 @@
 {% block content %}
 <main role="main">
   <div class="container default-container">
-    <h1 class="nested-container">{{ request.user|capfirst }}'s Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a>
+    <h1 class="content-heading">{{ request.user|capfirst }}'s Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a>
     {% if request.user.is_authenticated %}
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
       <div class="btn-group" role="group">
@@ -27,7 +27,7 @@
     <div class="row">
         {% if urate_list %}
         <div class="col">
-          <div class="container nested-container">
+          <div class="container content-heading">
           <h2 class="default-container"><a href="{% url 'lab:list' 'urate' %}">Uric Acid</a></h2>
           {% for urate in urate_list %}
           <div class="container default-container">
@@ -44,7 +44,7 @@
         {% endif %}
         {% if creatinine_list %}
         <div class="col">
-          <div class="container nested-container">
+          <div class="container content-heading">
             <h2 class="default-container"><a href="{% url 'lab:list' 'creatinine' %}">Creatinine</a></h2>
             {% for creatinine in creatinine_list %}
               <div class="container default-container">
@@ -63,7 +63,7 @@
         <div class="row">
           {% if ALT_list %}
             <div class="col">
-              <div class="container nested-container">
+              <div class="container content-heading">
             <h2 class="default-container"><a href="{% url 'lab:list' 'ALT' %}">ALT</a></h2>
             {% for ALT in ALT_list %}
             <div class="container default-container">
@@ -80,7 +80,7 @@
           {% endif %}
           {% if AST_list %}
           <div class="col">
-            <div class="container nested-container">
+            <div class="container content-heading">
             <h2 class="default-container"><a href="{% url 'lab:list' 'AST' %}">AST</a></h2>
             {% for AST in AST_list %}
             <div class="container default-container">
@@ -99,7 +99,7 @@
       <div class="row">
         {% if platelet_list %}
         <div class="col">
-          <div class="container nested-container">
+          <div class="container content-heading">
           <h2 class="default-container"><a href="{% url 'lab:list' 'platelet' %}">Platelets</a></h2>
           {% for platelet in platelet_list %}
           <div class="container default-container">
@@ -116,7 +116,7 @@
         {% endif %}
         {% if WBC_list %}
         <div class="col">
-          <div class="container nested-container">
+          <div class="container content-heading">
             <h2 class="default-container"><a href="{% url 'lab:list' 'WBC' %}">WBC</a></h2>
             {% for WBC in WBC_list %}
             <div class="container default-container">
@@ -133,7 +133,7 @@
         {% endif %}
        {% if hemoglobin_list %}
        <div class="col">
-         <div class="container nested-container">
+         <div class="container content-heading">
           <h2 class="default-container"><a href="{% url 'lab:list' 'hemoglobin' %}">Hemoglobin</a></h2>
           {% for hemoglobin in hemoglobin_list %}
           <div class="container default-container">

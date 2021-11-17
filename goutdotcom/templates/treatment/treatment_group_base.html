@@ -14,7 +14,7 @@
       {% for list, set in lists.items %}
         {% if set|length > 0 %}
           {% for treatment in set %}
-            <div class="container nested-container">
+            <div class="container content-heading">
               <h2 class="default-container"><a href="{% url 'treatment:update' treatment|to_class_name treatment.pk %}">{{ treatment.generic_name|capfirst }}</a>
                 {% for brand_name in treatment.brand_names %}
                 ({{ brand_name|capfirst  }})

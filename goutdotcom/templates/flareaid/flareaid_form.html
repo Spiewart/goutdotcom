@@ -1,24 +1,25 @@
 {% extends "base_form.html" %}
 {% load crispy_forms_tags %}
 {% block title %}
-{% if form.instance.pk %} Update Flare {% else %} New Flare {% endif %} {% endblock%}
+  {% if form.instance.pk %} Update FlareAid {% else %} New FlareAid {% endif %} {% endblock%}
 {% block header %}
-{% if form.instance.pk %}
-<h1 class="flareaid-form">Update Flare Aid</h1>
+  {% if form.instance.pk %}
+  <h1>Update Flare Aid</h1>
+  {% else %}
+  <h1>New Flare Aid</h1>
+  {% endif %}
+{% endblock header %}
+{% block form %} {% if form.instance.pk %}
+  <form
+    method="post"
+    action="{% url 'flareaid:update' object.pk %}"
+    enctype="multipart/form-data">
+    {% csrf_token %} {% crispy form %}
+  </form>
 {% else %}
-<h1>New Flare Aid</h1>
-{% endif %} {% endblock header %} {% block form %} {% if form.instance.pk %}
-<form
-  class="form-horizontal default-container"
-  method="post"
-  action="{% url 'flareaid:update' object.pk %}"
-  enctype="multipart/form-data">
-  {% csrf_token %} {% crispy form %}
-</form>
-{% else %}
-<form class="form-horizontal default-container" method="post" action="{% url 'flareaid:create' %}">
-  {% csrf_token %} {% crispy form %}
-</form>
+  <form method="post" action="{% url 'flareaid:create' %}">
+    {% csrf_token %} {% crispy form %}
+  </form>
 {% endif %}
 {% endblock form %}
 {% block inline_javascript %}

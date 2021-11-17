@@ -44,8 +44,7 @@
       defer
       src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous"></script>
     <!-- Your stuff: Third-party javascript libraries go here -->
     <!-- place project specific Javascript in this file -->
     <script defer src="{% static 'js/project.js' %}"></script>
@@ -126,7 +125,7 @@
       </nav>
     </div>
 
-    <div class="container-fluid px-0">
+    <div class="container-fluid">
       {% if messages %} {% for message in messages %}
       <div
         class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
