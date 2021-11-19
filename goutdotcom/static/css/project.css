@@ -1,67 +1,87 @@
 body {
-  background-color: rgba(255, 253, 115, 0.877); }
+  background-color: #d3d02d; }
 
 .content-container {
-  background-color: rgba(0, 34, 128, 0.863);
+  background-color: rgba(5, 50, 148, 0.863);
   padding: 20px;
   color: #e7e7e7; }
   .content-container h1, .content-container h2 {
-    background-color: rgba(255, 253, 115, 0.877);
-    color: rgba(0, 34, 128, 0.863);
-    padding: 5px; }
+    color: #d3d02d;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px;
+    font-weight: bold; }
   .content-container .btn {
-    background-color: rgba(255, 253, 115, 0.877);
+    background-color: #d3d02d;
     border-color: #e7e7e7;
-    color: rgba(0, 34, 128, 0.863); }
-  .content-container .active,
-  .content-container .btn:hover {
+    color: rgba(5, 50, 148, 0.863);
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+    float: right; }
+  .content-container .active, .content-container .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: rgba(0, 34, 128, 0.863); }
-
-.content-heading {
-  background-color: rgba(255, 253, 115, 0.877);
-  color: rgba(0, 34, 128, 0.863);
-  padding: 5px; }
+    color: #e7e7e7; }
+  .content-container ol, .content-container ul {
+    padding-left: 15px; }
+  .content-container .media {
+    padding: 0px;
+    margin: 0px; }
+  .content-container #edited {
+    text-align: right; }
+  .content-container .or {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
 
 input[type="checkbox"] {
   float: left;
   width: 20px; }
 
 h1 {
-  background-color: rgba(0, 34, 128, 0.863);
   color: #e7e7e7;
   padding: 5px; }
 
 .aidcreateupdate-form {
-  background-color: rgba(0, 34, 128, 0.863);
+  background-color: rgba(5, 50, 148, 0.863);
   padding: 20px;
   color: #e7e7e7; }
   .aidcreateupdate-form h1, .aidcreateupdate-form h2 {
-    background-color: rgba(255, 253, 115, 0.877);
-    color: rgba(0, 34, 128, 0.863);
+    color: #d3d02d;
     padding: 0px;
     margin: 0px;
-    margin-bottom: 5px; }
+    margin-bottom: 5px;
+    font-weight: bold; }
   .aidcreateupdate-form hr {
     padding: 0px;
     margin-top: 5px;
     margin-bottom: 5px; }
   .aidcreateupdate-form .btn {
-    background-color: rgba(255, 253, 115, 0.877);
+    background-color: #d3d02d;
     border-color: #e7e7e7;
-    color: rgba(0, 34, 128, 0.863); }
+    color: rgba(5, 50, 148, 0.863); }
   .aidcreateupdate-form .button {
     margin-top: 5px;
     padding: 10px; }
   .aidcreateupdate-form .active, .aidcreateupdate-form .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: rgba(0, 34, 128, 0.863); }
+    color: #e7e7e7; }
   .aidcreateupdate-form .form-group {
     margin: 0px;
     padding: 0px; }
 
 .card {
-  background: rgba(0, 34, 128, 0.863);
+  background: rgba(5, 50, 148, 0.863);
   width: 288px;
   width: 18rem;
   height: 100%;
@@ -74,8 +94,8 @@ h1 {
   border-color: #8a2323; }
 
 .active, .btn:hover {
-  background-color: rgba(255, 253, 115, 0.877);
-  color: rgba(0, 34, 128, 0.863); }
+  background-color: #d3d02d;
+  color: rgba(5, 50, 148, 0.863); }
 
 .jumbotron {
   background: var(--main-content-heading-background);

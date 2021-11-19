@@ -1,40 +1,35 @@
-<h1 class="content-heading">Preventative Treatment
 {% if request.user.is_authenticated %}
-  <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Update</a>
+<a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Update</a>
 {% else %}
-  <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Recalculate</a>
+<a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Recalculate</a>
 {% endif %}
-</h1>
 {% if object.calculator == "Indicated" %}
-<h2><a href="{% url 'treatment:about-ult' %}">ULT</a> (urate-lowering therapy) Strongly Recommended
-</h2>
-<p>This means there is general medical consensus that you would benefit from ULT.
+<h1><a href="{% url 'treatment:about-ult' %}">ULT</a>: Strongly Recommended
+</h1>
+<p>This means there is general medical consensus that you would benefit from ULT (urate-lowering therapy).
 This is backed by scientific evidence that you will be better off with than without preventative treatment.</p>
-<h3>
+<span>
 {% if request.user.is_authenticated %}
 {{ request.user|capfirst }},
 {% endif %}
-{% if object.modified %}
-modified {{ object.modified }}
+{% if request.user.is_authenticated %}
+modified:
 {% else %}
-created {{ object.created }}
+Created: {{ object.created }}
 {% endif %}
-</h3>
+</span>
 {% elif object.calculator == "Conditional" %}
-<h1 class="content-heading">ULT Conditionally Indicated</h1>
-<h2><a href="{% url 'treatment:about-ult' %}">ULT</a> (urate-lowering therapy) Conditionally Recommended</h2>
-<p>This means there is some general medical consensus that you would benefit from ULT, but it is not a "strong"
-  recommendation.
+<h1><a href="{% url 'treatment:about-ult' %}">ULT</a>: Conditionally Recommended</h1>
+<p>This means there is some general medical consensus that you would benefit from ULT (urate-lowering therapy), but it
+  is not a "strong" recommendation.
   Generally, there is some scientific evidence that you will benefit, but it is not as robust as a strong recommendation.
   It is more a matter of expert opinion.</p>
 <p>It's still a personal choice and you need to weigh the pros and cons of the decision for yourself.</p>
 {% elif object.calculator == "Dialysis" %}
-<h1 class="content-heading">Dialysis is ULT</h1>
-<h2><a href="{% url 'treatment:about-ult' %}">ULT</a> (urate-lowering therapy): dialysis.</h2>
-<p>Dialysis removes uric acid from your body, thus you don't need medication for this purpose.</p>
+<h1><a href="{% url 'treatment:about-ult' %}">ULT</a>: dialysis.</h2>
+<p>Dialysis removes uric acid from your body, thus you don't need ULT (urate-lowering therapy) for this purpose.</p>
 {% else %}
-<h1 class="content-heading">ULT Not Indicated</h1>
-<h2>Recommended Against</h2>
+<h1>ULT Not Indicated</h1>
 <p>ULT is not recommended for your gout.</p>
 {% endif %}
 <hr class="my-6" color="white">

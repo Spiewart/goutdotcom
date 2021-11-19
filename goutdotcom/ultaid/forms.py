@@ -8,19 +8,15 @@ from .models import ULTAid
 class ULTAidForm(forms.ModelForm):
     class Meta:
         model = ULTAid
-        fields = ("decider",)
+        fields = ()
 
     def __init__(self, *args, **kwargs):
         super(ULTAidForm, self).__init__(*args, **kwargs)
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
 
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
                 "",
-                "decider",
                 Div(
                     HTML(
                         """

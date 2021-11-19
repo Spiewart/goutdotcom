@@ -1,79 +1,54 @@
 {% if object.decision_aid %}
 <div class="row">
-  <div class="col">
-    {% if object.decision_aid == "Need More Information" %}
-    <h2>{{ object.decision_aid }}</h2>
-    {% else %}
-    <h2>{% if object.decision_aid == "doctor" %}See a Doctor {% else %}Recommendation: {{ object.decision_aid }}{% endif %}</h2>
-    {% endif %}
-  </div>
-  <div class="col">
-    {% if request.user.is_anonymous %}
-    <h2 style="text-align: right;">{{ object.created.date }}</p>
-      {% elif request.user %}
-      <h2 style="text-align: right;">{{ request.user|capfirst }} {{ object.created.date }}</h3>
-        {% endif %}
-  </div>
-</div>
-<div class="row">
+  <div class="col-sm">
   {% if object.decision_aid == "NSAID" %}
-  <div class="col-auto">
-    <h3><a href="{% url 'treatment:about' 'naproxen' %}">Naproxen</a></h3>
-    <li>440 mg (2 220 mg tablets) twice daily until flare subsides</li>
+    <h2 class="or"><a href="{% url 'treatment:about' 'naproxen' %}">Naproxen</a></h2>
+    <li class="or">440 mg (two 220 mg tablets) twice daily until flare subsides</li>
   </div>
-  <div class="col" style="text-align: center;">
-    <h3><b>OR</b></h3>
+  <div class="col-sm">
+    <h2 class="or"><b>OR</b></h2>
   </div>
-  <div class="col-auto">
-    <h3><a href="{% url 'treatment:about' 'ibuprofen' %}">Ibuprofen</a></h3>
-    <li>600 mg (3 200 mg tablets) three times daily until flare subsides</li>
-  </div>
+  <div class="col-sm">
+    <h2 class="or"><a href="{% url 'treatment:about' 'ibuprofen' %}">Ibuprofen</a></h2>
+    <li class="or">600 mg (three 200 mg tablets) three times daily until flare subsides</li>
   {% elif object.decision_aid == "colchicine" %}
-  <div class="col-auto">
-    <h3><a href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a> (Prescription Only)</h3>
-    <li>1.2 mg (2 tablets) now <b>then</b> 0.6 mg (1 tablet) an hour later <b>then</b> 0.6 mg (1 tablet) twice
-      daily until flare subsides</li>
-    {% if object.colchicine_contraindications is None %}
-    <li><b>WARNING</b>: You did not report whether or not you have any <a
-        href="#colchicine_contraindications">contraindications</a> to using colchicine. This could potentially
-      change the recommendation and/or be dangerous.
-      {% if request.user.is_authenticated %}
-      <a href="{% url 'flareaid:update' object.pk %}"><b>Update</b></a> your history for better recommendations.
-      {% else %}
-      Submit a <a href="{% url 'flareaid:create' %}"><b>new</b></a> set of info for better recommendations.
-      {% endif %}
-    </li>
+    <ul>
+      <li>1.2 mg (two tablets) now <b>then</b> 0.6 mg (1 tablet) an hour later <b>then</b> 0.6 mg (1 tablet) twice
+        daily until flare subsides</li>
+      {% if object.colchicine_contraindications is None %}
+      <li><b>WARNING</b>: You did not report whether or not you have any <a
+          href="#colchicine_contraindications">contraindications</a> to using colchicine. This could potentially
+        change the recommendation and/or be dangerous.
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'flareaid:update' object.pk %}"><b>Update</b></a> your history for better recommendations.
+        {% else %}
+        Submit a <a href="{% url 'flareaid:create' %}"><b>new</b></a> set of info for better recommendations.
+        {% endif %}
+      </li>
+    </ul>
     {% endif %}
-  </div>
   {% elif object.decision_aid == "steroids" %}
   <div class="col-auto">
     <h3><a href="{% url 'treatment:about' 'steroids' %}">Prednisone</a> (Prescription Only)</h3>
     <li>40 mg daily for 4 days <b>then</b> 20 mg daily for 4 days</li>
   </div>
   {% elif object.decision_aid == "Need More Information" %}
-  <div class="col-auto">
-    <p>We really need more information if we are going to make a quality recommendation. Start by telling us
-      whether or not you are in perfect health.</p>
-    {% if request.user.is_authenticated %}
-    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.pk %}" role="button">Update</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
-    {% endif %}
-  </div>
+    <span>We really need more information if we are going to make a quality recommendation. Start by telling us
+      whether or not you are in perfect health.</span>
   {% elif object.decision_aid == "doctor" %}
-  <div class="col-auto">
     <span>Your medical situation is complex enough that you should see a doctor, ideally a <a
         href="https://en.wikipedia.org/wiki/Rheumatology" target="_blank">rheumatologist</a>, for your gout flare treatment.</span>
-  </div>
   {% endif %}
-</div>
-{% if object.monoarticular == True %}
-<div class="row">
-  <div class="col" style="text-align:center;">
-    <br>
-    <h3>Alternative: Joint Injection</h3>
-    <p>Performed by your rheumatologist or other provider</p>
+    </div>
   </div>
-</div>
-{% endif %}
+  {% if object.monoarticular == True %}
+    <div class="row">
+      <div class="col" style="text-align:center;">
+        <br>
+        <h2>Alternative: Joint Injection</h2>
+        <p>Performed by your rheumatologist or other provider</p>
+      </div>
+    </div>
+  {% endif %}
+
 {% endif %}

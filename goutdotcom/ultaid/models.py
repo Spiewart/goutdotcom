@@ -23,17 +23,6 @@ from .choices import *
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
-    decider = BooleanField(
-        choices=BOOL_CHOICES,
-        help_text=mark_safe(
-            "Is your gout bad enough to need urate-lowering therapy (ULT)?"
-        ),
-        verbose_name="Need ULT?",
-        null=True,
-        blank=True,
-        default=False,
-    )
-
     ckd = models.ForeignKey(
         CKD,
         on_delete=models.SET_NULL,

@@ -5,25 +5,20 @@
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
-<main class="container content-heading">
-  <div class="media default-container">
-    <div class="media-body">
-      {% if object.patientprofile %}
-        {% include "users/patientprofile.html" %}
-      {% else %}
-      <h1 class="">{{ object.username|capfirst}}'s Profile</h1>
-      {% endif %}
-      {% if object.medicalprofile %}
-        {% include "users/medicalprofile.html" %}
-      {% endif %}
-      {% if object.socialprofile %}
-        {% include "users/socialprofile.html" %}
-      {% endif %}
-      {% if object.familyprofile %}
-        {% include "users/familyprofile.html" %}
-      {% endif %}
-    </div>
-  </div>
+<main class="container">
+  {% if object.patientprofile %}
+    {% include "users/patientprofile.html" %}
+  {% endif %}
+  <br>
+  {% if object.medicalprofile %}
+    {% include "users/medicalprofile.html" %}
+  {% endif %}
+  {% if object.socialprofile %}
+    {% include "users/socialprofile.html" %}
+  {% endif %}
+  {% if object.familyprofile %}
+    {% include "users/familyprofile.html" %}
+  {% endif %}
 </main>
 <footer>
 </footer>

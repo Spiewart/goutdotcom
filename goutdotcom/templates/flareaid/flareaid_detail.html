@@ -2,21 +2,38 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container">
-  <div class="row">
-    <div class="col default-container">
+<main class="container content-container">
       {% block header %}
-      <h1 class="content-heading" id="rec">Flare Treatment
-      {% if object.decision_aid != "Need More Information" %}
-      <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button" style="float: right;">New</a>
-      {% if request.user.is_authenticated %}
-      <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.pk %}" role="button" style="float: right;">Update</a>
-      {% endif %}
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About</a>
-      {% else %}
-      <a class="btn btn-primary btn-lg" href="{% url 'flare:about' %}" role="button" style="float: right;">About</a>
-      {% endif %}
-      </h1>
+        <div class="row">
+          <div class="col">
+        {% if object.decision_aid != "Need More Information" %}
+          <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
+          {% if request.user.is_authenticated %}
+            <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.pk %}" role="button">Update</a>
+          {% endif %}
+          {% if object.decision_aid == "NSAID" %}
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'ibuprofen' %}" role="button">About</a>
+          {% elif object.decision_aid == "colchicine" %}
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'colchicine' %}" role="button">About</a>
+          {% elif object.decision_aid == "steroids" %}
+            <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'steroids' %}" role="button">About</a>
+          {% endif %}
+        {% else %}
+          {% if request.user.is_authenticated %}
+            <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.pk %}" role="button">Update</a>
+          {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
+          {% endif %}
+        {% endif %}
+        <h1>Flare Treatment:
+          {% if object.decision_aid == "doctor" %}
+            See a Doctor
+          {% else %}
+            {{ object.decision_aid }}
+          {% endif %}
+        </h1>
+        </div>
+      </div>
       {% endblock header %}
       {% block recommendation %}
         {% include 'flareaid/recommendation.html' %}
@@ -36,7 +53,6 @@
       {% block explanation %}
         {% include 'flareaid/explanation.html' %}
       {% endblock explanation %}
-
       {% block methodology %}
         {% include 'flareaid/methodology.html' %}
       {% endblock methodology %}
@@ -44,16 +60,22 @@
         {% include 'flareaid/options.html' %}
       {% endblock options %}
       {% block references %}
-      <h2 class="content-heading"><a id="references">References</a></h2>
-      <ol>
-        <li id=1>FitzGerald JD, Dalbeth N, Mikuls T, Brignardello-Petersen R, Guyatt G, Abeles AM, Gelber AC, Harrold LR, Khanna D, King C, Levy G, Libbey C, Mount D, Pillinger MH, Rosenthal A, Singh JA, Sims JE, Smith BJ, Wenger NS, Bae SS, Danve A, Khanna PP, Kim SC, Lenert A, Poon S, Qasim A, Sehra ST, Sharma TSK, Toprover M, Turgunbaev M, Zeng L, Zhang MA, Turner AS, Neogi T. 2020 American College of Rheumatology Guideline for the Management of Gout. Arthritis Care Res (Hoboken). 2020 Jun;72(6):744-760. doi: 10.1002/acr.24180. PMID: 32391934.<a href="https://pubmed.ncbi.nlm.nih.gov/32391934/" target="_blank"> https://doi.org/10.1525/9780520339484-005</a></li>
-      </ol>
+        {% include 'flareaid/references.html' %}
       {% endblock references %}
   <hr size="6" color="white">
   {% block footer %}
-  <u><a href="#rec">Back to Top</a></u>
+    <div class="row">
+      <div class="col">
+        <u><a href="#rec">Back to Top</a></u>
+      </div>
+      <div class="col" id="edited">
+        {% if request.user.is_anonymous %}
+          <span>{{ object.created.date }}</span>
+        {% elif request.user %}
+          <span>{{ request.user|capfirst }} {{ object.created.date }}</span>
+        {% endif %}
+      </div>
+    </div>
   {% endblock footer %}
-  </div>
-</div>
 </main>
 {% endblock content %}

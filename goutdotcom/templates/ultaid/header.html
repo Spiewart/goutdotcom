@@ -1,10 +1,11 @@
 {% load ultaid_extras %}
-<h1 class="content-heading">ULT Recommendation
+
   {% if request.user.is_authenticated %}
   <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">Update</a>
   {% else %}
   <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">Recalculate</a>
   {% endif %}
+<h1>ULT Recommendation
 </h1>
 {% if object.decision_aid|get_ultaid:'rheumatologist' == True %}
 <h2>See a Rheumatologist</h2>

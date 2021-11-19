@@ -1,107 +1,121 @@
- <div class="container content-heading">
-   <div class="container default-container">
-     <h2 class="content-heading"><a href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}">Medical History</a></h2>
+ <div class="container content-container">
+     <h2><a href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}">Medical History</a></h2>
      <div class="row">
-    {% if object.medicalprofile.anticoagulation.value %}
-    <div class="col-auto">
-      <h3>{{ object.medicalprofile.anticoagulation|capfirst }}</h3>
-      {% if object.medicalprofile.anticoagulation.apixaban %}
-      <li>Apixaban</li>
+      {% if object.medicalprofile.anticoagulation.value %}
+        <ul>
+          <li>{{ object.medicalprofile.anticoagulation|capfirst }}</li>
+          <ul>
+            {% if object.medicalprofile.anticoagulation.apixaban %}
+            <li>Apixaban</li>
+            {% endif %}
+            {% if object.medicalprofile.anticoagulation.clopidogrel %}
+            <li>Clopidogrel (Plavix)</li>
+            {% endif %}
+            {% if object.medicalprofile.anticoagulation.dabigatran %}
+            <li>Dabigatran</li>
+            {% endif %}
+            {% if object.medicalprofile.anticoagulation.enoxaparin %}
+            <li>Enoxaparin</li>
+            {% endif %}
+            {% if object.medicalprofile.anticoagulation.rivaroxaban %}
+            <li>Rivaroxaban</li>
+            {% endif %}
+            {% if object.medicalprofile.anticoagulation.warfarin %}
+            <li>Warfarin (Coumadin)</li>
+            {% endif %}
+            <li>{{ object.medicalprofile.anticoagulation.last_modified }}</li>
+          </ul>
+        </ul>
       {% endif %}
-      {% if object.medicalprofile.anticoagulation.clopidogrel %}
-      <li>Clopidogrel (Plavix)</li>
-      {% endif %}
-      {% if object.medicalprofile.anticoagulation.dabigatran %}
-      <li>Dabigatran</li>
-      {% endif %}
-      {% if object.medicalprofile.anticoagulation.enoxaparin %}
-      <li>Enoxaparin</li>
-      {% endif %}
-      {% if object.medicalprofile.anticoagulation.rivaroxaban %}
-      <li>Rivaroxaban</li>
-      {% endif %}
-      {% if object.medicalprofile.anticoagulation.warfarin %}
-      <li>Warfarin (Coumadin)</li>
-      {% endif %}
-      <li>{{ object.medicalprofile.anticoagulation.last_modified }}</li>
-    </div>
-    {% endif %}
        {% if object.medicalprofile.CKD.value %}
-       <div class="col-auto">
-         <h3>{{ object.medicalprofile.CKD }}</h3>
-         {% if object.medicalprofile.CKD.stage %}
-         <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
-         {% endif %}
-         {% if object.medicalprofile.CKD.dialysis %}
-         <li>{{ object.medicalprofile.CKD.dialysis }}</li>
-         {% endif %}
-         <li>{{ object.medicalprofile.CKD.last_modified }}</li>
-       </div>
+        <ul>
+          <li>{{ object.medicalprofile.CKD }}</li>
+          <ul>
+          {% if object.medicalprofile.CKD.stage %}
+          <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
+          {% endif %}
+          {% if object.medicalprofile.CKD.dialysis %}
+          <li>{{ object.medicalprofile.CKD.dialysis }}</li>
+          {% endif %}
+          <li>{{ object.medicalprofile.CKD.last_modified }}</li>
+          </ul>
+        </ul>
        {% endif %}
        {% if object.medicalprofile.heartattack.value %}
-       <div class="col-auto">
-         <h3>Heart Attack</h3>
-         <li>{{ object.medicalprofile.heartattack.last_modified }}</li>
-       </div>
+       <ul>
+         <li>Heart Attack</li>
+         <ul>
+          <li>{{ object.medicalprofile.heartattack.last_modified }}</li>
+         </ul>
+       </ul>
        {% endif %}
        {% if object.medicalprofile.hypertension.value %}
-       <div class="col-auto">
-         <h3>Hypertension</h3>
+       <ul>
+         <li>Hypertension</li>
+         <ul>
          {% if object.medicalprofile.hypertension.medication %}
          <li>Treated with medications</li>
          {% endif %}
-       </div>
+         </ul>
+       </ul>
        {% endif %}
        {% if object.medicalprofile.hyperuricemia.value %}
-       <div class="col-auto">
-         <h3>Hyperuricemia</h3>
-       </div>
+       <ul>
+         <li>Hyperuricemia</li>
+       </ul>
        {% endif %}
        {% if object.medicalprofile.CHF.value %}
-       <div class="col-auto">
-         <h3>CHF (congestive heart failure)</h3>
-         {% if object.medicalprofile.CHF.systolic %}
-         <li>Systolic (reduced EF / ejection fraction)</li>
-         {% else %}
-         <li>Diastolic (normal EF / ejection fraction)</li>
-         {% endif %}
-       </div>
+        <ul>
+          <li>CHF (congestive heart failure)</li>
+          <ul>
+          {% if object.medicalprofile.CHF.systolic %}
+          <li>Systolic (reduced EF / ejection fraction)</li>
+          {% else %}
+          <li>Diastolic (normal EF / ejection fraction)</li>
+          {% endif %}
+          </ul>
+        </ul>
        {% endif %}
        {% if object.medicalprofile.diabetes.value %}
-       <div class="col-auto">
-         <h3>Diabetes</h3>
-         {% if object.medicalprofile.diabetes.type %}
-         <li>Type {{ object.medicalprofile.diabetes.type }}</li>
-         {% endif %}
-         {% if object.medicalprofile.diabetes.insulin %}
-         <li>You take insulin</li>
-         {% endif %}
-       </div>
+        <ul>
+          <li>Diabetes</li>
+            {% if object.medicalprofile.diabetes.type %}
+            <ul>
+            <li>Type {{ object.medicalprofile.diabetes.type }}</li>
+            </ul>
+            {% endif %}
+            {% if object.medicalprofile.diabetes.insulin %}
+            <ul>
+            <li>You take insulin</li>
+            </ul>
+          {% endif %}
+        </ul>
        {% endif %}
        {% if object.medicalprofile.erosions.value %}
-       <div class="col-auto">
-         <h3>Erosions</h3>
-       </div>
+        <ul>
+          <li>Erosions</li>
+        </ul>
        {% endif %}
        {% if object.medicalprofile.organ_transplant.value %}
-       <div class="col-auto">
-         <h3>Organ Transplant</h3>
-         {% if object.medicalprofile.organ_transplant.organ %}
-         <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
-         {% endif %}
-       </div>
+        <ul>
+          <li>Organ Transplant</li>
+          {% if object.medicalprofile.organ_transplant.organ %}
+          <ul>
+          <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
+          </ul>
+          {% endif %}
+        </ul>
        {% endif %}
        {% if object.medicalprofile.urate_kidney_stones.value %}
-       <div class="col-auto">
-         <h3>Urate Kidney Stones</h3>
-       </div>
+        <ul>
+          <li>Urate Kidney Stones</li>
+        </ul>
        {% endif %}
        {% if object.medicalprofile.tophi.value %}
-       <div class="col-auto">
-         <h3>Tophi</h3>
-       </div>
+        <ul>
+          <li>Tophi</li>
+        </ul>
        {% endif %}
      </div>
-   </div>
  </div>
 

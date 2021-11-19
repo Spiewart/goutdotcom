@@ -1,81 +1,80 @@
       {% if object.decision_aid != "doctor" %}
       <hr size="6" color="white">
-      <h2 class="content-heading" id="options">Options</h2>
+      <h2 id="options">Options</h2>
       {% if object.decision_aid == "Need More Information" %}
       <p>We need more information so we can advise you on what medications you can take for your gout flare.</p>
-      {% endif %}
-      {% if object.decision_aid == "NSAID" %}
-      <div class="col">
-        <ul class="ul-sub-list">
-          <lh><u>Over the Counter</u></lh>
-          <li>
-            <a href="{% url 'treatment:about' 'naproxen' %}">Naproxen</a> (Aleve)
+      {% else %}
+        <div class="row">
+          {% if object.decision_aid == "NSAID" %}
+          <div class="col">
             <ul>
-              <li>Recommended dosing for flare: 440 mg (2 tablets) twice daily until flare subsides.</li>
-              <li>220 mg tablets (<a href="" target="_blank">Amazon</a>)</li>
+              <li>
+                <a href="{% url 'treatment:about' 'naproxen' %}">Naproxen</a> (Aleve)
+                <ul>
+                  <li>Recommended dosing: 440 mg (2 tablets) twice daily until flare subsides.</li>
+                  <li>220 mg tablets (<a href="" target="_blank">Amazon</a>)</li>
+                </ul>
+              </li>
+              <li>
+                <a href="{% url 'treatment:about' 'ibuprofen' %}">Ibuprofen</a> (Advil)
+                <ul>
+                  <li>Recommended dosing: 600-800 mg (3-4 tablets) three times daily until flare subsides.</li>
+                  <li>200 mg tablets (<a href="" target="_blank">Amazon</a>)</li>
+                </ul>
+              </li>
             </ul>
-          </li>
-          <li>
-            <a href="{% url 'treatment:about' 'ibuprofen' %}">Ibuprofen</a> (Advil)
+          </div>
+          <div class="col">
             <ul>
-              <li>Recommended dosing for flare: 600-800 mg (3-4 tablets) three times daily until flare subsides.</li>
-              <li>200 mg tablets (<a href="" target="_blank">Amazon</a>)</li>
+              <li>
+                <a href="{% url 'treatment:about' 'meloxicam' %}">Meloxicam</a> (Mobic)
+                <ul>
+                  <li>Recommended dosing: 15 mg (1 tablet) daily until flare subsides.</li>
+                  <li> 15 mg tablets: You will need to see your provider for these (prescription only).</li>
+                </ul>
+              </li>
+              </li>
+              <li>
+                <a href="{% url 'treatment:about' 'celecoxib' %}">Celecoxib</a> (Celebrex)
+                <ul>
+                  <li>Recommended dosing: 400 mg (2 tablets) twice daily until flare subsides.</li>
+                  <li>200 mg tablets: You will need to see your provider for these (prescription only).</li>
+                </ul>
+              </li>
+              </li>
             </ul>
-          </li>
-        </ul>
-      </div>
-      <div class="col">
-        <ul class="ul-sub-list">
-          <lh><u>Prescription</u></lh>
-          <li>
-            <a href="{% url 'treatment:about' 'meloxicam' %}">Meloxicam</a> (Mobic)
+          </div>
+          {% elif object.decision_aid == "steroids" %}
+          <div class="col">
             <ul>
-              <li>Recommended dosing for flare: 15 mg (1 tablet) daily until flare subsides.</li>
-              <li> 15 mg tablets: You will need to see your provider for these.</li>
+              <li>
+                <a href="{% url 'treatment:about' 'prednisone' %}">Prednisone</a>
+                <ul>
+                  <li>Recommended dosing for flare: 40 mg daily for 4 days then 20 mg daily for 4 days</li>
+                  <li>Alternative regimen: 40 mg daily for 3 days, then 20 mg daily for 3 days</li>
+                  <li>You will need to see your provider for these (prescription only). Tablets come in 1, 2.5, 5, 10, and 20 mg.</li>
+                </ul>
+              </li>
             </ul>
-          </li>
-          </li>
-          <li>
-            <a href="{% url 'treatment:about' 'celecoxib' %}">Celecoxib</a> (Celebrex)
+          </div>
+          {% elif object.decision_aid == "colchicine" %}
+          <div class="col">
             <ul>
-              <li>Recommended dosing for flare: 400 mg (2 tablets) twice daily until flare subsides.</li>
-              <li>200 mg tablets: You will need to see your provider for these.</li>
+              <li>
+                <a href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a>
+                <ul>
+                  <li>Recommended dosing for flare: 1.2 mg (2 tablets) immediately, 0.6 mg (1 tablet) 1 hour later, then 0.6
+                    mg (1 tablet) twice daily until flare resolves</li>
+                  <li>0.6 mg tablets: You will need to see your provider for these (prescription only).</li>
+                </ul>
+              </li>
             </ul>
-          </li>
-          </li>
-        </ul>
-      </div>
-      {% elif object.decision_aid == "steroids" %}
-      <div class="col">
-        <ul class="ul-sub-list">
-          <lh><u>Prescription</u></lh>
-          <li>
-            <a href="{% url 'treatment:about' 'prednisone' %}">Prednisone</a>
-            <ul>
-              <li>Recommended dosing for flare: 40 mg daily for 4 days then 20 mg daily for 4 days</li>
-              <li>Alternative regimen: 40 mg daily for 3 days, then 20 mg daily for 3 days</li>
-              <li>You will need to see your provider for these. Tablets come in 1, 2.5, 5, 10, and 20 mg.</li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      {% elif object.decision_aid == "colchicine" %}
-      <div class="col">
-        <ul class="ul-sub-list">
-          <lh><u>Prescription</u></lh>
-          <li>
-            <a href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a>
-            <ul>
-              <li>Recommended dosing for flare: 1.2 mg (2 tablets) immediately, 0.6 mg (1 tablet) 1 hour later, then 0.6
-                mg (1 tablet) twice daily until flare resolves</li>
-              <li>0.6 mg tablets: You will need to see your provider for these.</li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      {% endif %}
-      <hr size="6" color="white">
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+        <hr size="6" color="white">
     {% else %}
-    <hr size="6" color="white">
+      <hr size="6" color="white">
     {% endif %}
 

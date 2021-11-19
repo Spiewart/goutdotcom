@@ -1,44 +1,44 @@
-      <hr size="6" color="white">
-      <h2 class="content-heading" id="explanation">Explanation</h2>
-      {% if object.decision_aid %}
-      {% if object.decision_aid == "NSAID" %}
-      <p><a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s (non-steroidal antiinflammatory drugs are the most
-        common gout treatment.
-        They are available over the counter, cheap, and are generally safe.</p>
-      <p>NSAIDs are likely recommended for you based off you being in a general good state of health.
-        Certain medical conditions, such as chronic kidney disease (CKD), a history of gastrointestinal (GI) bleeding,
-        heart attack(s), stroke(s), or needing to be on a blood thinner are generally contraindications to use of
-        NSAIDs.
-      </p>
-      <p>Some particularly bad gout flares are resistant to treatment with NSAIDs and are better treated with
-        prescription medications and or joint injections.
-        These flares typically involve multiple joints, often large weight-bearing joints such as the ankle or knee, and
-        are very disabling.
-      </p>
-      {% elif object.decision_aid == "steroids" %}
-      <p><a href="{% url 'treatment:about' 'prednisone' %}">Prednisone</a> and <a
-          href="{% url 'treatment:about' 'methylprednisolone' %}">methylprednisolone</a> are corticosteroids and are
-        some of the most effective antiinflammatories we have.
-        They are most commonly used in gout when a flare is particularly bad or a patient has medical reasons not to use
-        other therapies.
-      </p>
-      <p>They can have some side effects with both short- and long-term use and thus are prescription only.</p>
-      <p>With short-term use, such as for a gout flare, they can cause anxiety, insomnia, hunger, weight gain, elevated
-        blood sugars (<a href="https://en.wikipedia.org/wiki/Hyperglycemia" target="_blank">hyperglycemia</a>).</p>
-      {% elif object.decision_aid == "colchicine" %}
-      <p><a href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a> is the oldest still available treatment for
-        gout flares.
-        You most likely were recommended it because you have healthy kidneys but a contraindication to NSAIDs.
-        It is most effective when started within the first 36 hours of a flare.</p>
-      {% elif object.decision_aid == "doctor" %}
-      <p>You should go to the doctor. Your situation is complicated enough that someone needs to sit down and do a
-        thorough evaluation of you and give you in person instructions on how best to proceed. This is often necessary due to a combination of serious medical problems or a history of organ transplantation.</p>
-      {% elif object.decision_aid == "Need More Information" %}
-      <p>We need more information. This was most likely because you submitted the form without answering whether or not
-        you are in perfect health apart from your gout.</p>
-      {% endif %}
-      {% endif %}
-      {% if object.monoarticular == True %}
-      <p>You also indicated that your flare involves only one joint (monoarticular). Monoarticular flares can be treated
-        by an injection into the joint performed by your rheumatologist or other qualified provider.</p>
-      {% endif %}
+<hr size="6" color="white">
+<h2 class="content-heading" id="explanation">Explanation</h2>
+{% if object.decision_aid %}
+  {% if object.decision_aid == "NSAID" %}
+    <p><a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s (non-steroidal antiinflammatory drugs are the most
+    common gout treatment.
+    They are available over the counter, cheap, and are generally safe.</p>
+    <p>NSAIDs are likely recommended for you based off you being in a general good state of health.
+    Certain medical conditions, such as chronic kidney disease (CKD), a history of gastrointestinal (GI) bleeding,
+    heart attack(s), stroke(s), or needing to be on a blood thinner are generally contraindications to use of
+    NSAIDs.
+    </p>
+    <p>Some particularly bad gout flares are resistant to treatment with NSAIDs and are better treated with
+    prescription medications and or joint injections.
+    These flares typically involve multiple joints, often large weight-bearing joints such as the ankle or knee, and
+    are very disabling.
+    </p>
+  {% elif object.decision_aid == "steroids" %}
+    <p><a href="{% url 'treatment:about' 'prednisone' %}">Prednisone</a> and <a
+      href="{% url 'treatment:about' 'methylprednisolone' %}">methylprednisolone</a> are corticosteroids and are
+    some of the most effective antiinflammatories we have.
+    They are most commonly used in gout when a flare is particularly bad or a patient has medical reasons not to use
+    other therapies.
+    </p>
+    <p>They can have some side effects with both short- and long-term use and thus are prescription only.</p>
+    <p>With short-term use, such as for a gout flare, they can cause anxiety, insomnia, hunger, weight gain, elevated
+    blood sugars (<a href="https://en.wikipedia.org/wiki/Hyperglycemia" target="_blank">hyperglycemia</a>).</p>
+  {% elif object.decision_aid == "colchicine" %}
+    <p><a href="{% url 'treatment:about' 'colchicine' %}">Colchicine</a> is the oldest still available treatment for
+    gout flares.
+    You most likely were recommended it because you have healthy kidneys but a contraindication to NSAIDs.
+    It is most effective when started within the first 36 hours of a flare.</p>
+  {% elif object.decision_aid == "doctor" %}
+    <p>You should go to the doctor. Your situation is complicated enough that someone needs to sit down and do a
+    thorough evaluation of you and give you in person instructions on how best to proceed. This is often necessary due to a combination of serious medical problems or a history of organ transplantation.</p>
+  {% elif object.decision_aid == "Need More Information" %}
+    <p>We need more information. This was most likely because you submitted the form without answering whether or not
+    you are in perfect health apart from your gout.</p>
+  {% endif %}
+{% endif %}
+{% if object.monoarticular == True %}
+  <p>You also indicated that your flare involves only one joint (monoarticular). Monoarticular flares can be treated
+  by an injection into the joint performed by your rheumatologist or other qualified provider.</p>
+{% endif %}
