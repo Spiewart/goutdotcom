@@ -1,14 +1,8 @@
   <div class="container content-heading">
-    <div class="container default-container">
       <h2 class="content-heading"><a href="{% url 'profiles:update-family' request.user request.user.familyprofile.pk %}">Family History</a></h2>
-      <div class="row">
         {% if object.familyprofile.gout.value %}
-        <div class="col">
           <h3>Gout</h3>
-        </div>
         {% endif %}
-      </div>
-    </div>
   </div>
 
 

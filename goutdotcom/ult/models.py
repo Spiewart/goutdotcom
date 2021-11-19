@@ -60,6 +60,11 @@ class ULT(TimeStampedModel):
     )
 
     def calculator(self):
+        """Function to take user-generated input from ULT and returns whether or not urate-lowering therapy is indicated
+
+        Returns:
+            [str]: [str describing what, if any, recommendation for urate-lowering therapy is indicated per ACR gout guidelines]
+        """
         go_forth = "Indicated"
         abstain = "Not Indicated"
         conditional = "Conditional"
@@ -70,7 +75,7 @@ class ULT(TimeStampedModel):
         if self.num_flares == "one":
             if self.erosions.value == True or self.tophi.value == True:
                 return go_forth
-            elif self.ckd.value == True or self.hyperuricemia == True or self.stones.value == True:
+            elif self.ckd.value == True or self.hyperuricemia.value == True or self.stones.value == True:
                 return conditional
             else:
                 return abstain
@@ -84,6 +89,7 @@ class ULT(TimeStampedModel):
         if self.freq_flares == "one":
             if self.erosions.value == True or self.tophi.value == True:
                 return go_forth
+            ### IS THIS CORRECT?
             elif self.num_flares != "zero" or "one":
                 return conditional
         else:

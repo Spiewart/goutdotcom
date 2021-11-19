@@ -1,5 +1,5 @@
 {% load thumbnail %}
-<div class="media content-container">
+<div class="media profile-container">
   <div class="media-body">
     <h1>{{ object.username|capfirst}}'s <a href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}">Profile</a>
     {% if object == request.user %}

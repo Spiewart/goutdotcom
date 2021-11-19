@@ -1,6 +1,43 @@
 body {
   background-color: #d3d02d; }
 
+.profile-container {
+  background-color: rgba(5, 50, 148, 0.863);
+  padding: 20px;
+  color: #e7e7e7; }
+  .profile-container h1, .profile-container h2 {
+    color: #d3d02d;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px;
+    font-weight: bold; }
+  .profile-container .btn {
+    background-color: #d3d02d;
+    border-color: #e7e7e7;
+    color: rgba(5, 50, 148, 0.863);
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+    float: right; }
+  .profile-container .active, .profile-container .btn:hover {
+    background-color: rgba(180, 1, 224, 0.678);
+    color: #e7e7e7; }
+  .profile-container ol, .profile-container ul {
+    padding-left: 10px; }
+  .profile-container ul #main-medical-list {
+    list-style: none; }
+  .profile-container ul#main-medical-list > li {
+    display: inline; }
+  .profile-container .media {
+    padding: 0px;
+    margin: 0px; }
+  .profile-container #edited {
+    text-align: right; }
+
 .content-container {
   background-color: rgba(5, 50, 148, 0.863);
   padding: 20px;

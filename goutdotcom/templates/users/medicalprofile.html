@@ -1,8 +1,7 @@
- <div class="container content-container">
+ <div class="container profile-container">
      <h2><a href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}">Medical History</a></h2>
-     <div class="row">
+     <ul id="main-medical-list">
       {% if object.medicalprofile.anticoagulation.value %}
-        <ul>
           <li>{{ object.medicalprofile.anticoagulation|capfirst }}</li>
           <ul>
             {% if object.medicalprofile.anticoagulation.apixaban %}
@@ -25,10 +24,8 @@
             {% endif %}
             <li>{{ object.medicalprofile.anticoagulation.last_modified }}</li>
           </ul>
-        </ul>
       {% endif %}
        {% if object.medicalprofile.CKD.value %}
-        <ul>
           <li>{{ object.medicalprofile.CKD }}</li>
           <ul>
           {% if object.medicalprofile.CKD.stage %}
@@ -39,33 +36,25 @@
           {% endif %}
           <li>{{ object.medicalprofile.CKD.last_modified }}</li>
           </ul>
-        </ul>
        {% endif %}
        {% if object.medicalprofile.heartattack.value %}
-       <ul>
          <li>Heart Attack</li>
          <ul>
           <li>{{ object.medicalprofile.heartattack.last_modified }}</li>
          </ul>
-       </ul>
        {% endif %}
        {% if object.medicalprofile.hypertension.value %}
-       <ul>
          <li>Hypertension</li>
          <ul>
          {% if object.medicalprofile.hypertension.medication %}
          <li>Treated with medications</li>
          {% endif %}
          </ul>
-       </ul>
        {% endif %}
        {% if object.medicalprofile.hyperuricemia.value %}
-       <ul>
          <li>Hyperuricemia</li>
-       </ul>
        {% endif %}
        {% if object.medicalprofile.CHF.value %}
-        <ul>
           <li>CHF (congestive heart failure)</li>
           <ul>
           {% if object.medicalprofile.CHF.systolic %}
@@ -74,10 +63,8 @@
           <li>Diastolic (normal EF / ejection fraction)</li>
           {% endif %}
           </ul>
-        </ul>
        {% endif %}
        {% if object.medicalprofile.diabetes.value %}
-        <ul>
           <li>Diabetes</li>
             {% if object.medicalprofile.diabetes.type %}
             <ul>
@@ -89,33 +76,24 @@
             <li>You take insulin</li>
             </ul>
           {% endif %}
-        </ul>
        {% endif %}
        {% if object.medicalprofile.erosions.value %}
-        <ul>
           <li>Erosions</li>
-        </ul>
        {% endif %}
        {% if object.medicalprofile.organ_transplant.value %}
-        <ul>
           <li>Organ Transplant</li>
           {% if object.medicalprofile.organ_transplant.organ %}
           <ul>
           <li>{{ object.medicalprofile.organ_transplant.organ }}</li>
           </ul>
           {% endif %}
-        </ul>
        {% endif %}
        {% if object.medicalprofile.urate_kidney_stones.value %}
-        <ul>
           <li>Urate Kidney Stones</li>
-        </ul>
        {% endif %}
        {% if object.medicalprofile.tophi.value %}
-        <ul>
           <li>Tophi</li>
-        </ul>
        {% endif %}
-     </div>
+      </ul>
  </div>
 

@@ -40,8 +40,7 @@ class TestDetailView(TestCase):
         request = self.factory.get(self.detail_url)
         request.user = self.user2
         ### response with fake Weight object's name, pk for VitalDetail view
-        view = VitalDetail.as_view()
-        response = view(request, user=self.user, vital=self.weight.name, pk=self.weight.pk)
+        response = VitalDetail.as_view(request, user=self.user, kwargs={"vital":self.weight.name, "pk":self.weight.pk})
         self.assertEqual(response.status_code, 404)
 
     def test_get_template_names(self):

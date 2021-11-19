@@ -28,7 +28,14 @@ class TestULTMethods:
         assert ULT.get_absolute_url() == f"/ult/{ULT.pk}/"
 
     def test_calculator_zeroflares(self):
-        ULT = ULTFactory(num_flares="zero")
+        ULT = ULTFactory(
+            num_flares="zero",
+            ckd=CKDFactory(value=False, dialysis=False),
+            erosions=ErosionsFactory(value=False),
+            stones=UrateKidneyStonesFactory(value=False),
+            hyperuricemia=HyperuricemiaFactory(value=False),
+            tophi=TophiFactory(value=False),
+        )
         assert ULT.calculator() == "Not Indicated"
 
     def test_calculator_oneflare_noindication(self):
@@ -138,6 +145,18 @@ class TestULTMethods:
             erosions=ErosionsFactory(value=False),
             stones=UrateKidneyStonesFactory(value=False),
             hyperuricemia=HyperuricemiaFactory(value=False),
-            tophi=TophiFactory(value=True),
+            tophi=TophiFactory(value=False),
         )
         assert ULT.calculator() == "Indicated"
+
+    def test_calculator_twoplusflares_oneflareperyear(self):
+        ULT = ULTFactory(
+            num_flares="2-3",
+            freq_flares="one",
+            ckd=CKDFactory(value=False, dialysis=False),
+            erosions=ErosionsFactory(value=False),
+            stones=UrateKidneyStonesFactory(value=False),
+            hyperuricemia=HyperuricemiaFactory(value=False),
+            tophi=TophiFactory(value=False),
+        )
+        assert ULT.calculator() == "Conditional"

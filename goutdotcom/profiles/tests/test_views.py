@@ -74,7 +74,7 @@ class TestUpdateView(TestCase):
             'weight': self.weight,
             'drinks_per_week': 60,
         }
-        self.update_url = reverse('profiles:update', **self.kwargs)
+        self.update_url = reverse('profiles:update', kwargs={'user':self.user, 'pk':self.profile.pk})
 
     def test_get_sucess_url(self):
         request = self.factory.post(self.update_url, data=self.profile_data)
