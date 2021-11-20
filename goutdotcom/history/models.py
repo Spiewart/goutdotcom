@@ -196,7 +196,7 @@ class OrganTransplant(MedicalHistory):
         choices=ORGAN_CHOICES,
         help_text="Which organ did you have transplanted?",
         verbose_name="Organ(s) transplanted",
-        default=True,
+        default="",
         null=True,
     )
     name = "organ transplant"

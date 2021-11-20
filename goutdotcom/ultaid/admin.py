@@ -8,6 +8,8 @@ class ULTAidAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "user",
+        "need",
+        "want",
         "ckd",
         "XOI_interactions",
         "organ_transplant",

@@ -23,6 +23,26 @@ from .choices import *
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
+    need = models.BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name="Need ULT?",
+        help_text=mark_safe(
+            "Do you need <a href='{% url 'ult:create' %}' target='_blank'>ULT</a>?"
+        ),
+        default="",
+        null=True,
+        blank=True,
+    )
+
+    want = models.BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name="Want ULT?",
+        help_text="Will you take daily medication to get rid of your gout?",
+        default="",
+        null=True,
+        blank=True,
+    )
+
     ckd = models.ForeignKey(
         CKD,
         on_delete=models.SET_NULL,

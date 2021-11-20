@@ -8,7 +8,7 @@ from .models import ULTAid
 class ULTAidForm(forms.ModelForm):
     class Meta:
         model = ULTAid
-        fields = ()
+        fields = ("need", "want",)
 
     def __init__(self, *args, **kwargs):
         super(ULTAidForm, self).__init__(*args, **kwargs)
@@ -17,6 +17,13 @@ class ULTAidForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 "",
+                "need",
+                "want",
+                HTML(
+                    """
+                    <hr size="6" color="white" id="prerequisites-line">
+                    """
+                ),
                 Div(
                     HTML(
                         """
@@ -64,6 +71,11 @@ class ULTAidForm(forms.ModelForm):
                         {% load crispy_forms_tags %}
                         {% crispy stroke_form %}
                         """
+                    ),
+                    HTML(
+                        """
+                    <hr size="6" color="white" id="subfields-line">
+                    """
                     ),
                     css_id="subfields",
                 ),
