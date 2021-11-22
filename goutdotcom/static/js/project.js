@@ -299,6 +299,15 @@ function contraindications_profile_bleed() {
 }
 
 /* ULTAid app JS */
+function need_want_checker() {
+// function that checks whether need/want are checked and shows subfields <div> if both True
+  if ($('#id_need').val() == 'True' && $('#id_want').val() == 'True') {
+      $('#subfields').show();
+  }
+  else {
+    $('#subfields').hide();
+  }
+}
 // function that checks whether or not CKD is checked and hides/shows dialysis/stage fields as appropriate
 function CKD_checker() {
 // function that checks whether CKD is checked or not, shows dialysis and stage fields or hides/empties them

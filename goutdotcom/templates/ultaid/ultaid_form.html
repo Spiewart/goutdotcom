@@ -30,6 +30,10 @@
 // this is executed once when the page loads
   $(document).ready(function() {
   // set things up so my function will be called when first_flare
+  $('#id_need').change(need_want_checker);
+  need_want_checker.call($('#id_need').get(0));
+  $('#id_want').change(need_want_checker);
+  need_want_checker.call($('#id_want').get(0));
   $('#id_CKD-value').change(CKD_checker);
   CKD_checker.call($('#id_CKD-value').get(0));
   $('#id_organ_transplant-value').change(transplant_checker);

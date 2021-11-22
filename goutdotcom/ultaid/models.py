@@ -26,9 +26,7 @@ class ULTAid(TimeStampedModel):
     need = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Need ULT?",
-        help_text=mark_safe(
-            "Do you need <a href='{% url 'ult:create' %}' target='_blank'>ULT</a>?"
-        ),
+        help_text=mark_safe("Do you need <a href='{% url 'ult:create' %}' target='_blank'>ULT</a>?"),
         default="",
         null=True,
         blank=True,
