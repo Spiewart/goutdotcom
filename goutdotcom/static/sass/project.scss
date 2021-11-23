@@ -159,9 +159,15 @@ body {
   };
 }
 
-#homepage-jumboton {
-  margin: 0px;
-  padding: 0px;
+#homepage-jumbotron {
+  text-align: center;
+  background-image: url("../images/TabMSU.jpg");
+  background-color: #000000;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 300px;
+  width: 300px;
 }
 
 .card {
@@ -181,32 +187,6 @@ body {
 .active, .btn:hover {
   background-color: $content-color;
   color: $background-color;
-}
-
-.jumbotron {
-  background: var(--main-content-heading-background);
-  border-style: var(--main-content-heading-border-style);
-  border-width: var(--main-content-heading-border-width);
-  border-color: var(--main-content-heading-border-color);
-  padding: var(--main-content-heading-padding);
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-}
-
-.jumbotron-about {
-  background: var(--main-content-heading-background);
-  border-style: var(--main-content-heading-border-style);
-  border-width: var(--main-content-heading-border-width);
-  border-color: rgb(0, 8, 70);
-  padding: var(--main-content-heading-padding);
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-  height: 100vh;
-  background-size: cover;
-  border-radius: 0;
-  color: var(--main-master-container-background-color);
 }
 
 .asteriskField {

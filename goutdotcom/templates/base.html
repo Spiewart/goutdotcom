@@ -1,4 +1,5 @@
-{% load static i18n %}<!DOCTYPE html>
+{% load static i18n %}
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -22,7 +23,7 @@
     />
     <!-- Your stuff: Third-party CSS libraries go here -->
     <!-- This file stores project-specific CSS -->
-    <link href="{% static 'css/project.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/project.min.css' %}" rel="stylesheet"/>
     {% endblock %}
     <!-- Le javascript
     ================================================== -->
@@ -52,7 +53,9 @@
   </head>
 
   <body>
-    {% include 'navbar.html' %}
+    {% block navbar %}
+    {% include "navbar.html" %}
+    {% endblock navbar %}
 
     <div class="container-fluid">
       {% if messages %} {% for message in messages %}
