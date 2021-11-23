@@ -43,6 +43,8 @@ prn_models = [
 ]
 injection_models = [Methylprednisolone]
 
+class About(TemplateView):
+    template_name = "treatment/about.html"
 
 class AboutCorticosteroids(TemplateView):
     template_name = "treatment/about_corticosteroids.html"

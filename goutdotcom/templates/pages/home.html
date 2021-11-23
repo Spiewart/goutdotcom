@@ -1,56 +1,151 @@
-{% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>{% block title %}Gouthelper{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A site for all things gout." />
+  <meta name="author" content="Dave Ewart" />
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
+  {% block css %}
+  <!-- Latest compiled and minified Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <!-- Your stuff: Third-party CSS libraries go here -->
+  <!-- This file stores project-specific CSS -->
+  <link href="{% static 'css/project.min.css' %}" rel="stylesheet" />
+  {% endblock %}
+  <!-- Le javascript
+    ================================================== -->
+  {# Placed at the top of the document so pages load faster with defer #}
+  {% block javascript %}
+  <!-- Bootstrap JS and its dependencies-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous">
+  </script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+  </script>
+  <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <!-- Your stuff: Third-party javascript libraries go here -->
+  <!-- place project specific Javascript in this file -->
+  <script defer src="{% static 'js/project.js' %}"></script>
+  {% endblock javascript %}
+</head>
+
+<body>
+  <div class="jumbotron jumbotron-fluid" id="homepage-jumbotron">
+    <div class="container-fluid content-container">
+      <h1 class="display-4">Fluid jumbotron</h1>
+      <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+    </div>
+  </div>
+  <div class="mb-1">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark py-1">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'home' %}">Gouthelper</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'about' %}">About</a>
+          </li>
+          <li class="nav-item"></li>
+          <li class="nav-item">
+            <a class="nav-link link-flareaid" href="{% url 'flareaid:create' %}">FlareAid</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ult:create' %}">ULT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ultaid:create' %}">ULTAid</a>
+          </li>
+          <li class="nav-item">{% if request.user.is_authenticated %}</li>
+          <li class="nav-item">
+            {# URL provided by django-allauth/account/urls.py #}
+            <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "Dashboard" %}</a>
+          </li>
+          <li class="nav-item">
+            {# URL provided by django-allauth/account/urls.py #}
+            <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            {# URL provided by django-allauth/account/urls.py #}
+            <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+          </li>
+          <li class="nav-item">
+            {# URL provided by django-allauth/account/urls.py #}
+            <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </div>
+
 
 {% block content %}
 <section class="p-0 text-center">
-<main class="container-fluid">
-        <div class="row">
-          <div class="col">
-            <h1>Don't Live with <span class="text-warning">Gout<span></h1>
+
+  <main class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <h1>Don't Live with <b>Gout</b></h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="card-group">
+          <div class="card text-center" id="card-homepage">
+            <div class="card-header">
+              <h2><b>Flares</b></h2>
+            </div>
+            <a href="{% url 'flareaid:create' %}">
+              <img class="card-img-top" src="../static/images/flare_forweb.jpg" alt="Card image cap">
+            </a>
+          </div>
+          <div class="card text-center" id="card-homepage">
+            <div class="card-header">
+              <h2><b>Prevention</b></h2>
+            </div>
+            <a href="{% url 'ult:create' %}">
+              <img class="card-img-top" src="../static/images/MSUcrystals_forweb.jpg" alt="Card image cap">
+            </a>
+          </div>
+          <div class="card text-center" id="card-homepage">
+            <div class="card-header">
+              <h2><b>Blog</b></h2>
+            </div>
+            <img class="card-img-top" src="../static/images/goutart_forweb.jpg" alt="Card image cap">
           </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <div class="card-group">
-              <div class="card text-center" id="card-homepage">
-                <div class="card-header">
-                  <h2><b>Flares</b></h2>
-                </div>
-                <a href="{% url 'flareaid:create' %}">
-                <img class="card-img-top" src="../static/images/flare_forweb.jpg" alt="Card image cap">
-                </a>
-              </div>
-              <div class="card text-center" id="card-homepage">
-                <div class="card-header">
-                  <h2><b>Prevention</b></h2>
-                </div>
-                <a href="{% url 'ult:create' %}">
-                <img class="card-img-top" src="../static/images/MSUcrystals_forweb.jpg" alt="Card image cap">
-                </a>
-              </div>
-              <div class="card text-center" id="card-homepage">
-                <div class="card-header">
-                  <h2><b>Blog</b></h2>
-                </div>
-                <img class="card-img-top" src="../static/images/goutart_forweb.jpg" alt="Card image cap">
-              </div>
       </div>
-  </div>
 </section>
 </main>
 {% endblock content %}
-{% block inline_javascript %}
-<script>
-jQuery(function($) {
-  var path = window.location.href;
-  $('li a').each(function() {
-  if (this.href === path) {
-  $(this).addClass('active');
-  }
-  else {
-  $(this).removeClass('active');
-  }
-  });
-});
-</script>
-{% endblock inline_javascript %}
+  <!-- /container -->
+
+  {% block modal %}
+  {% endblock modal %}
+  {% block inline_javascript %}
+  {#Script tags with only code, no src (defer by default) #}
+  {% endblock inline_javascript %}
+</body>
+
+</html>

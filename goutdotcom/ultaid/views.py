@@ -23,6 +23,7 @@ from ..history.models import (
     Stroke,
     XOIInteractions,
 )
+from ..ult.models import ULT
 from .forms import ULTAidForm
 from .models import ULTAid
 
@@ -304,6 +305,11 @@ class ULTAidUpdate(LoginRequiredMixin, UpdateView):
                 context["stroke_form"] = self.stroke_form_class(
                     self.request.POST, instance=self.request.user.medicalprofile.stroke
                 )
+            # Check if user is logged in, pass ULT results to ULTAid view/context for JQuery evaluation to update form fields
+            #### IS THIS NEEDED FOR POST?
+            if self.request.user.is_authenticated:
+                if self.request.user.ult:
+                    context["user_ult"] = ULT.objects.get(user=self.request.user).calculator()
             return context
         else:
             if "CKD_form" not in context:
@@ -330,6 +336,10 @@ class ULTAidUpdate(LoginRequiredMixin, UpdateView):
                 )
             if "stroke_form" not in context:
                 context["stroke_form"] = self.stroke_form_class(instance=self.request.user.medicalprofile.stroke)
+            # Check if user is logged in, pass ULT results to ULTAid view/context for JQuery evaluation to update form fields
+            if self.request.user.is_authenticated:
+                if self.request.user.ult:
+                    context["user_ult"] = ULT.objects.get(user=self.request.user).calculator()
             return context
 
     def post(self, request, **kwargs):

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="p-0 text-center">
+<div class="jumbotron jumbotron-fluid" id="homepage-jumbotron">
+<div class="container-fluid content-container">
+    <h1 class="display-4">Fluid jumbotron</h1>
+    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+  </div>
+</div>
+
+<main class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <h1>Don't Live with <b>Gout</b></h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="card-group">
+              <div class="card text-center" id="card-homepage">
+                <div class="card-header">
+                  <h2><b>Flares</b></h2>
+                </div>
+                <a href="{% url 'flareaid:create' %}">
+                <img class="card-img-top" src="../static/images/flare_forweb.jpg" alt="Card image cap">
+                </a>
+              </div>
+              <div class="card text-center" id="card-homepage">
+                <div class="card-header">
+                  <h2><b>Prevention</b></h2>
+                </div>
+                <a href="{% url 'ult:create' %}">
+                <img class="card-img-top" src="../static/images/MSUcrystals_forweb.jpg" alt="Card image cap">
+                </a>
+              </div>
+              <div class="card text-center" id="card-homepage">
+                <div class="card-header">
+                  <h2><b>Blog</b></h2>
+                </div>
+                <img class="card-img-top" src="../static/images/goutart_forweb.jpg" alt="Card image cap">
+              </div>
+      </div>
+  </div>
+</section>
+</main>
+{% endblock content %}
+{% block inline_javascript %}
+<script>
+jQuery(function($) {
+  var path = window.location.href;
+  $('li a').each(function() {
+  if (this.href === path) {
+  $(this).addClass('active');
+  }
+  else {
+  $(this).removeClass('active');
+  }
+  });
+});
+</script>
+{% endblock inline_javascript %}

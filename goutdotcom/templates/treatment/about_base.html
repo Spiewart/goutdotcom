@@ -3,58 +3,46 @@
 {% load treatment_extras %}
 
 {% block content %}
-<main class="container-fluid">
-    <div class="row">
-        <div class="column">
-            <div class="container-fluid default-container">
-                {% block header %}
-                <h1 class="content-heading"><a id="{{ treatment }}">{{ treatment|capfirst }}</a>
-                <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About</a>
-                {% if request.user.is_authenticated %}
-                  {% if treatment|lower == 'allopurinol' or treatment.generic_name == 'febuxostat' or treatment.generic_name == 'probenecid'%}
-                  {% else %}
-                  <a class="btn btn-primary btn-lg" href="{% url 'treatment:list' treatment %}" role="button" style="float: right;">List: {{ treatment }}</a>
-                  <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button" style="float: right;">New</a>
-                  {% endif %}
-                {% else %}
-                <a id="log-in-link" class="btn btn-primary btn-lg" href="{% url 'account_login' %}" role="button" style="float: right;">Log In</a>
-                {% endif %}
-                </h1>
-                {% endblock header %}
-                {% block intro %}{% endblock intro %}
-                <hr size="6" color="white">
-                {% block quicklinks %}
-                  <h2>Quick Links</h2>
-                  <ol id="quicklinks">
-                      <li><a href="#biology">Biology</a></li>
-                      <li><a href="#pharmacology">Pharmacology</a></li>
-                      {% block extraquicklinks %}{% endblock extraquicklinks %}
-                      <li><a href="#history">History</a></li>
-                      <li><a href="#ingout">In Gout</a></li>
-                      <li><a href="#references">References</a></li>
-                  </ol>
-                {% endblock quicklinks %}
-                <hr size="6" color="white">
-                <h2 class="content-heading"><a id="biology">Biology</a></h2>
-                {% block biology %}{% endblock biology %}
-                <hr size="6" color="white">
-                <h2 class="content-heading"><a id="pharmacology">Pharmacology</a></h2>
-                {% block pharmacology %}{% endblock pharmacology %}
-                <hr size="6" color="white">
-                {% block dosing %}{% endblock dosing %}
-                {% block sideeffects %}{% endblock sideeffects %}
-                <h2 class="content-heading"><a id="history">History</a></h2>
-                {% block history %}{% endblock history %}
-                <hr size="6" color="white">
-                <h2 class="content-heading"><a id="ingout">In Gout</a></h2>
-                {% block ingout %}{% endblock ingout %}
-                <hr size="6" color="white">
-                <h2 class="content-heading"><a id="references">References</a></h2>
-                {% block references %}{% endblock references %}
-                <u><a href="#{{ lab }}">Back to Top</a></u>
-            </div>
-        </div>
+<main class="container-fluid content-container">
+  {% block header %}
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' %}" role="button">Treatment</a>
+      <h1 class="content-heading"><a id="{{ treatment }}">{{ treatment|capfirst }}</h1>
     </div>
+  </div>
+  {% endblock header %}
+  {% block intro %}{% endblock intro %}
+  <hr size="6" color="white">
+  {% block quicklinks %}
+    <h2>Quick Links</h2>
+    <ol id="quicklinks">
+      <li><a href="#biology">Biology</a></li>
+      <li><a href="#pharmacology">Pharmacology</a></li>
+      {% block extraquicklinks %}{% endblock extraquicklinks %}
+      <li><a href="#history">History</a></li>
+      <li><a href="#ingout">In Gout</a></li>
+      <li><a href="#references">References</a></li>
+    </ol>
+  {% endblock quicklinks %}
+  <hr size="6" color="white">
+  <h2><a id="biology">Biology</a></h2>
+  {% block biology %}{% endblock biology %}
+  <hr size="6" color="white">
+  <h2><a id="pharmacology">Pharmacology</a></h2>
+  {% block pharmacology %}{% endblock pharmacology %}
+  <hr size="6" color="white">
+  {% block dosing %}{% endblock dosing %}
+  {% block sideeffects %}{% endblock sideeffects %}
+  <h2><a id="history">History</a></h2>
+  {% block history %}{% endblock history %}
+  <hr size="6" color="white">
+  <h2><a id="ingout">In Gout</a></h2>
+  {% block ingout %}{% endblock ingout %}
+  <hr size="6" color="white">
+  <h2><a id="references">References</a></h2>
+  {% block references %}{% endblock references %}
+  <u><a href="#{{ lab }}">Back to Top</a></u>
 </main>
 <br>
 {% endblock content %}

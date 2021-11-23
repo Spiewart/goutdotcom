@@ -3,9 +3,12 @@
 {% load treatment_extras %}
 
 {% block header %}
-  <h1 class="content-heading" id="top">Non-steroidal antiinflammatory drugs (NSAIDs)
-  <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'all-treatments' %}" role="button" style="float: right;">About</a>
-  </h1>
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' %}" role="button">Treatment</a>
+      <h1 class="content-heading" id="top">Non-steroidal antiinflammatory drugs (NSAIDs)</h1>
+    </div>
+  </div>
 {% endblock header %}
 
 {% block intro %}

@@ -3,8 +3,15 @@
 {% load crispy_forms_tags %}
 
 {% block header %}
+{{ user_ult|json_script:'user_ult' }}
 {% if form.instance.pk %}
 <h1>Your ULT plan?</h1>
+      {% if user_ult %}
+      blah
+      {{ user_ult }}
+      {% else %}
+      no blah
+      {% endif %}
 {% else %}
 <h1>Make a ULT plan</h1>
 {% endif %}
@@ -29,7 +36,8 @@
 <script>
 // this is executed once when the page loads
   $(document).ready(function() {
-  // set things up so my function will be called when first_flare
+  ULT_exists_checker();
+  // set things up so my function will be called when form fields change
   $('#id_need').change(need_want_checker);
   need_want_checker.call($('#id_need').get(0));
   $('#id_want').change(need_want_checker);

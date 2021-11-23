@@ -3,28 +3,23 @@ from crispy_forms.layout import HTML, ButtonHolder, Div, Fieldset, Layout, Submi
 from django import forms
 from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
+from django.utils.text import format_lazy
 
 from ..ult.urls import urlpatterns
 from .models import ULTAid
 
 
 class ULTAidForm(forms.ModelForm):
-    ult_create_url = reverse_lazy("ult/ult:create")
-
     class Meta:
         model = ULTAid
         fields = (
             "need",
             "want",
         )
-        help_texts = {
-            "need": mark_safe("Do you need <a href=ult_create_url target='_blank'>ULT</a>?"),
-        }
 
     def __init__(self, *args, **kwargs):
         super(ULTAidForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-
         self.helper.layout = Layout(
             Fieldset(
                 "",

@@ -299,6 +299,16 @@ function contraindications_profile_bleed() {
 }
 
 /* ULTAid app JS */
+function ULT_exists_checker() {
+  var ult = JSON.parse(document.getElementById('user_ult').textContent);
+  if (ult == "Indicated") {
+    $('#id_need').val('True');
+  }
+  else if (ult == "Not Indicated") {
+    $('#id_need').val('False');
+  }
+}
+
 function need_want_checker() {
 // function that checks whether need/want are checked and shows subfields <div> if both True
   if ($('#id_need').val() == 'True' && $('#id_want').val() == 'True') {

@@ -8,6 +8,7 @@ $active-button-color: rgba(180, 1, 224, 0.678);
 // Body Main Style
 body {
   background-color: $background-color;
+  color: $content-color;
 }
 
 .profile-container {
@@ -116,16 +117,6 @@ body {
   };
 }
 
-input[type="checkbox"] {
-  float: left;
-  width: 20px
-}
-
-h1 {
-  color: $content-text-color;
-  padding: 5px;
-}
-
 // For FlareAid, ULTAid, ULT create/update forms
 .aidcreateupdate-form {
   background-color: $content-color;
@@ -168,23 +159,28 @@ h1 {
   };
 }
 
+#homepage-jumboton {
+  margin: 0px;
+  padding: 0px;
+}
+
 .card {
   background: $content-color;
   width: 18rem;
   height: 100%;
-  color: $content-text-color;
-  border-color: rgb(0, 0, 0);
+  color: $background-color;
+  border-color: $border-color;
   border-width: 2px;
 }
 
 .btn {
-  background-color: rgb(255, 34, 225);
-  border-color: rgb(138, 35, 35);
+  background-color: $content-color;
+  border-color: $border-color;
 }
 
 .active, .btn:hover {
-  background-color: $background-color;
-  color: $content-color;
+  background-color: $content-color;
+  color: $background-color;
 }
 
 .jumbotron {
@@ -217,26 +213,13 @@ h1 {
   display: none;
 }
 
-
-
-
-
 .nav-pills .nav-link.active {
   background-color: green;
-}
-
-
-
-.sub-default-container {
-  color: rgb(231, 231, 231);
-  padding: var(--main-master-container-padding);
-  background-color: var(--main-content-heading-background-color);
 }
 
 .hyperlink:hover {
   color: black;
 }
-
 
 .list-items-small {
   background: var(--main-content-heading-background);
@@ -252,16 +235,6 @@ h1 {
   margin-left: 5px;
 }
 
-
-.gdc-container-subcontainer {
-  border-style: solid;
-  border-width: medium;
-  border-color: yellow;
-  padding: 5px;
-  background-color: yellow;
-  width: fit-content;
-  height: min-content;
-}
 
 .pagination {
   margin: 0px !important;
@@ -284,14 +257,6 @@ h1 {
   list-style-position: inside;
 }
 
-.quick-link-list {
-  list-style: none;
-  padding: 0;
-}
-
-.quick-link-list > li {
-  display: inline;
-}
 // project specific CSS goes here
 
 ////////////////////////////////

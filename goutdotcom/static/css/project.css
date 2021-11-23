@@ -1,5 +1,6 @@
 body {
-  background-color: #d3d02d; }
+  background-color: #d3d02d;
+  color: rgba(5, 50, 148, 0.863); }
 
 .profile-container {
   background-color: rgba(5, 50, 148, 0.863);
@@ -81,14 +82,6 @@ body {
         -ms-flex-align: center;
             align-items: center; }
 
-input[type="checkbox"] {
-  float: left;
-  width: 20px; }
-
-h1 {
-  color: #e7e7e7;
-  padding: 5px; }
-
 .aidcreateupdate-form {
   background-color: rgba(5, 50, 148, 0.863);
   padding: 20px;
@@ -117,22 +110,26 @@ h1 {
     margin: 0px;
     padding: 0px; }
 
+#homepage-jumboton {
+  margin: 0px;
+  padding: 0px; }
+
 .card {
   background: rgba(5, 50, 148, 0.863);
   width: 288px;
   width: 18rem;
   height: 100%;
-  color: #e7e7e7;
-  border-color: black;
+  color: #d3d02d;
+  border-color: #e7e7e7;
   border-width: 2px; }
 
 .btn {
-  background-color: #ff22e1;
-  border-color: #8a2323; }
+  background-color: rgba(5, 50, 148, 0.863);
+  border-color: #e7e7e7; }
 
 .active, .btn:hover {
-  background-color: #d3d02d;
-  color: rgba(5, 50, 148, 0.863); }
+  background-color: rgba(5, 50, 148, 0.863);
+  color: #d3d02d; }
 
 .jumbotron {
   background: var(--main-content-heading-background);
@@ -164,11 +161,6 @@ h1 {
 .nav-pills .nav-link.active {
   background-color: green; }
 
-.sub-default-container {
-  color: #e7e7e7;
-  padding: var(--main-master-container-padding);
-  background-color: var(--main-content-heading-background-color); }
-
 .hyperlink:hover {
   color: black; }
 
@@ -183,19 +175,6 @@ h1 {
 
 #profilepic {
   margin-left: 5px; }
-
-.gdc-container-subcontainer {
-  border-style: solid;
-  border-width: medium;
-  border-color: yellow;
-  padding: 5px;
-  background-color: yellow;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
-  height: -webkit-min-content;
-  height: -moz-min-content;
-  height: min-content; }
 
 .pagination {
   margin: 0px !important; }
@@ -214,13 +193,6 @@ h1 {
   padding: var(--sub-list-padding);
   background-color: var(--main-master-container-background-color);
   list-style-position: inside; }
-
-.quick-link-list {
-  list-style: none;
-  padding: 0; }
-
-.quick-link-list > li {
-  display: inline; }
 
 .alert-debug {
   background-color: #fff;

@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.fields import BooleanField
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
+from django.utils.text import format_lazy
 from django_extensions.db.models import TimeStampedModel
 
 from goutdotcom.history.models import HeartAttack
@@ -26,7 +27,7 @@ class ULTAid(TimeStampedModel):
     need = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Need ULT?",
-        help_text=mark_safe("Do you need <a href='{% url 'ult:create' %}' target='_blank'>ULT</a>?"),
+        help_text=format_lazy("""Do you need <a href='{}' target='_blank'>ULT</a>?""", reverse_lazy("ult:create")),
         default="",
         null=True,
         blank=True,

@@ -17,6 +17,7 @@ from ...history.tests.factories import (
     UrateKidneyStonesFactory,
 )
 from ...users.tests.factories import UserFactory
+from ..forms import ULTForm
 from ..tests.factories import ULTFactory
 from ..views import ULTCreate, ULTDetail, ULTUpdate
 
@@ -40,10 +41,17 @@ class TestCreateView(TestCase):
             "hyperuricemia": self.medicalprofile.hyperuricemia,
         }
 
-    def test_get_sucess_url(self):
-        request = self.factory.post(ULTCreate, data=self.ult_data)
-        request.data = {"id": 1}
+    def test_form_valid(self):
+        form = ULTForm(data=self.ult_data)
+        self.assertTrue(form.is_valid())
+
+    def test_get_context_data(self):
+        request = self.factory.get("/ult/create")
         request.user = self.user
         response = ULTCreate.as_view()(request)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("ult:detail", kwargs={"pk": 1}), fetch_redirect_response=False)
+        self.assertIsInstance(response.context_data, dict)
+        self.assertIn("CKD_form", response.context_data)
+        self.assertIn("erosions_form", response.context_data)
+        self.assertIn("hyperuricemia_form", response.context_data)
+        self.assertIn("tophi_form", response.context_data)
+        self.assertIn("urate_kidney_stones_form", response.context_data)
