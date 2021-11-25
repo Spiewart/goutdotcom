@@ -3,30 +3,10 @@
 
 {% block content %}
 <main>
-    <div class="jumbotron-fluid default-container">
+    <div class="jumbotron-fluid content-container">
         <div class="row">
           <div class="col">
-            <h1 class="content-heading">Lab Testing and Gout
-            {% if request.user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button" style="float: right;">Your Labs</a>
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
-              <div class="btn-group" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                  Log a Lab
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-                  <li><a class="dropdown-item" href="{% url 'lab:create' 'urate' %}">Uric Acid</a></li>
-                  <li><a class="dropdown-item" href="{% url 'lab:create' 'ALT' %}">ALT</a></li>
-                  <li><a class="dropdown-item" href="{% url 'lab:create' 'AST' %}">AST</a></li>
-                  <li><a class="dropdown-item" href="{% url 'lab:create' 'WBC' %}">WBC</a></li>
-                  <li><a class="dropdown-item" href="{% url 'lab:create' 'hemoglobin' %}">Hemoglobin</a></li>
-                  <li><a class="dropdown-item" href="{% url 'lab:create' 'platelet' %}">Platelets</a></li>
-                  <li><a class="dropdown-item" href="{% url 'lab:create' 'creatinine' %}">Creatinine</a></li>
-                </ul>
-              </div>
-            </div>
-            {% endif %}
-          </h1>
+            <h1>Lab Testing and Gout</h1>
           <p class="lead">Lab testing is important in gout, particularly in diagnosis and treatment.</p>
           <hr class="my-6" color="white">
           <p>Labs are important in several gouty situations:</p>
@@ -42,7 +22,7 @@
         </div>
       <div class="row">
         <div class="col">
-              <h3 class="content-heading">Diagnosis of Gout</h3>
+              <h2>Diagnosis of Gout</h2>
               <p>The diagnosis gout is clinical, but labs help. Labs can increase or decrease a provider's clinical suspicion for gout (<a class="link-primary" href="https://en.wikipedia.org/wiki/Pre-_and_post-test_probability" target="_blank">pre-test probability</a>).</p>
               <ol>
                 <li>
@@ -54,7 +34,7 @@
               </ol>
         </div>
         <div class="col">
-             <h3 class="content-heading">Management of Gout</h3>
+             <h2>Management of Gout</h2>
              <p>Labs are used in the management of gout to: </p>
              <ol>
                <li>

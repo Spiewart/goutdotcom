@@ -2,6 +2,12 @@ body {
   background-color: #d3d02d;
   color: rgba(5, 50, 148, 0.863); }
 
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 30px; }
+  h2 {
+    font-size: 20px; } }
+
 .profile-container {
   background-color: rgba(5, 50, 148, 0.863);
   padding: 20px;
@@ -110,15 +116,31 @@ body {
     margin: 0px;
     padding: 0px; }
 
-#homepage-jumbotron {
+.homepage #homepage-jumbotron {
   text-align: center;
   background-image: url("../images/TabMSU.jpg");
   background-color: #000000;
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   background-repeat: no-repeat;
-  height: 300px;
-  width: 300px; }
+  margin-bottom: 0px;
+  max-height: 300px;
+  color: #d3d02d; }
+  .homepage #homepage-jumbotron container-fluid {
+    background-color: transparent;
+    padding: 0px;
+    opacity: 0%; }
+  .homepage #homepage-jumbotron h1, .homepage #homepage-jumbotron h2 {
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px;
+    font-weight: bold; }
+
+@media screen and (max-width: 650px) {
+  .homepage h1 {
+    font-size: 70px; }
+  .homepage h2 {
+    font-size: 20px; } }
 
 .card {
   background: rgba(5, 50, 148, 0.863);

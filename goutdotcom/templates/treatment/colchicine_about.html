@@ -1,15 +1,25 @@
-{% extends "treatment/treatment_about_base.html" %}
+{% extends "treatment/about_treatment.html" %}
 {% load static %}
 
 {% block intro %}
-<p>Colchicine is the gout workhorse.</p>
+<div class="row">
+  <div class="col-auto">
+    <p>Colchicine is the oldest treatment for gout. It is most effective for gout when started in the first 36 hours after symptom onset. It can cause stomach upset or diarrhea. </p>
+  </div>
+    <div class="card" style="width: 18rem; float: right;">
+      <img class="card-img-top" src="/static/images/Colchicum_speciosum.jpg" alt="Card image cap">
+      <div class="card-body">
+        <p class="card-text">Colchicum speciosum. By <a href="https://commons.wikimedia.org/wiki/User:Meneerke_bloem" ,
+            target="_blank">Meneerke Bloem</a>. <a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank">CC
+          BY-SA 3.0</a> Unmodified.
+        </p>
+    </div>
+  </div>
+</div>
 {% endblock intro %}
 
 {% block biology %}{% endblock biology %}
 {% block pharmacology %}{% endblock pharmacology %}
-
-
-
 {% block history %}{% endblock history %}
 {% block ingout %}{% endblock ingout %}
 {% block references %}{% endblock references %}

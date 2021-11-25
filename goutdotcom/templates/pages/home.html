@@ -42,46 +42,15 @@
   {% endblock javascript %}
 </head>
 
-<body>
+<body class="homepage">
   {% include 'pages/home_jumbotron.html' %}
   {% include 'pages/navbar_homepage.html' %}
 
-{% block content %}
-<section class="p-0 text-center">
-
+  {% block content %}
   <main class="container-fluid">
-    <div class="row">
-      <div class="col">
-        <div class="card-group">
-          <div class="card text-center" id="card-homepage">
-            <div class="card-header">
-              <h2><b>Flares</b></h2>
-            </div>
-            <a href="{% url 'flareaid:create' %}">
-              <img class="card-img-top" src="../static/images/flare_forweb.jpg" alt="Card image cap">
-            </a>
-          </div>
-          <div class="card text-center" id="card-homepage">
-            <div class="card-header">
-              <h2><b>Prevention</b></h2>
-            </div>
-            <a href="{% url 'ult:create' %}">
-              <img class="card-img-top" src="../static/images/MSUcrystals_forweb.jpg" alt="Card image cap">
-            </a>
-          </div>
-          <div class="card text-center" id="card-homepage">
-            <div class="card-header">
-              <h2><b>Blog</b></h2>
-            </div>
-            <img class="card-img-top" src="../static/images/goutart_forweb.jpg" alt="Card image cap">
-          </div>
-        </div>
-      </div>
-</section>
-</main>
-{% endblock content %}
-  <!-- /container -->
-
+    {% include 'pages/home_cards.html' %}
+  </main>
+  {% endblock content %}
   {% block modal %}
   {% endblock modal %}
   {% block inline_javascript %}

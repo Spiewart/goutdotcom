@@ -1,10 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<main role="main" class="container-fluid">
-    <div class="row">
-        <div class="column">
-            <div class="container-fluid default-container">
+<main role="main" class="container-fluid content-container">
                 {% block header %}
                 <h1 class="content-heading"><a id="Flares">Flares</a>
                 {% if request.user.is_authenticated %}
@@ -16,7 +13,7 @@
                 {% block intro %}
                 <p>Gout flares are painful and disabling. They are caused by <a href="{% url 'lab:about' 'urate' %}">uric acid</a> build up in one or more joints where it causes inflammation. Inflammation causes pain, redness, swelling, and warmth over the joint(s).</p>
                 {% endblock intro %}
-                <hr size="6" color="navy">
+                <hr size="6" color="white">
                     {% block quicklinks %}
                     <h2 class="content-heading">Quick Links</h2>
                     <ol>
@@ -44,10 +41,13 @@
                   <div class="row">
                     <div class="col">
                       <h3><u>Inflammation</u></h3>
-                      <p>There are typically signs of <a href="https://en.wikipedia.org/wiki/Inflammation" target="_blank">inflammation</a> in the involved joint.
-                      Redness (erythema or rubor) of the skin overlying the joint is commonly observed on visual inspection.
-                      The joint and overlying skin are often warm to the touch (calor).
-                      In addition to pain (dolor), the joint is often quite swollen (tumor).</p>
+                      <lh>There are typically signs of <a href="https://en.wikipedia.org/wiki/Inflammation" target="_blank">inflammation</a> in the involved joint:
+                      <ol>
+                        <li>Redness (erythema or rubor) of the skin overlying the joint is commonly observed on visual inspection</li>
+                        <li>The joint and overlying skin are often warm to the touch (calor).</li>
+                        <li>Pain (dolor) to touch or pressure (even light)</li>
+                        <li>The joint is often quite swollen (tumor).</li>
+                      </ol>
                       <p>Often, sufferers will have a low-grade fever from the systemic effects of such severe localized inflammation.<p>
                       <p>It is not uncommon for gout to be misdiagnosed as an infection of the skin (<a href="https://en.wikipedia.org/wiki/Cellulitis" target="_blank">cellulitis</a>) due to the "angry" appearance of the skin overlying the affected joint.
                       This can result in unnecessary exposure to antibiotics and/or other testing or treatments.
@@ -78,19 +78,29 @@
                 {% block pathophysiology %}
                 <h2 class="content-heading"><a id="pathophysiology">Biology</a></h2>
                 <h3><u>Inflammation</u></h3>
+                <p>
                 The involvement of uric acid in human biology has been appreciated in a crude, by modern standards, fashion for hundreds of years (<a href="#1">1</a>).
                 The first and landmark paper describing urate crystals in gouty joints (<a href="#2">2</a>) was published by McCarty et al in 1961.
                 It was subsequently recognized that uric acid can cause inflammation in a variety of <a href="https://en.wikipedia.org/wiki/Mammal" target="_blank">mammalian</a> tissues.
                 Modern molecular biology allowed us to understand that uric acid causes inflammation by a very old (genetically) family of proteins called the <a href="https://en.wikipedia.org/wiki/Inflammasome" target="_blank">inflammasome</a> (<a href="#3">3</a>).
+                </p>
                 <h3><u>Monosodium Urate Crystals</u></h3>
+                <p>
                 The crystals described by McCarty et al. in 1961 were made of monosodium urate (MSU) (<a href="#2">2</a>).
                 These are formed by crystallization of uric acid and deposition of these crystals in tissues where they can cause inflammation.
-                Hyperuricemia predisposes an individual to formation of
+                Hyperuricemia predisposes an individual to formation of urate crystals in the joint where they cause inflammation.
+                </p>
                 <h3><u>White Blood Cells</u></h3>
+                <p>
+                Are the effector cells of gouty inflammation. If you look at the fluid in a joint that is swollen with gouty inflammation, it will be full of white blood cells (<a href="{% url 'lab:about' 'WBC' %}">WBC</a>s).
+                </p>
                 <hr size="6" color="white">
                 {% endblock pathophysiology %}
                 {% block causes %}
                 <h2 class="content-heading"><a id="causes">Causes</a></h2>
+                <p>The root cause of gout flares is uric acid in the joint causing inflammation and attracting WBCs to perpetuate the inflammation. Initially, local joint cells respond to the presence of uric acid by releasing cytokines.
+                Cytokines then attract WBCs, <a href="" target="_blank">neutrophils</a> that migrate into the joint and cause the real damage and symptoms.
+                The body has built in feedback mechanisms that resolve the inflammation in 5-10 days, hence the natural history of flares (<a href="#4">4</a>).
                 <hr size="6" color="white">
                 {% endblock causes %}
                 {% block history %}
@@ -103,25 +113,11 @@
                   <li id=1>Nuki, G., Simkin, P.A. A concise history of gout and hyperuricemia and their treatment. <i>Arthritis Res Ther</i> <strong>8</strong>, S1 (2006). <a href="https://doi.org/10.1186/ar1906" target="_blank">https://doi.org/10.1186/ar1906</a></li>
                   <li id=2>McCarty DJ, Hollander JL: Identification of urate crystals in gouty synovial fluid. <i>Ann Intern Med.</i> 1961, 54: 452-460. <a href="https://www.acpjournals.org/doi/10.7326/0003-4819-54-3-452" target="_blank">https://doi.org/10.7326/0003-4819-54-3-452</a></li>
                   <li id=3>Martinon, F., Pétrilli, V., Mayor, A. et al. Gout-associated uric acid crystals activate the NALP3 inflammasome. Nature 440, 237–241 (2006). https://doi.org/10.1038/nature04516</li>
+                  <li id=4>Jyaysi Desai, Stefanie Steiger, Hans-Joachim Anders, Molecular Pathophysiology of Gout, Trends in Molecular Medicine, Volume 23, Issue 8, 2017, Pages 756-768, ISSN 1471-4914, https://doi.org/10.1016/j.molmed.2017.06.005.</li>
                 </ol>
                 <hr size="6" color="white">
                 {% endblock references %}
               <u><a href="#Flares">Back to Top</a></u>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="column">
-            <br>
-            {% if request.user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'flare:list' %}" role="button">My Flares</a>
-            <a class="btn btn-primary" href="{% url 'flare:create' %}" role="button">New Flare</a>
-            {% else %}
-            <a id="log-in-link" class="btn btn-primary" href="{% url 'account_login' %}" role="button">Log In</a>
-            {% endif %}
-            <br>
-        </div>
-    </div>
 </main>
 {% endblock content %}
 

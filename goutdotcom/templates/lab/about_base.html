@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load lab_extras %}
+
+{% block content %}
+<main class="container-fluid content-container">
+ <a class="btn btn-primary btn-lg" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About:
+   Labs</a>
+  <h1 class="content-heading"><a id="{{ lab }}">{{ lab|capfirst }}</a></h1>
+  {% block intro %}{% endblock intro %}
+  <hr size="6" color="white">
+  {% block quicklinks %}{% endblock quicklinks %}
+  <hr size="6" color="white">
+  {% block biology %}{% endblock biology %}
+  {% block chemistry %}{% endblock chemistry %}
+  {% block history %}{% endblock history %}
+  {% block ingout %}{% endblock ingout %}
+  {% block references %}{% endblock references %}
+  <u><a href="#{{ lab }}">Back to Top</a></u>
+</main>
+<br>
+{% endblock content %}
+

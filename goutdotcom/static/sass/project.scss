@@ -11,6 +11,16 @@ body {
   color: $content-color;
 }
 
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 30px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
+
 .profile-container {
   background-color: $content-color;
   padding: 20px;
@@ -115,6 +125,7 @@ body {
   justify-content: center;
   align-items: center;
   };
+
 }
 
 // For FlareAid, ULTAid, ULT create/update forms
@@ -159,15 +170,41 @@ body {
   };
 }
 
-#homepage-jumbotron {
-  text-align: center;
-  background-image: url("../images/TabMSU.jpg");
-  background-color: #000000;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 300px;
-  width: 300px;
+.homepage {
+  #homepage-jumbotron {
+    text-align: center;
+    background-image: url("../images/TabMSU.jpg");
+    background-color: #000000;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    margin-bottom: 0px;
+    max-height: 300px;
+    color: $background-color;
+
+    container-fluid {
+      background-color: transparent;
+      padding: 0px;
+      opacity: 0%;
+
+    };
+
+    h1, h2 {
+      padding: 0px;
+      margin: 0px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    };
+  }
+  @media screen and (max-width: 650px) {
+    h1 {
+      font-size: 70px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+  }
 }
 
 .card {

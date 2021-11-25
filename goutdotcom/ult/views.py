@@ -23,7 +23,7 @@ class ULTCreate(CreateView):
     erosions_form_class = ErosionsForm
     hyperuricemia_form_class = HyperuricemiaForm
     tophi_form_class = TophiForm
-    urate_kidney_stones_class = UrateKidneyStonesForm
+    urate_kidney_stones_form_class = UrateKidneyStonesForm
 
     def get_context_data(self, **kwargs):
         context = super(ULTCreate, self).get_context_data(**kwargs)
@@ -42,7 +42,7 @@ class ULTCreate(CreateView):
             if "tophi_form" not in context:
                 context["tophi_form"] = self.tophi_form_class(instance=self.request.user.medicalprofile.tophi)
             if "urate_kidney_stones_form" not in context:
-                context["urate_kidney_stones_form"] = self.urate_kidney_stones_class(
+                context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(
                     instance=self.request.user.medicalprofile.urate_kidney_stones
                 )
             return context
@@ -56,7 +56,7 @@ class ULTCreate(CreateView):
             if "tophi_form" not in context:
                 context["tophi_form"] = self.tophi_form_class(self.request.GET)
             if "urate_kidney_stones_form" not in context:
-                context["urate_kidney_stones_form"] = self.urate_kidney_stones_class(self.request.GET)
+                context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(self.request.GET)
             return context
 
     def form_valid(self, form):
@@ -85,7 +85,7 @@ class ULTCreate(CreateView):
         erosions_form = self.erosions_form_class(request.POST, instance=Erosions())
         hyperuricemia_form = self.hyperuricemia_form_class(request.POST, instance=Hyperuricemia())
         tophi_form = self.tophi_form_class(request.POST, instance=Tophi())
-        urate_kidney_stones_form = self.urate_kidney_stones_class(request.POST, instance=UrateKidneyStones())
+        urate_kidney_stones_form = self.urate_kidney_stones_form_class(request.POST, instance=UrateKidneyStones())
 
         if form.is_valid():
             ult_data = form.save(commit=False)
@@ -100,7 +100,7 @@ class ULTCreate(CreateView):
                     request.POST, instance=self.request.user.medicalprofile.hyperuricemia
                 )
                 tophi_form = self.tophi_form_class(request.POST, instance=self.request.user.medicalprofile.tophi)
-                urate_kidney_stones_form = self.urate_kidney_stones_class(
+                urate_kidney_stones_form = self.urate_kidney_stones_form_class(
                     request.POST, instance=self.request.user.medicalprofile.urate_kidney_stones
                 )
             CKD_data = CKD_form.save(commit=False)
@@ -120,8 +120,9 @@ class ULTCreate(CreateView):
             urate_kidney_stones_data.save()
             ult_data.ckd = CKD_data
             ult_data.erosions = erosions_data
+            ult_data.hyperuricemia = hyperuricemia_data
             ult_data.tophi = tophi_data
-            ult_data.urate_kidney_stones = urate_kidney_stones_data
+            ult_data.stones = urate_kidney_stones_data
             ult_data.save()
             return HttpResponseRedirect(reverse("ult:detail", kwargs={"pk": ult_data.pk}))
         else:
@@ -137,7 +138,7 @@ class ULTCreate(CreateView):
                             request.POST, instance=self.request.user.medicalprofile.hyperuricemia
                         ),
                         tophi_form=self.tophi_form_class(request.POST, instance=self.request.user.medicalprofile.tophi),
-                        urate_kidney_stones_form=self.urate_kidney_stones_class(
+                        urate_kidney_stones_form=self.urate_kidney_stones_form_class(
                             request.POST, instance=self.request.user.medicalprofile.urate_kidney_stones
                         ),
                     )
@@ -150,7 +151,7 @@ class ULTCreate(CreateView):
                         erosions_form=self.erosions_form_class(request.POST, instance=Erosions()),
                         hyperuricemia_form=self.hyperuricemia_form_class(request.POST, instance=Hyperuricemia()),
                         tophi_form=self.tophi_form_class(request.POST, instance=Tophi()),
-                        urate_kidney_stones_form=self.urate_kidney_stones_class(
+                        urate_kidney_stones_form=self.urate_kidney_stones_form_class(
                             request.POST, instance=UrateKidneyStones()
                         ),
                     )
@@ -168,7 +169,7 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
     erosions_form_class = ErosionsForm
     hyperuricemia_form_class = HyperuricemiaForm
     tophi_form_class = TophiForm
-    urate_kidney_stones_class = UrateKidneyStonesForm
+    urate_kidney_stones_form_class = UrateKidneyStonesForm
 
     def get_context_data(self, **kwargs):
         context = super(ULTUpdate, self).get_context_data(**kwargs)
@@ -193,7 +194,7 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
                     self.request.POST, instance=self.request.user.medicalprofile.tophi
                 )
             if "urate_kidney_stones_form" not in context:
-                context["urate_kidney_stones_form"] = self.urate_kidney_stones_class(
+                context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(
                     self.request.POST, instance=self.request.user.medicalprofile.urate_kidney_stones
                 )
             return context
@@ -209,7 +210,7 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
             if "tophi_form" not in context:
                 context["tophi_form"] = self.tophi_form_class(instance=self.request.user.medicalprofile.tophi)
             if "urate_kidney_stones_form" not in context:
-                context["urate_kidney_stones_form"] = self.urate_kidney_stones_class(
+                context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(
                     instance=self.request.user.medicalprofile.urate_kidney_stones
                 )
             return context
@@ -247,8 +248,9 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
             urate_kidney_stones_data.save()
             ult_data.ckd = CKD_data
             ult_data.erosions = erosions_data
+            ult_data.hyperuricemia = hyperuricemia_data
             ult_data.tophi = tophi_data
-            ult_data.urate_kidney_stones = urate_kidney_stones_data
+            ult_data.stones = urate_kidney_stones_data
             ult_data.save()
             return HttpResponseRedirect(reverse("ult:detail", kwargs={"pk": ult_data.pk}))
 
@@ -264,7 +266,7 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
                         request.POST, instance=self.request.user.medicalprofile.hyperuricemia
                     ),
                     tophi_form=self.tophi_form_class(request.POST, instance=self.request.user.medicalprofile.tophi),
-                    urate_kidney_stones_form=self.urate_kidney_stones_class(
+                    urate_kidney_stones_form=self.urate_kidney_stones_form_class(
                         request.POST, instance=self.request.user.medicalprofile.urate_kidney_stones
                     ),
                 )
