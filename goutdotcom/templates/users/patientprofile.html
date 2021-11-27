@@ -1,5 +1,5 @@
 {% load thumbnail %}
-<div class="media profile-container">
+<div class="media">
   <div class="media-body">
     <h1>{{ object.username|capfirst}}'s <a href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}">Profile</a>
     {% if object == request.user %}
@@ -17,6 +17,7 @@
     <hr size="6" color="white">
     <h2><u>Demographics</u></h2>
     <div class="row">
+    <div class="col"
       <ul>
       {% if object.name %}
           <li>{{ object.name }}</li>
@@ -48,6 +49,7 @@
       {% if object.patientprofile.weight.value and object.patientprofile.height.value %}
         <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
       {% endif %}
+      </div>
     </div>
     <!--THIS DIV NEEDS TO STAY HERE FOR MEDIA COMPONENT TO RENDER PROPERLY -->
     </div>

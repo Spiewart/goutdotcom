@@ -35,9 +35,11 @@ body {
     color: #e7e7e7; }
   .profile-container ol, .profile-container ul {
     padding-left: 10px; }
-  .profile-container ul #main-medical-list {
-    list-style: none; }
-  .profile-container ul#main-medical-list > li {
+  .profile-container #main-medical-list li {
+    list-style: none;
+    display: inline; }
+  .profile-container #main-medical-list ul, .profile-container #main-medical-list ul li {
+    list-style: none;
     display: inline; }
   .profile-container .media {
     padding: 0px;

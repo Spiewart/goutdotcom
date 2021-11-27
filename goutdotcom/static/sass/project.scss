@@ -57,13 +57,15 @@ body {
     padding-left: 10px;
   };
 
-  ul #main-medical-list {
-    list-style:none;
-  };
-
-  ul#main-medical-list > li {
+  #main-medical-list li {
+    list-style: none;
     display: inline;
-  };
+  }
+
+  #main-medical-list ul , #main-medical-list ul li{
+    list-style:none;
+    display: inline;
+  }
 
   .media {
     padding: 0px;
