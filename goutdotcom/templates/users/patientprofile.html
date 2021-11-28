@@ -18,15 +18,15 @@
     <h2><u>Demographics</u></h2>
     <div class="row">
     <div class="col"
-      <ul>
+      <ul id="main-profile-list">
       {% if object.name %}
-          <li>{{ object.name }}</li>
+          <li><h3>{{ object.name }}</h3></li>
       {% endif %}
       {% if object.patientprofile.date_of_birth %}
-          <li>Date of Birth: {{ object.patientprofile.date_of_birth }}</li>
+          <li><h3>Date of Birth: {{ object.patientprofile.date_of_birth }}</h3></li>
       {% endif %}
       {% if object.patientprofile.date_of_birth %}
-          <li>Age: {{ object.patientprofile.get_age }}</li>
+          <li><h3>Age: {{ object.patientprofile.get_age }}</h3></li>
       {% endif %}
       {% if object.patientprofile.gender %}
           <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>

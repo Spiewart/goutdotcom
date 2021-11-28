@@ -12,6 +12,8 @@ body {
   background-color: rgba(5, 50, 148, 0.863);
   padding: 20px;
   color: #e7e7e7; }
+  .profile-container .accordion-button {
+    width: 100%; }
   .profile-container h1, .profile-container h2 {
     color: #d3d02d;
     padding: 0px;
@@ -35,12 +37,18 @@ body {
     color: #e7e7e7; }
   .profile-container ol, .profile-container ul {
     padding-left: 10px; }
-  .profile-container #main-medical-list li {
-    list-style: none;
+  .profile-container ul > li {
+    list-style: circle;
     display: inline; }
-  .profile-container #main-medical-list ul, .profile-container #main-medical-list ul li {
-    list-style: none;
+  .profile-container #main-profile-list li {
+    list-style: circle;
     display: inline; }
+  .profile-container #main-medical-list ul {
+    list-style: none;
+    display: block; }
+  .profile-container #main-medical-list > li ul {
+    list-style: none;
+    display: block; }
   .profile-container .media {
     padding: 0px;
     margin: 0px; }
