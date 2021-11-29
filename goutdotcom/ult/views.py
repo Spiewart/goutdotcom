@@ -223,7 +223,7 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
             request.POST, instance=self.request.user.medicalprofile.hyperuricemia
         )
         tophi_form = self.tophi_form_class(request.POST, instance=self.request.user.medicalprofile.tophi)
-        urate_kidney_stones_form = self.urate_kidney_stones_class(
+        urate_kidney_stones_form = self.urate_kidney_stones_form_class(
             request.POST, instance=self.request.user.medicalprofile.urate_kidney_stones
         )
 

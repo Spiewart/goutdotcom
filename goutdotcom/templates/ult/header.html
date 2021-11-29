@@ -13,7 +13,7 @@ This is backed by scientific evidence that you will be better off with than with
 {{ request.user|capfirst }},
 {% endif %}
 {% if request.user.is_authenticated %}
-modified:
+modified: {{ object.modified }}
 {% else %}
 Created: {{ object.created }}
 {% endif %}

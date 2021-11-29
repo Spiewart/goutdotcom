@@ -1,69 +1,52 @@
-{% load thumbnail %}
-<div class="media">
-  <div class="media-body">
-    <h1>{{ object.username|capfirst}}'s <a href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}">Profile</a>
     {% if object == request.user %}
-    <a class="btn btn-primary btn-lg" href="{% url 'users:update' %}" role="button">My Info</a>
+    <div class="row">
+      <div class="col">
+    <h1>{{ object.username|capfirst}}'s Profile
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}"
+      role="button">My Info</a>
     <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
     {% endif %}
+
     </h1>
+
+    </div>
+    </div>
     <hr size="6" color="white">
-    <h2><u>Bio</u></h2>
-    {% if object.patientprofile.bio %}
-      <p>{{ object.patientprofile.bio }}</p>
-    {% else %}
-      <p>Your bio is sadly empty...</p>
-    {% endif %}
-    <hr size="6" color="white">
-    <h2><u>Demographics</u></h2>
     <div class="row">
-    <div class="col"
-      <ul id="main-profile-list">
-      {% if object.name %}
-          <li><h3>{{ object.name }}</h3></li>
-      {% endif %}
-      {% if object.patientprofile.date_of_birth %}
-          <li><h3>Date of Birth: {{ object.patientprofile.date_of_birth }}</h3></li>
-      {% endif %}
-      {% if object.patientprofile.date_of_birth %}
-          <li><h3>Age: {{ object.patientprofile.get_age }}</h3></li>
-      {% endif %}
-      {% if object.patientprofile.gender %}
-          <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
-      {% endif %}
-      {% if object.patientprofile.race %}
-        <li>Race: {{ object.patientprofile.race|capfirst }}</li>
-      {% endif %}
-      {% if object.patientprofile.drinks_per_week %}
-          <li>Drinks / Week: {{ object.patientprofile.drinks_per_week }}</li>
-      {% endif %}
-      </ul>
-      {% if object.patientprofile.weight.value %}
-        <li><a href="{% url 'vitals:list' 'weight' %}">Weight:
-            {{ object.patientprofile.weight }}</a></li>
-      {% endif %}
-      {% if object.patientprofile.height.value %}
-        <li><a href="{% url 'vitals:list' 'height' %}">Height:
-            {{ object.patientprofile.height }}</a></li>
-      {% endif %}
-      {% if object.patientprofile.weight.value and object.patientprofile.height.value %}
-        <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
-      {% endif %}
+      <div class="col">
+        <h2><u>Bio</u></h2>
+        {% if object.patientprofile.bio %}
+          <p>{{ object.patientprofile.bio }}</p>
+        {% else %}
+          <p>Your bio is sadly empty...</p>
+        {% endif %}
+      </div>
+      <div class="col">
+        <h2><u>Demographics</u></h2>
+        <ul id="main-profile-list">
+        {% if object.patientprofile.date_of_birth %}
+            <li>Age: {{ object.patientprofile.get_age }}</li>
+        {% endif %}
+        {% if object.patientprofile.gender %}
+            <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
+        {% endif %}
+        {% if object.patientprofile.race %}
+          <li>Race: {{ object.patientprofile.race|capfirst }}</li>
+        {% endif %}
+        {% if object.patientprofile.weight.value %}
+          <li><a href="{% url 'vitals:list' 'weight' %}">Weight:
+              {{ object.patientprofile.weight }}</a></li>
+        {% endif %}
+        {% if object.patientprofile.height.value %}
+          <li><a href="{% url 'vitals:list' 'height' %}">Height:
+              {{ object.patientprofile.height }}</a></li>
+        {% endif %}
+        {% if object.patientprofile.weight.value and object.patientprofile.height.value %}
+          <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
+        {% endif %}
+        </ul>
       </div>
     </div>
-    <!--THIS DIV NEEDS TO STAY HERE FOR MEDIA COMPONENT TO RENDER PROPERLY -->
-    </div>
-    {% if object.patientprofile.picture %}
-      {% thumbnail object.patientprofile.picture "400x300" crop="center" as im %}
-      <div class="media">
-        <img src="{{ im.url }}" id="profilepic"
-          width="{{ im.width }}"" height="
-          {{ im.height }}"
-          alt="{{ object.username|capfirst }}'s Picture">
-      </div>
-      {% endthumbnail %}
-    {% endif %}
-    </div>
-    </div>
-  </div>
-</div>
+
+
+

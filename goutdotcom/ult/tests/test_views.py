@@ -114,3 +114,35 @@ class TestCreateView(TestCase):
         self.assertEqual(ult.tophi, self.user.medicalprofile.tophi)
         self.assertEqual(ult.hyperuricemia, self.user.medicalprofile.hyperuricemia)
         self.assertEqual(ult.stones, self.user.medicalprofile.urate_kidney_stones)
+
+
+class TestUpdateView(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = UserFactory(username="bumblyboy")
+        self.patientprofile = PatientProfileFactory(user=self.user)
+        self.medicalprofile = MedicalProfileFactory(user=self.user)
+        self.familyprofile = FamilyProfileFactory(user=self.user)
+        self.socialprofile = SocialProfileFactory(user=self.user)
+        self.ult = ULTFactory(
+            user=self.user,
+            num_flares="one",
+            freq_flares="two or more",
+            erosions=self.user.medicalprofile.erosions,
+            tophi=self.user.medicalprofile.tophi,
+            stones=self.user.medicalprofile.urate_kidney_stones,
+            ckd=self.user.medicalprofile.CKD,
+            hyperuricemia=self.user.medicalprofile.hyperuricemia,
+        )
+        self.update_url = reverse("ult:update", kwargs={"user": self.user, "pk": self.ult.pk})
+
+    def test_get_context_data(self):
+        request = self.factory.post(self.update_url)
+        request.user = self.user
+        response = ULTUpdate.as_view()(request)
+        self.assertIsInstance(response.context_data, dict)
+        self.assertIn("CKD_form", response.context_data)
+        self.assertIn("erosions_form", response.context_data)
+        self.assertIn("hyperuricemia_form", response.context_data)
+        self.assertIn("tophi_form", response.context_data)
+        self.assertIn("urate_kidney_stones_form", response.context_data)

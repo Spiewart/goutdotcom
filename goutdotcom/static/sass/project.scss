@@ -28,13 +28,23 @@ body {
 
   .accordion-button {
     width: 100%;
+    background-color: $background-color;
+    color: $content-color;
+  }
+
+  .accordion-body {
+    background-color: $border-color;
+    color: $content-color;
+
+    li, ul {
+      display: block;
+    }
   }
 
   h1, h2 {
     color: $background-color;
     padding: 0px;
     margin: 0px;
-    margin-bottom: 5px;
     font-weight: bold;
   };
 
@@ -45,6 +55,7 @@ body {
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 5px;
+    margin-bottom: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
     padding-right: 5px;
@@ -59,31 +70,6 @@ body {
 
   ol, ul {
     padding-left: 10px;
-  };
-
-  ul > li {
-    list-style: circle;
-    display: inline;
-  }
-
-  #main-profile-list li {
-    list-style: circle;
-    display: inline
-  }
-
-  #main-medical-list ul {
-    list-style:none;
-    display: block;
-  }
-
-  #main-medical-list > li ul {
-      list-style: none;
-      display: block;
-    }
-
-  .media {
-    padding: 0px;
-    margin: 0px;
   };
 
   #edited {
