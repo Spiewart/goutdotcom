@@ -1,10 +1,6 @@
 import factory
 import pytest
-from factory import Faker
 from factory.django import DjangoModelFactory
-
-from goutdotcom.users.models import User
-from goutdotcom.users.tests.factories import UserFactory
 
 from ...history.tests.factories import (
     AllopurinolHypersensitivityFactory,

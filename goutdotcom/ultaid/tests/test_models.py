@@ -2,9 +2,6 @@ from decimal import *
 
 import pytest
 
-from goutdotcom.users.models import User
-from goutdotcom.users.tests.factories import UserFactory
-
 from ...history.tests.factories import (
     AllopurinolHypersensitivityFactory,
     CKDFactory,

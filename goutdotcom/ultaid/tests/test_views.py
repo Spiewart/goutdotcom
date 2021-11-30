@@ -1,7 +1,7 @@
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
-from goutdotcom.profiles.tests.factories import (
+from ...profiles.tests.factories import (
     FamilyProfileFactory,
     MedicalProfileFactory,
     PatientProfileFactory,

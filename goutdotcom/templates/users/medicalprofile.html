@@ -268,6 +268,102 @@
             </div>
           </div>
         {% endif %}
+        {% if object.medicalprofile.IBD.value %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingIBD">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseIBD" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseIBD">
+                IBD
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseIBD" class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingIBD">
+              <div class="accordion-body">
+                <ul>
+                  <li>IBD is a relative contraindication to NSAIDs.</li>
+                  <li>Some patients with IBD are also on 6-MP or azathioprine, which precludes the use of ULT.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if object.medicalprofile.osteoporosis.value %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingOsteoporosis">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOsteoporosis" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseOsteoporosis">
+                Osteoporosis
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOsteoporosis" class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingOsteoporosis">
+              <div class="accordion-body">
+                <ul>
+                  <li>Osteoporosis is a relative contraindication to steroids.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if object.medicalprofile.bleed.value %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingBleed">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseBleed" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseBleed">
+                Bleed
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseBleed" class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingBleed">
+              <div class="accordion-body">
+                <ul>
+                  <li>History of a major bleed is a relative contraindication to NSAIDs.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if object.medicalprofile.colchicine_interactions.value %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingColchicineInteractions">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseColchicineInteractions" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseColchicineInteractions">
+                Colchicine Medication Interactions
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseColchicineInteractions" class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingColchicineInteractions">
+              <div class="accordion-body">
+                <ul>
+                  <li>Being on a medication that strongly interacts with colchicine is a relative contraindication to the use of the latter.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if object.medicalprofile.diabetes.value %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingDiabetes">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseDiabetes" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseDiabetes">
+                Diabetes {% if object.medicalprofile.diabetes.type %}, type {{ object.medicalprofile.diabetes.type }} {% endif %}
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseDiabetes" class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingDiabetes">
+              <div class="accordion-body">
+                <ul>
+                  <li>Most providers try to avoid use of steroids in patients with diabetes because they can cause blood sugars to go up (hyeprglycemia).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
       </div>
     </div>
 
