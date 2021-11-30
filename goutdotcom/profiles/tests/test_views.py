@@ -1,14 +1,15 @@
-from goutdotcom.users.tests.factories import UserFactory
-from goutdotcom.vitals.tests.factories import HeightFactory, WeightFactory
 from django.apps import apps
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 
 from goutdotcom.profiles.tests.factories import PatientProfileFactory
+from goutdotcom.users.tests.factories import UserFactory
 from goutdotcom.vitals.tests.factories import HeightFactory, WeightFactory
+
 from ..forms import PatientProfileForm
 from ..models import PatientProfile
 from ..views import PatientProfileCreate, PatientProfileUpdate
+
 
 class TestCreateView(TestCase):
     def setUp(self):
@@ -82,10 +83,10 @@ class TestUpdateView(TestCase):
         response = PatientProfileUpdate.as_view()(request, **self.kwargs)
         self.assertRedirects(response, request.user.get_absolute_url(), fetch_redirect_response=False)
 
-    """def test_get_context_data(self):
-        request = self.factory.get('/profiles/create')
+    def test_get_context_data(self):
+        request = self.factory.get(self.update_url)
         request.user = self.user
-        response = PatientProfileCreate.as_view()(request)
+        response = PatientProfileUpdate.as_view()(request, pk=self.profile.pk)
         self.assertIsInstance(response.context_data, dict)
         self.assertIn('height_form', response.context_data)
-        self.assertIn('weight_form', response.context_data)"""
+        self.assertIn('weight_form', response.context_data)

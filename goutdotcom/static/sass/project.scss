@@ -1,4 +1,5 @@
 $background-color: rgb(211, 208, 45);
+$background-color-sub: rgba(170, 168, 19, 0.726);
 $content-color: rgba(5, 50, 148, 0.863);
 $h1-container-color: $background-color;
 $content-text-color: rgb(231, 231, 231);
@@ -30,16 +31,17 @@ body {
     width: 100%;
     background-color: $background-color;
     color: $content-color;
+    border-color: $border-color;
   }
 
   .accordion-body {
     background-color: $border-color;
     color: $content-color;
+  }
 
-    li, ul {
+  li, ul {
       display: block;
     }
-  }
 
   h1, h2 {
     color: $background-color;
@@ -249,11 +251,6 @@ body {
   margin: 5px;
   list-style-type: square;
 }
-
-#profilepic {
-  margin-left: 5px;
-}
-
 
 .pagination {
   margin: 0px !important;

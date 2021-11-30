@@ -1,18 +1,18 @@
     <div class="row">
       <div class="col">
-        <h2>Medical Profile
+        <h1>Medical Profile
         {% if object == request.user %}
             <a class="btn btn-primary btn-lg" href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}"
               role="button">Update</a>
         {% endif %}
-        </h2>
+        </h1>
       </div>
     </div>
     <hr size="6" color="white">
     <div class="row">
       <div class="col">
         <div class="accordion" id="accordionPanelsStayOpenExample">
-          {% if object.medicalprofile.anticoagulation.value %}
+          {% if object.medicalprofile.anticoagulation.value == True %}
             <div class="accordion-item">
               <h2 class="accordion-header" id="panelsStayOpen-headingAnticoagulation">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -50,32 +50,32 @@
                 </div>
               </div>
             </div>
-            {% endif %}
-            {% if object.medicalprofile.CKD.value %}
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="panelsStayOpen-headingCKD">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#panelsStayOpen-collapseCKD" aria-expanded="false" aria-controls="panelsStayOpen-collapseCKD">
-                    {{ object.medicalprofile.CKD }}
-                  </button>
-                </h2>
-                <div id="panelsStayOpen-collapseCKD" class="accordion-collapse collapse"
-                  aria-labelledby="panelsStayOpen-headingCKD">
-                  <div class="accordion-body">
-                    <ul>
-                      {% if object.medicalprofile.CKD.stage %}
-                      <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
-                      {% endif %}
-                      {% if object.medicalprofile.CKD.dialysis %}
-                      <li>{{ object.medicalprofile.CKD.dialysis }}</li>
-                      {% endif %}
-                      <li>{{ object.medicalprofile.CKD.last_modified }}</li>
-                    </ul>
-                  </div>
+          {% endif %}
+          {% if object.medicalprofile.CKD.value == True %}
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="panelsStayOpen-headingCKD">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#panelsStayOpen-collapseCKD" aria-expanded="false" aria-controls="panelsStayOpen-collapseCKD">
+                  {{ object.medicalprofile.CKD }}
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseCKD" class="accordion-collapse collapse"
+                aria-labelledby="panelsStayOpen-headingCKD">
+                <div class="accordion-body">
+                  <ul>
+                    {% if object.medicalprofile.CKD.stage %}
+                    <li>Stage {{ object.medicalprofile.CKD.stage }}</li>
+                    {% endif %}
+                    {% if object.medicalprofile.CKD.dialysis %}
+                    <li>{{ object.medicalprofile.CKD.dialysis }}</li>
+                    {% endif %}
+                    <li>{{ object.medicalprofile.CKD.last_modified }}</li>
+                  </ul>
                 </div>
               </div>
-            {% endif %}
-          {% if object.medicalprofile.heartattack.value %}
+            </div>
+          {% endif %}
+          {% if object.medicalprofile.heartattack.value == True %}
             <div class="accordion-item">
               <h2 class="accordion-header" id="panelsStayOpen-headingHeartAttack">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -94,7 +94,7 @@
               </div>
             </div>
           {% endif %}
-          {% if object.medicalprofile.hypertension.value %}
+          {% if object.medicalprofile.hypertension.value == True %}
             <div class="accordion-item">
               <h2 class="accordion-header" id="panelsStayOpen-headingHypertension">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -106,16 +106,17 @@
               <div id="panelsStayOpen-collapseHypertension" class="accordion-collapse collapse"
                 aria-labelledby="panelsStayOpen-headingHypertension">
                 <div class="accordion-body">
-                {% if object.medicalprofile.hypertension.medication %}
                   <ul>
+                  {% if object.medicalprofile.hypertension.medication %}
                     <li>Treated with medications</li>
+                  {% endif %}
+                    <li>{{ object.medicalprofile.hypertension.last_modified }}</li>
                   </ul>
-                {% endif %}
                 </div>
               </div>
             </div>
           {% endif %}
-          {% if object.medicalprofile.tophi.value %}
+          {% if object.medicalprofile.tophi.value == True %}
             <div class="accordion-item">
               <h2 class="accordion-header" id="panelsStayOpen-headingTophi">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -129,6 +130,7 @@
                 <div class="accordion-body">
                   <ul>
                     <li>Gouty tophi are no good...</li>
+                    <li>{{ object.medicalprofile.tophi.last_modified }}</li>
                   </ul>
                 </div>
               </div>
@@ -152,6 +154,7 @@
               <div class="accordion-body">
                 <ul>
                   <li>Hyperuricemia is associated with incident and recurrent gout.</li>
+                  <li>{{ object.medicalprofile.hyperuricemia.last_modified }}</li>
                 </ul>
               </div>
             </div>

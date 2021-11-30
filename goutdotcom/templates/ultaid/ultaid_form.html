@@ -5,13 +5,7 @@
 {% block header %}
 {{ user_ult|json_script:'user_ult' }}
 {% if form.instance.pk %}
-<h1>Your ULT plan?</h1>
-      {% if user_ult %}
-      blah
-      {{ user_ult }}
-      {% else %}
-      no blah
-      {% endif %}
+<h1>Your ULT plan</h1>
 {% else %}
 <h1>Make a ULT plan</h1>
 {% endif %}

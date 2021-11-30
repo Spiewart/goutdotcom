@@ -1,8 +1,11 @@
 /* Project specific Javascript goes here. */
+/* User Dashboard JS */
+// Function that checks the value of an accordion field and changes the color of the accordion button if value == True or == False
 
 /* Profiles app JS */
 /* MedicalProfile model JS */
 // function that searches for each MedicalProfile related 1to1 CKD model and hides, empties subfields if the value is empty //
+// NEEDS TO BE REWRITTEN TO REFLECT CHECKBOX WIDGET //
 function medical_profile_ckd() {
   if ($('#id_CKD-value').val() == '') {
       $('#div_id_CKD-stage').hide();
@@ -304,7 +307,13 @@ function ULT_exists_checker() {
   if (ult == "Indicated") {
     $('#id_need').val('True');
   }
+  else if (ult == "Conditional") {
+    $('#id_need').val('False');
+  }
   else if (ult == "Not Indicated") {
+    $('#id_need').val('False');
+  }
+  else if (ult == "Dialysis") {
     $('#id_need').val('False');
   }
 }

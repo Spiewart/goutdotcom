@@ -15,12 +15,13 @@ body {
   .profile-container .accordion-button {
     width: 100%;
     background-color: #d3d02d;
-    color: rgba(5, 50, 148, 0.863); }
+    color: rgba(5, 50, 148, 0.863);
+    border-color: #e7e7e7; }
   .profile-container .accordion-body {
     background-color: #e7e7e7;
     color: rgba(5, 50, 148, 0.863); }
-    .profile-container .accordion-body li, .profile-container .accordion-body ul {
-      display: block; }
+  .profile-container li, .profile-container ul {
+    display: block; }
   .profile-container h1, .profile-container h2 {
     color: #d3d02d;
     padding: 0px;
@@ -178,9 +179,6 @@ body {
   padding: var(--main-content-heading-padding);
   margin: 5px;
   list-style-type: square; }
-
-#profilepic {
-  margin-left: 5px; }
 
 .pagination {
   margin: 0px !important; }

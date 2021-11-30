@@ -84,14 +84,14 @@ class TestCreateView(TestCase):
         self.assertIn("urate_kidney_stones_form", response.context_data)
 
     def test_get(self):
-
         self.client.force_login(self.user)
         response = self.client.get(reverse("ult:create"), self.ult_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "ult/ult_form.html")
-        ### NEED TO TEST GET WHEN USER ALREADY HAS A ULT, NEED TO FIGURE OUT HOW TO TEST FETCH OF EXISTING ULT
+        ### NEED TO FIGURE OUT HOW TO TEST FETCH OF EXISTING ULT
+        # Checks if ult:create redirects for user2 who already has a ULT that exists
         self.client.force_login(self.user2)
-        response2 = self.client.get(reverse("ult:create"), self.ult2)
+        response2 = self.client.get(reverse("ult:create"))
         self.assertEqual(response2.status_code, 302)
 
     def test_get_success_url(self):
@@ -124,25 +124,41 @@ class TestUpdateView(TestCase):
         self.medicalprofile = MedicalProfileFactory(user=self.user)
         self.familyprofile = FamilyProfileFactory(user=self.user)
         self.socialprofile = SocialProfileFactory(user=self.user)
-        self.ult = ULTFactory(
-            user=self.user,
-            num_flares="one",
-            freq_flares="two or more",
-            erosions=self.user.medicalprofile.erosions,
-            tophi=self.user.medicalprofile.tophi,
-            stones=self.user.medicalprofile.urate_kidney_stones,
-            ckd=self.user.medicalprofile.CKD,
-            hyperuricemia=self.user.medicalprofile.hyperuricemia,
-        )
-        self.update_url = reverse("ult:update", kwargs={"user": self.user, "pk": self.ult.pk})
+        self.ult = ULTFactory(user=self.user)
+        self.ult_data = {
+            "user": self.user,
+            "num_flares": "one",
+            "freq_flares": "two or more",
+            "erosions": self.user.medicalprofile.erosions,
+            "tophi": self.user.medicalprofile.tophi,
+            "stones": self.user.medicalprofile.urate_kidney_stones,
+            "ckd": self.user.medicalprofile.CKD,
+            "hyperuricemia": self.user.medicalprofile.hyperuricemia,
+        }
+        self.update_url = reverse("ult:update", kwargs={"pk": self.ult.pk})
 
     def test_get_context_data(self):
-        request = self.factory.post(self.update_url)
+        request = self.factory.get(self.update_url)
         request.user = self.user
-        response = ULTUpdate.as_view()(request)
+        response = ULTUpdate.as_view()(request, pk=self.ult.pk)
         self.assertIsInstance(response.context_data, dict)
         self.assertIn("CKD_form", response.context_data)
         self.assertIn("erosions_form", response.context_data)
         self.assertIn("hyperuricemia_form", response.context_data)
         self.assertIn("tophi_form", response.context_data)
         self.assertIn("urate_kidney_stones_form", response.context_data)
+
+    def test_post(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("ult:update", kwargs={"pk": self.ult.pk}), self.ult_data)
+        ult = ULT.objects.last()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(ULT.objects.count(), 1)
+        self.assertEqual(ult.num_flares, self.ult_data.get("num_flares"))
+        self.assertEqual(ult.freq_flares, self.ult_data.get("freq_flares"))
+        self.assertEqual(ult.user, self.user)
+        self.assertEqual(ult.ckd, self.user.medicalprofile.CKD)
+        self.assertEqual(ult.erosions, self.user.medicalprofile.erosions)
+        self.assertEqual(ult.tophi, self.user.medicalprofile.tophi)
+        self.assertEqual(ult.hyperuricemia, self.user.medicalprofile.hyperuricemia)
+        self.assertEqual(ult.stones, self.user.medicalprofile.urate_kidney_stones)
