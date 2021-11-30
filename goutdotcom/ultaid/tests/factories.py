@@ -15,11 +15,15 @@ from ...history.tests.factories import (
     StrokeFactory,
     XOIInteractionsFactory,
 )
+from ..choices import BOOL_CHOICES
 from ..models import ULTAid
 
 pytestmark = pytest.mark.django_db
 
+
 class ULTAidFactory(DjangoModelFactory):
+    need = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    want = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     ckd = factory.SubFactory(CKDFactory)
     XOI_interactions = factory.SubFactory(XOIInteractionsFactory)
     organ_transplant = factory.SubFactory(OrganTransplantFactory)

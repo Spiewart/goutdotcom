@@ -108,8 +108,16 @@ class ULTAid(TimeStampedModel):
             if self.ckd.dialysis == True:
                 ult_choice["dialysis"] = True
             if self.ckd.stage != None:
-                if self.ckd.stage >= 3:
-                    ult_choice["dose"] = "50 mg"
+                if ult_choice["drug"] == "febuxostat":
+                    if self.ckd.stage < 3:
+                        ult_choice["dose"] = "40 mg"
+                    else:
+                        ult_choice["dose"] = "20 mg"
+                else:
+                    if self.ckd.stage < 3:
+                        ult_choice["dose"] = "100 mg"
+                    else:
+                        ult_choice["dose"] = "50 mg"
 
         if self.allopurinol_hypersensitivity.value == True:
             if (
@@ -119,8 +127,13 @@ class ULTAid(TimeStampedModel):
             ):
                 ult_choice["rheumatologist"] = True
             ult_choice["drug"] = "febuxostat"
-            if self.ckd.stage != None:
-                if self.ckd.stage >= 3:
+            if self.ckd.value == True:
+                if self.ckd.stage != None:
+                    if self.ckd.stage < 3:
+                        ult_choice["dose"] = "40 mg"
+                    else:
+                        ult_choice["dose"] = "20 mg"
+                else:
                     ult_choice["dose"] = "20 mg"
             else:
                 ult_choice["dose"] = "40 mg"
@@ -129,8 +142,11 @@ class ULTAid(TimeStampedModel):
         if self.febuxostat_hypersensitivity.value == True:
             if self.allopurinol_hypersensitivity.value == True:
                 ult_choice["rheumatologist"] = True
-            if self.ckd.stage != None:
-                if self.ckd.stage >= 3:
+            if self.ckd.value == True:
+                if self.ckd.stage != None:
+                    if self.ckd.stage < 3:
+                        ult_choice["dose"] = "100 mg"
+                else:
                     ult_choice["dose"] = "50 mg"
             return ult_choice
 

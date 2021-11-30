@@ -1,4 +1,3 @@
-from django.apps import apps
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
@@ -9,18 +8,11 @@ from goutdotcom.profiles.tests.factories import (
     SocialProfileFactory,
 )
 
-from ...history.tests.factories import (
-    CKDFactory,
-    ErosionsFactory,
-    HyperuricemiaFactory,
-    TophiFactory,
-    UrateKidneyStonesFactory,
-)
 from ...users.tests.factories import UserFactory
 from ..forms import ULTForm
 from ..models import ULT
 from ..tests.factories import ULTFactory
-from ..views import ULTCreate, ULTDetail, ULTUpdate
+from ..views import ULTCreate, ULTUpdate
 
 
 class TestCreateView(TestCase):
@@ -71,6 +63,7 @@ class TestCreateView(TestCase):
         self.assertTrue(form.is_valid())
         form_no_user = ULTForm(data=self.ult_data_no_user)
         self.assertTrue(form_no_user.is_valid())
+        ## NEED TO TEST THAT USER, IF LOGGED IN, IS ASSIGNED TO FORM
 
     def test_get_context_data(self):
         request = self.factory.get("/ult/create")
