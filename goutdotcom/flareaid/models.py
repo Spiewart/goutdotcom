@@ -99,6 +99,22 @@ class FlareAid(TimeStampedModel):
         blank=True,
     )
 
+    def get_NSAID_contraindications(self):
+        NSAID_contraindications = []
+        if self.anticoagulation.value == True:
+            NSAID_contraindications.append(self.anticoagulation)
+        if self.bleed.value == True:
+            NSAID_contraindications.append(self.bleed)
+        if self.ckd.value == True:
+            NSAID_contraindications.append(self.ckd)
+        if self.heartattack.value == True:
+            NSAID_contraindications.append(self.heartattack)
+        if self.ibd.value == True:
+            NSAID_contraindications.append(self.ibd)
+        if self.stroke.value == True:
+            NSAID_contraindications.append(self.stroke)
+        return NSAID_contraindications
+
     def monoarticular_aid(self):
         if self.monoarticular == True:
             return "Any monoarticular flare can be effectively treated with a corticosteroid injection by a rheumatologist or other provider."
@@ -126,7 +142,7 @@ class FlareAid(TimeStampedModel):
             or self.heartattack.value == True
             or self.stroke.value == True
             or self.anticoagulation.value == True
-            #or self.ibd.value == True
+            or self.ibd.value == True
         ):
             if self.ckd.value == True:
                 return steroids

@@ -1,3 +1,4 @@
+{% load flareaid_extras %}
 <hr size="6" color="white">
 <h2 id="methodology">Methodology</h2>
 {% if object.decision_aid == "Need More Information" %}
@@ -82,14 +83,20 @@
   </p>
   {% endif %}
   <h3><u>NSAID Contraindications</u></h3>
-  {% if object.heartattack.value == True or object.stroke.value == True or object.IBD.value == True or object.anticoagulation.value == True or object.CKD.value == True or object.bleed.value == True %}
+  {% if object.get_NSAID_contraindications %}
   <p>You indicated that you have or have had one or more relative contraindications to non-steroidal
     antiinflammatory drugs (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s).
     It's good you let us know this, because NSAIDs are often the first treatment used for gout flares.
   </p>
-  <p>Not all of the contraindications listed are <i>absolute</i> contraindications to NSAIDs, but we would need more
+  {% if object.get_NSAID_contraindications %} <p>Your contraindications:
+    {% if object.get_NSAID_contraindications|length > 1 %}
+    {% for contraindication in object.get_NSAID_contraindications %}
+    {{ object.get_NSAID_contraindications|index:forloop.counter0 }} {% endfor %} {% else %}
+    {{ object.get_NSAID_contraindications|index:0 }}{% endif %}</p>
+  {% endif %}
+  <p>Not all NSAID contraindications are <i>absolute</i> contraindications, but we would need more
     information before considering them and this should best be done via consulting with your doctor.</p>
-  {% elif object.heartattack.value == False and object.stroke.value == False and object.IBD.value == False and object.anticoagulation.value == False and object.CKD.value == False and object.bleed.value == False %}
+  {% elif object.heartattack.value == False and object.stroke.value == False and object.ibd.value == False and object.anticoagulation.value == False and object.CKD.value == False and object.bleed.value == False %}
   <p>You indicated you don't have any relative or absolute contraindications to non-steroidal antiinflammatory drugs
     (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s). That's great, because they are very effective for
     gout flares.</p>
