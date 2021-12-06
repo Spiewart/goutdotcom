@@ -35,33 +35,27 @@ New Flare
 
 {% block inline_javascript %}
 <script>
-    // this is executed once when the page loads
-  $(document).ready(function() {
-    check_initial_location();
+  $(document).ready(function () {
+    // checks if perfect_health is true and, if so, displays only monoarticular field, else displays long list of other fields to fill out
+    $("#id_monoarticular_1").change(mono_vs_poly);
+    mono_vs_poly.call($("#id_monoarticular_1").get(0));
+    $("#id_monoarticular_2").change(mono_vs_poly);
+    mono_vs_poly.call($("#id_monoarticular_2").get(0));
+    // checks if perfect_health is true and, if so, displays only monoarticular field, else displays long list of other
+    $("#id_firstmtp_1").change(mtp_vs_rest);
+    mtp_vs_rest.call($("#id_firstmtp_1-value").get(0));
+    $("#id_firstmtp_2").change(mtp_vs_rest);
+    mtp_vs_rest.call($("#id_firstmtp_2-value").get(0));
+  });
+  jQuery(function ($) {
+    var path = window.location.href;
+    $('li a').each(function () {
+      if (this.href === path) {
+        $(this).addClass('active');
+      } else {
+        $(this).removeClass('active');
+      }
     });
-  $(document).ready(function() {
-    check_initial_urate();
-    });
-  $(document).ready(function() {
-    // toggles upper and lower extremity options when location checkbox is checked
-    $('#location_check').change(check_location);
-    check_location.call($('#location_check').get(0));
-    });
-  $(document).ready(function() {
-    // toggles upper extremity options when upper extremity checkbox is checked
-    $('#location_check').change(check_extremity);
-    check_extremity.call($('#location_check').get(0));
-    });
-  $(document).ready(function() {
-    // toggles upper extremity options when upper extremity checkbox is checked
-    $('#upper_extremity_check').change(check_extremity);
-    check_extremity.call($('#upper_extremity_check').get(0));
-    });
-  $(document).ready(function() {
-    // toggles lower extremity options when upper extremity checkbox is checked
-    $('#lower_extremity_check').change(check_extremity);
-    check_extremity.call($('#lower_extremity_check').get(0));
-    });
-
+  });
 </script>
 {% endblock inline_javascript %}

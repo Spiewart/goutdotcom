@@ -15,3 +15,6 @@ class TestFlareMethods:
     def test__str__(self):
         Flare = FlareFactory()
         assert Flare.__str__() == f"{(str(Flare.user), str(Flare.location))}"
+
+    def test_flare_calculator(self):
+        pass

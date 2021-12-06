@@ -8,6 +8,12 @@ Othertreatment = "Other treatment"
 Pred = "Prednisone"
 TinctureofTime = "Tincture of time"
 
+UNDERONE = "under 24 hours"
+ONETOTHREE = "more than 1 but less than 3 days"
+THREETOSEVEN = "more than 3 but less than 7 days"
+SEVERENTOTEN = "more than 7 but less than 10 days"
+TENTOFOURTEEN = "more than 10 but less than 14 days"
+FOURTEENPLUS = "over 14 days"
 
 AST = "AST"
 ALT = "ALT"
@@ -16,13 +22,6 @@ HGB = "Hemoglobin"
 PLTS = "Platelets"
 WBC = "White blood cells"
 URATE = "Urate"
-
-HYPERTENSION = "Hypertension"
-ANGINA = "Angina"
-HEARTATTACK = "Heart attack"
-HEARTFAILURE = "Heart failure"
-STROKETIA = "Stroke / TIA"
-PVDZ = "Peripheral vascular disease"
 
 TOER1 = "Right great toe"
 TOER2 = "Right second toe"
@@ -196,11 +195,11 @@ TREATMENT_CHOICES = (
 
 BOOL_CHOICES = ((True, "Yes"), (False, "No"))
 
-CARDIAC_CHOICES = {
-    (HYPERTENSION, "Hypertension"),
-    (ANGINA, "Angina"),
-    (HEARTATTACK, "Heart Attack"),
-    (HEARTFAILURE, "Heart Failure"),
-    (STROKETIA, "Stroke / TIA"),
-    (PVDZ, "Peripheral Vascular Disease"),
+DURATION_CHOICES = {
+    (UNDERONE, "Under 24 hours"),
+    (ONETOTHREE, "More than 1 but less than 3 days"),
+    (THREETOSEVEN, "More than 3 but less than 7 days"),
+    (SEVERENTOTEN, "More than 7 but less than 10 days"),
+    (TENTOFOURTEEN, "More than 10 but less than 14 days"),
+    (FOURTEENPLUS,"Over 14 days"),
 }

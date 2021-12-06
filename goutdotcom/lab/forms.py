@@ -47,11 +47,14 @@ class UrateFlareForm(UrateForm):
     class Meta:
         model = Urate
         fields = ("value",)
-        labels = {"value": ""}
+        widgets = {
+            "value": forms.NumberInput(attrs={"step": 0.10}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(UrateFlareForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = "Do you know what your uric acid was during your flare?"
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -59,7 +62,7 @@ class UrateFlareForm(UrateForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "What was your uric acid?",
+                "",
                 "value",
                 id="urate_fields",
             ),

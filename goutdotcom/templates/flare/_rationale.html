@@ -20,8 +20,10 @@
   {% if flare.firstmtp %}
     <li>First MTP: {{ flare.firstmtp }}
   {% endif %}
-  {% if flare.cardiacdisease %}
-    <li>Cardiac disease: {{ flare.cardiacdisease }}
+  {% if flare.hypertension or flare.heartattack or flare.CHF or flare.stroke or flare.PVD %}
+    <li>Cardiac diseases: {{ flare.hypertension }} {{ flare.heartattack }} {{ flare.CHF }} {{ flare.stroke }} {{ flare.PVD }}
+  {% else %}
+    <li>No cardiac diseases</li>
   {% endif %}
   {% if flare.duration %}
   <li>Duration: {{ flare.duration }} days</li>

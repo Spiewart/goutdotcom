@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
@@ -80,15 +78,6 @@ class Flare(TimeStampedModel):
         choices=LIMITED_JOINT_CHOICES, blank=True, null=True, help_text="What joint did the flare occur in?"
     )
 
-    cardiacdisease = models.BooleanField(
-        choices=BOOL_CHOICES,
-        blank=True,
-        null=True,
-        default=False,
-        help_text="Do you have a history of hypertension or cardiac disease(s)?",
-        verbose_name="Cardiac disease or equivalents",
-    )
-
     hypertension = models.ForeignKey(
         Hypertension,
         on_delete=models.SET_NULL,
@@ -102,6 +91,7 @@ class Flare(TimeStampedModel):
         null=True,
         blank=True,
     )
+    ### NEED TO ADD ANGINA TO MEDICAL PROFILE...
 
     CHF = models.ForeignKey(
         CHF,
@@ -132,7 +122,14 @@ class Flare(TimeStampedModel):
         null=True,
     )
 
-    duration = models.IntegerField(null=True, blank=True, help_text="How long did it last? (days)")
+    duration = models.CharField(
+        max_length=60,
+        choices=DURATION_CHOICES,
+        verbose_name="Symptom Duration",
+        help_text="How long did your symptoms last?",
+        null=True,
+        blank=True,
+    )
 
     treatment = MultiSelectField(
         choices=TREATMENT_CHOICES, blank=True, null=True, help_text="What was the flare treated with?"
@@ -148,11 +145,37 @@ class Flare(TimeStampedModel):
         return reverse("flare:detail", kwargs={"pk": self.pk})
 
     def flare_calculator(self):
+        """Function to take user-generated input from Flare and returns a prevalence of gout based on evidence from a 2 center European study.
+        Offers recommendation on who benefits from synovial fluid analysis vs who is unlikely to have gout and who is very likely to have gout.
+
+        Returns:
+                    [dict]: [dict with keys to calculator result, likelihood of gout, prevalence of gout in similar patient populations, and a caveat that this can't be applied to non-monoarticular flares if the flare was submitted as not monoarticular.]
+
+        Citations:
+        1. Janssens HJEM, Fransen J, van de Lisdonk EH, van Riel PLCM, van Weel C, Janssen M. A Diagnostic Rule for Acute Gouty Arthritis in Primary Care Without Joint Fluid Analysis. Arch Intern Med. 2010;170(13):1120–1126. doi:10.1001/archinternmed.2010.196
+        2. Laura B. E. Kienhorst, Hein J. E. M. Janssens, Jaap Fransen, Matthijs Janssen, The validation of a diagnostic rule for gout without joint fluid analysis: a prospective study, Rheumatology, Volume 54, Issue 4, April 2015, Pages 609–614, https://doi.org/10.1093/rheumatology/keu378
+        """
+
+        calc_package = {"result": "no data", "likelihood": "unknown", "prevalence": "unknown", "caveat": None}
+
         unlikely = "unlikely"
         equivocal = "equivocal"
         likely = "likely"
 
+        lowrange = "Gout is not likely and alternative causes of symptoms should be investigated."
+        midrange = "Indeterminate likelihood of gout and it can't be ruled in or out. Physician evaluation is required."
+        highrange = "Gout is very likely."
+
+        lowprev = "2.2%"
+        modprev = "31.2%"
+        highprev = "80.4%"
+
         points = 0
+
+        if self.monoarticular == True:
+            calc_package[
+                "caveat"
+            ] = "This calculator has only been validated for monoarticular (1 joint) flares. It can't necessarily be applied to polyarticular (more than 1 joint) flares."
 
         if self.male == True:
             points = points + 2
@@ -165,8 +188,7 @@ class Flare(TimeStampedModel):
         if self.firstmtp == True:
             points = points + 2.5
         if (
-            self.cardiacdisease != None
-            or self.hypertension.value == True
+            self.hypertension.value == True
             or self.heartattack.value == True
             or self.CHF.value == True
             or self.stroke.value == True
@@ -177,8 +199,16 @@ class Flare(TimeStampedModel):
             points = points + 3.5
 
         if points < 4:
-            return unlikely
+            calc_package["result"] = unlikely
+            calc_package["likelihood"] = lowrange
+            calc_package["prevalence"] = lowprev
         if points >= 4 and points < 8:
-            return equivocal
+            calc_package["result"] = equivocal
+            calc_package["likelihood"] = midrange
+            calc_package["prevalence"] = modprev
         if points > 8:
-            return likely
+            calc_package["result"] = likely
+            calc_package["likelihood"] = highrange
+            calc_package["prevalence"] = highprev
+
+        return calc_package()

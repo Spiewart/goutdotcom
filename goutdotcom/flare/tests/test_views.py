@@ -12,7 +12,7 @@ from ...users.tests.factories import UserFactory
 from ..forms import FlareForm
 from ..models import Flare
 from ..tests.factories import FlareFactory
-from ..views import FlareAidCreate, FlareAidList, FlareAidUpdate
+from ..views import FlareCreate
 
 
 class TestCreateView(TestCase):
@@ -32,10 +32,9 @@ class TestCreateView(TestCase):
             "redness": True,
             "firstmtp": True,
             "location": "Left first MTP",
-            "cardiacdisease": self.user.medicalprofile.heartattack,
             "hypertension": self.user.medicalprofile.hypertension,
             "heartattack": self.user.medicalprofile.heartattack,
-            "CHF": self.user.medicalprofile.chf,
+            "CHF": self.user.medicalprofile.CHF,
             "stroke": self.user.medicalprofile.stroke,
             "PVD": self.user.medicalprofile.PVD,
             "urate": UrateFactory(user=self.user),
@@ -52,14 +51,10 @@ class TestCreateView(TestCase):
     def test_get_context_data(self):
         request = self.factory.get("/flare/create")
         request.user = self.user
-        response = FlareAidCreate.as_view()(request)
+        response = FlareCreate.as_view()(request)
         self.assertIsInstance(response.context_data, dict)
-        self.assertIn("anticoagulation_form", response.context_data)
-        self.assertIn("bleed_form", response.context_data)
-        self.assertIn("CKD_form", response.context_data)
-        self.assertIn("colchicine_interactions_form", response.context_data)
-        self.assertIn("diabetes_form", response.context_data)
+        self.assertIn("hypertension_form", response.context_data)
         self.assertIn("heartattack_form", response.context_data)
-        self.assertIn("IBD_form", response.context_data)
-        self.assertIn("osteoporosis_form", response.context_data)
+        self.assertIn("CHF_form", response.context_data)
         self.assertIn("stroke_form", response.context_data)
+        self.assertIn("PVD_form", response.context_data)
