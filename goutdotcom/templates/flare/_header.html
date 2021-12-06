@@ -1,0 +1,21 @@
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+  <div class="btn-group" role="group">
+    <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
+      aria-expanded="false">
+      Flares
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+      <li><a class="dropdown-item" href="{% url 'flare:create' %}">New</a></li>
+      <li><a class="dropdown-item" href="{% url 'flare:about' %}">About</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a class="dropdown-item" href="{% url 'flare:list' %}">List</a></li>
+      <li><a class="dropdown-item" href="{% url 'flare:update' object.id %}">Update</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+<h1>{% if request.user.is_authenticated %} {{ request.user|capfirst  }}'s {% endif %}Flare</h1>
+
+<ul>
+  <li>Date: {{ flare.created }}</li>
+</ul>

@@ -2,17 +2,6 @@ from decimal import *
 
 import pytest
 
-from ...history.tests.factories import (
-    AnticoagulationFactory,
-    BleedFactory,
-    CKDFactory,
-    ColchicineInteractionsFactory,
-    DiabetesFactory,
-    HeartAttackFactory,
-    IBDFactory,
-    OsteoporosisFactory,
-    StrokeFactory,
-)
 from .factories import FlareAidFactory
 
 pytestmark = pytest.mark.django_db

@@ -75,6 +75,14 @@ class OsteoporosisAdmin(admin.ModelAdmin):
         "pk",
     )
 
+class PVDAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "last_modified",
+        "created",
+        "pk",
+    )
 
 class CHFAdmin(admin.ModelAdmin):
     list_display = (
@@ -296,6 +304,7 @@ admin.site.register(Shellfish, ShellfishAdmin)
 admin.site.register(Stroke, StrokeAdmin)
 admin.site.register(Tophi, TophiAdmin)
 admin.site.register(HeartAttack, HeartAttackAdmin)
+admin.site.register(PVD, PVDAdmin)
 admin.site.register(Bleed, BleedAdmin)
 admin.site.register(Alcohol, AlcoholAdmin)
 admin.site.register(Gout, GoutAdmin)

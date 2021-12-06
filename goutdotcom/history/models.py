@@ -129,6 +129,18 @@ class Hypertension(MedicalHistory):
         blank=True,
     )
 
+class PVD(MedicalHistory):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    name = "peripheral vascular disease"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Peripheral_artery_disease' target='_blank'>peripheral vascular disease</a>?"
+        ),
+        verbose_name="Peripheral Vascular Disease",
+        null=True,
+        blank=True,
+    )
 
 class CHF(MedicalHistory):
     systolic = BooleanField(
@@ -255,7 +267,7 @@ class Osteoporosis(MedicalHistory):
 
 class IBD(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
-    name = "Inflammatory Bowel Disease"
+    name = "inflammatory bowel disease"
     value = BooleanField(
         choices=BOOL_CHOICES,
         help_text=mark_safe(

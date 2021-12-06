@@ -141,6 +141,13 @@ class OsteoporosisFactory(DjangoModelFactory):
     class Meta:
         model = Osteoporosis
 
+class PVDFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = PVD
+
 class ShellfishFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])

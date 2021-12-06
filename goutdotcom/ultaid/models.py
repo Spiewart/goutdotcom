@@ -69,7 +69,6 @@ class ULTAid(TimeStampedModel):
             "Have you ever had a <a href='https://www.nhs.uk/medicines/allopurinol/#:~:text=to%20avoid%20dehydration.-,Serious%20side%20effects,-Skin%20rashes' target='_blank'>drug-reaction to allopurinol</a>?"
         ),
     )
-
     febuxostat_hypersensitivity = models.ForeignKey(
         FebuxostatHypersensitivity,
         on_delete=models.SET_NULL,

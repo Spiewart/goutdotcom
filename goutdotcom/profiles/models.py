@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django_extensions.db.models import TimeStampedModel
 from PIL import Image
 from sorl.thumbnail import ImageField
@@ -13,6 +14,7 @@ from goutdotcom.history.models import (
     CHF,
     CKD,
     IBD,
+    PVD,
     Alcohol,
     AllopurinolHypersensitivity,
     Anticoagulation,
@@ -261,6 +263,16 @@ class MedicalProfile(TimeStampedModel):
         XOIInteractions,
         on_delete=models.CASCADE,
         help_text="Are you on 6-mercaptopurine or azathioprine?",
+        null=True,
+        blank=True,
+    )
+
+    PVD = models.OneToOneField(
+        PVD,
+        on_delete=models.CASCADE,
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Peripheral_artery_disease' target='_blank'>peripheral vascular disease</a>?"
+        ),
         null=True,
         blank=True,
     )

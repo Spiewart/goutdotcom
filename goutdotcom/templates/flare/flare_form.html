@@ -19,13 +19,13 @@ New Flare
 
 {% block form %}
   {% if form.instance.pk %}
-    <form class="form-horizontal default-container" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
+    <form class="form-horizontal" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {% crispy form %}
       <input class="btn btn-primary btn-lg" type="submit" value="Submit">
     </form>
   {% else %}
-    <form class="form-horizontal default-container" method="post" action="{% url 'flare:create' %}">
+    <form class="form-horizontal" method="post" action="{% url 'flare:create' %}">
     {% csrf_token %}
     {% crispy form %}
     <input class="btn btn-primary btn-lg" type="submit" value="Submit">
@@ -41,9 +41,6 @@ New Flare
     });
   $(document).ready(function() {
     check_initial_urate();
-    });
-  $(document).ready(function() {
-    check_initial_treatments();
     });
   $(document).ready(function() {
     // toggles upper and lower extremity options when location checkbox is checked
@@ -65,59 +62,6 @@ New Flare
     $('#lower_extremity_check').change(check_extremity);
     check_extremity.call($('#lower_extremity_check').get(0));
     });
-  $(document).ready(function() {
-    // set things up so my function will be called when treatment changes
-    $('#lab_check').change(check_labs);
-    check_labs.call($('#lab_check').get(0));
-    });
-  $(document).ready(function() {
-    // set things up so my function will be called when treatment changes
-    $('#id_labs_1').change(check_urate);
-    check_urate.call($('#id_labs_1').get(0));
-    });
-  $(document).ready(function() {
-    // When treatment_check changes, will make sure to display different treatment fields and also to make sure nothing is checked if treatment_check is unchecked
-    $('#treatment_check').change(check_treatment);
-    check_treatment.call($('#treatment_check').get(0));
-    $('#treatment_check').change(check_treatment_1);
-    check_treatment_1.call($('#treatment_check').get(0));
-    });
-  $(document).ready(function() {
-    // set things up so my function will be called when treatment changes
-    $('#id_treatment_1').change(check_treatment_1);
-    check_treatment_1.call($('#id_treatment_1').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_2').change(check_treatment_2);
-    check_treatment_2.call($('#id_treatment_2').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_3').change(check_treatment_3);
-    check_treatment_3.call($('#id_treatment_3').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_4').change(check_treatment_4);
-    check_treatment_4.call($('#id_treatment_4').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_5').change(check_treatment_5);
-    check_treatment_5.call($('#id_treatment_5').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_6').change(check_treatment_6);
-    check_treatment_6.call($('#id_treatment_6').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_7').change(check_treatment_7);
-    check_treatment_7.call($('#id_treatment_7').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_8').change(check_treatment_8);
-    check_treatment_8.call($('#id_treatment_8').get(0));
-    });
-  $(document).ready(function() {
-    $('#id_treatment_9').change(check_treatment_9);
-    check_treatment_9.call($('#id_treatment_9').get(0));
-    });
+
 </script>
 {% endblock inline_javascript %}

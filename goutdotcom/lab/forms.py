@@ -17,7 +17,6 @@ class UrateForm(forms.ModelForm):
             "autoclose": True,
             "pickerPosition": "bottom-left",
         }
-        labels = {"value": "Concentration (level)"}
         widgets = {
             # Use localization and bootstrap 3
             "date_drawn": DateTimeWidget(
@@ -37,7 +36,6 @@ class UrateForm(forms.ModelForm):
             Fieldset(
                 "Log a uric acid",
                 "value",
-                "date_drawn",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
@@ -46,10 +44,14 @@ class UrateForm(forms.ModelForm):
 class UrateFlareForm(UrateForm):
     prefix = "urate"
 
+    class Meta:
+        model = Urate
+        fields = ("value",)
+        labels = {"value": ""}
+
     def __init__(self, *args, **kwargs):
         super(UrateFlareForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
-        self.fields["date_drawn"].required = False
         # If you pass FormHelper constructor a form instance
         # It builds a default layout with all its fields
         self.helper = FormHelper(self)
@@ -57,9 +59,8 @@ class UrateFlareForm(UrateForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Record your uric acid",
+                "What was your uric acid?",
                 "value",
-                "date_drawn",
                 id="urate_fields",
             ),
         )

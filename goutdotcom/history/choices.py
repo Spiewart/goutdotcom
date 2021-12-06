@@ -44,7 +44,7 @@ ORGAN_CHOICES = (
 
 CONTRAINDICATIONSPROFILE = "ContraindicationsProfile"
 FLAREAID = "FlareAid"
-FLAREDIAGNOSIS = "FlareDiagnosis"
+FLARE = "Flare"
 FAMILYPROFILE = "FamilyProfile"
 MEDICALPROFILE = "MedicalProfile"
 SOCIALPROFILE = "SocialProfile"
@@ -54,7 +54,7 @@ ULTAID = "ULTAid"
 LAST_MODIFIED_CHOICES = (
     (CONTRAINDICATIONSPROFILE, "ContraindicationsProfile"),
     (FLAREAID, "FlareAid"),
-    (FLAREDIAGNOSIS, "FlareDiagnosis"),
+    (FLARE, "Flare"),
     (FAMILYPROFILE, "FamilyProfile"),
     (MEDICALPROFILE, "MedicalProfile"),
     (SOCIALPROFILE, "SocialProfile"),

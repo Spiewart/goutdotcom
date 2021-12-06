@@ -1,18 +1,16 @@
-from factory import Faker
-from factory.django import DjangoModelFactory
 import factory
 import pytest
+from factory import Faker
+from factory.django import DjangoModelFactory
 
-from goutdotcom.users.models import User
-
-from goutdotcom.lab.models import Urate, AST, ALT, Platelet, Hemoglobin, WBC, Creatinine
+from goutdotcom.lab.models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet, Urate
 from goutdotcom.users.models import User
 from goutdotcom.users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
+
 class UrateFactory(DjangoModelFactory):
-    user = factory.SubFactory(UserFactory)
     value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
 
     class Meta:
@@ -65,6 +63,3 @@ class CreatinineFactory(DjangoModelFactory):
 
     class Meta:
         model = Creatinine
-
-
-

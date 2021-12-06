@@ -8,6 +8,7 @@ from .models import (
     CHF,
     CKD,
     IBD,
+    PVD,
     Alcohol,
     AllopurinolHypersensitivity,
     Anticoagulation,
@@ -213,6 +214,41 @@ class HypertensionForm(forms.ModelForm):
             Fieldset("", "value", "medication", id="hypertension_for_profile"),
         )
 
+class HypertensionSimpleForm(HypertensionForm):
+    class Meta:
+        model = Hypertension
+        fields = (
+            "value",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(HypertensionForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="hypertension_for_profile"),
+        )
+
+class PVDForm(forms.ModelForm):
+    prefix = "PVD"
+
+    class Meta:
+        model = PVD
+        fields = (
+            "value",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(PVDForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="PVD_for_profile"),
+        )
 
 class HyperuricemiaForm(forms.ModelForm):
     prefix = "hyperuricemia"
@@ -308,6 +344,22 @@ class CHFForm(forms.ModelForm):
             Fieldset("", "value", "systolic", id="CHF_for_profile"),
         )
 
+class CHFSimpleForm(CHFForm):
+    class Meta:
+        model = CHF
+        fields = (
+            "value",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(CHFForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        # You can dynamically adjust your layout
+        self.helper.layout = Layout(
+            Fieldset("", "value", id="CHF_for_profile"),
+        )
 
 class DiabetesForm(forms.ModelForm):
     prefix = "diabetes"
