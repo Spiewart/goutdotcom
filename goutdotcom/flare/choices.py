@@ -109,7 +109,6 @@ LIMITED_JOINT_CHOICES = (
     (ELBOWL, "Left elbow"),
     (SHOUDLERR, "Right shoulder"),
     (SHOULDERL, "Left shoulder"),
-
 )
 
 JOINT_CHOICES = (
@@ -195,11 +194,11 @@ TREATMENT_CHOICES = (
 
 BOOL_CHOICES = ((True, "Yes"), (False, "No"))
 
-DURATION_CHOICES = {
+DURATION_CHOICES = [
     (UNDERONE, "Under 24 hours"),
     (ONETOTHREE, "More than 1 but less than 3 days"),
     (THREETOSEVEN, "More than 3 but less than 7 days"),
     (SEVERENTOTEN, "More than 7 but less than 10 days"),
     (TENTOFOURTEEN, "More than 10 but less than 14 days"),
-    (FOURTEENPLUS,"Over 14 days"),
-}
+    (FOURTEENPLUS, "Over 14 days"),
+]

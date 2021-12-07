@@ -1,3 +1,4 @@
+{% load flare_extras %}
 <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
   <div class="btn-group" role="group">
     <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
@@ -15,7 +16,9 @@
   </div>
 </div>
 <h1>{% if request.user.is_authenticated %} {{ request.user|capfirst  }}'s {% endif %}Flare</h1>
-
-<ul>
-  <li>Date: {{ flare.created }}</li>
-</ul>
+<h2><u>Gout probability</u>: {{ flare.flare_calculator|get_flare:'result'|capfirst }}</h2>
+<h3><u>Translation</u>: {{ flare.flare_calculator|get_flare:'likelihood' }}</h3>
+<h3><u>Prevalence</u>: Gout is present in {{ flare.flare_calculator|get_flare:'likelihood' }} of patients similar to you.</h3>
+{% if flare.flare_calculator|get_flare:'caveat' == True %}<h3><u>WARNING</u>:{{ flare.flare_calculator|get_flare:'caveat' }}</h3>{% endif %}
+<h3>Date: {{ flare.created }}</h3>
+<hr class="my-6" color="white">

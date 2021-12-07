@@ -164,7 +164,7 @@ class Flare(TimeStampedModel):
 
         lowrange = "Gout is not likely and alternative causes of symptoms should be investigated."
         midrange = "Indeterminate likelihood of gout and it can't be ruled in or out. Physician evaluation is required."
-        highrange = "Gout is very likely."
+        highrange = "Gout is very likely. Not a whole lot else needs to be done, other than treat your gout!"
 
         lowprev = "2.2%"
         modprev = "31.2%"
@@ -211,4 +211,4 @@ class Flare(TimeStampedModel):
             calc_package["likelihood"] = highrange
             calc_package["prevalence"] = highprev
 
-        return calc_package()
+        return calc_package

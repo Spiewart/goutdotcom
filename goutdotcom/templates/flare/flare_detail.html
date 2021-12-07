@@ -2,9 +2,19 @@
 {% load static %}
 
 {% block content %}
-<main role="main" class="container content-container">
+<main role="main" class="container-fluid content-container">
+  <div class="row">
+    <div class="col">
+{% block header %}
 {% include "flare/_header.html" %}
+{% endblock header %}
+{% block rationale %}
 {% include "flare/_rationale.html" %}
+{% endblock rationale %}
+{% block references %}
 {% include "flare/_references.html" %}
+{% endblock references %}
+    </div>
+  </div>
 </main>
 {% endblock content %}

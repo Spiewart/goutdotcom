@@ -139,8 +139,8 @@ class CKDForm(CKDSimpleForm):
             Fieldset(
                 "",
                 "value",
-                "dialysis",
                 InlineCheckboxes("stage"),
+                "dialysis",
                 id="CKD_for_profile",
             ),
         )
@@ -214,12 +214,11 @@ class HypertensionForm(forms.ModelForm):
             Fieldset("", "value", "medication", id="hypertension_for_profile"),
         )
 
+
 class HypertensionSimpleForm(HypertensionForm):
     class Meta:
         model = Hypertension
-        fields = (
-            "value",
-        )
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(HypertensionForm, self).__init__(*args, **kwargs)
@@ -231,14 +230,13 @@ class HypertensionSimpleForm(HypertensionForm):
             Fieldset("", "value", id="hypertension_for_profile"),
         )
 
+
 class PVDForm(forms.ModelForm):
     prefix = "PVD"
 
     class Meta:
         model = PVD
-        fields = (
-            "value",
-        )
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(PVDForm, self).__init__(*args, **kwargs)
@@ -249,6 +247,7 @@ class PVDForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset("", "value", id="PVD_for_profile"),
         )
+
 
 class HyperuricemiaForm(forms.ModelForm):
     prefix = "hyperuricemia"
@@ -344,12 +343,11 @@ class CHFForm(forms.ModelForm):
             Fieldset("", "value", "systolic", id="CHF_for_profile"),
         )
 
+
 class CHFSimpleForm(CHFForm):
     class Meta:
         model = CHF
-        fields = (
-            "value",
-        )
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(CHFForm, self).__init__(*args, **kwargs)
@@ -360,6 +358,7 @@ class CHFSimpleForm(CHFForm):
         self.helper.layout = Layout(
             Fieldset("", "value", id="CHF_for_profile"),
         )
+
 
 class DiabetesForm(forms.ModelForm):
     prefix = "diabetes"

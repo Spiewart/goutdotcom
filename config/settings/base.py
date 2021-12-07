@@ -70,14 +70,12 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "datetimewidget",
     "multiselectfield",
-    "sorl.thumbnail",
 ]
 
 LOCAL_APPS = [
     "goutdotcom.users.apps.UsersConfig",
     "goutdotcom.profiles.apps.ProfilesConfig",
     "goutdotcom.lab.apps.LabConfig",
-    "goutdotcom.citations.apps.CitationsConfig",
     "goutdotcom.flare.apps.FlareConfig",
     "goutdotcom.flareaid.apps.FlareAidConfig",
     "goutdotcom.history.apps.HistoryConfig",

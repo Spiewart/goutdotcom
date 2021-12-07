@@ -16,5 +16,11 @@ class TestFlareMethods:
         Flare = FlareFactory()
         assert Flare.__str__() == f"{(str(Flare.user), str(Flare.location))}"
 
-    def test_flare_calculator(self):
-        pass
+    def test_flare_calculator_monoarticular(self):
+        Flare = FlareFactory(
+            monoarticular=True,
+        )
+        assert (
+            Flare.flare_calculator().get("caveat")
+            == "This calculator has only been validated for monoarticular (1 joint) flares. It can't necessarily be applied to polyarticular (more than 1 joint) flares."
+        )
