@@ -171,6 +171,7 @@ class Flare(TimeStampedModel):
         highprev = "80.4%"
 
         points = 0
+        cardiac_disease_equivalent = False
 
         if self.monoarticular == True:
             calc_package[
@@ -187,16 +188,29 @@ class Flare(TimeStampedModel):
             points = points + 1
         if self.firstmtp == True:
             points = points + 2.5
-        if (
-            self.hypertension.value == True
-            or self.heartattack.value == True
-            or self.CHF.value == True
-            or self.stroke.value == True
-            or self.PVD.value == True
-        ):
+        if cardiac_disease_equivalent == False:
+            if self.hypertension:
+                if self.hypertension.value == True:
+                    cardiac_disease_equivalent = True
+            if self.hypertension:
+                if self.heartattack.value == True:
+                    cardiac_disease_equivalent = True
+            if self.CHF:
+                if self.CHF.value == True:
+                    cardiac_disease_equivalent = True
+            if self.stroke:
+                if self.stroke.value == True:
+                    cardiac_disease_equivalent = True
+            if self.PVD:
+                if self.PVD.value == True:
+                    cardiac_disease_equivalent = True
+
+        if cardiac_disease_equivalent == True:
             points = points + 1.5
-        if self.urate.value >= 6.0:
-            points = points + 3.5
+
+        if self.urate:
+            if self.urate.value >= 6.0:
+                points = points + 3.5
 
         if points < 4:
             calc_package["result"] = unlikely

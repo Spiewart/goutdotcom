@@ -133,9 +133,12 @@ class FlareCreate(CreateView):
             if form.is_valid():
                 flare_data = form.save(commit=False)
                 flare_data.user = request.user
-                urate_data = urate_form.save(commit=False)
-                urate_data.user = request.user
-                urate_data.save()
+                if urate_form.is_valid():
+                    urate_data = urate_form.save(commit=False)
+                    if urate_data.value:
+                        urate_data.user = request.user
+                        urate_data.save()
+                        flare_data.urate = urate_data
                 hypertension_data = hypertension_form.save(commit=False)
                 hypertension_data.last_modified = "Flare"
                 hypertension_data.save()
@@ -151,13 +154,13 @@ class FlareCreate(CreateView):
                 PVD_data = PVD_form.save(commit=False)
                 PVD_data.last_modified = "Flare"
                 PVD_data.save()
-                flare_data.urate = urate_data
                 flare_data.hypertension = hypertension_data
                 flare_data.heartattack = heartattack_data
                 flare_data.CHF = CHF_data
                 flare_data.stroke = stroke_data
                 flare_data.PVD = PVD_data
                 flare_data.save()
+                print(form.errors)
                 return HttpResponseRedirect(reverse("flare:detail", kwargs={"pk": flare_data.pk}))
             else:
                 print("fuck you dave")
@@ -186,8 +189,11 @@ class FlareCreate(CreateView):
             PVD_form = self.PVD_form_class(request.POST, instance=PVD())
             if form.is_valid():
                 flare_data = form.save(commit=False)
-                urate_data = urate_form.save(commit=False)
-                urate_data.save()
+                if urate_form.is_valid():
+                    urate_data = urate_form.save(commit=False)
+                    if urate_data.value:
+                        urate_data.save()
+                        flare_data.urate = urate_data
                 hypertension_data = hypertension_form.save(commit=False)
                 hypertension_data.last_modified = "Flare"
                 hypertension_data.save()
@@ -203,7 +209,6 @@ class FlareCreate(CreateView):
                 PVD_data = PVD_form.save(commit=False)
                 PVD_data.last_modified = "Flare"
                 PVD_data.save()
-                flare_data.urate = urate_data
                 flare_data.hypertension = hypertension_data
                 flare_data.heartattack = heartattack_data
                 flare_data.CHF = CHF_data
@@ -305,8 +310,10 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
             PVD_form = self.PVD_form_class(request.POST, instance=request.user.medicalprofile.PVD)
             if urate_form.is_valid():
                 urate_data = urate_form.save(commit=False)
-                urate_data.save()
-                flare_data.urate = urate_data
+                if urate_data.value:
+                    urate_data.user = request.user
+                    urate_data.save()
+                    flare_data.urate = urate_data
             hypertension_data = hypertension_form.save(commit=False)
             hypertension_data.last_modified = "Flare"
             hypertension_data.save()

@@ -16,20 +16,28 @@ from goutdotcom.history.tests.factories import (
     ErosionsFactory,
     FebuxostatHypersensitivityFactory,
     FructoseFactory,
+    GoutFactory,
     HeartAttackFactory,
     HypertensionFactory,
     HyperuricemiaFactory,
     IBDFactory,
-    GoutFactory,
     OrganTransplantFactory,
     OsteoporosisFactory,
+    PVDFactory,
     ShellfishFactory,
     StrokeFactory,
     TophiFactory,
     UrateKidneyStonesFactory,
     XOIInteractionsFactory,
 )
-from goutdotcom.profiles.models import FamilyProfile, MedicalProfile, PatientProfile, SocialProfile, races, sexes
+from goutdotcom.profiles.models import (
+    FamilyProfile,
+    MedicalProfile,
+    PatientProfile,
+    SocialProfile,
+    races,
+    sexes,
+)
 from goutdotcom.users.models import User
 from goutdotcom.users.tests.factories import UserFactory
 from goutdotcom.vitals.tests.factories import HeightFactory, WeightFactory
@@ -39,6 +47,7 @@ pytestmark = pytest.mark.django_db
 GENDER_CHOICES = [x[0] for x in sexes]
 RACE_CHOICES = [x[0] for x in races]
 
+
 @factory.django.mute_signals(post_save)
 class FamilyProfileFactory(DjangoModelFactory):
     class Meta:
@@ -46,6 +55,7 @@ class FamilyProfileFactory(DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     gout = factory.SubFactory(GoutFactory, user=factory.SelfAttribute("..user"))
+
 
 @factory.django.mute_signals(post_save)
 class PatientProfileFactory(DjangoModelFactory):
@@ -89,6 +99,7 @@ class MedicalProfileFactory(DjangoModelFactory):
     heartattack = factory.SubFactory(HeartAttackFactory, user=factory.SelfAttribute("..user"))
     stroke = factory.SubFactory(StrokeFactory, user=factory.SelfAttribute("..user"))
     XOI_interactions = factory.SubFactory(XOIInteractionsFactory, user=factory.SelfAttribute("..user"))
+    PVD = factory.SubFactory(PVDFactory, user=factory.SelfAttribute("..user"))
 
 
 @factory.django.mute_signals(post_save)

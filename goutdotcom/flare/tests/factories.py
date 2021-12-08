@@ -16,7 +16,8 @@ from ...history.tests.factories import (
 )
 from ..choices import (
     BOOL_CHOICES,
-    JOINT_CHOICES,
+    DURATION_CHOICES,
+    LIMITED_JOINT_CHOICES,
     TREATMENT_CHOICES,
 )
 from ..models import Flare
@@ -31,13 +32,13 @@ class FlareFactory(DjangoModelFactory):
     onset = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     redness = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     firstmtp = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
-    location = factory.fuzzy.FuzzyChoice(JOINT_CHOICES, getter=lambda c: c[0])
+    location = factory.fuzzy.FuzzyChoice(choices=LIMITED_JOINT_CHOICES, getter=lambda c: c[0])
     hypertension = factory.SubFactory(HypertensionFactory)
     heartattack = factory.SubFactory(HeartAttackFactory)
     CHF = factory.SubFactory(CHFFactory)
     stroke = factory.SubFactory(StrokeFactory)
     PVD = factory.SubFactory(PVDFactory)
-    duration = Faker("pyint", min_value=1, max_value=100)
+    duration = factory.fuzzy.FuzzyChoice(DURATION_CHOICES, getter=lambda c: c[0])
     urate = factory.SubFactory(UrateFactory)
     treatment = factory.fuzzy.FuzzyChoice(choices=TREATMENT_CHOICES, getter=lambda c: c[0])
 
