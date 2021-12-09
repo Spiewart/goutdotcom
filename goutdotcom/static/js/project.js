@@ -433,6 +433,7 @@ function check_ckd() {
 function mono_vs_poly() {
   if ($('#id_monoarticular_1').is(":checked")) {
     $('#div_id_firstmtp').show();
+    if ($('#id_firstmtp_1').is(":checked")) {
     $('#div_id_location').hide();
     $('#id_location_1').prop("checked", false);
     $('#id_location_2').prop("checked", false);
@@ -450,6 +451,27 @@ function mono_vs_poly() {
     $('#id_location_14').prop("checked", false);
     $('#id_location_15').prop("checked", false);
     $('#id_location_16').prop("checked", false);
+    } else if ($('#id_firstmtp_2').is(":checked")){
+      $('#div_id_location').show();
+    } else {
+      $('#div_id_location').hide();
+      $('#id_location_1').prop("checked", false);
+      $('#id_location_2').prop("checked", false);
+      $('#id_location_3').prop("checked", false);
+      $('#id_location_4').prop("checked", false);
+      $('#id_location_5').prop("checked", false);
+      $('#id_location_6').prop("checked", false);
+      $('#id_location_7').prop("checked", false);
+      $('#id_location_8').prop("checked", false);
+      $('#id_location_9').prop("checked", false);
+      $('#id_location_10').prop("checked", false);
+      $('#id_location_11').prop("checked", false);
+      $('#id_location_12').prop("checked", false);
+      $('#id_location_13').prop("checked", false);
+      $('#id_location_14').prop("checked", false);
+      $('#id_location_15').prop("checked", false);
+      $('#id_location_16').prop("checked", false);
+    }
   } else if ($('#id_monoarticular_2').is(":checked")) {
     $('#div_id_firstmtp').show();
     $('#div_id_location').show();
@@ -459,31 +481,6 @@ function mono_vs_poly() {
   }
 }
 
-function mtp_vs_rest() {
-  if ($('#id_firstmtp_1').is(":checked")) {
-    $('#div_id_location').hide();
-    $('#id_location_1').prop("checked", false);
-    $('#id_location_2').prop("checked", false);
-    $('#id_location_3').prop("checked", false);
-    $('#id_location_4').prop("checked", false);
-    $('#id_location_5').prop("checked", false);
-    $('#id_location_6').prop("checked", false);
-    $('#id_location_7').prop("checked", false);
-    $('#id_location_8').prop("checked", false);
-    $('#id_location_9').prop("checked", false);
-    $('#id_location_10').prop("checked", false);
-    $('#id_location_11').prop("checked", false);
-    $('#id_location_12').prop("checked", false);
-    $('#id_location_13').prop("checked", false);
-    $('#id_location_14').prop("checked", false);
-    $('#id_location_15').prop("checked", false);
-    $('#id_location_16').prop("checked", false);
-  } else if ($('#id_firstmtp_2').is(":checked")){
-    $('#div_id_location').show();
-  } else {
-    $('#div_id_location').hide();
-  }
-}
 
 /* FlareAid app JS */
 // Function that loads on FlareAid Create page, hides all fields other than the first (perfect_health)

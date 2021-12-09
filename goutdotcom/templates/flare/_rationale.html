@@ -1,36 +1,7 @@
 <h2 class="content-heading">Rationale</h2>
 <h3><u>Symptoms</u></h3>
-  <h4>Location:
-  {% if flare.monoarticular %}
-    {% if flare.monoarticular.value == True %} monoarticular
-      {% if flare.firstmtp %}
-        {% if flare.firstmtp.value == True %}
-        , big toe
-        {% endif %}
-      {% else %}
-        {% if flare.location %}
-        dd
-          {{ flare.location }}
-        {% endif %}
-      , other joint
-      {% endif %}
-    {% endif %}
-  {% else %}
-    {% if flare.location %}
-      {{ flare.location }}
-    {% endif %}
-  {% endif %}
-  </h4>
-  {% if flare.monoarticular %}
-  <li>You reported your flare was {% if flare.monoarticular == True %} monoarticular (1 joint) {% elif flare.monoarticular == False %} polyarticular (more than 1 joint) {% endif %}</h4>
-  {% endif %}
-  {% if flare.location %}
-  <li>Joints involved: {{ flare.location }}
-  {% else %} not reported
-  {% endif %}</li>
-  {% if flare.firstmtp %}
-  <li>First MTP: {% if flare.firstmtp == True %}involved {% elif flare.firstmtp == False %}not involved {% else %} not reported{% endif %}</h4>
-  {% endif %}
+  <h4>Location: {{ flare.locations }}
+
     {% if flare.redness %}
     <h4>Redness: {{ flare.redness }}</h4>
     {% endif %}
@@ -48,7 +19,9 @@
     <h4>Prior gout: {{ flare.prior_gout }}</h4>
   {% endif %}
   {% if flare.urate %}
-  <h4>Uric acid: <a href="{% url 'lab:detail' 'urate' object.urate.pk %}">{{ flare.urate }}</a></h4>
+  <h4>Uric acid: {% if request.user.is_authenticated %}<a
+      href="{% url 'lab:detail' 'urate' object.urate.pk %}">{{ flare.urate }}</a>{% else %}{{ flare.urate }}{% endif %}
+  </h4>
   {% endif %}
   <h3><u>Cardiac Disease</u></h3>
     <h4>Cardiac diseases:

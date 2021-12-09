@@ -144,6 +144,50 @@ class Flare(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("flare:detail", kwargs={"pk": self.pk})
 
+    def locations(self):
+        """Function that evaluates monoarticular, firstmtp, and location fields and returns a string describing the location(s) of the flare
+
+        returns: [str]: [str describing the location(s) of the flare]"""
+
+        location_string = ""
+
+        if self.monoarticular:
+            if self.monoarticular == True:
+                location_string += "monoarticular"
+                if self.firstmtp:
+                    if self.firstmtp == True:
+                        location_string += ", big toe"
+                else:
+                    if len(self.location) > 0:
+                        if len(self.location) == 1:
+                            location_string += ", " + self.location[0]
+                        else:
+                            location_string += ", "
+                            for i in range(len(self.location) - 1):
+                                location_string += self.location[i] + ", "
+                            location_string += self.location[len(self.location) - 1]
+        else:
+            location_string += "polyarticular"
+            if len(self.location) > 0:
+                location_string += ", "
+                if len(self.location) == 1:
+                    if self.firstmtp:
+                        if self.firstmtp == True:
+                            location_string += "big toe, "
+                    location_string += self.location[0]
+                else:
+                    if self.firstmtp:
+                        if self.firstmtp == True:
+                            location_string += "big toe, "
+                    for i in range(len(self.location) - 1):
+                        location_string += self.location[i] + ", "
+                    location_string += self.location[len(self.location) - 1]
+            else:
+                if self.firstmtp:
+                    if self.firstmtp == True:
+                        location_string += ", big toe"
+        return location_string.lower()
+
     def flare_calculator(self):
         """Function to take user-generated input from Flare and returns a prevalence of gout based on evidence from a 2 center European study.
         Offers recommendation on who benefits from synovial fluid analysis vs who is unlikely to have gout and who is very likely to have gout.

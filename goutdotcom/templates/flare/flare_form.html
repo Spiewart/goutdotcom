@@ -42,10 +42,10 @@ New Flare
     $("#id_monoarticular_2").change(mono_vs_poly);
     mono_vs_poly.call($("#id_monoarticular_2").get(0));
     // checks if perfect_health is true and, if so, displays only monoarticular field, else displays long list of other
-    $("#id_firstmtp_1").change(mtp_vs_rest);
-    mtp_vs_rest.call($("#id_firstmtp_1-value").get(0));
-    $("#id_firstmtp_2").change(mtp_vs_rest);
-    mtp_vs_rest.call($("#id_firstmtp_2-value").get(0));
+    $("#id_firstmtp_1").change(mono_vs_poly);
+    mono_vs_poly.call($("#id_firstmtp_1-value").get(0));
+    $("#id_firstmtp_2").change(mono_vs_poly);
+    mono_vs_poly.call($("#id_firstmtp_2-value").get(0));
   });
   jQuery(function ($) {
     var path = window.location.href;
