@@ -1,34 +1,57 @@
 <h2 class="content-heading">Rationale</h2>
-<ul>
-  <h3><u>Symptoms</u></h3>
-  <li>Location: {% if flare.location %} {{ flare.location }} {% else %} not reported {% endif %}</li>
+<h3><u>Symptoms</u></h3>
+  <h4>Location:
   {% if flare.monoarticular %}
-  <li>You reported you flare was {% if flare.monoarticular == True %} monoarticular (1 joint) {% elif flare.monoarticular == False %} polyarticular (more than 1 joint) {% endif %}</li>
-  {% endif %}
-    {% if flare.firstmtp %}
-    <li>First MTP: {{ flare.firstmtp }}
+    {% if flare.monoarticular.value == True %} monoarticular
+      {% if flare.firstmtp %}
+        {% if flare.firstmtp.value == True %}
+        , big toe
+        {% endif %}
+      {% else %}
+        {% if flare.location %}
+        dd
+          {{ flare.location }}
+        {% endif %}
+      , other joint
+      {% endif %}
     {% endif %}
+  {% else %}
+    {% if flare.location %}
+      {{ flare.location }}
+    {% endif %}
+  {% endif %}
+  </h4>
+  {% if flare.monoarticular %}
+  <li>You reported your flare was {% if flare.monoarticular == True %} monoarticular (1 joint) {% elif flare.monoarticular == False %} polyarticular (more than 1 joint) {% endif %}</h4>
+  {% endif %}
+  {% if flare.location %}
+  <li>Joints involved: {{ flare.location }}
+  {% else %} not reported
+  {% endif %}</li>
+  {% if flare.firstmtp %}
+  <li>First MTP: {% if flare.firstmtp == True %}involved {% elif flare.firstmtp == False %}not involved {% else %} not reported{% endif %}</h4>
+  {% endif %}
     {% if flare.redness %}
-    <li>Redness: {{ flare.redness }}
+    <h4>Redness: {{ flare.redness }}</h4>
     {% endif %}
     {% if flare.onset %}
-    <li>Onset: time to maximal symptoms {% if flare.onset == True %} under 24 hours. {% elif flare.onset == False %} over 24 hours {% endif %}.</li>
+    <h4>Onset: time to maximal symptoms {% if flare.onset == True %} under 24 hours{% elif flare.onset == False %} over 24 hours {% endif %}.</h4>
     {% endif %}
     {% if flare.duration %}
-    <li>Duration: {{ flare.duration }} days</li>
+    <h4>Duration: {{ flare.duration }}</h4>
     {% endif %}
   <h3><u>Extra Factors</u></h3>
   {% if flare.male %}
-    <li>Male: {{ flare.male }}
+    <h4>Male: {{ flare.male }}</h4>
   {% endif %}
   {% if flare.prior_gout %}
-    <li>Prior gout: {{ flare.prior_gout }}
+    <h4>Prior gout: {{ flare.prior_gout }}</h4>
   {% endif %}
   {% if flare.urate %}
-  <li>Uric acid: <a href="{% url 'lab:detail' 'urate' object.urate.pk %}">{{ flare.urate }}</a></li>
+  <h4>Uric acid: <a href="{% url 'lab:detail' 'urate' object.urate.pk %}">{{ flare.urate }}</a></h4>
   {% endif %}
   <h3><u>Cardiac Disease</u></h3>
-    <li>Cardiac diseases:
+    <h4>Cardiac diseases:
       {% if flare.hypertension.value or flare.heartattack.value or flare.CHF.value or flare.stroke.value or flare.PVD.value %}
         {% if flare.hypertension.value == True %} {{ flare.hypertension }} {% endif %}
         {% if flare.heartattack.value == True %} {{ flare.heartattack }} {% endif %}
@@ -38,10 +61,13 @@
       {% else %}
         none
       {% endif %}
-    </li>
+    </h4>
   <h3><u>Treatment</u></h3>
+  <h4>Treatment:
   {% if flare.treatment %}
-  <li>Treatment: {{ flare.treatment }}</li>
+  {{ flare.treatment }}
+  {% else %}
+  none
   {% endif %}
-</ul>
+  </h4>
 <hr class="my-6" color="white">
