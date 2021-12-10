@@ -92,6 +92,10 @@ class ULTAid(TimeStampedModel):
     )
 
     def decision_aid(self):
+        """Function that evaluates ULTAid fields and returns a dictionary containing recommendations for ULT and other pertinent facts to the template for presentation.
+
+        returns {dict}: {dict containing drug, dose, goal uric acid, whether or not the patient is on dialysis, whether or not he or she should see a rheumatologist, and whether or not they are unwilling to take ULT.}"""
+
         ult_choice = {
             "drug": "allopurinol",
             "dose": "100 mg",
@@ -100,6 +104,7 @@ class ULTAid(TimeStampedModel):
             "rheumatologist": False,
             "unwilling": False,
         }
+        
         if self.XOI_interactions.value == True or self.organ_transplant.value == True:
             ult_choice["rheumatologist"] = True
 

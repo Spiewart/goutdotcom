@@ -217,7 +217,7 @@ class Flare(TimeStampedModel):
         points = 0
         cardiac_disease_equivalent = False
 
-        if self.monoarticular == True:
+        if self.monoarticular == False:
             calc_package[
                 "caveat"
             ] = "This calculator has only been validated for monoarticular (1 joint) flares. It can't necessarily be applied to polyarticular (more than 1 joint) flares."

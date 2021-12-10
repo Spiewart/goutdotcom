@@ -16,9 +16,30 @@
   </div>
 </div>
 <h1>{% if request.user.is_authenticated %} {{ request.user|capfirst  }}'s {% endif %}Flare</h1>
+<hr class="my-6" color="white">
+<div class="row">
+  <div class="col">
 <h2><u>Gout probability</u>: {{ flare.flare_calculator|get_flare:'result'|capfirst }}</h2>
-<h3><u>Translation</u>: {{ flare.flare_calculator|get_flare:'likelihood' }}</h3>
-<h3><u>Prevalence</u>: Gout is present in {{ flare.flare_calculator|get_flare:'likelihood' }} of patients similar to you.</h3>
-{% if flare.flare_calculator|get_flare:'caveat' == True %}<h3><u>WARNING</u>:{{ flare.flare_calculator|get_flare:'caveat' }}</h3>{% endif %}
+  </div>
+  <div class="col">
 <h3>Date: {{ flare.created }}</h3>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <ul>
+    <li>{{ flare.flare_calculator|get_flare:'likelihood' }}</li>
+      {% if flare.monoarticular == False %}
+        <li><u>WARNING</u>: {{ flare.flare_calculator|get_flare:'caveat' }}</li>
+      {% endif %}
+  </div>
+  </ul>
+  <div class="col">
+    <ul>
+      <li><u>Likelihood</u>: {{ flare.flare_calculator|get_flare:'likelihood' }}</li>
+      <li><u>Prevalence</u>: Gout is present in {{ flare.flare_calculator|get_flare:'prevalence' }} of patients similar to you.</li>
+
+    </ul>
+  </div>
+</div>
 <hr class="my-6" color="white">
