@@ -18,7 +18,7 @@ class TestFlareMethods:
 
     def test_flare_calculator_monoarticular(self):
         Flare = FlareFactory(
-            monoarticular=True,
+            monoarticular=False,
         )
         assert (
             Flare.flare_calculator().get("caveat")

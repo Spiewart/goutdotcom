@@ -1,8 +1,11 @@
+from decimal import *
+
 from django.forms.models import model_to_dict
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from ...lab.forms import UrateFlareForm
+from ...lab.models import Urate
 from ...lab.tests.factories import UrateFactory
 from ...profiles.tests.factories import (
     FamilyProfileFactory,
@@ -26,8 +29,22 @@ class TestCreateView(TestCase):
         self.medicalprofile = MedicalProfileFactory(user=self.user)
         self.familyprofile = FamilyProfileFactory(user=self.user)
         self.socialprofile = SocialProfileFactory(user=self.user)
-        self.urate_data = UrateFactory(user=self.user)
+        self.urate_data = {"user": self.user, "value": Decimal(5.6)}
         self.flare_data = {
+            "monoarticular": True,
+            "male": True,
+            "prior_gout": True,
+            "onset": True,
+            "redness": True,
+            "firstmtp": True,
+            "hypertension": self.user.medicalprofile.hypertension,
+            "heartattack": self.user.medicalprofile.heartattack,
+            "CHF": self.user.medicalprofile.CHF,
+            "stroke": self.user.medicalprofile.stroke,
+            "PVD": self.user.medicalprofile.PVD,
+        }
+
+        self.flare_data_user = {
             "user": self.user,
             "monoarticular": True,
             "male": True,
@@ -35,25 +52,23 @@ class TestCreateView(TestCase):
             "onset": True,
             "redness": True,
             "firstmtp": True,
-            "location": [],
             "hypertension": self.user.medicalprofile.hypertension,
             "heartattack": self.user.medicalprofile.heartattack,
             "CHF": self.user.medicalprofile.CHF,
             "stroke": self.user.medicalprofile.stroke,
             "PVD": self.user.medicalprofile.PVD,
-            "treatment": Advil,
         }
 
     def test_form_valid(self):
         form = FlareForm(data=self.flare_data)
-        urate_form = UrateFlareForm(data=self.urate_data)
-        form.instance.user = self.user
-        urate_form.instance.user = self.user
         self.assertTrue(form.is_valid())
-        self.assertTrue(urate_form.is_valid())
+        self.flare_data["location"] = ['Right foot']
+        form = FlareForm(data=self.flare_data)
+        self.assertTrue(form.is_valid())
         # Test that user can be assigned to form instance
-        self.assertEqual(form.instance.user, self.user)
-        self.assertEqual(urate_form.instance.user, self.user)
+        form_user = FlareForm(data=self.flare_data_user)
+        self.assertTrue(form_user.is_valid())
+        self.assertEqual(form_user.instance.user, self.user)
 
     def test_get_context_data(self):
         request = self.factory.get("/flare/create")
@@ -66,9 +81,8 @@ class TestCreateView(TestCase):
         self.assertIn("stroke_form", response.context_data)
         self.assertIn("PVD_form", response.context_data)
 
-    def test_post(self):
+    def test_post_no_urate(self):
         self.client.force_login(self.user)
-        self.flare_data.urate = self.urate_data
         response = self.client.post(reverse("flare:create"), self.flare_data)
         flare = Flare.objects.last()
         self.assertEqual(response.status_code, 302)
