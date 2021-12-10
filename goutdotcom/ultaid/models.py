@@ -28,18 +28,12 @@ class ULTAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Need ULT?",
         help_text=format_lazy("""Do you need <a href='{}' target='_blank'>ULT</a>?""", reverse_lazy("ult:create")),
-        default="",
-        null=True,
-        blank=True,
     )
 
     want = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Want ULT?",
         help_text="Will you take daily medication to get rid of your gout?",
-        default="",
-        null=True,
-        blank=True,
     )
 
     ckd = models.ForeignKey(
@@ -102,57 +96,65 @@ class ULTAid(TimeStampedModel):
             "goal_urate": "6.0 mg/dL",
             "dialysis": False,
             "rheumatologist": False,
-            "unwilling": False,
+            "unneeded": True,
+            "unwilling": True,
         }
-        
-        if self.XOI_interactions.value == True or self.organ_transplant.value == True:
-            ult_choice["rheumatologist"] = True
 
-        if self.ckd.value == True:
-            if self.ckd.dialysis == True:
-                ult_choice["dialysis"] = True
-            if self.ckd.stage != None:
-                if ult_choice["drug"] == "febuxostat":
-                    if self.ckd.stage < 3:
-                        ult_choice["dose"] = "40 mg"
+        if self.need == True and self.want == True:
+            if self.XOI_interactions.value == True or self.organ_transplant.value == True:
+                ult_choice["rheumatologist"] = True
+
+            if self.ckd.value == True:
+                if self.ckd.dialysis == True:
+                    ult_choice["dialysis"] = True
+                if self.ckd.stage != None:
+                    if ult_choice["drug"] == "febuxostat":
+                        if self.ckd.stage < 3:
+                            ult_choice["dose"] = "40 mg"
+                        else:
+                            ult_choice["dose"] = "20 mg"
+                    else:
+                        if self.ckd.stage < 3:
+                            ult_choice["dose"] = "100 mg"
+                        else:
+                            ult_choice["dose"] = "50 mg"
+
+            if self.allopurinol_hypersensitivity.value == True:
+                if (
+                    self.febuxostat_hypersensitivity.value == True
+                    or self.heartattack.value == True
+                    or self.stroke.value == True
+                ):
+                    ult_choice["rheumatologist"] = True
+                ult_choice["drug"] = "febuxostat"
+                if self.ckd.value == True:
+                    if self.ckd.stage != None:
+                        if self.ckd.stage < 3:
+                            ult_choice["dose"] = "40 mg"
+                        else:
+                            ult_choice["dose"] = "20 mg"
                     else:
                         ult_choice["dose"] = "20 mg"
                 else:
-                    if self.ckd.stage < 3:
-                        ult_choice["dose"] = "100 mg"
+                    ult_choice["dose"] = "40 mg"
+
+            if self.febuxostat_hypersensitivity.value == True:
+                if self.allopurinol_hypersensitivity.value == True:
+                    ult_choice["rheumatologist"] = True
+                if self.ckd.value == True:
+                    if self.ckd.stage != None:
+                        if self.ckd.stage < 3:
+                            ult_choice["dose"] = "100 mg"
                     else:
                         ult_choice["dose"] = "50 mg"
 
-        if self.allopurinol_hypersensitivity.value == True:
-            if (
-                self.febuxostat_hypersensitivity.value == True
-                or self.heartattack.value == True
-                or self.stroke.value == True
-            ):
-                ult_choice["rheumatologist"] = True
-            ult_choice["drug"] = "febuxostat"
-            if self.ckd.value == True:
-                if self.ckd.stage != None:
-                    if self.ckd.stage < 3:
-                        ult_choice["dose"] = "40 mg"
-                    else:
-                        ult_choice["dose"] = "20 mg"
-                else:
-                    ult_choice["dose"] = "20 mg"
-            else:
-                ult_choice["dose"] = "40 mg"
-            return ult_choice
-
-        if self.febuxostat_hypersensitivity.value == True:
-            if self.allopurinol_hypersensitivity.value == True:
-                ult_choice["rheumatologist"] = True
-            if self.ckd.value == True:
-                if self.ckd.stage != None:
-                    if self.ckd.stage < 3:
-                        ult_choice["dose"] = "100 mg"
-                else:
-                    ult_choice["dose"] = "50 mg"
-            return ult_choice
+        elif self.need == False and self.want == True:
+            ult_choice["need"] = False
+        elif self.need == True and self.want == False:
+            ult_choice["want"] = False
+        else:
+            ult_choice["need"] = False
+            ult_choice["want"] = False
 
         return ult_choice
 
