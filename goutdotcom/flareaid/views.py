@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+from ..flare.models import Flare
 from ..history.forms import (
     AnticoagulationSimpleForm,
     BleedSimpleForm,
@@ -45,11 +46,18 @@ class FlareAidCreate(CreateView):
     stroke_form_class = StrokeSimpleForm
 
     def form_valid(self, form):
+        if "flare" in self.kwargs:
+            form.instance.flare = Flare.objects.get(pk=self.kwargs["flare"])
         if self.request.user.is_authenticated:
             form.instance.user = self.request.user
             return super().form_valid(form)
         else:
             return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        return self.render_to_response(self.get_context_data(form=form, **kwargs))
 
     def get_context_data(self, **kwargs):
         context = super(FlareAidCreate, self).get_context_data(**kwargs)
@@ -105,13 +113,19 @@ class FlareAidCreate(CreateView):
                 context["stroke_form"] = self.stroke_form_class(self.request.GET)
             return context
 
-    def post(self, request):
+    def post(self, request, **kwargs):
         form = self.form_class(request.POST, instance=FlareAid())
 
         if form.is_valid():
             flareaid_data = form.save(commit=False)
             ## WOULD LIKE TO CONSOLIDATE REQUEST.USER ADD TO RIGHT BEFORE SAVE(), THEN CAN COMBINE THE REST
             # Check if user is authenticated and pull OnetoOne related model data from MedicalProfile if so
+            if "flare" in self.kwargs:
+                print("flare in kwargs")
+                flareaid_data.flare = Flare.objects.get(pk=self.kwargs["flare"])
+            else:
+                print("flare not in kwargs")
+                print(self.kwargs)
             if request.user.is_authenticated:
                 flareaid_data.user = request.user
                 anticoagulation_form = self.anticoagulation_form_class(

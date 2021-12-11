@@ -8,6 +8,7 @@ class FlareAidAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "user",
+        "flare",
         "perfect_health",
         "monoarticular",
         "anticoagulation",

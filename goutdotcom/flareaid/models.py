@@ -3,6 +3,9 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
+from ..flare.models import (
+    Flare,
+)
 from ..history.models import (
     CKD,
     IBD,
@@ -26,7 +29,12 @@ class FlareAid(TimeStampedModel):
         on_delete=models.CASCADE,
         null=True,
     )
-
+    flare = models.OneToOneField(
+        Flare,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     perfect_health = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Besides having gout, are you in perfect health?",
@@ -35,7 +43,6 @@ class FlareAid(TimeStampedModel):
         null=True,
         blank=True,
     )
-
     monoarticular = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Is your flare in just a single joint?",

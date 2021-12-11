@@ -25,7 +25,7 @@
             <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
           {% endif %}
         {% endif %}
-        <h1 id="rec">Flare Treatment:
+        <h1 id="rec">Flare {% if object.flare %} {{ object.flare.pk }} {% endif %} Treatment:
           {% if object.decision_aid == "doctor" %}
             See a Doctor
           {% else %}
