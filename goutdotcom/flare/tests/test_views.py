@@ -4,6 +4,15 @@ from django.forms.models import model_to_dict
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
+from goutdotcom.history.tests.factories import (
+    AnginaFactory,
+    CHFFactory,
+    HeartAttackFactory,
+    HypertensionFactory,
+    PVDFactory,
+    StrokeFactory,
+)
+
 from ...lab.forms import UrateFlareForm
 from ...lab.models import Urate
 from ...lab.tests.factories import UrateFactory
@@ -29,7 +38,7 @@ class TestCreateView(TestCase):
         self.medicalprofile = MedicalProfileFactory(user=self.user)
         self.familyprofile = FamilyProfileFactory(user=self.user)
         self.socialprofile = SocialProfileFactory(user=self.user)
-        self.urate_data = {"user": self.user, "value": Decimal(5.6)}
+        self.urate = UrateFactory()
         self.flare_data = {
             "monoarticular": True,
             "male": True,
@@ -37,11 +46,12 @@ class TestCreateView(TestCase):
             "onset": True,
             "redness": True,
             "firstmtp": True,
-            "hypertension": self.user.medicalprofile.hypertension,
-            "heartattack": self.user.medicalprofile.heartattack,
-            "CHF": self.user.medicalprofile.CHF,
-            "stroke": self.user.medicalprofile.stroke,
-            "PVD": self.user.medicalprofile.PVD,
+            "angina": AnginaFactory(),
+            "hypertension": HypertensionFactory(),
+            "heartattack": HeartAttackFactory(),
+            "CHF": CHFFactory(),
+            "stroke": StrokeFactory(),
+            "PVD": PVDFactory(),
         }
 
         self.flare_data_user = {
@@ -52,6 +62,7 @@ class TestCreateView(TestCase):
             "onset": True,
             "redness": True,
             "firstmtp": True,
+            "angina": self.user.medicalprofile.angina,
             "hypertension": self.user.medicalprofile.hypertension,
             "heartattack": self.user.medicalprofile.heartattack,
             "CHF": self.user.medicalprofile.CHF,
@@ -59,10 +70,30 @@ class TestCreateView(TestCase):
             "PVD": self.user.medicalprofile.PVD,
         }
 
+        self.flare_data_urate = {
+            "user": self.user,
+            "monoarticular": True,
+            "male": True,
+            "prior_gout": True,
+            "onset": True,
+            "redness": True,
+            "firstmtp": True,
+            "angina": self.user.medicalprofile.angina,
+            "hypertension": self.user.medicalprofile.hypertension,
+            "heartattack": self.user.medicalprofile.heartattack,
+            "CHF": self.user.medicalprofile.CHF,
+            "stroke": self.user.medicalprofile.stroke,
+            "PVD": self.user.medicalprofile.PVD,
+            "urate": Urate.objects.get(pk=self.urate.pk),
+        }
+
     def test_form_valid(self):
         form = FlareForm(data=self.flare_data)
         self.assertTrue(form.is_valid())
-        self.flare_data["location"] = ['Right foot']
+        self.flare_data["location"] = ["Right foot"]
+        form = FlareForm(data=self.flare_data)
+        self.assertTrue(form.is_valid())
+        self.flare_data["urate"] = UrateFactory()
         form = FlareForm(data=self.flare_data)
         self.assertTrue(form.is_valid())
         # Test that user can be assigned to form instance
@@ -75,6 +106,7 @@ class TestCreateView(TestCase):
         request.user = self.user
         response = FlareCreate.as_view()(request)
         self.assertIsInstance(response.context_data, dict)
+        self.assertIn("angina_form", response.context_data)
         self.assertIn("hypertension_form", response.context_data)
         self.assertIn("heartattack_form", response.context_data)
         self.assertIn("CHF_form", response.context_data)
@@ -101,3 +133,6 @@ class TestCreateView(TestCase):
         self.assertEqual(flare.stroke, self.user.medicalprofile.stroke)
         self.assertEqual(flare.stroke, self.user.medicalprofile.stroke)
         self.assertEqual(flare.urate, self.flare_data.get("urate"))
+        response = self.client.post(reverse("flare:create"), self.flare_data, urate=self.urate)
+        flare = Flare.objects.last()
+        self.assertEqual(flare.urate, self.flare_data_urate.get("urate"))

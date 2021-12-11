@@ -39,7 +39,8 @@
     <h3><u>Cardiac Disease</u></h3>
     <ul>
       <li>
-      {% if flare.hypertension.value or flare.heartattack.value or flare.CHF.value or flare.stroke.value or flare.PVD.value %}
+      {% if flare.angina.value or flare.hypertension.value or flare.heartattack.value or flare.CHF.value or flare.stroke.value or flare.PVD.value %}
+      {% if flare.angina.value == True %} {{ flare.angina }} {% endif %}
       {% if flare.hypertension.value == True %} {{ flare.hypertension }} {% endif %}
       {% if flare.heartattack.value == True %} {{ flare.heartattack }} {% endif %}
       {% if flare.CHF.value == True %} {{ flare.CHF }} {% endif %}

@@ -5,6 +5,7 @@ from datetimewidget.widgets import DateWidget
 from django import forms
 
 from .models import (
+    Angina,
     CHF,
     CKD,
     IBD,
@@ -35,6 +36,29 @@ from .models import (
 
 
 ### Medical History ModelForms ###
+class AnginaForm(forms.ModelForm):
+    prefix = "Angina"
+
+    class Meta:
+        model = Angina
+        fields = (
+            "value",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(AnginaForm, self).__init__(*args, **kwargs)
+        self.fields["value"].widget = forms.CheckboxInput()
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Fieldset(
+                "Angina",
+                "value",
+                id="angina_for_profile",
+            ),
+        )
+
 class AnticoagulationForm(forms.ModelForm):
     prefix = "Anticoagulation"
 

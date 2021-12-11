@@ -12,12 +12,26 @@
   </h1>
 <div class="row">
   <div class="col">
-    {% if object.decision_aid|get_ultaid:'rheumatologist' == True %}
-      <h2><u>Rheumatologist</u></h2>
-      <p>Your medical situation is complicated enough that you should see a rheumatologist for the next step in your gout care.</p>
+    {% if object.decision_aid|get_ultaid:'want' == False %}
+      <h2>ULT not desired</h2>
+      <p>You indicated you won't take medication daily to get rid of your gout.
+      {% if object.decision_aid|get_ultaid:'need' == True %}
+        That's unfortunate because ULT is indicated for your gout based on your report or the Gouthelper <a
+          href="{% url 'ult:create' %}" target="_blank">ULT calculator</a>! Gout sucks and it can be completely
+        eliminated with medications.
+      {% endif %}
+      </p>
+    {% elif object.decision_aid|get_ultaid:'need' == False %}
+      <h2>ULT not indicated</h2>
+      <p>You indicated that you don't need ULT. This could either be from the Gouthelper <a
+          href="{% url 'ult:create' %}" target="_blank">ULT calculator</a> or from the advice of your doctor.</p>
     {% elif object.decision_aid|get_ultaid:'dialysis' == True %}
       <h2><u>Dialysis</u></h2>
-      <p>Dialysis filters off uric acid like a healthy set of kidneys woudld. Thus most people who are on dialysis don't need ULT.</p>
+      <p>Dialysis filters off uric acid like a healthy set of kidneys would. Thus most people who are on dialysis
+        don't need ULT.</p>
+    {% elif object.decision_aid|get_ultaid:'rheumatologist' == True %}
+      <h2><u>Rheumatologist</u></h2>
+      <p>Your medical situation is complicated enough that you should see a rheumatologist for the next step in your gout care.</p>
     {% else %}
       <h2><u>Medication</u>: <a
           href="{% url 'treatment:about' object.decision_aid|get_ultaid:'drug' %}">{{ object.decision_aid|get_ultaid:'drug'|capfirst }}</a>

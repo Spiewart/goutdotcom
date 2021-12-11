@@ -8,6 +8,7 @@ from goutdotcom.lab.tests.factories import UrateFactory
 from goutdotcom.users.tests.factories import UserFactory
 
 from ...history.tests.factories import (
+    AnginaFactory,
     CHFFactory,
     HeartAttackFactory,
     HypertensionFactory,
@@ -33,6 +34,7 @@ class FlareFactory(DjangoModelFactory):
     redness = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     firstmtp = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     location = factory.fuzzy.FuzzyChoice(choices=LIMITED_JOINT_CHOICES, getter=lambda c: c[0])
+    angina = factory.SubFactory(AnginaFactory)
     hypertension = factory.SubFactory(HypertensionFactory)
     heartattack = factory.SubFactory(HeartAttackFactory)
     CHF = factory.SubFactory(CHFFactory)

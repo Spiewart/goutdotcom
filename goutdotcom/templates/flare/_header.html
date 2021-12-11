@@ -32,6 +32,7 @@
       {% if flare.monoarticular == False %}
         <li><u>WARNING</u>: {{ flare.flare_calculator|get_flare:'caveat' }}</li>
       {% endif %}
+    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button" style="float: right;">FlareAid</a>
   </div>
   </ul>
   <div class="col">

@@ -7,6 +7,7 @@ from factory.django import DjangoModelFactory
 from goutdotcom.history.tests.factories import (
     AlcoholFactory,
     AllopurinolHypersensitivityFactory,
+    AnginaFactory,
     AnticoagulationFactory,
     BleedFactory,
     CHFFactory,
@@ -79,6 +80,7 @@ class MedicalProfileFactory(DjangoModelFactory):
     allopurinol_hypersensitivity = factory.SubFactory(
         AllopurinolHypersensitivityFactory, user=factory.SelfAttribute("..user")
     )
+    angina = factory.SubFactory(AnginaFactory, user=factory.SelfAttribute("..user"))
     CKD = factory.SubFactory(CKDFactory, user=factory.SelfAttribute("..user"))
     febuxostat_hypersensitivity = factory.SubFactory(
         FebuxostatHypersensitivityFactory, user=factory.SelfAttribute("..user")

@@ -12,7 +12,10 @@
 {% block form %}
 {% if form.instance.pk %}
 <form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user object.pk %}" enctype="multipart/form-data">
-  {% csrf_token %} {{ form|crispy }}
+  {% csrf_token %}
+  {{ form|crispy }}
+  {{ angina_form|crispy }}
+  <hr size="6" color="white" />
   {{ anticoagulation_form|crispy }}
   <hr size="6" color="white" />
   {{ heartattack_form|crispy }}
@@ -55,7 +58,10 @@
 </form>
 {% else %}
 <form class="form-horizontal" method="post" action="{% url 'profiles:create-medical' %}" enctype="multipart/form-data">
-  {% csrf_token %} {{ form|crispy }} {{ CKD_form|crispy }}
+  {% csrf_token %}
+  {{ form|crispy }}
+  {{ angina_form|crispy }}
+  <hr size="6" color="white" />
   {{ anticoagulation_form|crispy }}
   <hr size="6" color="white" />
   {{ heartattack_form|crispy }}

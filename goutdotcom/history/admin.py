@@ -4,6 +4,16 @@ from .models import *
 
 
 # Register your models here.
+class AnginaAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "value",
+        "last_modified",
+        "created",
+        "pk",
+    )
+
+
 class AllopurinolHypersensitivityAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -16,6 +26,7 @@ class AllopurinolHypersensitivityAdmin(admin.ModelAdmin):
         "pk",
     )
 
+
 class CKDAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -26,6 +37,7 @@ class CKDAdmin(admin.ModelAdmin):
         "created",
         "pk",
     )
+
 
 class FebuxostatHypersensitivityAdmin(admin.ModelAdmin):
     list_display = (
@@ -38,6 +50,7 @@ class FebuxostatHypersensitivityAdmin(admin.ModelAdmin):
         "created",
         "pk",
     )
+
 
 class HypertensionAdmin(admin.ModelAdmin):
     list_display = (
@@ -75,6 +88,7 @@ class OsteoporosisAdmin(admin.ModelAdmin):
         "pk",
     )
 
+
 class PVDAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -83,6 +97,7 @@ class PVDAdmin(admin.ModelAdmin):
         "created",
         "pk",
     )
+
 
 class CHFAdmin(admin.ModelAdmin):
     list_display = (
@@ -282,6 +297,7 @@ class GoutAdmin(admin.ModelAdmin):
     )
 
 
+admin.site.register(Angina, AnginaAdmin)
 admin.site.register(AllopurinolHypersensitivity, AllopurinolHypersensitivityAdmin)
 admin.site.register(CKD, CKDAdmin)
 admin.site.register(Hypertension, HypertensionAdmin)

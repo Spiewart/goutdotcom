@@ -37,6 +37,14 @@ class AllopurinolHypersensitivityFactory(DjangoModelFactory):
         model = AllopurinolHypersensitivity
 
 
+class AnginaFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Angina
+
+
 class CKDFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     dialysis = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
@@ -58,12 +66,14 @@ class FebuxostatHypersensitivityFactory(DjangoModelFactory):
     class Meta:
         model = FebuxostatHypersensitivity
 
+
 class FructoseFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
 
     class Meta:
         model = Fructose
+
 
 class HypertensionFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
@@ -141,6 +151,7 @@ class OsteoporosisFactory(DjangoModelFactory):
     class Meta:
         model = Osteoporosis
 
+
 class PVDFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
@@ -148,12 +159,14 @@ class PVDFactory(DjangoModelFactory):
     class Meta:
         model = PVD
 
+
 class ShellfishFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
 
     class Meta:
         model = Shellfish
+
 
 class UrateKidneyStonesFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])

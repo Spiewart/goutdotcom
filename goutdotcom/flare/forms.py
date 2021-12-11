@@ -127,6 +127,7 @@ class FlareForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
+                    {% crispy angina_form %}
                     {% crispy hypertension_form %}
                     {% crispy heartattack_form %}
                     {% crispy CHF_form %}

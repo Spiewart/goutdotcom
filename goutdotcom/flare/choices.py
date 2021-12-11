@@ -202,3 +202,16 @@ DURATION_CHOICES = [
     (TENTOFOURTEEN, "More than 10 but less than 14 days"),
     (FOURTEENPLUS, "Over 14 days"),
 ]
+
+UNLIKELY = "unlikely"
+EQUIVOCAL = "equivocal"
+LIKELY = "likely"
+
+LOWRANGE = "Gout is not likely and alternative causes of symptoms should be investigated."
+MIDRANGE = "Indeterminate likelihood of gout and it can't be ruled in or out. Physician evaluation is required."
+HIGHRANGE = "Gout is very likely. Not a whole lot else needs to be done, other than treat your gout!"
+
+
+LOWPREV = "2.2%"
+MODPREV = "31.2%"
+HIGHPREV = "80.4%"

@@ -63,6 +63,20 @@ class VascularHistory(MedicalHistory):
     number = models.IntegerField(help_text="How many have you had?", default=1, null=True, blank=True)
     date = models.DateField(help_text="When was it? The most recent if multiple.", null=True, blank=True)
 
+class Angina(MedicalHistory):
+    """Model for history of cardiac chest pain. True or False."""
+    ### COULD BE EXPANDED LATER FOR UNSTABLE TO BE USED IN OTHER AIDS ###
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    name = "angina"
+    value = BooleanField(
+        choices=BOOL_CHOICES,
+        help_text=mark_safe(
+            "Do you get <a href='https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain' target='_blank'>angina</a>?"
+        ),
+        verbose_name="Angina (Cardiac Chest Pain)",
+        null=True,
+        blank=True,
+    )
 
 class CKD(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)

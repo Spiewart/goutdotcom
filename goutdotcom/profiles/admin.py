@@ -14,6 +14,7 @@ class FamilyProfileAdmin(admin.ModelAdmin):
 class MedicalProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
+        "angina",
         "anticoagulation",
         "bleed",
         "CHF",

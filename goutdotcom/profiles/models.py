@@ -7,8 +7,6 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django_extensions.db.models import TimeStampedModel
-from PIL import Image
-from sorl.thumbnail import ImageField
 
 from goutdotcom.history.models import (
     CHF,
@@ -17,6 +15,7 @@ from goutdotcom.history.models import (
     PVD,
     Alcohol,
     AllopurinolHypersensitivity,
+    Angina,
     Anticoagulation,
     Bleed,
     ColchicineInteractions,
@@ -36,7 +35,7 @@ from goutdotcom.history.models import (
     UrateKidneyStones,
     XOIInteractions,
 )
-from goutdotcom.profiles.choices import BOOL_CHOICES, races, sexes
+from goutdotcom.profiles.choices import races, sexes
 from goutdotcom.users.models import models
 from goutdotcom.vitals.models import Height, Weight
 
@@ -150,9 +149,21 @@ class PatientProfile(TimeStampedModel):
 
 
 class MedicalProfile(TimeStampedModel):
+    """MedicalProfile OneToOne related to User containing OneToOne relations with history model instances of medical problems.
+    These are meant to be changed in the MedicalProfile page AS WELL AS all over the site when processing Aid forms."""
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+    )
+    angina = models.OneToOneField(
+        Angina,
+        on_delete=models.CASCADE,
+        help_text=mark_safe(
+            "Do you get <a href='https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain' target='_blank'>angina</a>?"
+        ),
+        verbose_name="Angina (Cardiac Chest Pain)",
+        null=True,
+        blank=True,
     )
     allopurinol_hypersensitivity = models.OneToOneField(
         AllopurinolHypersensitivity,
@@ -284,6 +295,7 @@ class MedicalProfile(TimeStampedModel):
     def create_user_medical_profile(sender, instance, created, **kwargs):
         if created:
             new_profile = MedicalProfile.objects.create(user=instance)
+            new_profile.angina = Angina.objects.create(user=instance)
             new_profile.allopurinol_hypersensitivity = AllopurinolHypersensitivity.objects.create(user=instance)
             new_profile.anticoagulation = Anticoagulation.objects.create(user=instance)
             new_profile.bleed = Bleed.objects.create(user=instance)

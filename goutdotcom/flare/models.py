@@ -5,7 +5,7 @@ from django.utils.text import format_lazy
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
-from ..history.models import CHF, PVD, HeartAttack, Hypertension, Stroke
+from ..history.models import Angina, CHF, PVD, HeartAttack, Hypertension, Stroke
 from ..lab.models import Urate
 from .choices import *
 
@@ -91,7 +91,13 @@ class Flare(TimeStampedModel):
         null=True,
         blank=True,
     )
-    ### NEED TO ADD ANGINA TO MEDICAL PROFILE...
+
+    angina = models.ForeignKey(
+        Angina,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     CHF = models.ForeignKey(
         CHF,
@@ -188,6 +194,7 @@ class Flare(TimeStampedModel):
                         location_string += ", big toe"
         return location_string.lower()
 
+
     def flare_calculator(self):
         """Function to take user-generated input from Flare and returns a prevalence of gout based on evidence from a 2 center European study.
         Offers recommendation on who benefits from synovial fluid analysis vs who is unlikely to have gout and who is very likely to have gout.
@@ -201,18 +208,6 @@ class Flare(TimeStampedModel):
         """
 
         calc_package = {"result": "no data", "likelihood": "unknown", "prevalence": "unknown", "caveat": None}
-
-        unlikely = "unlikely"
-        equivocal = "equivocal"
-        likely = "likely"
-
-        lowrange = "Gout is not likely and alternative causes of symptoms should be investigated."
-        midrange = "Indeterminate likelihood of gout and it can't be ruled in or out. Physician evaluation is required."
-        highrange = "Gout is very likely. Not a whole lot else needs to be done, other than treat your gout!"
-
-        lowprev = "2.2%"
-        modprev = "31.2%"
-        highprev = "80.4%"
 
         points = 0
         cardiac_disease_equivalent = False
@@ -233,6 +228,9 @@ class Flare(TimeStampedModel):
         if self.firstmtp == True:
             points = points + 2.5
         if cardiac_disease_equivalent == False:
+            if self.angina:
+                if self.angina.value == True:
+                    cardiac_disease_equivalent = True
             if self.hypertension:
                 if self.hypertension.value == True:
                     cardiac_disease_equivalent = True
@@ -257,16 +255,16 @@ class Flare(TimeStampedModel):
                 points = points + 3.5
 
         if points < 4:
-            calc_package["result"] = unlikely
-            calc_package["likelihood"] = lowrange
-            calc_package["prevalence"] = lowprev
+            calc_package["result"] = UNLIKELY
+            calc_package["likelihood"] = LOWRANGE
+            calc_package["prevalence"] = LOWPREV
         if points >= 4 and points < 8:
-            calc_package["result"] = equivocal
-            calc_package["likelihood"] = midrange
-            calc_package["prevalence"] = modprev
+            calc_package["result"] = EQUIVOCAL
+            calc_package["likelihood"] = MIDRANGE
+            calc_package["prevalence"] = MODPREV
         if points > 8:
-            calc_package["result"] = likely
-            calc_package["likelihood"] = highrange
-            calc_package["prevalence"] = highprev
+            calc_package["result"] = LIKELY
+            calc_package["likelihood"] = HIGHRANGE
+            calc_package["prevalence"] = HIGHPREV
 
         return calc_package

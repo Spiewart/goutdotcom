@@ -96,8 +96,8 @@ class ULTAid(TimeStampedModel):
             "goal_urate": "6.0 mg/dL",
             "dialysis": False,
             "rheumatologist": False,
-            "unneeded": True,
-            "unwilling": True,
+            "need": True,
+            "want": True,
         }
 
         if self.need == True and self.want == True:
@@ -153,8 +153,8 @@ class ULTAid(TimeStampedModel):
         elif self.need == True and self.want == False:
             ult_choice["want"] = False
         else:
-            ult_choice["need"] = False
-            ult_choice["want"] = False
+            ult_choice["need"] = True
+            ult_choice["want"] = True
 
         return ult_choice
 

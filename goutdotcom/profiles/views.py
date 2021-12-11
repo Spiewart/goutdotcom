@@ -6,6 +6,7 @@ from django.views.generic import CreateView, UpdateView
 
 from goutdotcom.history.forms import (
     AlcoholForm,
+    AnginaForm,
     AnticoagulationSimpleForm,
     BleedSimpleForm,
     CHFForm,
@@ -31,6 +32,7 @@ from goutdotcom.history.models import (
     CKD,
     IBD,
     Alcohol,
+    Angina,
     Anticoagulation,
     Bleed,
     ColchicineInteractions,
@@ -158,6 +160,7 @@ class FamilyProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
 class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
+    angina_form_class = AnginaForm
     anticoagulation_form_class = AnticoagulationSimpleForm
     bleed_form_class = BleedSimpleForm
     CHF_form_class = CHFForm
@@ -179,6 +182,8 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
         context = super(MedicalProfileCreate, self).get_context_data(**kwargs)
         context.update({"user": self.request.user})
         # Adds OnetoOne related field forms to context
+        if "angina_form" not in context:
+            context["angina_form"] = self.angina_form_class(self.request.GET)
         if "anticoagulation_form" not in context:
             context["anticoagulation_form"] = self.anticoagulation_form_class(self.request.GET)
         if "bleed_form" not in context:
@@ -221,6 +226,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=MedicalProfile())
+        angina_form = self.angina_form_class(request.POST, instance=Angina())
         anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=Anticoagulation())
         bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
         CHF_form = self.CHF_form_class(request.POST, instance=CHF())
@@ -242,6 +248,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
 
         if (
             form.is_valid()
+            and angina_form.is_valid()
             and anticoagulation_form.is_valid()
             and bleed_form.is_valid()
             and CHF_form.is_valid()
@@ -261,6 +268,10 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
         ):
             medical_profile_data = form.save(commit=False)
             medical_profile_data.user = request.user
+            angina_data = angina_form.save(commit=False)
+            angina_data.last_modified = "MedicalProfile"
+            angina_data.user = request.user
+            angina_data.save()
             anticoagulation_data = anticoagulation_form.save(commit=False)
             anticoagulation_data.last_modified = "MedicalProfile"
             anticoagulation_data.user = request.user
@@ -342,6 +353,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
+                    angina_form=angina_form,
                     anticoagulation_form=anticoagulation_form,
                     bleed_form=bleed_form,
                     CHF_form=CHF_form,
@@ -364,6 +376,7 @@ class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
 class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
+    angina_form_class = AnginaForm
     anticoagulation_form_class = AnticoagulationSimpleForm
     bleed_form_class = BleedSimpleForm
     CHF_form_class = CHFForm
@@ -386,6 +399,9 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
         context.update({"user": self.request.user})
         # Adds related model forms to context for rendering
         if self.request.POST:
+            context["angina_form"] = AnginaForm(
+                self.request.POST, instance=self.object.angina
+            )
             context["anticoagulation_form"] = AnticoagulationSimpleForm(
                 self.request.POST, instance=self.object.anticoagulation
             )
@@ -411,6 +427,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             )
             context["tophi_form"] = TophiForm(self.request.POST, instance=self.object.tophi)
         else:
+            context["angina_form"] = self.angina_form_class(instance=self.object.angina)
             context["anticoagulation_form"] = self.anticoagulation_form_class(instance=self.object.anticoagulation)
             context["bleed_form"] = self.bleed_form_class(instance=self.object.bleed)
             context["CKD_form"] = self.CKD_form_class(instance=self.object.CKD)
@@ -446,6 +463,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
         # Fetches instance of MedicalProfile model and associated OnetoOne related models for UpdateView
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=self.object)
+        angina_form = self.angina_form_class(request.POST, instance=self.object.angina)
         anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=self.object.anticoagulation)
         bleed_form = self.bleed_form_class(request.POST, instance=self.object.bleed)
         CKD_form = self.CKD_form_class(request.POST, instance=self.object.CKD)
@@ -469,6 +487,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
 
         if (
             form.is_valid()
+            and angina_form.is_valid()
             and anticoagulation_form.is_valid()
             and bleed_form.is_valid()
             and CKD_form.is_valid()
@@ -487,6 +506,9 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             and tophi_form.is_valid()
         ):
             medical_profile_data = form.save(commit=False)
+            angina_data = angina_form.save(commit=False)
+            angina_data.last_modified = "MedicalProfile"
+            angina_data.save()
             anticoagulation_data = anticoagulation_form.save(commit=False)
             anticoagulation_data.last_modified = "MedicalProfile"
             anticoagulation_data.save()
@@ -557,6 +579,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
+                    angina_form=angina_form,
                     anticoagulation_form=anticoagulation_form,
                     bleed_form=bleed_form,
                     CKD_form=CKD_form,

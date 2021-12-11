@@ -13,6 +13,7 @@ class FlareAdmin(admin.ModelAdmin):
         "onset",
         "firstmtp",
         "location",
+        "angina",
         "hypertension",
         "heartattack",
         "CHF",

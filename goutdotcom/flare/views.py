@@ -8,13 +8,14 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.views.generic.base import TemplateView
 
 from ..history.forms import (
+    AnginaForm,
     CHFSimpleForm,
     HeartAttackSimpleForm,
     HypertensionSimpleForm,
     PVDForm,
     StrokeSimpleForm,
 )
-from ..history.models import CHF, PVD, HeartAttack, Hypertension, Stroke
+from ..history.models import CHF, PVD, Angina, HeartAttack, Hypertension, Stroke
 from ..lab.forms import UrateFlareForm
 from ..lab.models import Urate
 from .forms import FlareForm
@@ -65,6 +66,7 @@ class FlareCreate(CreateView):
     model = Flare
     form_class = FlareForm
     urate_form_class = UrateFlareForm
+    angina_form_class = AnginaForm
     hypertension_form_class = HypertensionSimpleForm
     heartattack_form_class = HeartAttackSimpleForm
     CHF_form_class = CHFSimpleForm
@@ -83,6 +85,8 @@ class FlareCreate(CreateView):
         if self.request.user.is_authenticated:
             if "urate_form" not in context:
                 context["urate_form"] = self.urate_form_class(self.request.GET)
+            if "angina_form" not in context:
+                context["angina_form"] = self.angina_form_class(instance=self.request.user.medicalprofile.angina)
             if "hypertension_form" not in context:
                 context["hypertension_form"] = self.hypertension_form_class(
                     instance=self.request.user.medicalprofile.hypertension
@@ -100,6 +104,8 @@ class FlareCreate(CreateView):
         else:
             if "urate_form" not in context:
                 context["urate_form"] = self.urate_form_class(self.request.GET)
+            if "angina_form" not in context:
+                context["angina_form"] = self.angina_form_class(self.request.GET)
             if "hypertension_form" not in context:
                 context["hypertension_form"] = self.hypertension_form_class(self.request.GET)
             if "heartattack_Form" not in context:
@@ -121,6 +127,7 @@ class FlareCreate(CreateView):
         form = self.form_class(request.POST, instance=Flare())
         urate_form = self.urate_form_class(request.POST, instance=Urate())
         if request.user.is_authenticated:
+            angina_form = self.angina_form_class(request.POST, instance=request.user.medicalprofile.angina)
             hypertension_form = self.hypertension_form_class(
                 request.POST, instance=request.user.medicalprofile.hypertension
             )
@@ -139,6 +146,9 @@ class FlareCreate(CreateView):
                         urate_data.user = request.user
                         urate_data.save()
                         flare_data.urate = urate_data
+                angina_data = angina_form.save(commit=False)
+                angina_data.last_modified = "Flare"
+                angina_data.save()
                 hypertension_data = hypertension_form.save(commit=False)
                 hypertension_data.last_modified = "Flare"
                 hypertension_data.save()
@@ -154,6 +164,7 @@ class FlareCreate(CreateView):
                 PVD_data = PVD_form.save(commit=False)
                 PVD_data.last_modified = "Flare"
                 PVD_data.save()
+                flare_data.angina = angina_data
                 flare_data.hypertension = hypertension_data
                 flare_data.heartattack = heartattack_data
                 flare_data.CHF = CHF_data
@@ -169,6 +180,7 @@ class FlareCreate(CreateView):
                     self.get_context_data(
                         form=form,
                         urate_form=self.urate_form_class(request.POST, instance=Urate()),
+                        angina_form=self.angina_form_class(request.POST, instance=request.user.medicalprofile.angina),
                         hypertension_form=self.hypertension_form_class(
                             request.POST, instance=request.user.medicalprofile.hypertension
                         ),
@@ -182,6 +194,7 @@ class FlareCreate(CreateView):
                 )
         # If user is not authenticated =>
         else:
+            angina_form = self.angina_form_class(request.POST, instance=Angina())
             hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
             heartattack_form = self.hypertension_form_class(request.POST, instance=HeartAttack())
             CHF_form = self.CHF_form_class(request.POST, instance=CHF())
@@ -194,6 +207,9 @@ class FlareCreate(CreateView):
                     if urate_data.value:
                         urate_data.save()
                         flare_data.urate = urate_data
+                angina_data = angina_form.save(commit=False)
+                angina_data.last_modified = "Flare"
+                angina_data.save()
                 hypertension_data = hypertension_form.save(commit=False)
                 hypertension_data.last_modified = "Flare"
                 hypertension_data.save()
@@ -221,6 +237,7 @@ class FlareCreate(CreateView):
                     self.get_context_data(
                         form=form,
                         urate_form=self.urate_form_class(request.POST, instance=Urate()),
+                        angina_form=self.angina_form_class(request.POST, instance=Angina()),
                         hypertension_form=self.hypertension_form_class(request.POST, instance=Hypertension()),
                         heartattack_form=self.heartattack_form_class(request.POST, instance=HeartAttack()),
                         CHF_form=self.CHF_form_class(request.POST, instance=CHF()),
@@ -246,6 +263,7 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
 
     form_class = FlareForm
     urate_form_class = UrateFlareForm
+    angina_form_class = AnginaForm
     hypertension_form_class = HypertensionSimpleForm
     heartattack_form_class = HeartAttackSimpleForm
     CHF_form_class = CHFSimpleForm
@@ -258,6 +276,8 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
         if self.request.POST:
             if "urate_form" not in context:
                 context["urate_form"] = self.urate_form_class(self.request.POST, instance=self.object.urate)
+            if "angina_form" not in context:
+                context["angina_form"] = self.angina_form_class(instance=self.request.user.medicalprofile.angina)
             if "hypertension_form" not in context:
                 context["hypertension_form"] = self.hypertension_form_class(
                     instance=self.request.user.medicalprofile.hypertension
@@ -275,13 +295,15 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
         else:
             if "urate_form" not in context:
                 context["urate_form"] = self.urate_form_class(instance=self.object.urate)
-            if "hypertension_form" not in context:
-                context["hypertension_form"] = self.hypertension_form_class(
-                    instance=self.request.user.medicalprofile.hypertension
-                )
+            if "angina_form" not in context:
+                context["angina_form"] = self.angina_form_class(instance=self.request.user.medicalprofile.angina)
             if "heartattack_form" not in context:
                 context["heartattack_form"] = self.heartattack_form_class(
                     instance=self.request.user.medicalprofile.heartattack
+                )
+            if "hypertension_form" not in context:
+                context["hypertension_form"] = self.angina_form_class(
+                    instance=self.request.user.medicalprofile.hypertension
                 )
             if "CHF_form" not in context:
                 context["CHF_form"] = self.CHF_form_class(instance=self.request.user.medicalprofile.CHF)
@@ -299,6 +321,7 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
             flare_data = form.save(commit=False)
             flare_data.user = request.user
             urate_form = self.urate_form_class(request.POST, instance=self.object.urate)
+            angina_form = self.angina_form_class(request.POST, instance=request.user.medicalprofile.angina)
             hypertension_form = self.hypertension_form_class(
                 request.POST, instance=request.user.medicalprofile.hypertension
             )
@@ -314,6 +337,9 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     urate_data.user = request.user
                     urate_data.save()
                     flare_data.urate = urate_data
+            angina_data = angina_form.save(commit=False)
+            angina_data.last_modified = "Flare"
+            angina_data.save()
             hypertension_data = hypertension_form.save(commit=False)
             hypertension_data.last_modified = "Flare"
             hypertension_data.save()
@@ -341,6 +367,7 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                 self.get_context_data(
                     form=form,
                     urate_form=self.urate_form_class(request.POST, instance=Urate()),
+                    angina_form=self.angina_form_class(request.POST, instance=request.user.medicalprofile.angina),
                     hypertension_form=self.hypertension_form_class(
                         request.POST, instance=request.user.medicalprofile.hypertension
                     ),

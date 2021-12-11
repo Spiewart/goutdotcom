@@ -1,2 +1,1 @@
-BOOL_CHOICES = (("", "-----"), (True, "Yes"), (False, "No"))
-
+BOOL_CHOICES = ((True, "Yes"), (False, "No"))
