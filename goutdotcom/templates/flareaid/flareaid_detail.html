@@ -9,8 +9,13 @@
         {% if object.decision_aid != "Need More Information" %}
           <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
           {% if request.user.is_authenticated %}
-            <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.pk %}" role="button">Update</a>
-          {% endif %}
+            {% if object.flare %}
+            <a class="btn btn-primary btn-lg" href="{% url 'flareaid:flare-update' pk=object.pk flare=object.flare.pk %}"
+              role="button">Update</a>
+            {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' pk=object.pk %}" role="button">Update</a>
+            {% endif %}
+            {% endif %}
           {% if object.decision_aid == "NSAID" %}
             <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'ibuprofen' %}" role="button">About</a>
           {% elif object.decision_aid == "colchicine" %}
@@ -25,7 +30,7 @@
             <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
           {% endif %}
         {% endif %}
-        <h1 id="rec">Flare {% if object.flare %} {{ object.flare.pk }} {% endif %} Treatment:
+        <h1 id="rec">FlareAid:
           {% if object.decision_aid == "doctor" %}
             See a Doctor
           {% else %}
@@ -34,6 +39,14 @@
         </h1>
         </div>
       </div>
+      <div class="row">
+        <div class="col">
+          {% if object.flare %}
+          <h4><a href="{% url 'flare:detail' object.flare.pk %}">Flare</a>: {{ object.flare }}</h4>
+          {% endif %}
+        </div>
+      </div>
+
       {% endblock header %}
       {% block recommendation %}
         {% include 'flareaid/recommendation.html' %}

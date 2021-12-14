@@ -1,7 +1,9 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, ButtonHolder, Div, Fieldset, Layout, Submit
 from django import forms
+from django.forms import HiddenInput
 
+from ..flare.models import Flare
 from .models import FlareAid
 
 
@@ -14,7 +16,9 @@ class FlareAidForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)  # pop the 'user' from kwargs dictionary
+        # Define self.flare from kwargs before calling super, which overwrites the kwargs
+        # pop() flare from kwargs to set form self.flare to the Flare model instance passed to the FlareAidCreate view
+        self.flare = kwargs.pop("flare", None)
         super(FlareAidForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.layout = Layout(
@@ -102,3 +106,8 @@ class FlareAidForm(forms.ModelForm):
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
+        # Check if there is a Flare associated with FlareAid and hide monoarticular field if so, value will be set in the view, also have to remove white line for style by layout[index]
+        if self.flare:
+            if self.flare.monoarticular == True or self.flare.monoarticular == False:
+                self.fields["monoarticular"].widget = HiddenInput()
+                self.helper.layout[0].pop(3)

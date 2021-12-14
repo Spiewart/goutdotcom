@@ -5,21 +5,34 @@
 {% block header %}
   {% if form.instance.pk %}
   <h1>Update Flare Aid</h1>
+  {% elif view.kwargs.flare %}
+  <h1>Flare ({{ view.kwargs.flare }}) Aid </h1>
   {% else %}
-  <h1>New Flare Aid</h1>
+  <h1>New Flare Aid {{ view.kwargs.flare }}</h1>
   {% endif %}
 {% endblock header %}
-{% block form %} {% if form.instance.pk %}
-  <form
-    method="post"
-    action="{% url 'flareaid:update' object.pk %}"
-    enctype="multipart/form-data">
+{% block form %}
+{% if form.instance.pk %}
+  {% if view.kwargs.flare %}
+  <form method="post" action="{% url 'flareaid:flare-update' pk=object.pk flare=view.kwargs.flare %}">
     {% csrf_token %} {% crispy form %}
   </form>
+  {% else %}
+  <form
+    method="post" action="{% url 'flareaid:update' object.pk %}" enctype="multipart/form-data">
+    {% csrf_token %} {% crispy form %}
+  </form>
+  {% endif %}
 {% else %}
+  {% if view.kwargs.flare %}
+  <form method="post" action="{% url 'flareaid:flare-create' view.kwargs.flare %}">
+    {% csrf_token %} {% crispy form %}
+  </form>
+  {% else %}
   <form method="post" action="{% url 'flareaid:create' %}">
     {% csrf_token %} {% crispy form %}
   </form>
+  {% endif %}
 {% endif %}
 {% endblock form %}
 {% block inline_javascript %}

@@ -10,8 +10,8 @@
       <li><a class="dropdown-item" href="{% url 'flare:about' %}">About</a></li>
       {% if request.user.is_authenticated %}
       <li><a class="dropdown-item" href="{% url 'flare:list' %}">List</a></li>
-      <li><a class="dropdown-item" href="{% url 'flare:update' object.id %}">Update</a></li>
-      {% endif %}
+        <li><a class="dropdown-item" href="{% url 'flare:update' object.id %}">Update</a></li>
+        {% endif %}
     </ul>
   </div>
 </div>
@@ -32,7 +32,12 @@
       {% if flare.monoarticular == False %}
         <li><u>WARNING</u>: {{ flare.flare_calculator|get_flare:'caveat' }}</li>
       {% endif %}
-    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:flare-create' flare=flare.pk %}" role="button">FlareAid</a>
+    {% if flare.flareaid %}
+      <a class="btn btn-primary btn-lg" href="{% url 'flareaid:flare-update' pk=flare.flareaid.pk flare=flare.pk %}"
+        role="button">FlareAid</a>
+    {% else %}
+      <a class="btn btn-primary btn-lg" href="{% url 'flareaid:flare-create' flare=flare.pk %}" role="button">FlareAid</a>
+    {% endif %}
   </div>
   </ul>
   <div class="col">

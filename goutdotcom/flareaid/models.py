@@ -3,9 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
-from ..flare.models import (
-    Flare,
-)
+from ..flare.models import Flare
 from ..history.models import (
     CKD,
     IBD,
@@ -108,18 +106,24 @@ class FlareAid(TimeStampedModel):
 
     def get_NSAID_contraindications(self):
         NSAID_contraindications = []
-        if self.anticoagulation.value == True:
-            NSAID_contraindications.append(self.anticoagulation)
-        if self.bleed.value == True:
-            NSAID_contraindications.append(self.bleed)
-        if self.ckd.value == True:
-            NSAID_contraindications.append(self.ckd)
-        if self.heartattack.value == True:
-            NSAID_contraindications.append(self.heartattack)
-        if self.ibd.value == True:
-            NSAID_contraindications.append(self.ibd)
-        if self.stroke.value == True:
-            NSAID_contraindications.append(self.stroke)
+        if self.anticoagulation:
+            if self.anticoagulation.value == True:
+                NSAID_contraindications.append(self.anticoagulation)
+        if self.bleed:
+            if self.bleed.value == True:
+                NSAID_contraindications.append(self.bleed)
+        if self.ckd:
+            if self.ckd.value == True:
+                NSAID_contraindications.append(self.ckd)
+        if self.heartattack:
+            if self.heartattack.value == True:
+                NSAID_contraindications.append(self.heartattack)
+        if self.ibd:
+            if self.ibd.value == True:
+                NSAID_contraindications.append(self.ibd)
+        if self.stroke:
+            if self.stroke.value == True:
+                NSAID_contraindications.append(self.stroke)
         return NSAID_contraindications
 
     def monoarticular_aid(self):
@@ -137,27 +141,21 @@ class FlareAid(TimeStampedModel):
             return NSAID
         elif self.perfect_health is None:
             return needinfo
-
-        if self.ckd.value == True:
-            if self.diabetes.value == True:
-                return doctor
-            else:
-                return steroids
-
-        if (
-            self.bleed.value == True
-            or self.heartattack.value == True
-            or self.stroke.value == True
-            or self.anticoagulation.value == True
-            or self.ibd.value == True
-        ):
+        if self.ckd:
             if self.ckd.value == True:
-                return steroids
-            if self.colchicine_interactions.value == True:
-                return steroids
+                if self.diabetes.value == True:
+                    return doctor
+                else:
+                    return steroids
+        if self.get_NSAID_contraindications():
+            if self.ckd:
+                if self.ckd.value == True:
+                    return steroids
+            if self.colchicine_interactions:
+                if self.colchicine_interactions.value == True:
+                    return steroids
             else:
                 return colchicine
-
         return NSAID
 
     def __str__(self):

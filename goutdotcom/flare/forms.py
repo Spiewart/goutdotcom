@@ -2,6 +2,7 @@ from crispy_forms.bootstrap import InlineCheckboxes
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Div, Field, Fieldset, Layout
 from django import forms
+from django.forms import HiddenInput
 
 from goutdotcom.flare.choices import BOOL_CHOICES
 
@@ -35,6 +36,7 @@ class FlareForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
+        self.gender = kwargs.pop("gender", None)
         super(FlareForm, self).__init__(*args, **kwargs)
         self.fields["firstmtp"].label = "Was the flare in the base of the big toe?"
         self.fields["location"].label = "Joints involved"
@@ -153,3 +155,10 @@ class FlareForm(forms.ModelForm):
                 ),
             ),
         )
+        # Check if there is a gender associated with Flare (and creating User's profile) and hide male field if so, value will be set in the view
+        # Set initial value to False so as to avoid leaving required field blank
+        # Also have to remove white line for style by layout[index]
+        if self.gender:
+            self.fields["male"].widget = HiddenInput()
+            self.initial["male"] = False
+            self.helper.layout[0].pop(14)

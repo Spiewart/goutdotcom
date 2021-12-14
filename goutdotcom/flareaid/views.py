@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+from ..flare.forms import FlareForm
 from ..flare.models import Flare
 from ..history.forms import (
     AnticoagulationSimpleForm,
@@ -33,6 +34,7 @@ from .models import FlareAid
 
 
 class FlareAidCreate(CreateView):
+    ### NEED TO WRITE REDIRECT IF FLAREAID ALREADY EXISTS FOR FLARE ==> UPDATE
     model = FlareAid
     form_class = FlareAidForm
     anticoagulation_form_class = AnticoagulationSimpleForm
@@ -40,31 +42,28 @@ class FlareAidCreate(CreateView):
     CKD_form_class = CKDSimpleForm
     colchicine_interactions_form_class = ColchicineInteractionsSimpleForm
     diabetes_form_class = DiabetesSimpleForm
+    flare_form_class = FlareForm
     heartattack_form_class = HeartAttackSimpleForm
     IBD_form_class = IBDSimpleForm
     osteoporosis_form_class = OsteoporosisSimpleForm
     stroke_form_class = StrokeSimpleForm
 
     def form_valid(self, form):
-        if "flare" in self.kwargs:
-            form.instance.flare = Flare.objects.get(pk=self.kwargs["flare"])
+        # Check if POST has 'flare' kwarg and assign FlareAid Flare OnetoOne related object based on pk='flare'
+        if self.kwargs.get("flare"):
+            form.instance.flare = Flare.objects.get(pk=self.kwargs.get("flare"))
+            form.instance.monoarticular = form.instance.flare.monoarticular
         if self.request.user.is_authenticated:
+
             form.instance.user = self.request.user
             return super().form_valid(form)
         else:
             return super().form_valid(form)
 
-    def get(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        return self.render_to_response(self.get_context_data(form=form, **kwargs))
-
     def get_context_data(self, **kwargs):
         context = super(FlareAidCreate, self).get_context_data(**kwargs)
-        ## IS IF NOT IN CONTEXT STATEMENT NECESSARY? TEST IT BY DELETING
-        ## WHAT IF USER IS NOT LOGGED IN? CHECK CONTEXT
         # Add FlareAid OnetoOne related model objects from the MedicalProfile for the logged in User
-        if self.request.user.is_anonymous == False:
+        if self.request.user.is_authenticated:
             if "anticoagulation_form" not in context:
                 context["anticoagulation_form"] = self.anticoagulation_form_class(
                     instance=self.request.user.medicalprofile.anticoagulation
@@ -113,125 +112,110 @@ class FlareAidCreate(CreateView):
                 context["stroke_form"] = self.stroke_form_class(self.request.GET)
             return context
 
-    def post(self, request, **kwargs):
-        form = self.form_class(request.POST, instance=FlareAid())
+    def get_form_kwargs(self):
+        """Ovewrites get_form_kwargs() to look for 'flare' kwarg in GET request, uses 'flare' to query database for associated flare for use in FlareAidForm
+        returns: [dict: dict containing 'flare' kwarg for form]"""
+        # Assign self.flare from GET request kwargs before calling super() which will overwrite kwargs
+        self.flare = self.kwargs.get("flare", None)
+        if self.request.user.is_authenticated:
+            if self.request.user.patientprofile.gender:
+                self.gender = self.request.user.patientprofile.gender
+        kwargs = super(FlareAidCreate, self).get_form_kwargs()
+        # Checks if flare kwarg came from Flare Detail and queries database for flare_pk that matches self.flare from initial kwargs
+        if self.flare:
+            flare_pk = self.flare
+            flare = Flare.objects.get(pk=flare_pk)
+            kwargs["flare"] = flare
+        if self.gender:
+            kwargs["gender"] = self.gender
+        return kwargs
 
-        if form.is_valid():
-            flareaid_data = form.save(commit=False)
-            ## WOULD LIKE TO CONSOLIDATE REQUEST.USER ADD TO RIGHT BEFORE SAVE(), THEN CAN COMBINE THE REST
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=FlareAid())
+        flareaid_data = form.save(commit=False)
+        if request.user.is_authenticated:
             # Check if user is authenticated and pull OnetoOne related model data from MedicalProfile if so
-            if "flare" in self.kwargs:
-                print("flare in kwargs")
-                flareaid_data.flare = Flare.objects.get(pk=self.kwargs["flare"])
-            else:
-                print("flare not in kwargs")
-                print(self.kwargs)
-            if request.user.is_authenticated:
-                flareaid_data.user = request.user
-                anticoagulation_form = self.anticoagulation_form_class(
-                    request.POST, instance=request.user.medicalprofile.anticoagulation
-                )
-                anticoagulation_data = anticoagulation_form.save(commit=False)
-                anticoagulation_data.last_modified = "FlareAid"
-                anticoagulation_data.save()
-                bleed_form = self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed)
-                bleed_data = bleed_form.save(commit=False)
-                bleed_data.last_modified = "FlareAid"
-                bleed_data.save()
-                CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD)
-                ckd_data = CKD_form.save(commit=False)
-                ckd_data.last_modified = "FlareAid"
-                ckd_data.save()
-                colchicine_interactions_form = self.colchicine_interactions_form_class(
-                    request.POST, instance=request.user.medicalprofile.colchicine_interactions
-                )
-                colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
-                colchicine_interactions_data.last_modified = "FlareAid"
-                colchicine_interactions_data.save()
-                diabetes_form = self.diabetes_form_class(request.POST, instance=request.user.medicalprofile.diabetes)
-                diabetes_data = diabetes_form.save(commit=False)
-                diabetes_data.last_modified = "FlareAid"
-                diabetes_data.save()
-                heartattack_form = self.heartattack_form_class(
-                    request.POST, instance=request.user.medicalprofile.heartattack
-                )
-                heartattack_data = heartattack_form.save(commit=False)
-                heartattack_data.last_modified = "FlareAid"
-                heartattack_data.save()
-                IBD_form = self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD)
-                IBD_data = IBD_form.save(commit=False)
-                IBD_data.last_modified = "FlareAid"
-                IBD_data.save()
-                osteoporosis_form = self.osteoporosis_form_class(
-                    request.POST, instance=request.user.medicalprofile.osteoporosis
-                )
-                osteoporosis_data = osteoporosis_form.save(commit=False)
-                osteoporosis_data.last_modified = "FlareAid"
-                osteoporosis_data.save()
-                stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke)
-                stroke_data = stroke_form.save(commit=False)
-                stroke_data.last_modified = "FlareAid"
-                stroke_data.save()
-                flareaid_data.anticoagulation = anticoagulation_data
-                flareaid_data.bleed = bleed_data
-                flareaid_data.ckd = ckd_data
-                flareaid_data.colchicine_interactions = colchicine_interactions_data
-                flareaid_data.diabetes = diabetes_data
-                flareaid_data.heartattack = heartattack_data
-                flareaid_data.ibd = IBD_data
-                flareaid_data.osteoporosis = osteoporosis_data
-                flareaid_data.stroke = stroke_data
-                flareaid_data.save()
-            else:
-                anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=Anticoagulation())
-                anticoagulation_data = anticoagulation_form.save(commit=False)
-                anticoagulation_data.last_modified = "FlareAid"
-                anticoagulation_data.save()
-                bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
-                bleed_data = bleed_form.save(commit=False)
-                bleed_data.last_modified = "FlareAid"
-                bleed_data.save()
-                CKD_form = self.CKD_form_class(request.POST, instance=CKD())
-                ckd_data = CKD_form.save(commit=False)
-                ckd_data.last_modified = "FlareAid"
-                ckd_data.save()
-                colchicine_interactions_form = self.colchicine_interactions_form_class(
-                    request.POST, instance=ColchicineInteractions()
-                )
-                colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
-                colchicine_interactions_data.last_modified = "FlareAid"
-                colchicine_interactions_data.save()
-                diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
-                diabetes_data = diabetes_form.save(commit=False)
-                diabetes_data.last_modified = "FlareAid"
-                diabetes_data.save()
-                heartattack_form = self.heartattack_form_class(request.POST, instance=HeartAttack())
-                heartattack_data = heartattack_form.save(commit=False)
-                heartattack_data.last_modified = "FlareAid"
-                heartattack_data.save()
-                IBD_form = self.IBD_form_class(request.POST, instance=IBD())
-                IBD_data = IBD_form.save(commit=False)
-                IBD_data.last_modified = "FlareAid"
-                IBD_data.save()
-                osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=Osteoporosis())
-                osteoporosis_data = osteoporosis_form.save(commit=False)
-                osteoporosis_data.last_modified = "FlareAid"
-                osteoporosis_data.save()
-                stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
-                stroke_data = stroke_form.save(commit=False)
-                stroke_data.last_modified = "FlareAid"
-                stroke_data.save()
-                flareaid_data.anticoagulation = anticoagulation_data
-                flareaid_data.bleed = bleed_data
-                flareaid_data.ckd = ckd_data
-                flareaid_data.colchicine_interactions = colchicine_interactions_data
-                flareaid_data.diabetes = diabetes_data
-                flareaid_data.heartattack = heartattack_data
-                flareaid_data.ibd = IBD_data
-                flareaid_data.osteoporosis = osteoporosis_data
-                flareaid_data.stroke = stroke_data
-                flareaid_data.save()
-            return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": flareaid_data.pk}))
+            flareaid_data.user = request.user
+            anticoagulation_form = self.anticoagulation_form_class(
+                request.POST, instance=request.user.medicalprofile.anticoagulation
+            )
+            bleed_form = self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed)
+            CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD)
+            colchicine_interactions_form = self.colchicine_interactions_form_class(
+                request.POST, instance=request.user.medicalprofile.colchicine_interactions
+            )
+            diabetes_form = self.diabetes_form_class(request.POST, instance=request.user.medicalprofile.diabetes)
+            heartattack_form = self.heartattack_form_class(
+                request.POST, instance=request.user.medicalprofile.heartattack
+            )
+            IBD_form = self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD)
+            osteoporosis_form = self.osteoporosis_form_class(
+                request.POST, instance=request.user.medicalprofile.osteoporosis
+            )
+            stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke)
+        else:
+            # If not logged in show forms for new History objects without User
+            anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=Anticoagulation())
+            bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
+            CKD_form = self.CKD_form_class(request.POST, instance=CKD())
+            colchicine_interactions_form = self.colchicine_interactions_form_class(
+                request.POST, instance=ColchicineInteractions()
+            )
+            diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
+            heartattack_form = self.heartattack_form_class(request.POST, instance=HeartAttack())
+            IBD_form = self.IBD_form_class(request.POST, instance=IBD())
+            osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=Osteoporosis())
+            stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
+        if (
+            form.is_valid()
+            and anticoagulation_form.is_valid()
+            and bleed_form.is_valid()
+            and CKD_form.is_valid()
+            and colchicine_interactions_form.is_valid()
+            and diabetes_form.is_valid()
+            and heartattack_form.is_valid()
+            and IBD_form.is_valid()
+            and osteoporosis_form.is_valid()
+            and stroke_form.is_valid()
+        ):
+            anticoagulation_data = anticoagulation_form.save(commit=False)
+            anticoagulation_data.last_modified = "FlareAid"
+            anticoagulation_data.save()
+            bleed_data = bleed_form.save(commit=False)
+            bleed_data.last_modified = "FlareAid"
+            bleed_data.save()
+            ckd_data = CKD_form.save(commit=False)
+            ckd_data.last_modified = "FlareAid"
+            ckd_data.save()
+            colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
+            colchicine_interactions_data.last_modified = "FlareAid"
+            colchicine_interactions_data.save()
+            diabetes_data = diabetes_form.save(commit=False)
+            diabetes_data.last_modified = "FlareAid"
+            diabetes_data.save()
+            heartattack_data = heartattack_form.save(commit=False)
+            heartattack_data.last_modified = "FlareAid"
+            heartattack_data.save()
+            IBD_data = IBD_form.save(commit=False)
+            IBD_data.last_modified = "FlareAid"
+            IBD_data.save()
+            osteoporosis_data = osteoporosis_form.save(commit=False)
+            osteoporosis_data.last_modified = "FlareAid"
+            osteoporosis_data.save()
+            stroke_data = stroke_form.save(commit=False)
+            stroke_data.last_modified = "FlareAid"
+            stroke_data.save()
+            flareaid_data.anticoagulation = anticoagulation_data
+            flareaid_data.bleed = bleed_data
+            flareaid_data.ckd = ckd_data
+            flareaid_data.colchicine_interactions = colchicine_interactions_data
+            flareaid_data.diabetes = diabetes_data
+            flareaid_data.heartattack = heartattack_data
+            flareaid_data.ibd = IBD_data
+            flareaid_data.osteoporosis = osteoporosis_data
+            flareaid_data.stroke = stroke_data
+            # Need to call form_valid(), not redirect. form_valid() super function returns to object DetailView
+            return self.form_valid(form)
         else:
             if request.user.is_authenticated:
                 return self.render_to_response(
@@ -324,10 +308,15 @@ class FlareAidUpdate(LoginRequiredMixin, UpdateView):
     osteoporosis_form_class = OsteoporosisSimpleForm
     stroke_form_class = StrokeSimpleForm
 
+    def form_valid(self, form):
+        # Check if POST has 'flare' kwarg and assign FlareAid Flare OnetoOne related object based on pk='flare'
+        if self.kwargs.get("flare"):
+            form.instance.flare = Flare.objects.get(pk=self.kwargs.get("flare"))
+            form.instance.monoarticular = form.instance.flare.monoarticular
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super(FlareAidUpdate, self).get_context_data(**kwargs)
-        ## IS IF NOT IN CONTEXT STATEMENT NECESSARY? TEST IT BY DELETING
-        ## WHAT IF USER IS NOT LOGGED IN? CHECK CONTEXT
         # Add FlareAid OnetoOne related model objects from the MedicalProfile for the logged in User
         if self.request.POST:
             if "anticoagulation_form" not in context:
@@ -396,7 +385,20 @@ class FlareAidUpdate(LoginRequiredMixin, UpdateView):
                 context["stroke_form"] = self.stroke_form_class(instance=self.request.user.medicalprofile.stroke)
             return context
 
-    def post(self, request, **kwargs):
+    def get_form_kwargs(self):
+        """Ovewrites get_form_kwargs() to look for 'flare' kwarg in GET request, uses 'flare' to query database for associated flare for use in FlareAidForm
+        returns: [dict: dict containing 'flare' kwarg for form]"""
+        # Assign self.flare from GET request kwargs before calling super() which will overwrite kwargs
+        self.flare = self.kwargs.get("flare", None)
+        kwargs = super(FlareAidUpdate, self).get_form_kwargs()
+        # Checks if flare kwarg came from Flare Detail and queries database for flare_pk that matches self.flare from initial kwargs
+        if self.flare:
+            flare_pk = self.flare
+            flare = Flare.objects.get(pk=flare_pk)
+            kwargs["flare"] = flare
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
         # Uses UpdateView to get the FlareAid instance requested and put it in a form
         form = self.form_class(request.POST, instance=self.get_object())
         anticoagulation_form = self.anticoagulation_form_class(
@@ -453,8 +455,8 @@ class FlareAidUpdate(LoginRequiredMixin, UpdateView):
             flareaid_data.ibd = IBD_data
             flareaid_data.osteoporosis = osteoporosis_data
             flareaid_data.stroke = stroke_data
-            flareaid_data.save()
-            return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": flareaid_data.pk}))
+            # Need to call form_valid(), not redirect. form_valid() super function returns to object DetailView
+            return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(

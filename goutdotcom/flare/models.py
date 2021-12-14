@@ -5,7 +5,7 @@ from django.utils.text import format_lazy
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
-from ..history.models import Angina, CHF, PVD, HeartAttack, Hypertension, Stroke
+from ..history.models import CHF, PVD, Angina, HeartAttack, Hypertension, Stroke
 from ..lab.models import Urate
 from .choices import *
 
@@ -144,9 +144,6 @@ class Flare(TimeStampedModel):
     class Meta:
         ordering = ["created"]
 
-    def __str__(self):
-        return f"{(str(self.user), str(self.location))}"
-
     def get_absolute_url(self):
         return reverse("flare:detail", kwargs={"pk": self.pk})
 
@@ -157,21 +154,20 @@ class Flare(TimeStampedModel):
 
         location_string = ""
 
-        if self.monoarticular:
-            if self.monoarticular == True:
-                location_string += "monoarticular"
-                if self.firstmtp:
-                    if self.firstmtp == True:
-                        location_string += ", big toe"
-                else:
-                    if len(self.location) > 0:
-                        if len(self.location) == 1:
-                            location_string += ", " + self.location[0]
-                        else:
-                            location_string += ", "
-                            for i in range(len(self.location) - 1):
-                                location_string += self.location[i] + ", "
-                            location_string += self.location[len(self.location) - 1]
+        if self.monoarticular == True:
+            location_string += "monoarticular"
+            if self.firstmtp:
+                if self.firstmtp == True:
+                    location_string += ", big toe"
+            else:
+                if len(self.location) > 0:
+                    if len(self.location) == 1:
+                        location_string += ", " + self.location[0]
+                    else:
+                        location_string += ", "
+                        for i in range(len(self.location) - 1):
+                            location_string += self.location[i] + ", "
+                        location_string += self.location[len(self.location) - 1]
         else:
             location_string += "polyarticular"
             if len(self.location) > 0:
@@ -194,6 +190,8 @@ class Flare(TimeStampedModel):
                         location_string += ", big toe"
         return location_string.lower()
 
+    def __str__(self):
+        return f'{str(self.locations())}, {str(self.created.date().strftime("%b. %d, %Y"))}'
 
     def flare_calculator(self):
         """Function to take user-generated input from Flare and returns a prevalence of gout based on evidence from a 2 center European study.

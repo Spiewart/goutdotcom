@@ -75,6 +75,12 @@ class FlareCreate(CreateView):
 
     def form_valid(self, form):
         if self.request.user.is_authenticated:
+            if self.request.user.patientprofile:
+                if self.request.user.patientprofile.gender:
+                    if self.request.user.patientprofile.gender == "male":
+                        form.instance.male = True
+                    else:
+                        form.instance.male = False
             form.instance.user = self.request.user
             return super().form_valid(form)
         else:
@@ -118,11 +124,24 @@ class FlareCreate(CreateView):
                 context["PVD_form"] = self.PVD_form_class(self.request.GET)
         return context
 
+    def get_form_kwargs(self):
+        """Ovewrites get_form_kwargs() to look for 'flare' kwarg in GET request, uses 'flare' to query database for associated flare for use in FlareAidForm
+        returns: [dict: dict containing 'flare' kwarg for form]"""
+        # Assign self.flare from GET request kwargs before calling super() which will overwrite kwargs
+        if self.request.user.is_authenticated:
+            if self.request.user.patientprofile.gender:
+                self.gender = self.request.user.patientprofile.gender
+        kwargs = super(FlareCreate, self).get_form_kwargs()
+        # Checks if flare kwarg came from Flare Detail and queries database for flare_pk that matches self.flare from initial kwargs
+        if self.gender:
+            kwargs["gender"] = self.gender
+        return kwargs
+
     def get_object(self):
         object = self.model
         return object
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=Flare())
         urate_form = self.urate_form_class(request.POST, instance=Urate())
@@ -137,45 +156,50 @@ class FlareCreate(CreateView):
             CHF_form = self.CHF_form_class(request.POST, instance=request.user.medicalprofile.CHF)
             stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke)
             PVD_form = self.PVD_form_class(request.POST, instance=request.user.medicalprofile.PVD)
-            if form.is_valid():
-                flare_data = form.save(commit=False)
-                flare_data.user = request.user
-                if urate_form.is_valid():
-                    urate_data = urate_form.save(commit=False)
-                    if urate_data.value:
+        else:
+            angina_form = self.angina_form_class(request.POST, instance=Angina())
+            hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
+            heartattack_form = self.hypertension_form_class(request.POST, instance=HeartAttack())
+            CHF_form = self.CHF_form_class(request.POST, instance=CHF())
+            stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
+            PVD_form = self.PVD_form_class(request.POST, instance=PVD())
+        if form.is_valid():
+            flare_data = form.save(commit=False)
+            if urate_form.is_valid():
+                urate_data = urate_form.save(commit=False)
+                if urate_data.value:
+                    if request.user.is_authenticated:
                         urate_data.user = request.user
-                        urate_data.save()
-                        flare_data.urate = urate_data
-                angina_data = angina_form.save(commit=False)
-                angina_data.last_modified = "Flare"
-                angina_data.save()
-                hypertension_data = hypertension_form.save(commit=False)
-                hypertension_data.last_modified = "Flare"
-                hypertension_data.save()
-                heartattack_data = heartattack_form.save(commit=False)
-                heartattack_data.last_modified = "Flare"
-                heartattack_data.save()
-                CHF_data = CHF_form.save(commit=False)
-                CHF_data.last_modified = "Flare"
-                CHF_data.save()
-                stroke_data = stroke_form.save(commit=False)
-                stroke_data.last_modified = "Flare"
-                stroke_data.save()
-                PVD_data = PVD_form.save(commit=False)
-                PVD_data.last_modified = "Flare"
-                PVD_data.save()
-                flare_data.angina = angina_data
-                flare_data.hypertension = hypertension_data
-                flare_data.heartattack = heartattack_data
-                flare_data.CHF = CHF_data
-                flare_data.stroke = stroke_data
-                flare_data.PVD = PVD_data
-                flare_data.save()
-                print(form.errors)
-                return HttpResponseRedirect(reverse("flare:detail", kwargs={"pk": flare_data.pk}))
-            else:
-                print("fuck you dave")
-                print(form.errors)
+                    urate_data.save()
+                    flare_data.urate = urate_data
+            angina_data = angina_form.save(commit=False)
+            angina_data.last_modified = "Flare"
+            angina_data.save()
+            hypertension_data = hypertension_form.save(commit=False)
+            hypertension_data.last_modified = "Flare"
+            hypertension_data.save()
+            heartattack_data = heartattack_form.save(commit=False)
+            heartattack_data.last_modified = "Flare"
+            heartattack_data.save()
+            CHF_data = CHF_form.save(commit=False)
+            CHF_data.last_modified = "Flare"
+            CHF_data.save()
+            stroke_data = stroke_form.save(commit=False)
+            stroke_data.last_modified = "Flare"
+            stroke_data.save()
+            PVD_data = PVD_form.save(commit=False)
+            PVD_data.last_modified = "Flare"
+            PVD_data.save()
+            flare_data.angina = angina_data
+            flare_data.hypertension = hypertension_data
+            flare_data.heartattack = heartattack_data
+            flare_data.CHF = CHF_data
+            flare_data.stroke = stroke_data
+            flare_data.PVD = PVD_data
+            flare_data.save()
+            return self.form_valid(form)
+        else:
+            if request.user.is_authenticated:
                 return self.render_to_response(
                     self.get_context_data(
                         form=form,
@@ -192,46 +216,6 @@ class FlareCreate(CreateView):
                         PVD_form=self.PVD_form_class(request.POST, instance=request.user.medicalprofile.PVD),
                     )
                 )
-        # If user is not authenticated =>
-        else:
-            angina_form = self.angina_form_class(request.POST, instance=Angina())
-            hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
-            heartattack_form = self.hypertension_form_class(request.POST, instance=HeartAttack())
-            CHF_form = self.CHF_form_class(request.POST, instance=CHF())
-            stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
-            PVD_form = self.PVD_form_class(request.POST, instance=PVD())
-            if form.is_valid():
-                flare_data = form.save(commit=False)
-                if urate_form.is_valid():
-                    urate_data = urate_form.save(commit=False)
-                    if urate_data.value:
-                        urate_data.save()
-                        flare_data.urate = urate_data
-                angina_data = angina_form.save(commit=False)
-                angina_data.last_modified = "Flare"
-                angina_data.save()
-                hypertension_data = hypertension_form.save(commit=False)
-                hypertension_data.last_modified = "Flare"
-                hypertension_data.save()
-                heartattack_data = heartattack_form.save(commit=False)
-                heartattack_data.last_modified = "Flare"
-                heartattack_data.save()
-                CHF_data = CHF_form.save(commit=False)
-                CHF_data.last_modified = "Flare"
-                CHF_data.save()
-                stroke_data = stroke_form.save(commit=False)
-                stroke_data.last_modified = "Flare"
-                stroke_data.save()
-                PVD_data = PVD_form.save(commit=False)
-                PVD_data.last_modified = "Flare"
-                PVD_data.save()
-                flare_data.hypertension = hypertension_data
-                flare_data.heartattack = heartattack_data
-                flare_data.CHF = CHF_data
-                flare_data.stroke = stroke_data
-                flare_data.PVD = PVD_data
-                flare_data.save()
-                return HttpResponseRedirect(reverse("flare:detail", kwargs={"pk": flare_data.pk}))
             else:
                 return self.render_to_response(
                     self.get_context_data(
@@ -245,17 +229,6 @@ class FlareCreate(CreateView):
                         PVD_form=self.PVD_form_class(request.POST, instance=PVD()),
                     )
                 )
-
-                ## Will use these later to trigger redirect to Treatment Create page
-                # if "Colcrys" in flare_data.treatment:
-                # if "Advil" in flare_data.treatment:
-                # if "Aleve" in flare_data.treatment:
-                # if "Celebrex" in flare_data.treatment:
-                # if "Mobic" in flare_data.treatment:
-                # if "Prednisone" in flare_data.treatment:
-                # if "Methylprednisolone" in flare_data.treatment:
-                # if "Tincture of time" in flare_data.treatment:
-                # if "Other treatment" in flare_data.treatment:
 
 
 class FlareUpdate(LoginRequiredMixin, UpdateView):
