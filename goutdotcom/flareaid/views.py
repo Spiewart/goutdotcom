@@ -117,17 +117,12 @@ class FlareAidCreate(CreateView):
         returns: [dict: dict containing 'flare' kwarg for form]"""
         # Assign self.flare from GET request kwargs before calling super() which will overwrite kwargs
         self.flare = self.kwargs.get("flare", None)
-        if self.request.user.is_authenticated:
-            if self.request.user.patientprofile.gender:
-                self.gender = self.request.user.patientprofile.gender
         kwargs = super(FlareAidCreate, self).get_form_kwargs()
         # Checks if flare kwarg came from Flare Detail and queries database for flare_pk that matches self.flare from initial kwargs
         if self.flare:
             flare_pk = self.flare
             flare = Flare.objects.get(pk=flare_pk)
             kwargs["flare"] = flare
-        if self.gender:
-            kwargs["gender"] = self.gender
         return kwargs
 
     def post(self, request, *args, **kwargs):

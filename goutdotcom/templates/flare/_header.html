@@ -32,11 +32,19 @@
       {% if flare.monoarticular == False %}
         <li><u>WARNING</u>: {{ flare.flare_calculator|get_flare:'caveat' }}</li>
       {% endif %}
+    <li>
     {% if flare.flareaid %}
-      <a class="btn btn-primary btn-lg" href="{% url 'flareaid:flare-update' pk=flare.flareaid.pk flare=flare.pk %}"
-        role="button">FlareAid</a>
+    FlareAid: {{ flare.flareaid }}
+    </li>
+      <a class="btn btn-primary btn-lg btn-block" id="FlareAid-btn"
+        href="{% url 'flareaid:flare-update' pk=flare.flareaid.pk flare=flare.pk %}"
+        role="button">Update FlareAid</a>
     {% else %}
-      <a class="btn btn-primary btn-lg" href="{% url 'flareaid:flare-create' flare=flare.pk %}" role="button">FlareAid</a>
+    FlareAid: none
+    </li>
+    <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
+      href="{% url 'flareaid:flare-create' flare=flare.pk %}"
+        role="button">Create</a>
     {% endif %}
   </div>
   </ul>
@@ -44,7 +52,6 @@
     <ul>
       <li><u>Likelihood</u>: {{ flare.flare_calculator|get_flare:'likelihood' }}</li>
       <li><u>Prevalence</u>: Gout is present in {{ flare.flare_calculator|get_flare:'prevalence' }} of patients similar to you.</li>
-
     </ul>
   </div>
 </div>
