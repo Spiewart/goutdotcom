@@ -69,6 +69,9 @@ class ULTAidTreatment(Treatment):
     date_started = models.DateField(default=datetime.datetime.now, null=True, blank=True)
     date_ended = models.DateField(null=True, blank=True)
 
+    class Meta:
+        abstract = True
+
 
 class Allopurinol(ULTAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=ALLOPURINOL)
@@ -168,7 +171,7 @@ class Celecoxib(FlareAidTreatment):
 
 
 class Indomethacin(FlareAidTreatment):
-    generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=INDOCIN)
+    generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=INDOMETHACIN)
     brand_names = ["Indocin"]
     dose = models.IntegerField(choices=INDOMETHACIN_DOSE_CHOICES, null=True, blank=True)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)

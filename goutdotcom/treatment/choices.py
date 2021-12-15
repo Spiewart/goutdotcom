@@ -34,7 +34,7 @@ ONCE = 'once'
 MEDICATION_CHOICES = (
     (ALLOPURINOL, 'Allopurinol'),
     (FEBUXOSTAT, 'Febuxostat'),
-    (INDOMETHACIN, "Indomethacin")
+    (INDOMETHACIN, "Indomethacin"),
     (PREDNISONE, 'Prednisone'),
     (COLCHICINE, 'Colchicine'),
     (PROBENECID, 'Probenecid'),
