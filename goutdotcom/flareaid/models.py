@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
+
 from goutdotcom.treatment.choices import BID, NAPROXEN_DOSE_CHOICES
 
 from ..flare.models import Flare
@@ -133,22 +134,43 @@ class FlareAid(TimeStampedModel):
             return "Any monoarticular flare can be effectively treated with a corticosteroid injection by a rheumatologist or other provider."
 
     def decision_aid(self):
-        colchicine = "colchicine"
-        NSAID = "NSAID"
-        steroids = "steroids"
-        doctor = "doctor"
-        needinfo = "Need More Information"
-
-        drug1 = {"drug": None, "dose": None, "freq": None, "duration": None}
-        decisions = {"drug1": drug1, "drug2": drug2, "dose2": None, "freq2": None, "duration2": None, "needinfo": False, "doctor": False}
+        """Class method that takes values from instance of FlareAid and returns a dictionary of the recommended treatment(s) for use in templates, other views for creating Treatment objects.
+        returns {dict}: {dict} of describing treatment recommended."""
+        drug1 = {
+            "drug": None,
+            "dose": None,
+            "freq": None,
+            "duration": None,
+            "dose2": None,
+            "freq2": None,
+            "duration2": None,
+            "dose3": None,
+            "freq3": None,
+            "duration3": None,
+        }
+        drug2 = {
+            "drug": None,
+            "dose": None,
+            "freq": None,
+            "duration": None,
+            "dose2": None,
+            "freq2": None,
+            "duration2": None,
+            "dose3": None,
+            "freq3": None,
+            "duration3": None,
+        }
+        decisions = {"drug1": drug1, "drug2": drug2, "needinfo": False, "doctor": False}
 
         if self.perfect_health == True:
-            decisions["drug"] = IBUPROFEN
-            decisions["dose"] = IBUPROFEN_DOSE_CHOICES(400)
-            decisions["freq"] = TID
-            decisions["drug2"] = NAPROXEN
-            decisions["dose2"] = NAPROXEN_DOSE_CHOICES(440)
-            decisions["freq2"] = BID
+            drug1["drug"] = IBUPROFEN
+            drug1["dose"] = IBUPROFEN_DOSE_CHOICES(400)
+            drug1["freq"] = TID
+            drug1["duration"] = 7
+            drug2["drug"] = NAPROXEN
+            drug2["dose"] = NAPROXEN_DOSE_CHOICES(440)
+            drug2["freq"] = BID
+            drug2["duration"] = 7
         elif self.perfect_health is None:
             decisions["needinfo"] = True
         if self.ckd:
@@ -156,26 +178,52 @@ class FlareAid(TimeStampedModel):
                 if self.diabetes.value == True:
                     decisions["doctor"]
                 else:
-                    return steroids
+                    drug1["drug"] = PREDNISONE
+                    drug1["dose"] = 40
+                    drug1["freq"] = QDAY
+                    drug1["duration"] = 4
+                    drug1["dose2"] = 20
+                    drug1["freq2"] = QDAY
+                    drug1["duration2"] = 4
         if self.get_NSAID_contraindications():
             if self.ckd:
                 if self.ckd.value == True:
-                    decisions["drug"] = PREDNISONE
-                    decisions["dose"] = 40
-                    decisions["freq"] = QDAY
+                    drug1["drug"] = PREDNISONE
+                    drug1["dose"] = 40
+                    drug1["freq"] = QDAY
+                    drug1["duration"] = 4
+                    drug1["drug2"] = PREDNISONE
+                    drug2["dose2"] = 20
+                    drug2["freq2"] = QDAY
+                    drug2["duration"] = 4
+                    decisions["taper"] = True
             if self.colchicine_interactions:
                 if self.colchicine_interactions.value == True:
-                    decisions["drug"] = PREDNISONE
-                    decisions["dose"] = 40
-                    decisions["freq"] = QDAY
+                    drug1["drug"] = PREDNISONE
+                    drug1["dose"] = 40
+                    drug1["freq"] = QDAY
+                    drug1["duration"] = 4
+                    drug1["drug2"] = PREDNISONE
+                    drug1["dose2"] = 20
+                    drug1["freq2"] = QDAY
+                    drug1["duration"] = 4
             else:
-                decisions["drug"] = COLCHICINE
-                decisions["dose"] = Decimal("0.6")
-                decisions["freq"] = QDAY
-        return NSAID
+                drug1["drug"] = COLCHICINE
+                drug1["dose"] = Decimal("1.2")
+                drug1["freq"] = ONCE
+                drug1["drug2"] = COLCHICINE
+                drug1["dose2"] = Decimal("0.6")
+                drug1["freq2"] = BID
+                drug1["duration"] = 7
+                drug1["drug3"] = COLCHICINE
+                drug1["dose3"] = Decimal("0.6")
+                drug1["freq3"] = ONCE
+        decisions["drug1"] = drug1
+        decisions["drug2"] = drug2
+        return decisions
 
     def __str__(self):
-        return self.decision_aid()
+        return f'{str(self.decision_aid().get("drug"))}, {str(self.decision_aid().get("dose"))} {str(self.decision_aid().get("freq"))} {str(self.decision_aid().get("duration"))}'
 
     def get_absolute_url(self):
         return reverse("flareaid:detail", kwargs={"pk": self.pk})

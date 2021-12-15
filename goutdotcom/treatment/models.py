@@ -58,6 +58,13 @@ class TemporizingTreatment(Treatment):
         null=True,
     )
 
+    duration = models.IntegerField()
+    dose2 = models.IntegerField()
+    freq2 = models.CharField(max_length=50, choices=FREQ_CHOICES)
+    duration2 = models.IntegerField()
+    dose3 = models.IntegerField()
+    freq3 = models.CharField(max_length=50, choices=FREQ_CHOICES, default=ONCE)
+
     def duration_calc(self):
         if self.date_started:
             if self.date_ended:
@@ -66,7 +73,6 @@ class TemporizingTreatment(Treatment):
 
     class Meta:
         abstract = True
-
 
 class Allopurinol(Treatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=ALLOPURINOL)
@@ -103,12 +109,16 @@ class Colchicine(TemporizingTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=COLCHICINE)
     brand_names = ["Colcrys"]
     dose = models.DecimalField(decimal_places=1, max_digits=2, choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True)
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=BID, blank=True)
     side_effects = models.CharField(
         max_length=100, choices=COLCHICINE_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
-
+    duration = models.IntegerField()
+    dose2 = models.DecimalField(decimal_places=1, max_digits=2, choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True)
+    freq2 = models.CharField(max_length=50, choices=FREQ_CHOICES, default=BID, blank=True)
+    dose3 = models.DecimalField(decimal_places=1, max_digits=2, choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True)
+    freq3 = models.CharField(max_length=50, choices=FREQ_CHOICES, default=ONCE, blank=True)
 
 class Ibuprofen(TemporizingTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=IBUPROFEN)

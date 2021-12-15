@@ -30,7 +30,6 @@ BID = 'bid'
 TID = 'tid'
 QTWOWEEK = 'q2weeks'
 ONCE = 'once'
-ONEHOURLATER = "One hour later"
 
 MEDICATION_CHOICES = (
     (ALLOPURINOL, 'Allopurinol'),
@@ -86,6 +85,7 @@ for x in range(1, 19):
 
 COLCHICINE_DOSE_CHOICES = (
     (Decimal("0.6"), '0.6 mg'),
+    (Decimal("1.2"), '1.2 mg'),
 )
 
 PROBENECID_DOSE_CHOICES = (
