@@ -4,6 +4,7 @@ BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
 ALLOPURINOL = 'allopurinol'
 FEBUXOSTAT = 'febuxostat'
+INDOCIN = "Indocin"
 PREDNISONE = 'prednisone'
 COLCHICINE = 'colchicine'
 PROBENECID = 'probenecid'
@@ -29,10 +30,12 @@ BID = 'bid'
 TID = 'tid'
 QTWOWEEK = 'q2weeks'
 ONCE = 'once'
+ONEHOURLATER = "One hour later"
 
 MEDICATION_CHOICES = (
     (ALLOPURINOL, 'Allopurinol'),
     (FEBUXOSTAT, 'Febuxostat'),
+    (INDOCIN, "Indocin")
     (PREDNISONE, 'Prednisone'),
     (COLCHICINE, 'Colchicine'),
     (PROBENECID, 'Probenecid'),
@@ -63,6 +66,7 @@ FREQ_CHOICES = (
     (TID, 'Three times daily'),
     (QTWOWEEK, 'Every 2 weeks'),
     (ONCE, 'Once'),
+    (ONEHOURLATER, "One hour later"),
 )
 
 ALLOPURINOL_DOSE_CHOICES = ()
@@ -78,6 +82,7 @@ for x in range(1, 19):
     y = x*50
     z = str(y) + " mg"
     ALLOPURINOL_DOSE_CHOICES += (y, z),
+
 
 COLCHICINE_DOSE_CHOICES = (
     (Decimal("0.6"), '0.6 mg'),
@@ -95,6 +100,11 @@ IBUPROFEN_DOSE_CHOICES = (
     (400, '400 mg'),
     (600, '600 mg'),
     (800, '800 mg'),
+)
+
+INDOCIN_DOSE_CHOICES = (
+    (25, '25 mg'),
+    (50, '50 mg'),
 )
 
 NAPROXEN_DOSE_CHOICES = (

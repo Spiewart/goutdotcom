@@ -1,12 +1,13 @@
-Advil = "Advil"
-Aleve = "Aleve"
-Celebrex = "Celebrex"
-Colcrys = "Colcrys"
-Methylpred = "Methylprednisolone"
-Mobic = "Mobic"
-Othertreatment = "Other treatment"
-Pred = "Prednisone"
-TinctureofTime = "Tincture of time"
+ADVIL = "Advil"
+ALEVE = "Aleve"
+CELEBREX = "Celebrex"
+COLCRYS = "Colcrys"
+INDOCIN = "Indocin"
+METHYLPRED = "Methylprednisolone"
+MOBIC = "Mobic"
+OTHERTREATMENT = "Other treatment"
+PRED = "Prednisone"
+TINCTUREOFTIME = "Tincture of time"
 
 UNDERONE = "under 24 hours"
 ONETOTHREE = "more than 1 but less than 3 days"
@@ -181,15 +182,16 @@ JOINT_CHOICES = (
 LAB_CHOICES = ((URATE, "Urate"),)
 
 TREATMENT_CHOICES = (
-    (Colcrys, "Colchicine"),
-    (Advil, "Ibuprofen"),
-    (Aleve, "Naproxen"),
-    (Celebrex, "Celecoxib"),
-    (Mobic, "Meloxicam"),
-    (Pred, "Prednisone"),
-    (Methylpred, "Methylprednisolone"),
-    (TinctureofTime, "Tincture of time"),
-    (Othertreatment, "Other treatment"),
+    (COLCRYS, "Colchicine"),
+    (ADVIL, "Ibuprofen"),
+    (ALEVE, "Naproxen"),
+    (CELEBREX, "Celecoxib"),
+    (INDOCIN, "Indocin"),
+    (MOBIC, "Meloxicam"),
+    (PRED, "Prednisone"),
+    (METHYLPRED, "Methylprednisolone"),
+    (TINCTUREOFTIME, "Tincture of time"),
+    (OTHERTREATMENT, "Other treatment"),
 )
 
 BOOL_CHOICES = ((True, "Yes"), (False, "No"))

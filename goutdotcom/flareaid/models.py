@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
+from goutdotcom.treatment.choices import BID, NAPROXEN_DOSE_CHOICES
 
 from ..flare.models import Flare
 from ..history.models import (
@@ -15,6 +16,7 @@ from ..history.models import (
     Osteoporosis,
     Stroke,
 )
+from ..treatment.choices import *
 from .choices import *
 
 
@@ -137,25 +139,39 @@ class FlareAid(TimeStampedModel):
         doctor = "doctor"
         needinfo = "Need More Information"
 
+        drug1 = {"drug": None, "dose": None, "freq": None, "duration": None}
+        decisions = {"drug1": drug1, "drug2": drug2, "dose2": None, "freq2": None, "duration2": None, "needinfo": False, "doctor": False}
+
         if self.perfect_health == True:
-            return NSAID
+            decisions["drug"] = IBUPROFEN
+            decisions["dose"] = IBUPROFEN_DOSE_CHOICES(400)
+            decisions["freq"] = TID
+            decisions["drug2"] = NAPROXEN
+            decisions["dose2"] = NAPROXEN_DOSE_CHOICES(440)
+            decisions["freq2"] = BID
         elif self.perfect_health is None:
-            return needinfo
+            decisions["needinfo"] = True
         if self.ckd:
             if self.ckd.value == True:
                 if self.diabetes.value == True:
-                    return doctor
+                    decisions["doctor"]
                 else:
                     return steroids
         if self.get_NSAID_contraindications():
             if self.ckd:
                 if self.ckd.value == True:
-                    return steroids
+                    decisions["drug"] = PREDNISONE
+                    decisions["dose"] = 40
+                    decisions["freq"] = QDAY
             if self.colchicine_interactions:
                 if self.colchicine_interactions.value == True:
-                    return steroids
+                    decisions["drug"] = PREDNISONE
+                    decisions["dose"] = 40
+                    decisions["freq"] = QDAY
             else:
-                return colchicine
+                decisions["drug"] = COLCHICINE
+                decisions["dose"] = Decimal("0.6")
+                decisions["freq"] = QDAY
         return NSAID
 
     def __str__(self):
