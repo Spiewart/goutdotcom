@@ -2,6 +2,7 @@ import datetime
 from decimal import *
 
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
@@ -11,16 +12,11 @@ from .choices import *
 
 # Create your models here.
 class Treatment(TimeStampedModel):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES)
     brand_names = [""]
-    dose = models.IntegerField()
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES)
-    date_started = models.DateField(default=datetime.datetime.now)
-    date_ended = models.DateField(null=True, blank=True)
+    dose = models.IntegerField(null=True, blank=True)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, null=True, blank=True)
     side_effects = models.CharField(max_length=100, null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES)
 
@@ -40,8 +36,7 @@ class Treatment(TimeStampedModel):
         return self.generic_name
 
 
-class TemporizingTreatment(Treatment):
-    date_started = models.DateField(default=datetime.datetime.now, blank=True, null=True)
+class FlareAidTreatment(Treatment):
     prn = models.BooleanField(
         choices=BOOL_CHOICES,
         default=True,
@@ -58,23 +53,24 @@ class TemporizingTreatment(Treatment):
         null=True,
     )
 
-    duration = models.IntegerField()
-    dose2 = models.IntegerField()
-    freq2 = models.CharField(max_length=50, choices=FREQ_CHOICES)
-    duration2 = models.IntegerField()
-    dose3 = models.IntegerField()
-    freq3 = models.CharField(max_length=50, choices=FREQ_CHOICES, default=ONCE)
+    duration = models.IntegerField(
+        null=True, blank=True, default=7, validators=[MaxValueValidator(14), MinValueValidator(1)]
+    )
 
-    def duration_calc(self):
-        if self.date_started:
-            if self.date_ended:
-                duration = self.date_ended - self.date_started
-                return duration
+    def flareclaimer(self):
+        natural_history = "Most flares last between 5-7 days. Flare treatments are design to improve (not eliminate) symptoms over that duration. If your symptoms improve more quickly, it is OK to discontinue your flare treatment early. If your symptoms last longer, you should consult your provider."
+        return natural_history
 
     class Meta:
         abstract = True
 
-class Allopurinol(Treatment):
+
+class ULTAidTreatment(Treatment):
+    date_started = models.DateField(default=datetime.datetime.now, null=True, blank=True)
+    date_ended = models.DateField(null=True, blank=True)
+
+
+class Allopurinol(ULTAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=ALLOPURINOL)
     brand_names = ["Xyloprim", "Aloprim"]
     dose = models.IntegerField(choices=ALLOPURINOL_DOSE_CHOICES)
@@ -90,7 +86,7 @@ class Allopurinol(Treatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
 
 
-class Febuxostat(Treatment):
+class Febuxostat(ULTAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=FEBUXOSTAT)
     brand_names = ["Uloric"]
     dose = models.IntegerField(choices=FEBUXOSTAT_DOSE_CHOICES)
@@ -105,26 +101,29 @@ class Febuxostat(Treatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
 
 
-class Colchicine(TemporizingTreatment):
+class Colchicine(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=COLCHICINE)
     brand_names = ["Colcrys"]
-    dose = models.DecimalField(decimal_places=1, max_digits=2, choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True)
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=BID, blank=True)
+    dose = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=Decimal("1.2"))
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=ONCE)
+    dose2 = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=Decimal("0.6"))
+    freq2 = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=ONCE)
+    dose3 = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=Decimal("0.6"))
+    freq3 = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=BID)
+    duration = models.IntegerField(
+        null=True, blank=True, default=7, validators=[MaxValueValidator(14), MinValueValidator(1)]
+    )
     side_effects = models.CharField(
         max_length=100, choices=COLCHICINE_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
-    duration = models.IntegerField()
-    dose2 = models.DecimalField(decimal_places=1, max_digits=2, choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True)
-    freq2 = models.CharField(max_length=50, choices=FREQ_CHOICES, default=BID, blank=True)
-    dose3 = models.DecimalField(decimal_places=1, max_digits=2, choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True)
-    freq3 = models.CharField(max_length=50, choices=FREQ_CHOICES, default=ONCE, blank=True)
 
-class Ibuprofen(TemporizingTreatment):
+
+class Ibuprofen(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=IBUPROFEN)
     brand_names = ["Advil"]
     dose = models.IntegerField(choices=IBUPROFEN_DOSE_CHOICES, null=True, blank=True)
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=QDAY)
     side_effects = models.CharField(
         max_length=100,
         choices=NSAID_SIDE_EFFECT_CHOICES,
@@ -135,18 +134,18 @@ class Ibuprofen(TemporizingTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Naproxen(TemporizingTreatment):
+class Naproxen(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=NAPROXEN)
     brand_names = ["Aleve"]
     dose = models.IntegerField(choices=NAPROXEN_DOSE_CHOICES, null=True, blank=True)
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=QDAY)
     side_effects = models.CharField(
         max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Meloxicam(TemporizingTreatment):
+class Meloxicam(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=MELOXICAM)
     brand_names = ["Mobic"]
     dose = models.DecimalField(decimal_places=1, max_digits=3, choices=MELOXICAM_DOSE_CHOICES, null=True, blank=True)
@@ -157,7 +156,7 @@ class Meloxicam(TemporizingTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Celecoxib(TemporizingTreatment):
+class Celecoxib(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=CELECOXIB)
     brand_names = ["Aleve"]
     dose = models.IntegerField(choices=CELECOXIB_DOSE_CHOICES, null=True, blank=True)
@@ -168,10 +167,10 @@ class Celecoxib(TemporizingTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Indomethacin(TemporizingTreatment):
+class Indomethacin(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=INDOCIN)
     brand_names = ["Indocin"]
-    dose = models.IntegerField(choices=INDOCIN_DOSE_CHOICES, null=True, blank=True)
+    dose = models.IntegerField(choices=INDOMETHACIN_DOSE_CHOICES, null=True, blank=True)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
     side_effects = models.CharField(
         max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
@@ -179,11 +178,19 @@ class Indomethacin(TemporizingTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Prednisone(TemporizingTreatment):
+class Prednisone(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PREDNISONE)
     brand_names = ["Prednisone"]
-    dose = models.IntegerField(null=True, blank=True)
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
+    dose = models.IntegerField(choices=PREDNISONE_DOSE_CHOICES, null=True, blank=True, default=40)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=QDAY)
+    duration = models.IntegerField(
+        null=True, blank=True, default=4, validators=[MaxValueValidator(14), MinValueValidator(1)]
+    )
+    dose2 = models.IntegerField(choices=PREDNISONE_DOSE_CHOICES, null=True, blank=True, default=20)
+    freq2 = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=QDAY)
+    duration2 = models.IntegerField(
+        null=True, blank=True, default=4, validators=[MaxValueValidator(14), MinValueValidator(1)]
+    )
     side_effects = models.CharField(
         max_length=100,
         choices=PREDNISONE_SIDE_EFFECT_CHOICES,
@@ -194,7 +201,7 @@ class Prednisone(TemporizingTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=SYSSTEROID)
 
 
-class Methylprednisolone(TemporizingTreatment):
+class Methylprednisolone(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=METHYLPREDNISOLONE)
     brand_names = ["Depomedrol"]
     dose = models.IntegerField(choices=METHYLPREDNISOLONE_DOSE_CHOICES, null=True, blank=True)
@@ -221,7 +228,7 @@ class Methylprednisolone(TemporizingTreatment):
             return f'{str(self.generic_name) + " dose not recorded"}'
 
 
-class Probenecid(Treatment):
+class Probenecid(ULTAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PROBENECID)
     brand_names = ["Probalan"]
     dose = models.IntegerField(choices=PROBENECID_DOSE_CHOICES)
@@ -236,7 +243,7 @@ class Probenecid(Treatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=URATEEXCRETAGOGUE)
 
 
-class Tinctureoftime(TemporizingTreatment):
+class Tinctureoftime(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=TINCTUREOFTIME)
     brand_names = ["Tincture of time"]
     duration = models.IntegerField(help_text="How long did it take to get better?", null=True, blank=True)
@@ -258,7 +265,7 @@ class Tinctureoftime(TemporizingTreatment):
         return f'{"Tincture of time for: " + str(self.duration) + " days"}'
 
 
-class Othertreat(TemporizingTreatment):
+class Othertreat(FlareAidTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=OTHER)
     brand_names = ["Other"]
     name = models.CharField(max_length=100, null=True, blank=True)

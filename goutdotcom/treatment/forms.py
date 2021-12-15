@@ -3,19 +3,12 @@ from crispy_forms.layout import ButtonHolder, Fieldset, Layout, Submit
 from datetimewidget.widgets import DateWidget
 from django import forms
 
-from .choices import (
-    CELECOXIB_DOSE_CHOICES,
-    COLCHICINE_DOSE_CHOICES,
-    IBUPROFEN_DOSE_CHOICES,
-    MELOXICAM_DOSE_CHOICES,
-    METHYLPREDNISOLONE_DOSE_CHOICES,
-    NAPROXEN_DOSE_CHOICES,
-)
 from .models import (
     Allopurinol,
     Celecoxib,
     Colchicine,
     Ibuprofen,
+    Indomethacin,
     Meloxicam,
     Methylprednisolone,
     Naproxen,
@@ -49,7 +42,7 @@ class AllopurinolForm(forms.ModelForm):
         # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log a Colcrys",
+                "Log an Allopurinol",
                 "dose",
                 "freq",
                 "date_started",
@@ -65,15 +58,8 @@ class ColchicineForm(forms.ModelForm):
         fields = (
             "dose",
             "freq",
-            "date_started",
-            "date_ended",
             "side_effects",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "colchicine-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "colchicine-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(ColchicineForm, self).__init__(*args, **kwargs)
@@ -88,8 +74,6 @@ class ColchicineForm(forms.ModelForm):
                 "Log a Colcrys",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
@@ -102,15 +86,8 @@ class IbuprofenForm(forms.ModelForm):
         fields = (
             "dose",
             "freq",
-            "date_started",
-            "date_ended",
             "side_effects",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "ibuprofen-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "ibuprofen-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(IbuprofenForm, self).__init__(*args, **kwargs)
@@ -125,8 +102,6 @@ class IbuprofenForm(forms.ModelForm):
                 "Log an Advil",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
@@ -139,15 +114,8 @@ class NaproxenForm(forms.ModelForm):
         fields = (
             "dose",
             "freq",
-            "date_started",
-            "date_ended",
             "side_effects",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "naproxen-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "naproxen-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(NaproxenForm, self).__init__(*args, **kwargs)
@@ -162,8 +130,6 @@ class NaproxenForm(forms.ModelForm):
                 "Log an Aleve",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
@@ -176,15 +142,8 @@ class MeloxicamForm(forms.ModelForm):
         fields = (
             "dose",
             "freq",
-            "date_started",
-            "date_ended",
             "side_effects",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "meloxicam-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "meloxicam-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(MeloxicamForm, self).__init__(*args, **kwargs)
@@ -199,8 +158,6 @@ class MeloxicamForm(forms.ModelForm):
                 "Log a Mobic",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
@@ -213,15 +170,8 @@ class CelecoxibForm(forms.ModelForm):
         fields = (
             "dose",
             "freq",
-            "date_started",
-            "date_ended",
             "side_effects",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "celecoxib-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "celecoxib-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(CelecoxibForm, self).__init__(*args, **kwargs)
@@ -236,8 +186,6 @@ class CelecoxibForm(forms.ModelForm):
                 "Log a Celebrex",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
@@ -250,15 +198,8 @@ class PrednisoneForm(forms.ModelForm):
         fields = (
             "dose",
             "freq",
-            "date_started",
-            "date_ended",
             "side_effects",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "prednisone-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "prednisone-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(PrednisoneForm, self).__init__(*args, **kwargs)
@@ -273,8 +214,6 @@ class PrednisoneForm(forms.ModelForm):
                 "Log a prednisone",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
@@ -288,17 +227,8 @@ class MethylprednisoloneForm(forms.ModelForm):
             "dose",
             "as_injection",
             "freq",
-            "date_started",
-            "date_ended",
             "side_effects",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(
-                attrs={"id": "methylprednisolone-date_started"}, usel10n=True, bootstrap_version=3
-            ),
-            "date_ended": DateWidget(attrs={"id": "methylprednisolone-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(MethylprednisoloneForm, self).__init__(*args, **kwargs)
@@ -314,8 +244,6 @@ class MethylprednisoloneForm(forms.ModelForm):
                 "dose",
                 "as_injection",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
@@ -325,16 +253,7 @@ class MethylprednisoloneForm(forms.ModelForm):
 class TinctureoftimeForm(forms.ModelForm):
     class Meta:
         model = Tinctureoftime
-        fields = (
-            "duration",
-            "date_started",
-            "date_ended",
-        )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "tinctureoftime-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "tinctureoftime-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
+        fields = ("duration",)
 
     def __init__(self, *args, **kwargs):
         super(TinctureoftimeForm, self).__init__(*args, **kwargs)
@@ -347,8 +266,6 @@ class TinctureoftimeForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 "Log a tincture of time",
-                "date_started",
-                "date_ended",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
@@ -361,11 +278,6 @@ class OthertreatForm(forms.ModelForm):
             "name",
             "description",
         )
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_started": DateWidget(attrs={"id": "othertreat-date_started"}, usel10n=True, bootstrap_version=3),
-            "date_ended": DateWidget(attrs={"id": "othertreat-date_ended"}, usel10n=True, bootstrap_version=3),
-        }
 
     def __init__(self, *args, **kwargs):
         super(OthertreatForm, self).__init__(*args, **kwargs)
@@ -401,8 +313,6 @@ class ColchicineFlareForm(ColchicineForm):
                 "Colcrys",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
                 id="colchicine_for_flare",
             ),
@@ -425,8 +335,6 @@ class IbuprofenFlareForm(IbuprofenForm):
                 "Log an Advil",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
                 id="ibuprofen_for_flare",
             ),
@@ -449,8 +357,6 @@ class NaproxenFlareForm(NaproxenForm):
                 "Log an Aleve",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
                 id="naproxen_for_flare",
             ),
@@ -473,8 +379,6 @@ class MeloxicamFlareForm(MeloxicamForm):
                 "Log a Mobic",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
                 id="meloxicam_for_flare",
             ),
@@ -497,8 +401,6 @@ class CelecoxibFlareForm(CelecoxibForm):
                 "Log a Celebrex",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
                 id="celecoxib_for_flare",
             ),
@@ -521,8 +423,6 @@ class PrednisoneFlareForm(PrednisoneForm):
                 "Log a prednisone",
                 "dose",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
                 id="prednisone_for_flare",
             ),
@@ -546,8 +446,6 @@ class MethylprednisoloneFlareForm(MethylprednisoloneForm):
                 "dose",
                 "as_injection",
                 "freq",
-                "date_started",
-                "date_ended",
                 "side_effects",
                 id="methylprednisolone_for_flare",
             ),
@@ -569,8 +467,6 @@ class TinctureoftimeFlareForm(TinctureoftimeForm):
             Fieldset(
                 "Log a tinctureoftime",
                 "duration",
-                "date_started",
-                "date_ended",
                 id="tinctureoftime_for_flare",
             ),
         )

@@ -192,32 +192,27 @@ class FlareAid(TimeStampedModel):
                     drug1["dose"] = 40
                     drug1["freq"] = QDAY
                     drug1["duration"] = 4
-                    drug1["drug2"] = PREDNISONE
-                    drug2["dose2"] = 20
-                    drug2["freq2"] = QDAY
-                    drug2["duration"] = 4
-                    decisions["taper"] = True
+                    drug1["dose2"] = 20
+                    drug1["freq2"] = QDAY
+                    drug1["duration2"] = 4
             if self.colchicine_interactions:
                 if self.colchicine_interactions.value == True:
                     drug1["drug"] = PREDNISONE
                     drug1["dose"] = 40
                     drug1["freq"] = QDAY
                     drug1["duration"] = 4
-                    drug1["drug2"] = PREDNISONE
                     drug1["dose2"] = 20
                     drug1["freq2"] = QDAY
-                    drug1["duration"] = 4
+                    drug1["duration2"] = 4
             else:
                 drug1["drug"] = COLCHICINE
                 drug1["dose"] = Decimal("1.2")
                 drug1["freq"] = ONCE
-                drug1["drug2"] = COLCHICINE
                 drug1["dose2"] = Decimal("0.6")
-                drug1["freq2"] = BID
-                drug1["duration"] = 7
-                drug1["drug3"] = COLCHICINE
+                drug1["freq2"] = ONCE
                 drug1["dose3"] = Decimal("0.6")
-                drug1["freq3"] = ONCE
+                drug1["freq3"] = BID
+                drug1["duration"] = 7
         decisions["drug1"] = drug1
         decisions["drug2"] = drug2
         return decisions

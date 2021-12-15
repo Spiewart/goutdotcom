@@ -4,7 +4,7 @@ BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
 ALLOPURINOL = 'allopurinol'
 FEBUXOSTAT = 'febuxostat'
-INDOCIN = "Indocin"
+INDOMETHACIN = "indomethacin"
 PREDNISONE = 'prednisone'
 COLCHICINE = 'colchicine'
 PROBENECID = 'probenecid'
@@ -34,7 +34,7 @@ ONCE = 'once'
 MEDICATION_CHOICES = (
     (ALLOPURINOL, 'Allopurinol'),
     (FEBUXOSTAT, 'Febuxostat'),
-    (INDOCIN, "Indocin")
+    (INDOMETHACIN, "Indomethacin")
     (PREDNISONE, 'Prednisone'),
     (COLCHICINE, 'Colchicine'),
     (PROBENECID, 'Probenecid'),
@@ -65,7 +65,6 @@ FREQ_CHOICES = (
     (TID, 'Three times daily'),
     (QTWOWEEK, 'Every 2 weeks'),
     (ONCE, 'Once'),
-    (ONEHOURLATER, "One hour later"),
 )
 
 ALLOPURINOL_DOSE_CHOICES = ()
@@ -88,6 +87,16 @@ COLCHICINE_DOSE_CHOICES = (
     (Decimal("1.2"), '1.2 mg'),
 )
 
+PREDNISONE_DOSE_CHOICES = (
+    (5, '5 mg'),
+    (10, '10 mg'),
+    (15, '15 mg'),
+    (20, '20 mg'),
+    (30, '30 mg'),
+    (40, '40 mg'),
+    (60, '60 mg'),
+)
+
 PROBENECID_DOSE_CHOICES = (
     (250, '250 mg'),
     (500, '500 mg'),
@@ -102,7 +111,7 @@ IBUPROFEN_DOSE_CHOICES = (
     (800, '800 mg'),
 )
 
-INDOCIN_DOSE_CHOICES = (
+INDOMETHACIN_DOSE_CHOICES = (
     (25, '25 mg'),
     (50, '50 mg'),
 )

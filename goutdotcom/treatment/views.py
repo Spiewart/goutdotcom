@@ -33,6 +33,7 @@ allopurinol_model = [Allopurinol]
 prn_models = [
     Colchicine,
     Ibuprofen,
+    Indomethacin,
     Naproxen,
     Meloxicam,
     Celecoxib,
@@ -43,8 +44,10 @@ prn_models = [
 ]
 injection_models = [Methylprednisolone]
 
+
 class About(TemplateView):
     template_name = "treatment/about.html"
+
 
 class AboutCorticosteroids(TemplateView):
     template_name = "treatment/about_corticosteroids.html"
