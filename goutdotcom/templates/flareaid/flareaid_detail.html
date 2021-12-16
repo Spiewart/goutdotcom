@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load flareaid_extras %}
 
 {% block content %}
 <main class="container content-container">
@@ -31,10 +32,19 @@
           {% endif %}
         {% endif %}
         <h1 id="rec">FlareAid:
-          {% if object.decision_aid == "doctor" %}
+          {% if object.decision_aid|get_key:'doctor' == True %}
             See a Doctor
           {% else %}
-            {{ object.decision_aid }}
+            {{ object.decision_aid|get_key:'drug1'|get_key:'drug' }}
+            {{ object.decision_aid|get_key:'drug1'|get_key:'dose' }} mg
+            {{ object.decision_aid|get_key:'drug1'|get_key:'freq' }}
+            x
+            {{ object.decision_aid|get_key:'drug1'|get_key:'duration' }} days
+            then
+            {{ object.decision_aid|get_key:'drug1'|get_key:'dose2' }} mg
+            {{ object.decision_aid|get_key:'drug1'|get_key:'freq2' }}
+            x
+            {{ object.decision_aid|get_key:'drug1'|get_key:'duration2' }} days
           {% endif %}
         </h1>
         </div>
@@ -46,7 +56,6 @@
           {% endif %}
         </div>
       </div>
-
       {% endblock header %}
       {% block recommendation %}
         {% include 'flareaid/recommendation.html' %}

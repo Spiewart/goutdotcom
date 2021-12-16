@@ -58,6 +58,10 @@ body {
     margin: 0px;
     margin-bottom: 5px;
     font-weight: bold; }
+  .content-container h3 {
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px; }
   .content-container .btn {
     background-color: #d3d02d;
     border-color: #e7e7e7;

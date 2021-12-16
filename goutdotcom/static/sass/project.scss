@@ -92,6 +92,12 @@ body {
     font-weight: bold;
   };
 
+  h3 {
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px;
+  }
+
   .btn {
     background-color: $background-color;
     border-color: $border-color;

@@ -1,3 +1,4 @@
+{% load flareaid_extras %}
 {% if object.decision_aid %}
 <div class="row">
   <div class="col-sm">
@@ -11,7 +12,7 @@
   <div class="col-sm">
     <h2 class="or"><a href="{% url 'treatment:about' 'ibuprofen' %}">Ibuprofen</a></h2>
     <li class="or">600 mg (three 200 mg tablets) three times daily until flare subsides</li>
-  {% elif object.decision_aid == "colchicine" %}
+  {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "colchicine" %}
     <ul>
       <li>1.2 mg (two tablets) now <b>then</b> 0.6 mg (1 tablet) an hour later <b>then</b> 0.6 mg (1 tablet) twice
         daily until flare subsides</li>
@@ -27,10 +28,19 @@
       </li>
     </ul>
     {% endif %}
-  {% elif object.decision_aid == "steroids" %}
+  {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "prednisone" %}
   <div class="col-auto">
     <h3><a href="{% url 'treatment:about' 'steroids' %}">Prednisone</a> (Prescription Only)</h3>
-    <li>40 mg daily for 4 days <b>then</b> 20 mg daily for 4 days</li>
+    <li> {{ object.decision_aid|get_key:'drug1'|get_key:'drug' }}
+      {{ object.decision_aid|get_key:'drug1'|get_key:'dose' }} mg
+      {{ object.decision_aid|get_key:'drug1'|get_key:'freq' }}
+      x
+      {{ object.decision_aid|get_key:'drug1'|get_key:'duration' }} days
+      then
+      {{ object.decision_aid|get_key:'drug1'|get_key:'dose2' }} mg
+      {{ object.decision_aid|get_key:'drug1'|get_key:'freq2' }}
+      x
+      {{ object.decision_aid|get_key:'drug1'|get_key:'duration2' }} days</li>
   </div>
   {% elif object.decision_aid == "Need More Information" %}
     <span>We really need more information if we are going to make a quality recommendation. Start by telling us
