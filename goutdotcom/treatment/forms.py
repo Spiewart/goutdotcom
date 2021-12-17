@@ -204,11 +204,8 @@ class PrednisoneForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PrednisoneForm, self).__init__(*args, **kwargs)
 
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
                 "Log a prednisone",

@@ -8,7 +8,7 @@ from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
 from .choices import *
-
+from ..flareaid.models import FlareAid
 
 # Create your models here.
 class Treatment(TimeStampedModel):
@@ -36,7 +36,8 @@ class Treatment(TimeStampedModel):
         return self.generic_name
 
 
-class FlareAidTreatment(Treatment):
+class FlareTreatment(Treatment):
+    flareaid = models.OneToOneField(FlareAid, on_delete=models.CASCADE, null=True, blank=True)
     prn = models.BooleanField(
         choices=BOOL_CHOICES,
         default=True,
@@ -65,7 +66,7 @@ class FlareAidTreatment(Treatment):
         abstract = True
 
 
-class ULTAidTreatment(Treatment):
+class ULTTreatment(Treatment):
     date_started = models.DateField(default=datetime.datetime.now, null=True, blank=True)
     date_ended = models.DateField(null=True, blank=True)
 
@@ -73,7 +74,7 @@ class ULTAidTreatment(Treatment):
         abstract = True
 
 
-class Allopurinol(ULTAidTreatment):
+class Allopurinol(ULTTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=ALLOPURINOL)
     brand_names = ["Xyloprim", "Aloprim"]
     dose = models.IntegerField(choices=ALLOPURINOL_DOSE_CHOICES)
@@ -89,7 +90,7 @@ class Allopurinol(ULTAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
 
 
-class Febuxostat(ULTAidTreatment):
+class Febuxostat(ULTTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=FEBUXOSTAT)
     brand_names = ["Uloric"]
     dose = models.IntegerField(choices=FEBUXOSTAT_DOSE_CHOICES)
@@ -104,7 +105,7 @@ class Febuxostat(ULTAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
 
 
-class Colchicine(FlareAidTreatment):
+class Colchicine(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=COLCHICINE)
     brand_names = ["Colcrys"]
     dose = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=Decimal("1.2"))
@@ -122,7 +123,7 @@ class Colchicine(FlareAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
 
 
-class Ibuprofen(FlareAidTreatment):
+class Ibuprofen(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=IBUPROFEN)
     brand_names = ["Advil"]
     dose = models.IntegerField(choices=IBUPROFEN_DOSE_CHOICES, null=True, blank=True)
@@ -137,7 +138,7 @@ class Ibuprofen(FlareAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Naproxen(FlareAidTreatment):
+class Naproxen(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=NAPROXEN)
     brand_names = ["Aleve"]
     dose = models.IntegerField(choices=NAPROXEN_DOSE_CHOICES, null=True, blank=True)
@@ -148,7 +149,7 @@ class Naproxen(FlareAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Meloxicam(FlareAidTreatment):
+class Meloxicam(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=MELOXICAM)
     brand_names = ["Mobic"]
     dose = models.DecimalField(decimal_places=1, max_digits=3, choices=MELOXICAM_DOSE_CHOICES, null=True, blank=True)
@@ -159,7 +160,7 @@ class Meloxicam(FlareAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Celecoxib(FlareAidTreatment):
+class Celecoxib(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=CELECOXIB)
     brand_names = ["Aleve"]
     dose = models.IntegerField(choices=CELECOXIB_DOSE_CHOICES, null=True, blank=True)
@@ -170,7 +171,7 @@ class Celecoxib(FlareAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Indomethacin(FlareAidTreatment):
+class Indomethacin(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=INDOMETHACIN)
     brand_names = ["Indocin"]
     dose = models.IntegerField(choices=INDOMETHACIN_DOSE_CHOICES, null=True, blank=True)
@@ -181,7 +182,7 @@ class Indomethacin(FlareAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
 
-class Prednisone(FlareAidTreatment):
+class Prednisone(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PREDNISONE)
     brand_names = ["Prednisone"]
     dose = models.IntegerField(choices=PREDNISONE_DOSE_CHOICES, null=True, blank=True, default=40)
@@ -204,7 +205,7 @@ class Prednisone(FlareAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=SYSSTEROID)
 
 
-class Methylprednisolone(FlareAidTreatment):
+class Methylprednisolone(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=METHYLPREDNISOLONE)
     brand_names = ["Depomedrol"]
     dose = models.IntegerField(choices=METHYLPREDNISOLONE_DOSE_CHOICES, null=True, blank=True)
@@ -231,7 +232,7 @@ class Methylprednisolone(FlareAidTreatment):
             return f'{str(self.generic_name) + " dose not recorded"}'
 
 
-class Probenecid(ULTAidTreatment):
+class Probenecid(ULTTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=PROBENECID)
     brand_names = ["Probalan"]
     dose = models.IntegerField(choices=PROBENECID_DOSE_CHOICES)
@@ -246,7 +247,7 @@ class Probenecid(ULTAidTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=URATEEXCRETAGOGUE)
 
 
-class Tinctureoftime(FlareAidTreatment):
+class Tinctureoftime(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=TINCTUREOFTIME)
     brand_names = ["Tincture of time"]
     duration = models.IntegerField(help_text="How long did it take to get better?", null=True, blank=True)
@@ -268,7 +269,7 @@ class Tinctureoftime(FlareAidTreatment):
         return f'{"Tincture of time for: " + str(self.duration) + " days"}'
 
 
-class Othertreat(FlareAidTreatment):
+class Othertreat(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=OTHER)
     brand_names = ["Other"]
     name = models.CharField(max_length=100, null=True, blank=True)

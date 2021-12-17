@@ -23,7 +23,6 @@
   </div>
   <div class="col">
     <h3><u>Extra Factors</u></h3>
-    <ul>
       {% if flare.male %}
         <li>Male: {{ flare.male }}</li>
       {% endif %}
@@ -34,18 +33,12 @@
       <li>Uric acid: {% if request.user.is_authenticated %}<a
           href="{% url 'lab:detail' 'urate' object.urate.pk %}">{{ flare.urate }}</a>{% else %}{{ flare.urate }}{% endif %}
       </li>
-    </ul>
     {% endif %}
-    <h3><u>Cardiac Disease</u></h3>
-    <ul>
+    <h3><u>Cardiac Disease(s)</u></h3>
+    <ul id="cardiac_risk_list">
       <li>
-      {% if flare.angina.value or flare.hypertension.value or flare.heartattack.value or flare.CHF.value or flare.stroke.value or flare.PVD.value %}
-      {% if flare.angina.value == True %} {{ flare.angina }} {% endif %}
-      {% if flare.hypertension.value == True %} {{ flare.hypertension }} {% endif %}
-      {% if flare.heartattack.value == True %} {{ flare.heartattack }} {% endif %}
-      {% if flare.CHF.value == True %} {{ flare.CHF }} {% endif %}
-      {% if flare.stroke.value == True %} {{ flare.stroke }} {% endif %}
-      {% if flare.PVD.value == True %} {{ flare.PVD }} {% endif %}
+      {% if flare.get_cardiac_risk_factors %}
+        {{ flare.cardiac_risk_factors_string }}
       {% else %}
       None
       {% endif %}

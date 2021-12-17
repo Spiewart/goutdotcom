@@ -34,17 +34,16 @@
         <h1 id="rec">FlareAid:
           {% if object.decision_aid|get_key:'doctor' == True %}
             See a Doctor
+          {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "prednisone" %}
+            steroids
+          {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "colchicine" %}
+            colchicine
+          {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug1'|get_key:'drug' == "naproxen" %}
+            NSAIDs
+          {% elif object.decision_aid|get_key:'needinfo' == True %}
+            more information needed
           {% else %}
-            {{ object.decision_aid|get_key:'drug1'|get_key:'drug' }}
-            {{ object.decision_aid|get_key:'drug1'|get_key:'dose' }} mg
-            {{ object.decision_aid|get_key:'drug1'|get_key:'freq' }}
-            x
-            {{ object.decision_aid|get_key:'drug1'|get_key:'duration' }} days
-            then
-            {{ object.decision_aid|get_key:'drug1'|get_key:'dose2' }} mg
-            {{ object.decision_aid|get_key:'drug1'|get_key:'freq2' }}
-            x
-            {{ object.decision_aid|get_key:'drug1'|get_key:'duration2' }} days
+            ERROR
           {% endif %}
         </h1>
         </div>

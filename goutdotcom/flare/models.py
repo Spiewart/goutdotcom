@@ -147,6 +147,39 @@ class Flare(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("flare:detail", kwargs={"pk": self.pk})
 
+    def get_cardiac_risk_factors(self):
+        cardiac_risk_factors = []
+        if self.angina:
+            if self.angina.value == True:
+                cardiac_risk_factors.append(self.angina)
+        if self.hypertension:
+            if self.hypertension.value == True:
+                cardiac_risk_factors.append(self.hypertension)
+        if self.heartattack:
+            if self.heartattack.value == True:
+                cardiac_risk_factors.append(self.heartattack)
+        if self.CHF:
+            if self.CHF.value == True:
+                cardiac_risk_factors.append(self.CHF)
+        if self.stroke:
+            if self.stroke.value == True:
+                cardiac_risk_factors.append(self.stroke)
+        if self.PVD:
+            if self.PVD.value == True:
+                cardiac_risk_factors.append(self.PVD)
+        return cardiac_risk_factors
+
+    def cardiac_risk_factors_string(self):
+        cardiac_string = ""
+        cardiac_risk_factors = self.get_cardiac_risk_factors()
+        if len(cardiac_risk_factors) > 1:
+            for i in range(len(cardiac_risk_factors) - 1):
+                cardiac_string += str(cardiac_risk_factors[i]) + ", "
+            cardiac_string += str(cardiac_risk_factors[len(cardiac_risk_factors)-1])
+        elif len(cardiac_risk_factors) == 1:
+            cardiac_string += str(cardiac_risk_factors[0])
+        return cardiac_string
+
     def locations(self):
         """Function that evaluates monoarticular, firstmtp, and location fields and returns a string describing the location(s) of the flare
 
@@ -225,27 +258,7 @@ class Flare(TimeStampedModel):
             points = points + 1
         if self.firstmtp == True:
             points = points + 2.5
-        if cardiac_disease_equivalent == False:
-            if self.angina:
-                if self.angina.value == True:
-                    cardiac_disease_equivalent = True
-            if self.hypertension:
-                if self.hypertension.value == True:
-                    cardiac_disease_equivalent = True
-            if self.hypertension:
-                if self.heartattack.value == True:
-                    cardiac_disease_equivalent = True
-            if self.CHF:
-                if self.CHF.value == True:
-                    cardiac_disease_equivalent = True
-            if self.stroke:
-                if self.stroke.value == True:
-                    cardiac_disease_equivalent = True
-            if self.PVD:
-                if self.PVD.value == True:
-                    cardiac_disease_equivalent = True
-
-        if cardiac_disease_equivalent == True:
+        if self.get_cardiac_risk_factors():
             points = points + 1.5
 
         if self.urate:

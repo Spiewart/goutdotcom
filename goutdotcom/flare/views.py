@@ -114,7 +114,7 @@ class FlareCreate(CreateView):
                 context["angina_form"] = self.angina_form_class(self.request.GET)
             if "hypertension_form" not in context:
                 context["hypertension_form"] = self.hypertension_form_class(self.request.GET)
-            if "heartattack_Form" not in context:
+            if "heartattack_form" not in context:
                 context["heartattack_form"] = self.heartattack_form_class(self.request.GET)
             if "CHF_form" not in context:
                 context["CHF_form"] = self.CHF_form_class(self.request.GET)
@@ -127,12 +127,14 @@ class FlareCreate(CreateView):
     def get_form_kwargs(self):
         """Ovewrites get_form_kwargs() to look for 'flare' kwarg in GET request, uses 'flare' to query database for associated flare for use in FlareAidForm
         returns: [dict: dict containing 'flare' kwarg for form]"""
-        # Assign self.flare from GET request kwargs before calling super() which will overwrite kwargs
+        # Assign self.gender to None so FlareForm won't error on loading from GET request kwargs before calling super() which will overwrite kwargs
+        self.gender = None
+        # Checks if user is logged in, if they have a patient profile gender, and if so, assign to self.gender
         if self.request.user.is_authenticated:
             if self.request.user.patientprofile.gender:
                 self.gender = self.request.user.patientprofile.gender
         kwargs = super(FlareCreate, self).get_form_kwargs()
-        # Checks if flare kwarg came from Flare Detail and queries database for flare_pk that matches self.flare from initial kwargs
+        # Pass self.gender to FlareForm as kwarg for use in form processing of male field
         if self.gender:
             kwargs["gender"] = self.gender
         return kwargs
@@ -150,7 +152,7 @@ class FlareCreate(CreateView):
             hypertension_form = self.hypertension_form_class(
                 request.POST, instance=request.user.medicalprofile.hypertension
             )
-            heartattack_form = self.hypertension_form_class(
+            heartattack_form = self.heartattack_form_class(
                 request.POST, instance=request.user.medicalprofile.heartattack
             )
             CHF_form = self.CHF_form_class(request.POST, instance=request.user.medicalprofile.CHF)
@@ -159,7 +161,7 @@ class FlareCreate(CreateView):
         else:
             angina_form = self.angina_form_class(request.POST, instance=Angina())
             hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
-            heartattack_form = self.hypertension_form_class(request.POST, instance=HeartAttack())
+            heartattack_form = self.heartattack_form_class(request.POST, instance=HeartAttack())
             CHF_form = self.CHF_form_class(request.POST, instance=CHF())
             stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
             PVD_form = self.PVD_form_class(request.POST, instance=PVD())
@@ -193,6 +195,7 @@ class FlareCreate(CreateView):
             flare_data.angina = angina_data
             flare_data.hypertension = hypertension_data
             flare_data.heartattack = heartattack_data
+            print(heartattack_data)
             flare_data.CHF = CHF_data
             flare_data.stroke = stroke_data
             flare_data.PVD = PVD_data

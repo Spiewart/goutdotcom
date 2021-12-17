@@ -289,8 +289,6 @@ class TreatmentCreate(LoginRequiredMixin, CreateView):
                 model = apps.get_model("treatment", model_name=self.treatment)
                 if model in prn_models:
                     self.fields.append("prn")
-                    self.fields.append("date_started")
-                    self.fields.append("date_ended")
                 if model in allopurinol_model:
                     self.fields.append("de_sensitized")
                 if model in injection_models:

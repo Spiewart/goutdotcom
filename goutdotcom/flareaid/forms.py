@@ -19,6 +19,9 @@ class FlareAidForm(forms.ModelForm):
         # Define self.flare from kwargs before calling super, which overwrites the kwargs
         # pop() flare from kwargs to set form self.flare to the Flare model instance passed to the FlareAidCreate view
         self.flare = kwargs.pop("flare", None)
+        self.no_user = kwargs.pop("no_user", False)
+        self.heartattack = kwargs.pop("heartattack", None)
+        self.stroke = kwargs.pop("stroke", None)
         super(FlareAidForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.layout = Layout(
@@ -111,3 +114,6 @@ class FlareAidForm(forms.ModelForm):
             if self.flare.monoarticular == True or self.flare.monoarticular == False:
                 self.fields["monoarticular"].widget = HiddenInput()
                 self.helper.layout[0].pop(3)
+                if self.no_user == True:
+                    self.helper.layout[0][3].pop(6)
+                    self.helper.layout[0][3].pop(8)

@@ -53,8 +53,11 @@ class FlareAidCreate(CreateView):
         if self.kwargs.get("flare"):
             form.instance.flare = Flare.objects.get(pk=self.kwargs.get("flare"))
             form.instance.monoarticular = form.instance.flare.monoarticular
+            # If user is not authenticated and created a FlareAid from a Flare, use Flare HeartAttack and Stroke instances instead of making new ones, removed forms in form via Kwargs and layout objects
+            if self.request.user.is_authenticated == False:
+                form.instance.heartattack = form.instance.flare.heartattack
+                form.instance.stroke = form.instance.flare.stroke
         if self.request.user.is_authenticated:
-
             form.instance.user = self.request.user
             return super().form_valid(form)
         else:
@@ -117,12 +120,20 @@ class FlareAidCreate(CreateView):
         returns: [dict: dict containing 'flare' kwarg for form]"""
         # Assign self.flare from GET request kwargs before calling super() which will overwrite kwargs
         self.flare = self.kwargs.get("flare", None)
+        self.no_user = False
+        if self.request.user.is_authenticated == False:
+            self.no_user = True
         kwargs = super(FlareAidCreate, self).get_form_kwargs()
         # Checks if flare kwarg came from Flare Detail and queries database for flare_pk that matches self.flare from initial kwargs
         if self.flare:
             flare_pk = self.flare
             flare = Flare.objects.get(pk=flare_pk)
             kwargs["flare"] = flare
+            kwargs["no_user"] = self.no_user
+            # If User is anonymous / not logged in and FlareAid has a Flare, pass stroke and heartattack from Flare to FlareAid to avoid duplication of user input
+            if self.request.user.is_authenticated == False:
+                kwargs["stroke"] = flare.stroke
+                kwargs["heartattack"] = flare.heartattack
         return kwargs
 
     def post(self, request, *args, **kwargs):
