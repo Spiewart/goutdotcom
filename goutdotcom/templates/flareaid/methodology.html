@@ -88,17 +88,15 @@
     antiinflammatory drugs (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s).
     It's good you let us know this, because NSAIDs are often the first treatment used for gout flares.
   </p>
-  {% if object.get_NSAID_contraindications %}
-    <p>Your contraindications:
-    {% if object.get_NSAID_contraindications|length > 1 %}
-    {% for contraindication in object.get_NSAID_contraindications %}
-    {{ object.get_NSAID_contraindications|index:forloop.counter0 }}{% if forloop.last %}{% else %}, {% endif %}
-    {% endfor %}
-    {% else %}
-    {{ object.get_NSAID_contraindications|index:0 }}
-    {% endif %}
-    </p>
-  {% endif %}
+      <p>Your contraindications:
+      {% if object.get_NSAID_contraindications|length > 1 %}
+      {% for contraindication in object.get_NSAID_contraindications %}
+      {{ object.get_NSAID_contraindications|index:forloop.counter0 }}{% if forloop.last %}{% else %}, {% endif %}
+      {% endfor %}
+      {% else %}
+      {{ object.get_NSAID_contraindications|index:0 }}
+      {% endif %}
+      </p>
   <p>Not all NSAID contraindications are <i>absolute</i> contraindications, but we would need more
     information before considering them and this should best be done via consulting with your doctor.</p>
   {% elif object.heartattack.value == False and object.stroke.value == False and object.ibd.value == False and object.anticoagulation.value == False and object.CKD.value == False and object.bleed.value == False %}

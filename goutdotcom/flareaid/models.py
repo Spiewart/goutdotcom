@@ -164,11 +164,11 @@ class FlareAid(TimeStampedModel):
 
         if self.perfect_health == True:
             drug1["drug"] = IBUPROFEN
-            drug1["dose"] = IBUPROFEN_DOSE_CHOICES(400)
+            drug1["dose"] = 800
             drug1["freq"] = TID
             drug1["duration"] = 7
             drug2["drug"] = NAPROXEN
-            drug2["dose"] = NAPROXEN_DOSE_CHOICES(440)
+            drug2["dose"] = 440
             drug2["freq"] = BID
             drug2["duration"] = 7
         elif self.perfect_health is None:
@@ -203,16 +203,34 @@ class FlareAid(TimeStampedModel):
                 drug1["duration2"] = 4
             else:
                 drug1["drug"] = COLCHICINE
-                drug1["dose"] = Decimal("1.2")
+                drug1["dose"] = 1.2
                 drug1["freq"] = ONCE
                 drug1["duration"] = 7
-                drug1["dose2"] = Decimal("0.6")
+                drug1["dose2"] = 0.6
                 drug1["freq2"] = ONCE
-                drug1["dose3"] = Decimal("0.6")
+                drug1["dose3"] = 0.6
                 drug1["freq3"] = BID
+        else:
+            drug1["drug"] = IBUPROFEN
+            drug1["dose"] = 800
+            drug1["freq"] = TID
+            drug1["duration"] = 7
+            drug2["drug"] = NAPROXEN
+            drug2["dose"] = 440
+            drug2["freq"] = BID
+            drug2["duration"] = 7
         decisions["drug1"] = drug1
         decisions["drug2"] = drug2
         return decisions
+
+    def decision_string(self, drug="drug1"):
+        decisions = self.decision_aid()
+        if decisions[drug]["drug"] == COLCHICINE:
+            return f'{decisions[drug]["drug"]} {decisions[drug]["dose"]} mg (2 tabs) {decisions[drug]["freq"]} then {decisions[drug]["dose2"]} mg (1 tab) {decisions[drug]["freq2"]} an hour later then {decisions[drug]["dose3"]} mg {decisions[drug]["freq3"]} (twice daily) for {decisions[drug]["duration"]} days or until flare resolves'
+        if decisions[drug]["drug"] == PREDNISONE:
+            return f'{decisions[drug]["drug"]} {decisions[drug]["dose"]} mg {decisions[drug]["freq"]} for {decisions[drug]["duration"]} days then {decisions[drug]["dose2"]} mg {decisions[drug]["freq2"]} for {decisions[drug]["duration2"]} days'
+        else:
+            return f'{decisions[drug]["drug"]} {decisions[drug]["dose"]} mg {decisions[drug]["freq"]} for {decisions[drug]["duration"]} days or until flare resolves'
 
     def __str__(self):
         return f'{str(self.decision_aid().get("drug1"))}, {str(self.decision_aid().get("dose"))} {str(self.decision_aid().get("freq"))} {str(self.decision_aid().get("duration"))}'

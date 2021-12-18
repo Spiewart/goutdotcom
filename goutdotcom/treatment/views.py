@@ -2,16 +2,20 @@ from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import modelform_factory
+from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import (
     CreateView,
     DetailView,
     ListView,
     TemplateView,
     UpdateView,
+    View,
 )
 
+from ..flareaid.models import FlareAid
 from .forms import *
 from .models import (
     Allopurinol,
@@ -252,6 +256,15 @@ class ProphylaxisCreate(LoginRequiredMixin, CreateView):
             }
         )
         return context
+
+
+class FlareAidTreatmentCreate(View):
+    def post(self, request, *args, **kwargs):
+        self.treatment = self.kwargs["treatment"]
+        self.model = apps.get_model("treatment", model_name=self.treatment)
+        self.flareaid = FlareAid.objects.get(pk=self.kwargs["pk"])
+        self.model(user=request.user, flareaid=self.flareaid).save()
+        return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": self.kwargs["pk"]}))
 
 
 class TreatmentCreate(LoginRequiredMixin, CreateView):

@@ -81,6 +81,8 @@ body {
     float: none; }
   .content-container #cardiac_risk_list ul {
     display: inline; }
+  .content-container #treatment-create {
+    float: left; }
   .content-container ol, .content-container ul {
     padding-left: 15px; }
   .content-container .media {

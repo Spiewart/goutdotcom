@@ -16,7 +16,8 @@
             {% else %}
             <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' pk=object.pk %}" role="button">Update</a>
             {% endif %}
-            {% endif %}
+          {% endif %}
+          <span>{{ object.decision_string }}</span>
           {% if object.decision_aid == "NSAID" %}
             <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'ibuprofen' %}" role="button">About</a>
           {% elif object.decision_aid == "colchicine" %}

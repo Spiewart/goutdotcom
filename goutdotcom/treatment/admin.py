@@ -71,6 +71,7 @@ class PrednisoneAdmin(admin.ModelAdmin):
         "dose",
         "freq",
         "created",
+        "flareaid",
         "modified",
         "pk",
     )

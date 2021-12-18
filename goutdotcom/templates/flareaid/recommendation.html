@@ -9,12 +9,7 @@
       </a>
     </h2>
     <li class="or">
-      {{ object.decision_aid|get_key:'drug2'|get_key:'dose' }}
-       mg (two 220 mg tablets)
-      {{ object.decision_aid|get_key:'drug2'|get_key:'freq' }}
-       for
-      {{ object.decision_aid|get_key:'drug2'|get_key:'duration' }}
-       days or until flare subsides
+      {{ object.decision_string }}
     </li>
   </div>
   <div class="col-sm">
@@ -27,27 +22,12 @@
       </a>
     </h2>
     <li class="or">
-      {{ object.decision_aid|get_key:'drug1'|get_key:'dose' }}
-      mg (three 200 mg tablets)
-      {{ object.decision_aid|get_key:'drug1'|get_key:'freq' }}
-      times daily for
-      {{ object.decision_aid|get_key:'drug1'|get_key:'duration' }}
-      days or until flare subsides
+      {{ object.decision_string }}
     </li>
   {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "colchicine" %}
     <ul>
       <li>
-        {{ object.decision_aid|get_key:'drug1'|get_key:'dose' }}
-         mg (two tablets) now <b>then</b>
-        {{ object.decision_aid|get_key:'drug1'|get_key:'dose2' }}
-        mg (1 tablet)
-        an hour later <b>then</b>
-        {{ object.decision_aid|get_key:'drug1'|get_key:'dose3' }}
-        mg (1 tablet)
-        {{ object.decision_aid|get_key:'drug1'|get_key:'freq3' }}
-        (twice daily) for
-        {{ object.decision_aid|get_key:'drug1'|get_key:'duration' }}
-        days or until flare subsides
+        {{ object.decision_string }}
       </li>
       {% if object.colchicine_interactions is None %}
       <li><b>WARNING</b>: You did not report whether or not you have any <a
@@ -94,9 +74,19 @@
     <span>Your medical situation is complex enough that you should see a doctor, ideally a <a
         href="https://en.wikipedia.org/wiki/Rheumatology" target="_blank">rheumatologist</a>, for your gout flare treatment.</span>
   {% endif %}
-    <a type="button" class="btn btn-primary btn-lg btn-block"" id="Treatment-btn"
-      href="{% url 'treatment:flareaid-create' pk=object.pk treatment=object.decision_aid|get_key:'drug1'|get_key:'drug' %}"
-      role="button">Create</a>
+  {% if object.prednisone %}
+    {{ object.prednisone }}
+  {% elif object.ibuprofen %}
+    {{ object.ibuprofen}}
+  {% elif object.colchicine %}
+    {{ object.colchicine }}
+  {% else %}
+    <form method="post"
+    action="{% url 'treatment:flareaid-create' pk=object.pk treatment=object.decision_aid|get_key:'drug1'|get_key:'drug' %}">
+    {% csrf_token %}
+    <button class="btn btn-primary btn-lg" role="button" id="treatment-create" type="submit" value="treatment">Create</button>
+    </form>
+  {% endif %}
     </div>
   </div>
   {% if object.monoarticular == True %}

@@ -195,7 +195,6 @@ class FlareCreate(CreateView):
             flare_data.angina = angina_data
             flare_data.hypertension = hypertension_data
             flare_data.heartattack = heartattack_data
-            print(heartattack_data)
             flare_data.CHF = CHF_data
             flare_data.stroke = stroke_data
             flare_data.PVD = PVD_data

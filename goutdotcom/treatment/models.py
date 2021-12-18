@@ -7,8 +7,9 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
-from .choices import *
 from ..flareaid.models import FlareAid
+from .choices import *
+
 
 # Create your models here.
 class Treatment(TimeStampedModel):
@@ -108,11 +109,11 @@ class Febuxostat(ULTTreatment):
 class Colchicine(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=COLCHICINE)
     brand_names = ["Colcrys"]
-    dose = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=Decimal("1.2"))
+    dose = models.FloatField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=1.2)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=ONCE)
-    dose2 = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=Decimal("0.6"))
+    dose2 = models.FloatField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=0.6)
     freq2 = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=ONCE)
-    dose3 = models.IntegerField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=Decimal("0.6"))
+    dose3 = models.FloatField(choices=COLCHICINE_DOSE_CHOICES, null=True, blank=True, default=0.6)
     freq3 = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=BID)
     duration = models.IntegerField(
         null=True, blank=True, default=7, validators=[MaxValueValidator(14), MinValueValidator(1)]
@@ -121,6 +122,12 @@ class Colchicine(FlareTreatment):
         max_length=100, choices=COLCHICINE_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
+
+    def __str__(self):
+        if self.dose and self.dose2 and self.dose3:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (2 tabs) {str(self.freq)} then {str(self.dose2)} mg (1 tab) {str(self.freq2)} an hour later then {str(self.dose3)} mg {str(self.freq3)} for {str(self.duration)} days or until flare resolves"
+        else:
+            return f'{str(self.generic_name) + " (dose not recorded)"}'
 
 
 class Ibuprofen(FlareTreatment):
