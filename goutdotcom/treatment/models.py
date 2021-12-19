@@ -43,7 +43,7 @@ class Treatment(TimeStampedModel):
 
 class FlareTreatment(Treatment):
     flareaid = models.OneToOneField(FlareAid, on_delete=models.CASCADE, null=True, blank=True)
-    ppxaid = models.OneToOneField(PPXAid, on_delete=models.CASCADE, null=True, blank=True)
+    ppxaid = models.OneToOneField(PPxAid, on_delete=models.CASCADE, null=True, blank=True)
     prn = models.BooleanField(
         choices=BOOL_CHOICES,
         default=True,

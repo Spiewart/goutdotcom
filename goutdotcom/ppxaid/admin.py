@@ -11,4 +11,4 @@ class PPxAidAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(PPxAid, PPxAidAidAdmin)
+admin.site.register(PPxAid, PPxAidAdmin)
