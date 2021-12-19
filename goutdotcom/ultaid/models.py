@@ -84,6 +84,13 @@ class ULTAid(TimeStampedModel):
         null=True,
         blank=True,
     )
+    titrating = models.BooleanField(
+        choices=BOOL_CHOICES,
+        null=True,
+        blank=True,
+        verbose_name="Titrating?",
+        help_text="Is this ULTAid plan in the process of medication titration?",
+    )
 
     def decision_aid(self):
         """Function that evaluates ULTAid fields and returns a dictionary containing recommendations for ULT and other pertinent facts to the template for presentation.

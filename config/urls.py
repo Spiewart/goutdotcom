@@ -21,6 +21,7 @@ urlpatterns = [
     path("flare/", include(("goutdotcom.flare.urls"), namespace="flare")),
     path("flareaid/", include(("goutdotcom.flareaid.urls"), namespace="flareaid")),
     path("history/", include(("goutdotcom.history.urls"), namespace="history")),
+    path("ppxaid/", include(("goutdotcom.ppxaid.urls"), namespace="ppxaid")),
     path("ult/", include(("goutdotcom.ult.urls"), namespace="ult")),
     path("ultaid/", include(("goutdotcom.ultaid.urls"), namespace="ultaid")),
     path("treatment/", include(("goutdotcom.treatment.urls"), namespace="treatment")),

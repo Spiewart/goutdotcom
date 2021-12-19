@@ -1,5 +1,7 @@
 from decimal import *
 
+from django.utils.translation import gettext_lazy as _
+
 BOOL_CHOICES = ((True, "Yes"), (False, "No"))
 
 ALLOPURINOL = "allopurinol"
@@ -25,10 +27,10 @@ URATEEXCRETAGOGUE = "urate extreagogue"
 LOCSTEROID = "local steroid"
 URICASE = "recombinant uricase"
 
-QDAY = "qday"
-BID = "bid"
-TID = "tid"
-QTWOWEEK = "q2weeks"
+QDAY = "daily"
+BID = "twice daily"
+TID = "three times daily"
+QTWOWEEK = "every other week"
 ONCE = "once"
 
 MEDICATION_CHOICES = (

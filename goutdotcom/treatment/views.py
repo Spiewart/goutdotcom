@@ -258,7 +258,7 @@ class ProphylaxisCreate(LoginRequiredMixin, CreateView):
         return context
 
 
-class FlareAidTreatmentCreate(View):
+class FlareAidTreatmentCreate(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         self.treatment = self.kwargs["treatment"]
         self.model = apps.get_model("treatment", model_name=self.treatment)

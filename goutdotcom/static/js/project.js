@@ -527,7 +527,7 @@ function flare_aid_initial() {
     $('#monoarticular-line').show();
     $('#subfields').show();
   }
-  else if ($('#id_osteoporosis-value').is(":checked")) {
+  else if ($('#id_Osteoporosis-value').is(":checked")) {
     $('#id_perfect_health').val('False');
     $('#div_id_monoarticular').show();
     $('#monoarticular-line').show();

@@ -29,6 +29,7 @@ class FlareAid(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
+        blank=True
     )
     flare = models.OneToOneField(
         Flare,

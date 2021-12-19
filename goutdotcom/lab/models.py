@@ -11,7 +11,7 @@ from django_extensions.db.models import TimeStampedModel
 
 from goutdotcom.lab.choices import CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
 from goutdotcom.profiles.models import PatientProfile
-
+from goutdotcom.ultaid.models import ULTAid
 
 # Create your models here.
 class Lab(TimeStampedModel):
@@ -25,6 +25,7 @@ class Lab(TimeStampedModel):
     date_drawn = models.DateTimeField(
         help_text="What day was this lab drawn?", default=timezone.now, null=True, blank=True
     )
+    ULTAid = models.ForeignKey(ULTAid, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     class Meta:
         abstract = True

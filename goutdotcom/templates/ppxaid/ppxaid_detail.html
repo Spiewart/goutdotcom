@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="container content-container">
+  {% block header %}
+  {% include 'ppxaid/_header.html' %}
+  {% endblock header %}
+  {% block recommendation %}
+  {% include 'ppxaid/_recommendation.html' %}
+  {% endblock recommendation %}
+  {% block quicklinks %}
+  <hr size="6" color="white">
+  <h2 class="content-heading">Quick Links</h2>
+  <ol id="quick-link-list">
+    <li><a href="#explanation">Explanation</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    {% if object.decision_aid != "doctor" %}
+    <li><a href="#options">Options</a></li>
+    {% endif %}
+    <li><a href="#references">References</a></li>
+  </ol>
+  {% endblock quicklinks %}
+  {% block explanation %}
+  {% include 'ppxaid/_explanation.html' %}
+  {% endblock explanation %}
+  {% block methodology %}
+  {% include 'ppxaid/_methodology.html' %}
+  {% endblock methodology %}
+  {% block references %}
+  {% include 'ppxaid/_references.html' %}
+  {% endblock references %}
+  <hr size="6" color="white">
+  {% block footer %}
+  <div class="row">
+    <div class="col">
+      <u><a href="#rec">Back to Top</a></u>
+    </div>
+    <div class="col" id="edited">
+      {% if request.user.is_anonymous %}
+      <span>{{ object.created.date }}</span>
+      {% elif request.user %}
+      <span>{{ request.user|capfirst }} {{ object.created.date }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endblock footer %}
+</main>
+{% endblock content %}

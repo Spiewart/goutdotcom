@@ -8,6 +8,8 @@ from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
 from ..flareaid.models import FlareAid
+from ..ppxaid.models import PPxAid
+from ..ultaid.models import ULTAid
 from .choices import *
 
 
@@ -20,13 +22,15 @@ class Treatment(TimeStampedModel):
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, null=True, blank=True)
     side_effects = models.CharField(max_length=100, null=True, blank=True, help_text="Have you had any side effects?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES)
+    date_started = models.DateField(null=True, blank=True)
+    date_ended = models.DateField(null=True, blank=True)
 
     class Meta:
         abstract = True
 
     def __str__(self):
         if self.dose:
-            return f'{str(self.generic_name) + " " + str(self.dose) + " mg " + str(self.freq)}'
+            return f'{str(self.generic_name)} {str(self.dose)} + " mg " + {str(self.freq)}'
         else:
             return f'{str(self.generic_name) + " (dose not recorded)"}'
 
@@ -39,6 +43,7 @@ class Treatment(TimeStampedModel):
 
 class FlareTreatment(Treatment):
     flareaid = models.OneToOneField(FlareAid, on_delete=models.CASCADE, null=True, blank=True)
+    ppxaid = models.OneToOneField(PPXAid, on_delete=models.CASCADE, null=True, blank=True)
     prn = models.BooleanField(
         choices=BOOL_CHOICES,
         default=True,
@@ -54,7 +59,6 @@ class FlareTreatment(Treatment):
         blank=True,
         null=True,
     )
-
     duration = models.IntegerField(
         null=True, blank=True, default=7, validators=[MaxValueValidator(14), MinValueValidator(1)]
     )
@@ -68,8 +72,8 @@ class FlareTreatment(Treatment):
 
 
 class ULTTreatment(Treatment):
+    ultaid = models.OneToOneField(ULTAid, on_delete=models.CASCADE, null=True, blank=True)
     date_started = models.DateField(default=datetime.datetime.now, null=True, blank=True)
-    date_ended = models.DateField(null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -78,7 +82,7 @@ class ULTTreatment(Treatment):
 class Allopurinol(ULTTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=ALLOPURINOL)
     brand_names = ["Xyloprim", "Aloprim"]
-    dose = models.IntegerField(choices=ALLOPURINOL_DOSE_CHOICES)
+    dose = models.IntegerField(choices=ALLOPURINOL_DOSE_CHOICES, default=100)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY)
     side_effects = models.CharField(
         max_length=100,
@@ -94,7 +98,7 @@ class Allopurinol(ULTTreatment):
 class Febuxostat(ULTTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=FEBUXOSTAT)
     brand_names = ["Uloric"]
-    dose = models.IntegerField(choices=FEBUXOSTAT_DOSE_CHOICES)
+    dose = models.IntegerField(choices=FEBUXOSTAT_DOSE_CHOICES, default=40)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY)
     side_effects = models.CharField(
         max_length=100,
@@ -133,8 +137,8 @@ class Colchicine(FlareTreatment):
 class Ibuprofen(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=IBUPROFEN)
     brand_names = ["Advil"]
-    dose = models.IntegerField(choices=IBUPROFEN_DOSE_CHOICES, null=True, blank=True)
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=QDAY)
+    dose = models.IntegerField(choices=IBUPROFEN_DOSE_CHOICES, null=True, blank=True, default=800)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=TID)
     side_effects = models.CharField(
         max_length=100,
         choices=NSAID_SIDE_EFFECT_CHOICES,
@@ -144,16 +148,28 @@ class Ibuprofen(FlareTreatment):
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
+    def __str__(self):
+        if self.dose:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (4 200 mg tabs) {str(self.freq)} (three times daily) for {str(self.duration)} days or until flare resolves"
+        else:
+            return f'{str(self.generic_name) + " (dose not recorded)"}'
+
 
 class Naproxen(FlareTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=NAPROXEN)
     brand_names = ["Aleve"]
-    dose = models.IntegerField(choices=NAPROXEN_DOSE_CHOICES, null=True, blank=True)
-    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=QDAY)
+    dose = models.IntegerField(choices=NAPROXEN_DOSE_CHOICES, null=True, blank=True, default=440)
+    freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=BID)
     side_effects = models.CharField(
         max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+
+    def __str__(self):
+        if self.dose:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (2 220 mg tabs) {str(self.freq)} (twice daily) for {str(self.duration)} days or until flare resolves"
+        else:
+            return f'{str(self.generic_name) + " (dose not recorded)"}'
 
 
 class Meloxicam(FlareTreatment):

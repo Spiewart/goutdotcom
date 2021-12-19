@@ -1,0 +1,50 @@
+{% extends "base_form.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+{% if form.instance.pk %} Update PPxAid {% else %} New PPxAid {% endif %} {% endblock%}
+{% block header %}
+{% if form.instance.pk %}
+<h1>Update PPx Aid</h1>
+{% elif view.kwargs.ultaid %}
+<h1>PPx (ULTAid: {{ view.kwargs.ultaid }}) Aid </h1>
+{% else %}
+<h1>New PPx Aid {{ view.kwargs.ultaid }}</h1>
+{% endif %}
+{% endblock header %}
+{% block form %}
+{% if form.instance.pk %}
+{% if view.kwargs.ultaid %}
+<form method="post" action="{% url 'ppxaid:ultaid-update' pk=object.pk ultaid=view.kwargs.ultaid %}">
+  {% csrf_token %} {% crispy form %}
+</form>
+{% else %}
+<form method="post" action="{% url 'ppxaid:update' object.pk %}" enctype="multipart/form-data">
+  {% csrf_token %} {% crispy form %}
+</form>
+{% endif %}
+{% else %}
+{% if view.kwargs.ultaid %}
+<form method="post" action="{% url 'ppxaid:ultaid-create' view.kwargs.ultaid %}">
+  {% csrf_token %} {% crispy form %}
+</form>
+{% else %}
+<form method="post" action="{% url 'ppxaid:create' %}">
+  {% csrf_token %} {% crispy form %}
+</form>
+{% endif %}
+{% endif %}
+{% endblock form %}
+{% block inline_javascript %}
+<script>
+  jQuery(function ($) {
+    var path = window.location.href;
+    $('li a').each(function () {
+      if (this.href === path) {
+        $(this).addClass('active');
+      } else {
+        $(this).removeClass('active');
+      }
+    });
+  });
+</script>
+{% endblock inline_javascript %}
