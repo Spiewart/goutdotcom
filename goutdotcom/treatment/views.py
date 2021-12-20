@@ -16,6 +16,7 @@ from django.views.generic import (
 )
 
 from ..flareaid.models import FlareAid
+from ..ppxaid.models import PPxAid
 from .forms import *
 from .models import (
     Allopurinol,
@@ -266,6 +267,13 @@ class FlareAidTreatmentCreate(LoginRequiredMixin, View):
         self.model(user=request.user, flareaid=self.flareaid).save()
         return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": self.kwargs["pk"]}))
 
+class PPxAidTreatmentCreate(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        self.treatment = self.kwargs["treatment"]
+        self.model = apps.get_model("treatment", model_name=self.treatment)
+        self.ppxaid = PPxAid.objects.get(pk=self.kwargs["pk"])
+        self.model(user=request.user, ppxaid=self.ppxaid).save()
+        return HttpResponseRedirect(reverse("ppxaid:detail", kwargs={"pk": self.kwargs["pk"]}))
 
 class TreatmentCreate(LoginRequiredMixin, CreateView):
     fields = ["dose", "freq", "side_effects"]

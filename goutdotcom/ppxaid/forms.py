@@ -20,7 +20,7 @@ class PPxAidForm(forms.ModelForm):
         self.ckd = kwargs.pop("ckd", None)
         self.heartattack = kwargs.pop("heartattack", None)
         self.stroke = kwargs.pop("stroke", None)
-        super(PPxAid, self).__init__(*args, **kwargs)
+        super(PPxAidForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.layout = Layout(
             Fieldset(
@@ -102,6 +102,9 @@ class PPxAidForm(forms.ModelForm):
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
         # Check if there is a ULTAid associated with PPxAid and hide fields passed in kwargs if so, value will be set in the view
-        self.helper.layout[0][3].pop(2)
-        self.helper.layout[0][3].pop(4)
-        self.helper.layout[0][3].pop(6)
+        if self.ckd:
+            self.helper.layout[0][2].pop(3)
+        if self.heartattack:
+            self.helper.layout[0][2].pop(5)
+        if self.stroke:
+            self.helper.layout[0][2].pop(7)

@@ -50,9 +50,9 @@ class PPxAidCreate(CreateView):
             form.instance.ultaid = ULTAid.objects.get(pk=self.kwargs.get("ultaid"))
             # If user is not authenticated and created a PPxAid from a ULTAid, use ULTAid CKD, HeartAttack, and Stroke instances instead of making new ones, removed forms in form via Kwargs and layout objects
             if self.request.user.is_authenticated == False:
-                form.instance.ckd = form.instance.ultaid.heartattack
-                form.instance.heartattack = form.instance.flare.heartattack
-                form.instance.stroke = form.instance.flare.stroke
+                form.instance.ckd = form.instance.ultaid.ckd
+                form.instance.heartattack = form.instance.ultaid.heartattack
+                form.instance.stroke = form.instance.ultaid.stroke
         if self.request.user.is_authenticated:
             form.instance.user = self.request.user
             return super().form_valid(form)
