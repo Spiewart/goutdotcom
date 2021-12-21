@@ -32,7 +32,6 @@ from .models import PPxAid
 
 
 class PPxAidCreate(CreateView):
-    ### NEED TO WRITE REDIRECT IF FLAREAID ALREADY EXISTS FOR FLARE ==> UPDATE
     model = PPxAid
     form_class = PPxAidForm
     anticoagulation_form_class = AnticoagulationSimpleForm
@@ -61,6 +60,7 @@ class PPxAidCreate(CreateView):
             return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
+        # Checks if User is authenticated and redirects to PPxAid UpdateView if so
         if self.request.user.is_authenticated:
             try:
                 user_PPxAid = self.model.objects.get(user=self.request.user)

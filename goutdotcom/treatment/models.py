@@ -9,7 +9,7 @@ from django_extensions.db.models import TimeStampedModel
 
 from ..flareaid.models import FlareAid
 from ..ppxaid.models import PPxAid
-from ..ultaid.models import ULTAid
+from ..ultplan.models import ULTPlan
 from .choices import *
 
 
@@ -72,7 +72,7 @@ class FlareTreatment(Treatment):
 
 
 class ULTTreatment(Treatment):
-    ultaid = models.OneToOneField(ULTAid, on_delete=models.CASCADE, null=True, blank=True)
+    ultplan = models.OneToOneField(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     date_started = models.DateField(default=datetime.datetime.now, null=True, blank=True)
 
     class Meta:

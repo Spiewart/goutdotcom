@@ -68,7 +68,12 @@
       {% endif %}
   </div>
 </div>
-<a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button" style="float: right;">PPxAid</a>
-<hr class="my-6" color="white">
+{% if request.user.is_authenticated %}
+  {% if request.user.ppxaid %}
+    <a class="btn btn-primary btn-lg" href="{% url 'ultplan:create' %}" role="button" style="float: right;">ULTPlan</a>
+  {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button" style="float: right;">PPxAid</a>
+  {% endif %}
+    <hr class="my-6" color="white">
 
 
