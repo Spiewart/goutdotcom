@@ -250,7 +250,7 @@ class ULTPlanCreate(CreateView):
         if "hemoglobin_form" not in context:
             context["hemoglobin_form"] = self.hemoglobin_form_class(self.request.GET)
         if "platelet_form" not in context:
-            context["plateet_form"] = self.platelet_form_class(self.request.GET)
+            context["platelet_form"] = self.platelet_form_class(self.request.GET)
         if "WBC_form" not in context:
             context["WBC_form"] = self.WBC_form_class(self.request.GET)
         if "urate_form" not in context:

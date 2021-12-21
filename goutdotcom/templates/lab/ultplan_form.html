@@ -1,0 +1,24 @@
+{% extends "base_form.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+{% if form.instance.pk %} Update ULTPlan {% else %} New ULTPlan {% endif %} {% endblock%}
+{% block header %}
+{% if form.instance.pk %}
+<h1>Update ULTPlan</h1>
+{% else %}
+<h1>New ULTPlan</h1>
+{% endif %}
+{% endblock header %}
+{% block form %}
+{% if form.instance.pk %}
+  <form method="post" action="{% url 'treatment:ultplan-update' pk=object.pk ultplan=view.kwargs.ultplan %}">
+    {% csrf_token %} {% crispy form %}
+  </form>
+{% else %}
+  <form method="post" action="{% url 'treatment:ultplan-create' view.kwargs.ultplan %}">
+    {% csrf_token %} {% crispy form %}
+  </form>
+{% endif %}
+{% endblock form %}
+{% block inline_javascript %}
+{% endblock inline_javascript %}
