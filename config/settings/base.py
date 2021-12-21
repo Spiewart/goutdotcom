@@ -82,6 +82,7 @@ LOCAL_APPS = [
     "goutdotcom.ppxaid.apps.PPxAidConfig",
     "goutdotcom.ult.apps.UltConfig",
     "goutdotcom.ultaid.apps.ULTAidConfig",
+    "goutdotcom.ultplan.apps.ULTPlanConfig",
     "goutdotcom.treatment.apps.TreatmentConfig",
     "goutdotcom.vitals.apps.VitalsConfig",
 ]

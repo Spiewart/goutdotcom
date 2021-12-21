@@ -24,6 +24,7 @@ urlpatterns = [
     path("ppxaid/", include(("goutdotcom.ppxaid.urls"), namespace="ppxaid")),
     path("ult/", include(("goutdotcom.ult.urls"), namespace="ult")),
     path("ultaid/", include(("goutdotcom.ultaid.urls"), namespace="ultaid")),
+    path("ultplan/", include(("goutdotcom.ultplan.urls"), namespace="ultplan")),
     path("treatment/", include(("goutdotcom.treatment.urls"), namespace="treatment")),
     path("vitals/", include(("goutdotcom.vitals.urls"), namespace="vitals")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

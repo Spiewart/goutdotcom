@@ -3,7 +3,17 @@
 
 {% block content %}
 <main class="container-fluid content-container">
-
+<h1>{{ object }}</h1>
+<ul>
+  <li>User: {{ object.user }}</li>
+  <li>ULTAid: {{ object.ultaid }}</li>
+  <li>PPxAid: {{ object.ppxaid }}</li>
+  <li>Goal uric acid: {{ object.goal_urate }}</li>
+  <li>Interval between labs: {{ object.lab_interval }}</li>
+  <li>Under titration: {{ object.titrating }}</li>
+  <li>Last medication titration: {{ object.last_titration}}</li>
+  <li>Overdue labs: {{ object.lab_status }}
+</ul>
 </main>
 {% endblock content %}
 

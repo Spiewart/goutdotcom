@@ -5,7 +5,6 @@ from django_extensions.db.models import TimeStampedModel
 
 from goutdotcom.treatment.choices import BID, NAPROXEN_DOSE_CHOICES
 
-from ..flare.models import Flare
 from ..history.models import (
     CKD,
     IBD,

@@ -27,30 +27,32 @@ class ULTPlanCreate(LoginRequiredMixin, View):
         if self.ppxaid and self.ultaid:
             ULT_model = apps.get_model("treatment", model_name=self.ultaid.decision_aid().get("drug"))
             PPx_model = apps.get_model("treatment", model_name=self.ppxaid.decision_aid().get("drug"))
-            ULT_field = self.ultaid.decision_aid().get("drug")
-            PPx_field = self.ppxaid.decision_aid().get("drug")
             ULT = ULT_model.objects.create(dose=self.ultaid.decision_aid().get("dose"), user=request.user)
             if PPx_model == Colchicine:
-                PPx = PPx_model.objects.create(
-                    dose=self.ppxaid.decision_aid().get("dose"),
-                    freq=self.ppxaid.decision_aid().get("freq"),
-                    dose2=None,
-                    dose3=None,
-                    user=request.user,
-                )
+                if self.ppxaid.PPx_model:
+                    PPx = self.ppxaid.PPx_model
+                else:
+                    PPx = PPx_model.objects.create(
+                        dose=self.ppxaid.decision_aid().get("dose"),
+                        freq=self.ppxaid.decision_aid().get("freq"),
+                        dose2=None,
+                        dose3=None,
+                        user=request.user,
+                    )
             PPx = PPx_model.objects.create(dose=self.ppxaid.decision_aid().get("dose"), user=request.user)
-            ULT_field = ULT
-            ULTPlan(
+            ultplan = ULTPlan.objects.create(
                 user=request.user,
                 ultaid=self.ultaid,
                 ppxaid=self.ppxaid,
-                ULT_field=ULT,
-                PPx_field=PPx,
-                goal_urate=self.ULTAid.decision_aid().get("goal_urate"),
-                lab_interval=self.ULTAid.decision_aid().get("lab_interval"),
+                goal_urate=self.ultaid.decision_aid().get("goal_urate"),
+                lab_interval=self.ultaid.decision_aid().get("lab_interval"),
                 last_titration=datetime.today(),
-            ).save()
-            return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": self.pk}))
+            )
+            ULT.ultplan = ultplan
+            ULT.save()
+            PPx.ultplan = ultplan
+            PPx.save()
+            return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": ultplan.pk}))
         elif self.ultaid:
             return HttpResponseRedirect(
                 reverse("ppxaid:ultaid-create", kwargs={"pk": self.kwargs["pk"], "ultaid": self.request.user.ultaid.pk})

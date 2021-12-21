@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class UltplanConfig(AppConfig):
-    name = 'goutdotcom.ultplan'
+class ULTPlanConfig(AppConfig):
+    name = "goutdotcom.ultplan"

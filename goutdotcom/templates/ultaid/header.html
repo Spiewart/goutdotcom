@@ -35,7 +35,6 @@
     {% else %}
       <h2><u>Medication</u>: <a
           href="{% url 'treatment:about' object.decision_aid|get_ultaid:'drug' %}">{{ object.decision_aid|get_ultaid:'drug'|capfirst }}</a>
-          {{ object.decision_aid|get_ultaid:'dose' }} daily
       </h2>
       </div>
       <div class="col">
@@ -59,21 +58,26 @@
       <a href="{% url 'lab:about' 'ALT' %}">ALT</a> are checked with every blood draw to monitor for clinically significant changes.</p>
       </div>
       <div class="col">
-      <h3><u>Titration dose</u>: {{ object.decision_aid|get_ultaid:'dose'|capfirst }} daily</h3>
+      <h3><u>Titration dose</u>: {{ object.decision_aid|get_ultaid:'dose'|capfirst }} mg daily</h3>
       <p>With every lab check, increase the dose of {{ object.decision_aid|get_ultaid:'drug' }} by
-        {{ object.decision_aid|get_ultaid:'dose'|capfirst }} daily until the
+        {{ object.decision_aid|get_ultaid:'dose'|capfirst }} mg daily until the
         uric acid is at <a href="#goal">goal</a>.</p>
-      <h3 id="goal"><u>Goal uric acid</u>: {{ object.decision_aid|get_ultaid:'goal_urate' }}</h3>
-      <p>Gout will be best eliminated with a <a href="NEED PAGE ABOUT GOAL URIC ACID">goal uric acid</a> of {{ object.decision_aid|get_ultaid:'goal_urate' }}.</p>
+      <h3 id="goal"><u>Goal uric acid</u>: {{ object.decision_aid|get_ultaid:'goal_urate' }} mg/dL</h3>
+      <p>Gout will be best eliminated with a <a href="NEED PAGE ABOUT GOAL URIC ACID">goal uric acid</a> of {{ object.decision_aid|get_ultaid:'goal_urate' }} mg/dL.</p>
       {% endif %}
   </div>
 </div>
+
 {% if request.user.is_authenticated %}
   {% if request.user.ppxaid %}
-    <a class="btn btn-primary btn-lg" href="{% url 'ultplan:create' %}" role="button" style="float: right;">ULTPlan</a>
+      <form method="post"
+        action="{% url 'ultplan:create' %}">
+        {% csrf_token %}
+        <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"
+          value="treatment">ULTPlan</button>
+      </form>
   {% else %}
     <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button" style="float: right;">PPxAid</a>
   {% endif %}
-    <hr class="my-6" color="white">
-
-
+{% endif %}
+<hr class="my-6" color="white">

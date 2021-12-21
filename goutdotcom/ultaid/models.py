@@ -18,6 +18,7 @@ from ..history.models import (
 )
 from .choices import *
 
+
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
@@ -87,10 +88,13 @@ class ULTAid(TimeStampedModel):
 
         returns {dict}: {dict containing drug, dose, goal uric acid, whether or not the patient is on dialysis, whether or not he or she should see a rheumatologist, and whether or not they are unwilling to take ULT.}"""
 
+        ### NEED TO LINK IN ULT to CALCULATE GOAL_URATE
+
         ult_choice = {
             "drug": "allopurinol",
-            "dose": "100 mg",
-            "goal_urate": "6.0 mg/dL",
+            "dose": 100,
+            "goal_urate": 6.0,
+            "lab_interval": 42,
             "dialysis": False,
             "rheumatologist": False,
             "need": True,
@@ -107,14 +111,14 @@ class ULTAid(TimeStampedModel):
                 if self.ckd.stage != None:
                     if ult_choice["drug"] == "febuxostat":
                         if self.ckd.stage < 3:
-                            ult_choice["dose"] = "40 mg"
+                            ult_choice["dose"] = 40
                         else:
-                            ult_choice["dose"] = "20 mg"
+                            ult_choice["dose"] = 20
                     else:
                         if self.ckd.stage < 3:
-                            ult_choice["dose"] = "100 mg"
+                            ult_choice["dose"] = 100
                         else:
-                            ult_choice["dose"] = "50 mg"
+                            ult_choice["dose"] = 50
 
             if self.allopurinol_hypersensitivity.value == True:
                 if (
@@ -127,13 +131,13 @@ class ULTAid(TimeStampedModel):
                 if self.ckd.value == True:
                     if self.ckd.stage != None:
                         if self.ckd.stage < 3:
-                            ult_choice["dose"] = "40 mg"
+                            ult_choice["dose"] = 40
                         else:
-                            ult_choice["dose"] = "20 mg"
+                            ult_choice["dose"] = 20
                     else:
-                        ult_choice["dose"] = "20 mg"
+                        ult_choice["dose"] = 20
                 else:
-                    ult_choice["dose"] = "40 mg"
+                    ult_choice["dose"] = 40
 
             if self.febuxostat_hypersensitivity.value == True:
                 if self.allopurinol_hypersensitivity.value == True:
@@ -141,10 +145,13 @@ class ULTAid(TimeStampedModel):
                 if self.ckd.value == True:
                     if self.ckd.stage != None:
                         if self.ckd.stage < 3:
-                            ult_choice["dose"] = "100 mg"
+                            ult_choice["dose"] = 100
                     else:
-                        ult_choice["dose"] = "50 mg"
-
+                        ult_choice["dose"] = 50
+            if self.user:
+                if self.user.ult:
+                    if self.user.ult.erosions == True or self.user.ult.tophi == True:
+                        ult_choice["goal_urate"] = 5.0
         elif self.need == False and self.want == True:
             ult_choice["need"] = False
         elif self.need == True and self.want == False:

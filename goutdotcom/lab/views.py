@@ -258,13 +258,13 @@ class ULTPlanCreate(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        ALT_form = self.ALT_form_class(request.POST, instance=ALT())
-        AST_form = self.form_class(request.POST, instance=AST())
-        creatinine_form = self.creatinine_form_class(request.POST, instance=Creatinine())
-        hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=Hemoglobin())
-        platelet_form = self.platelet_form_class(request.POST, instance=Platelet())
-        WBC_form = self.WBC_form_class(request.POST, instance=Platelet())
-        urate_form = self.urate_form_class(request.POST, instance=Urate())
+        ALT_form = self.ALT_form_class(request.POST, instance=ALT(), prefix="ALT_form")
+        AST_form = self.AST_form_class(request.POST, instance=AST(), prefix="AST_form")
+        creatinine_form = self.creatinine_form_class(request.POST, instance=Creatinine(), prefix="creatinine_form")
+        hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=Hemoglobin(), prefix="hemoglobin_form")
+        platelet_form = self.platelet_form_class(request.POST, instance=Platelet(), prefix="platelet_form")
+        WBC_form = self.WBC_form_class(request.POST, instance=Platelet(), prefix="WBC_form")
+        urate_form = self.urate_form_class(request.POST, instance=Urate(), prefix="urate_form")
 
         if (
             ALT_form.is_valid()
