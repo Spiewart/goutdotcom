@@ -5,6 +5,8 @@ from django import forms
 
 from .models import Urate
 
+class ULTPlanForm(forms.ModelForm):
+    pass
 
 class UrateForm(forms.ModelForm):
     class Meta:

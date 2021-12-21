@@ -15,6 +15,8 @@ from django.views.generic import (
     View,
 )
 
+from goutdotcom.treatment.choices import COLCHICINE
+
 from ..flareaid.models import FlareAid
 from ..ppxaid.models import PPxAid
 from .forms import *
@@ -267,13 +269,27 @@ class FlareAidTreatmentCreate(LoginRequiredMixin, View):
         self.model(user=request.user, flareaid=self.flareaid).save()
         return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": self.kwargs["pk"]}))
 
+
 class PPxAidTreatmentCreate(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         self.treatment = self.kwargs["treatment"]
+        self.dose = self.kwargs["dose"]
+        self.freq = self.kwargs["freq"]
         self.model = apps.get_model("treatment", model_name=self.treatment)
         self.ppxaid = PPxAid.objects.get(pk=self.kwargs["pk"])
-        self.model(user=request.user, ppxaid=self.ppxaid).save()
+        if self.model == Colchicine:
+            self.model(
+                user=request.user,
+                ppxaid=self.ppxaid,
+                dose=self.dose,
+                freq=self.freq,
+                dose2=None,
+                dose3=None,
+            ).save()
+        else:
+            self.model(user=request.user, ppxaid=self.ppxaid, dose=self.dose, freq=self.freq).save()
         return HttpResponseRedirect(reverse("ppxaid:detail", kwargs={"pk": self.kwargs["pk"]}))
+
 
 class TreatmentCreate(LoginRequiredMixin, CreateView):
     fields = ["dose", "freq", "side_effects"]

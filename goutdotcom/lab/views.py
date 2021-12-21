@@ -12,6 +12,16 @@ from django.views.generic import (
     UpdateView,
 )
 
+from ..ultplan.models import ULTPlan
+from .forms import (
+    ALTForm,
+    ASTForm,
+    CreatinineForm,
+    HemoglobinForm,
+    PlateletForm,
+    UrateForm,
+    WBCForm,
+)
 from .models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet, Urate
 
 
@@ -206,3 +216,104 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
+
+
+class ULTPlanCreate(CreateView):
+    model = AST
+    form_class = ASTForm
+    ALT_form_class = ALTForm
+    creatinine_form_class = CreatinineForm
+    hemoglobin_form_class = HemoglobinForm
+    platelet_form_class = PlateletForm
+    WBC_form_class = WBCForm
+    urate_form_class = UrateForm
+
+    def form_valid(self, form):
+        # Fetch ULTForm.pk from **kwargs, assign to form instance
+        self.ultplan = ULTPlan.objects.get(pk=self.kwargs.get("ultplan"))
+        form.instance.ultplan = self.ultplan
+        # Check if user is authenticated, assign to form instance if so
+        if self.request.user.is_authenticated:
+            form.instance.user = self.request.user
+            return super().form_valid(form)
+        else:
+            return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(ULTPlanCreate, self).get_context_data(**kwargs)
+        if "ALT_form" not in context:
+            context["ALT_form"] = self.ALT_form_class(self.request.GET)
+        if "AST_form" not in context:
+            context["AST_form"] = self.AST_form_class(self.request.GET)
+        if "creatinine_form" not in context:
+            context["creatinine_form"] = self.creatinine_form_class(self.request.GET)
+        if "hemoglobin_form" not in context:
+            context["hemoglobin_form"] = self.hemoglobin_form_class(self.request.GET)
+        if "platelet_form" not in context:
+            context["plateet_form"] = self.platelet_form_class(self.request.GET)
+        if "WBC_form" not in context:
+            context["WBC_form"] = self.WBC_form_class(self.request.GET)
+        if "urate_form" not in context:
+            context["urate_form"] = self.urate_form_class(self.request.GET)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        ALT_form = self.ALT_form_class(request.POST, instance=ALT())
+        AST_form = self.form_class(request.POST, instance=AST())
+        creatinine_form = self.creatinine_form_class(request.POST, instance=Creatinine())
+        hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=Hemoglobin())
+        platelet_form = self.platelet_form_class(request.POST, instance=Platelet())
+        WBC_form = self.WBC_form_class(request.POST, instance=Platelet())
+        urate_form = self.urate_form_class(request.POST, instance=Urate())
+
+        if (
+            ALT_form.is_valid()
+            and AST_form.is_valid()
+            and creatinine_form.is_valid()
+            and hemoglobin_form.is_valid()
+            and platelet_form.is_valid()
+            and WBC_form.is_valid()
+            and urate_form.is_valid()
+        ):
+            ultplan = ULTPlan.objects.get(pk=kwargs["ultplan"])
+            ALT_data = ALT_form.save()
+            ALT_data.ultplan = ultplan
+            ALT_data.user = request.user
+            ALT_data.save()
+            AST_data = AST_form.save(commit=False)
+            AST_data.ultplan = ultplan
+            AST_data.user = request.user
+            AST_data.save()
+            creatinine_data = creatinine_form.save(commit=False)
+            creatinine_data.ultplan = ultplan
+            creatinine_data.user = request.user
+            creatinine_data.save()
+            hemoglobin_data = hemoglobin_form.save(commit=False)
+            hemoglobin_data.ultplan = ultplan
+            hemoglobin_data.user = request.user
+            hemoglobin_data.save()
+            platelet_data = platelet_form.save(commit=False)
+            platelet_data.ultplan = ultplan
+            platelet_data.user = request.user
+            platelet_data.save()
+            WBC_data = WBC_form.save(commit=False)
+            WBC_data.ultplan = ultplan
+            WBC_data.user = request.user
+            WBC_data.save()
+            urate_data = urate_form.save(commit=False)
+            urate_data.ultplan = ultplan
+            urate_data.user = request.user
+            urate_data.save()
+            return self.form_valid(AST_form)
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    ALT_form=self.ALT_form_class(request.POST, instance=ALT()),
+                    AST_form=self.form_class(request.POST, instance=AST()),
+                    creatinine_form=self.creatinine_form_class(request.POST, instance=Creatinine()),
+                    hemoglobin_form=self.hemoglobin_form_class(request.POST, instance=Hemoglobin()),
+                    platelet_form=self.platelet_form_class(request.POST, instance=Platelet()),
+                    WBC_form=self.WBC_form_class(request.POST, instance=Platelet()),
+                    urate_form=self.urate_form_class(request.POST, instance=Urate()),
+                )
+            )

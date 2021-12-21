@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.views.generic import CreateView, DetailView, UpdateView
@@ -58,6 +59,29 @@ class PPxAidCreate(CreateView):
             return super().form_valid(form)
         else:
             return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            try:
+                user_PPxAid = self.model.objects.get(user=self.request.user)
+            except self.model.DoesNotExist:
+                user_PPxAid = None
+            if user_PPxAid:
+                return redirect("ppxaid:update", pk=user_PPxAid.pk)
+            else:
+                return super().get(request, *args, **kwargs)
+        else:
+            if "ultaid" in kwargs:
+                try:
+                    ultaid = ULTAid.objects.get(pk=kwargs["ultaid"])
+                    ultaid_PPxAid = self.model.objects.get(ultaid=ultaid)
+                except self.model.DoesNotExist:
+                    ultaid_PPxAid = None
+                if ultaid_PPxAid:
+                    return redirect("ppxaid:detail", pk=ultaid.ppxaid.pk)
+                else:
+                    return super().get(request, *args, **kwargs)
+            return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(PPxAidCreate, self).get_context_data(**kwargs)
@@ -286,6 +310,19 @@ class PPxAidUpdate(LoginRequiredMixin, UpdateView):
         # Check if POST has 'ultaid' kwarg and assign PPxAid ULTAid OnetoOne related object based on pk='ultaid'
         if self.kwargs.get("ultaid"):
             form.instance.ultaid = ULTAid.objects.get(pk=self.kwargs.get("ultaid"))
+        # For updating, check if user has created a PPxTreatment model object out of previous iteration of PPxAid, if so, delete it
+        try:
+            form.instance.colchicine.delete()
+        except ObjectDoesNotExist:
+            pass
+        try:
+            form.instance.ibuprofen.delete()
+        except ObjectDoesNotExist:
+            pass
+        try:
+            form.instance.prednisone.delete()
+        except ObjectDoesNotExist:
+            pass
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

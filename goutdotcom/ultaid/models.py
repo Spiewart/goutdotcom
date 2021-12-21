@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.db.models.fields import BooleanField
 from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
 from django.utils.text import format_lazy
@@ -19,8 +18,6 @@ from ..history.models import (
 )
 from .choices import *
 
-
-# Create your models here.
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
@@ -83,13 +80,6 @@ class ULTAid(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-    )
-    titrating = models.BooleanField(
-        choices=BOOL_CHOICES,
-        null=True,
-        blank=True,
-        verbose_name="Titrating?",
-        help_text="Is this ULTAid plan in the process of medication titration?",
     )
 
     def decision_aid(self):

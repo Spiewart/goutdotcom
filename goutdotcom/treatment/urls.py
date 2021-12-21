@@ -20,6 +20,6 @@ urlpatterns = [
     path("create/<treatment>/", view=TreatmentCreate.as_view(), name="create"),
     path("create/flareaid/<int:pk>/<treatment>/", view=FlareAidTreatmentCreate.as_view(), name="flareaid-create"),
     path("create/ppx/<treatment>/", view=ProphylaxisCreate.as_view(), name="prophylaxis-create"),
-    path("create/ppxaid/<int:pk>/<treatment>/<dose>/", view=PPxAidTreatmentCreate.as_view(), name="ppxaid-create"),
+    path("create/ppxaid/<int:pk>/<treatment>/<dose>/<freq>/", view=PPxAidTreatmentCreate.as_view(), name="ppxaid-create"),
     path("update/<treatment>/<int:pk>/", view=TreatmentUpdate.as_view(), name="update"),
 ]

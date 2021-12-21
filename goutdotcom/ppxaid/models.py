@@ -154,7 +154,7 @@ class PPxAid(TimeStampedModel):
             else:
                 decisions["drug"] = COLCHICINE
                 decisions["dose"] = 0.6
-                decisions["freq"] = BID
+                decisions["freq"] = QDAY
         else:
             decisions["drug"] = NAPROXEN
             decisions["dose"] = 220

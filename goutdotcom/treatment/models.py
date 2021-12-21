@@ -130,6 +130,8 @@ class Colchicine(FlareTreatment):
     def __str__(self):
         if self.dose and self.dose2 and self.dose3:
             return f"{str(self.generic_name)} {str(self.dose)} mg (2 tabs) {str(self.freq)} then {str(self.dose2)} mg (1 tab) {str(self.freq2)} an hour later then {str(self.dose3)} mg {str(self.freq3)} for {str(self.duration)} days or until flare resolves"
+        elif self.dose:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (1 tab) {str(self.freq)}"
         else:
             return f'{str(self.generic_name) + " (dose not recorded)"}'
 

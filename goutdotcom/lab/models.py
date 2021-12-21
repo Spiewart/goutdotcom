@@ -1,17 +1,16 @@
 from decimal import *
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
 from django.db import models
-from django.db.models.fields import BooleanField, NullBooleanField
+from django.db.models.fields import BooleanField
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 
-from goutdotcom.lab.choices import CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
-from goutdotcom.profiles.models import PatientProfile
-from goutdotcom.ultaid.models import ULTAid
+from ..lab.choices import CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
+from ..profiles.models import PatientProfile
+from ..ultaid.models import ULTAid
+from ..ultplan.models import ULTPlan
 
 # Create your models here.
 class Lab(TimeStampedModel):
@@ -19,6 +18,7 @@ class Lab(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    ultplan = models.ForeignKey(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True)
     value = BooleanField()
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "lab"
