@@ -288,8 +288,6 @@ class ULTPlanCreate(CreateView):
             ALT_data = ALT_form.save()
             ALT_data.ultplan = ultplan
             ALT_data.user = request.user
-            print(ALT_data)
-            ALT_data.full_clean()
             ALT_data.save()
             AST_data = AST_form.save(commit=False)
             AST_data.ultplan = ultplan

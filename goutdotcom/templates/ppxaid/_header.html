@@ -1,68 +1,40 @@
 {% load ppxaid_extras %}
+<h1 id="rec">
+  {{ request.user|capfirst }}'s PPxAid:
+  {% if object.decision_aid|get_key:'doctor' == True %}
+  See a Doctor
+  {% elif object.decision_aid|get_key:'drug' == "prednisone" %}
+  <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a>
+  {% elif object.decision_aid|get_key:'drug' == "colchicine" %}
+  <a href="{% url 'treatment:about' 'colchicine' %}">colchicine</a>
+  {% elif object.decision_aid|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug' == "naproxen" %}
+  <a href="{% url 'treatment:about-NSAIDs' %}">NSAIDs</a>
+  {% elif object.decision_aid|get_key:'needinfo' == True %}
+  more information needed
+  {% else %}
+  ERROR
+  {% endif %}
+  <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-prophylaxis' %}" role="button">About Prophylaxis</a>
+</h1>
 <div class="row">
   <div class="col">
-    <h1 id="rec">PPxAid:
-      {% if object.decision_aid|get_key:'doctor' == True %}
-      See a Doctor
-      {% elif object.decision_aid|get_key:'drug' == "prednisone" %}
-      steroids
-      {% elif object.decision_aid|get_key:'drug' == "colchicine" %}
-      colchicine
-      {% elif object.decision_aid|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug1'|get_key:'drug' == "naproxen" %}
-      NSAIDs
-      {% elif object.decision_aid|get_key:'needinfo' == True %}
-      more information needed
+    <ul>
+      <li>{{ object }}</li>
+      <li>ULTAid:
+      {% if object.ultaid %}
+        <a href="{% url 'ultaid:detail' pk=object.ultaid.pk%}">{{ object.ultaid }}</a>
       {% else %}
-      ERROR
+        none
       {% endif %}
-    </h1>
-  </div>
-    {{ object.decision_aid }}
-    {% if object.ultaid %}
-    <a href="{% url 'ultaid:detail' pk=object.ultaid.pk%}">{{ object.ultaid }}</a>
-    {% endif %}
-  {% if request.user.is_authenticated %}
-  <div class="col-auto">
-    {% if object.prednisone or object.ibuprofen or object.naproxen or object.colchicine %}
-    {{ object.prednisone }} {{ object.ibuprofen }} {{ object.naproxen }} {{ object.colchicine }}
-    {% else %}
-    {% if object.decision_aid|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug' == "naproxen" %}
-    {% else %}
-    <form method="post"
-      action="{% url 'treatment:ppxaid-create' pk=object.pk treatment=object.decision_aid|get_key:'drug' dose=object.decision_aid|get_key:'dose' freq=object.decision_aid|get_key:'freq' %}">
-      {% csrf_token %}
-      <button class="btn btn-primary btn-lg" role="button" id="treatment-create" type="submit"
-        value="treatment">Create</button>
-    </form>
-    {% endif %}
-    {% endif %}
-  </div>
-  {% endif %}
-  <div class="col">
-    {% if object.decision_aid != "Need More Information" %}
-    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
-    {% if request.user.is_authenticated %}
-    {% if object.ultaid %}
-    <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-update' pk=object.pk ultaid=object.ultaid.pk %}"
-      role="button">Update</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' pk=object.pk %}" role="button">Update</a>
-    {% endif %}
-    {% endif %}
-    {% if object.decision_aid|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug' == "naproxen" %}
-    <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'ibuprofen' %}" role="button">About</a>
-    {% elif object.decision_aid|get_key:'drug' == "colchicine" %}
-    <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'colchicine' %}" role="button">About</a>
-    {% elif object.decision_aid|get_key:'drug' == "prednisone" %}
-    <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'steroids' %}" role="button">About</a>
-    {% endif %}
-    {% else %}
-    {% if request.user.is_authenticated %}
-    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.pk %}" role="button">Update</a>
-    {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
-    {% endif %}
-    {% endif %}
+      </li>
+      <li>ULTPlan:
+      {% if object.ultplan %}
+        <a href="{% url 'ultplan:detail' pk=object.ultplan.pk%}">{{ object.ultplan }}</a>
+      {% else %}
+        none
+      {% endif %}
+      </li>
+    </ul>
   </div>
 </div>
 <div class="row">

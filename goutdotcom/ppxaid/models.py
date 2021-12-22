@@ -161,7 +161,7 @@ class PPxAid(TimeStampedModel):
         return decisions
 
     def __str__(self):
-        return f'{str(self.decision_aid().get("drug"))}, {str(self.decision_aid().get("dose"))} {str(self.decision_aid().get("freq"))}'
+        return f'{str(self.decision_aid().get("drug"))} {str(self.decision_aid().get("dose"))} mg {str(self.decision_aid().get("freq"))}'
 
     def get_absolute_url(self):
         return reverse("ppxaid:detail", kwargs={"pk": self.pk})

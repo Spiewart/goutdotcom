@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% load ultplan_extras %}
+
+{% block content %}
+<main class="container-fluid content-container">
+  {% if request.user.ultplan %}
+  <a class="btn btn-primary btn-lg" href="{% url 'ultplan:detail' request.user.ultplan.pk %}" role="button" style="float: right;">ULTPlan</a>
+  {% else %}
+  <a class="btn btn-primary btn-lg" href="{% url 'ultplan:create' %}" role="button"
+    style="float: right;">Create ULTPlan</a>
+  {% endif %}
+  <h1>{{ request.user|capfirst }}'s ULTPlan Blueprint</h1>
+  <ul>
+    <li>User: {{ request.user|capfirst }}</li>
+    <li>ULTAid: {{ request.user.ultaid }}</li>
+    <li>PPxAid: {{ request.user.ppxaid }}</li>
+    <li>Goal uric acid: {{ request.user.ultaid.decision_aid|get_key:'goal_urate' }}</li>
+    <li>Interval between labs: {{ request.user.ultaid.decision_aid|get_key:'lab_interval' }}</li>
+</main>
+{% endblock content %}
+
+{% block inline_javascript %}
+
+{% endblock inline_javascript %}

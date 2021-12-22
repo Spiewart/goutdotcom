@@ -9,7 +9,6 @@ from ..ppxaid.models import PPxAid
 from ..ultaid.models import ULTAid
 from .choices import BOOL_CHOICES
 
-
 class ULTPlan(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ultaid = models.OneToOneField(ULTAid, on_delete=models.CASCADE)

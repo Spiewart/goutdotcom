@@ -3,10 +3,16 @@
 
 {% block content %}
 <main class="container-fluid content-container">
+  <a class="btn btn-primary btn-lg" href="{% url 'lab:ultplan-create' ultplan=object.pk %}" role="button"
+    style="float: right;">Lab Checkin</a>
+  <a class="btn btn-primary btn-lg" href="{% url 'ultplan:delete' pk=object.pk %}" role="button"
+    style="float: right;">Delete</a>
 <h1>{{ object }}</h1>
 <ul>
   <li>User: {{ object.user }}</li>
   <li>ULTAid: {{ object.ultaid }}</li>
+  <li>ULTAid: {{ object.allopurinol }}</li>
+  <li>ULTAid: {{ object.febuxostat }}</li>
   <li>PPxAid: {{ object.ppxaid }}</li>
   <li>Goal uric acid: {{ object.goal_urate }}</li>
   <li>Interval between labs: {{ object.lab_interval }}</li>
@@ -14,7 +20,7 @@
   <li>Last medication titration: {{ object.last_titration}}</li>
   <li>Overdue labs: {{ object.lab_status }}
 </ul>
- <a class="btn btn-primary btn-lg" href="{% url 'lab:ultplan-create' ultplan=object.pk %}" role="button" style="float: right;">Lab Checkin</a>
+
 </main>
 {% endblock content %}
 

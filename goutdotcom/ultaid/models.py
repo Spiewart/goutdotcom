@@ -164,3 +164,22 @@ class ULTAid(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("ultaid:detail", kwargs={"pk": self.pk})
+
+    def __str__(self):
+        if (
+            self.decision_aid()["rheumatologist"] != True
+            and self.decision_aid()["dialysis"] != True
+            and self.decision_aid()["need"] == True
+            and self.decision_aid()["want"] == True
+        ):
+            return f"{self.decision_aid()['drug']} {self.decision_aid()['dose']} mg daily"
+        elif self.decision_aid()["rheumatologist"] == True:
+            return "Rheumatologist"
+        elif self.decision_aid()["dialysis"] == True:
+            return "Dialysis"
+        elif self.decision_aid()["need"] == False:
+            return "ULT not indicated"
+        elif self.decision_aid()["want"] == False:
+            return "ULT not desired"
+        else:
+            return "Error"

@@ -56,6 +56,23 @@
         href="{% url 'lab:about' 'AST' %}">AST</a>,
       and
       <a href="{% url 'lab:about' 'ALT' %}">ALT</a> are checked with every blood draw to monitor for clinically significant changes.</p>
+      {% if request.user.is_authenticated %}
+        {% if object.decision_aid|get_ultaid:'rheumatologist' == True or object.decision_aid|get_ultaid:'dialysis' == True or object.decision_aid|get_ultaid:'need' == False or object.decision_aid|get_ultaid:'want' == False %}
+        {% else %}
+          {% if request.user.ppxaid %}
+          <form method="post" action="{% url 'ultplan:create' %}">
+            {% csrf_token %}
+            <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"
+              value="treatment">ULTPlan</button>
+          </form>
+          <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:detail' pk=object.ppxaid.pk %}" role="button"
+            style="float: right;">PPxAid</a>
+          {% else %}
+          <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button"
+            style="float: right;">Create PPxAid</a>
+          {% endif %}
+        {% endif %}
+      {% endif %}
       </div>
       <div class="col">
       <h3><u>Titration dose</u>: {{ object.decision_aid|get_ultaid:'dose'|capfirst }} mg daily</h3>
@@ -68,16 +85,4 @@
   </div>
 </div>
 
-{% if request.user.is_authenticated %}
-  {% if request.user.ppxaid %}
-      <form method="post"
-        action="{% url 'ultplan:create' %}">
-        {% csrf_token %}
-        <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"
-          value="treatment">ULTPlan</button>
-      </form>
-  {% else %}
-    <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button" style="float: right;">PPxAid</a>
-  {% endif %}
-{% endif %}
 <hr class="my-6" color="white">
