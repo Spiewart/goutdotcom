@@ -219,9 +219,9 @@ class IndexView(LoginRequiredMixin, ListView):
 
 
 class ULTPlanCreate(CreateView):
-    model = AST
-    form_class = ASTForm
-    ALT_form_class = ALTForm
+    model = ALT
+    form_class = ALTForm
+    AST_form_class = ASTForm
     creatinine_form_class = CreatinineForm
     hemoglobin_form_class = HemoglobinForm
     platelet_form_class = PlateletForm
@@ -242,7 +242,7 @@ class ULTPlanCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super(ULTPlanCreate, self).get_context_data(**kwargs)
         if "ALT_form" not in context:
-            context["ALT_form"] = self.ALT_form_class(self.request.GET)
+            context["ALT_form"] = self.form_class(self.request.GET)
         if "AST_form" not in context:
             context["AST_form"] = self.AST_form_class(self.request.GET)
         if "creatinine_form" not in context:
@@ -257,8 +257,17 @@ class ULTPlanCreate(CreateView):
             context["urate_form"] = self.urate_form_class(self.request.GET)
         return context
 
+    def get_object(self):
+        object = self.model
+        return object
+
+    def get_template_names(self):
+        template = "lab/ultplan_form.html"
+        return template
+
     def post(self, request, *args, **kwargs):
-        ALT_form = self.ALT_form_class(request.POST, instance=ALT(), prefix="ALT_form")
+        self.object = self.get_object()
+        ALT_form = self.form_class(request.POST, instance=ALT(), prefix="ALT_form")
         AST_form = self.AST_form_class(request.POST, instance=AST(), prefix="AST_form")
         creatinine_form = self.creatinine_form_class(request.POST, instance=Creatinine(), prefix="creatinine_form")
         hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=Hemoglobin(), prefix="hemoglobin_form")
@@ -279,6 +288,8 @@ class ULTPlanCreate(CreateView):
             ALT_data = ALT_form.save()
             ALT_data.ultplan = ultplan
             ALT_data.user = request.user
+            print(ALT_data)
+            ALT_data.full_clean()
             ALT_data.save()
             AST_data = AST_form.save(commit=False)
             AST_data.ultplan = ultplan
@@ -304,12 +315,12 @@ class ULTPlanCreate(CreateView):
             urate_data.ultplan = ultplan
             urate_data.user = request.user
             urate_data.save()
-            return self.form_valid(AST_form)
+            return self.form_valid(ALT_form)
         else:
             return self.render_to_response(
                 self.get_context_data(
-                    ALT_form=self.ALT_form_class(request.POST, instance=ALT()),
-                    AST_form=self.form_class(request.POST, instance=AST()),
+                    ALT_form=self.form_class(request.POST, instance=ALT()),
+                    AST_form=self.AST_form_class(request.POST, instance=AST()),
                     creatinine_form=self.creatinine_form_class(request.POST, instance=Creatinine()),
                     hemoglobin_form=self.hemoglobin_form_class(request.POST, instance=Hemoglobin()),
                     platelet_form=self.platelet_form_class(request.POST, instance=Platelet()),
