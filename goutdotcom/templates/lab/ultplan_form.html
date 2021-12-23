@@ -25,12 +25,20 @@
   <form method="post" action="{% url 'lab:ultplan-create' view.kwargs.ultplan %}">
     {% csrf_token %}
     {% crispy form %}
+    <hr size="6" color="white">
     {% crispy AST_form %}
+    <hr size="6" color="white">
     {% crispy creatinine_form %}
+    <hr size="6" color="white">
     {% crispy hemoglobin_form %}
+    <hr size="6" color="white">
     {% crispy platelet_form %}
+    <hr size="6" color="white">
     {% crispy WBC_form %}
+    <hr size="6" color="white">
     {% crispy urate_form %}
+    <hr size="6" color="white">
+    <input class="btn btn-primary btn-lg" type="submit" value="Submit">
   </form>
 {% endif %}
 {% endblock form %}

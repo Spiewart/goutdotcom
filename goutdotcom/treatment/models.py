@@ -30,7 +30,7 @@ class Treatment(TimeStampedModel):
 
     def __str__(self):
         if self.dose:
-            return f'{str(self.generic_name)} {str(self.dose)} + " mg " + {str(self.freq)}'
+            return f"{str(self.generic_name)} {str(self.dose)} mg  {str(self.freq)}"
         else:
             return f'{str(self.generic_name) + " (dose not recorded)"}'
 
@@ -152,8 +152,14 @@ class Ibuprofen(FlareTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
     def __str__(self):
-        if self.dose:
-            return f"{str(self.generic_name)} {str(self.dose)} mg (4 200 mg tabs) {str(self.freq)} (three times daily) for {str(self.duration)} days or until flare resolves"
+        if self.dose == 200:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (one 200 mg tab) {str(self.freq)} for {str(self.duration)} days or until flare resolves"
+        elif self.dose == 400:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (two 200 mg tabs) {str(self.freq)} for {str(self.duration)} days or until flare resolves"
+        elif self.dose == 600:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (three 200 mg tabs) {str(self.freq)} for {str(self.duration)} days or until flare resolves"
+        elif self.dose == 800:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (four 200 mg tabs) {str(self.freq)} for {str(self.duration)} days or until flare resolves"
         else:
             return f'{str(self.generic_name) + " (dose not recorded)"}'
 
@@ -169,8 +175,10 @@ class Naproxen(FlareTreatment):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
     def __str__(self):
-        if self.dose:
-            return f"{str(self.generic_name)} {str(self.dose)} mg (2 220 mg tabs) {str(self.freq)} (twice daily) for {str(self.duration)} days or until flare resolves"
+        if self.dose == 220 or self.dose == 250:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (1 tab) {str(self.freq)} (twice daily) for {str(self.duration)} days"
+        if self.dose == 440 or self.dose == 500:
+            return f"{str(self.generic_name)} {str(self.dose)} mg (2 tabs) {str(self.freq)} (twice daily) for {str(self.duration)} days"
         else:
             return f'{str(self.generic_name) + " (dose not recorded)"}'
 
@@ -229,6 +237,14 @@ class Prednisone(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=SYSSTEROID)
+
+    def __str__(self):
+        if self.dose and self.dose2:
+            return f"{str(self.generic_name)} mg {str(self.dose)} {str(self.freq)} then {str(self.dose2)} {str(self.freq2)} for {str(self.duration)} days or until flare resolves"
+        elif self.dose:
+            return f"{str(self.generic_name)} mg {str(self.dose)} {str(self.freq)}"
+        else:
+            return f'{str(self.generic_name) + " (dose not recorded)"}'
 
 
 class Methylprednisolone(FlareTreatment):

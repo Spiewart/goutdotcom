@@ -274,45 +274,59 @@ class ULTPlanCreate(CreateView):
         platelet_form = self.platelet_form_class(request.POST, instance=Platelet(), prefix="platelet_form")
         WBC_form = self.WBC_form_class(request.POST, instance=Platelet(), prefix="WBC_form")
         urate_form = self.urate_form_class(request.POST, instance=Urate(), prefix="urate_form")
+        ultplan = ULTPlan.objects.get(pk=kwargs["ultplan"])
 
         if (
             ALT_form.is_valid()
-            and AST_form.is_valid()
-            and creatinine_form.is_valid()
-            and hemoglobin_form.is_valid()
-            and platelet_form.is_valid()
-            and WBC_form.is_valid()
-            and urate_form.is_valid()
+            or AST_form.is_valid()
+            or creatinine_form.is_valid()
+            or hemoglobin_form.is_valid()
+            or platelet_form.is_valid()
+            or WBC_form.is_valid()
+            or urate_form.is_valid()
         ):
-            ultplan = ULTPlan.objects.get(pk=kwargs["ultplan"])
-            ALT_data = ALT_form.save()
-            ALT_data.ultplan = ultplan
-            ALT_data.user = request.user
-            ALT_data.save()
-            AST_data = AST_form.save(commit=False)
-            AST_data.ultplan = ultplan
-            AST_data.user = request.user
-            AST_data.save()
-            creatinine_data = creatinine_form.save(commit=False)
-            creatinine_data.ultplan = ultplan
-            creatinine_data.user = request.user
-            creatinine_data.save()
-            hemoglobin_data = hemoglobin_form.save(commit=False)
-            hemoglobin_data.ultplan = ultplan
-            hemoglobin_data.user = request.user
-            hemoglobin_data.save()
-            platelet_data = platelet_form.save(commit=False)
-            platelet_data.ultplan = ultplan
-            platelet_data.user = request.user
-            platelet_data.save()
-            WBC_data = WBC_form.save(commit=False)
-            WBC_data.ultplan = ultplan
-            WBC_data.user = request.user
-            WBC_data.save()
-            urate_data = urate_form.save(commit=False)
-            urate_data.ultplan = ultplan
-            urate_data.user = request.user
-            urate_data.save()
+            if ALT_form.is_valid():
+                ALT_data = ALT_form.save(commit=False)
+                ALT_data.ultplan = ultplan
+                ALT_data.user = request.user
+                if ALT_data.value:
+                    ALT_data.save()
+            if AST_form.is_valid():
+                AST_data = AST_form.save(commit=False)
+                AST_data.ultplan = ultplan
+                AST_data.user = request.user
+                if AST_data.value:
+                    AST_data.save()
+            if creatinine_form.is_valid():
+                creatinine_data = creatinine_form.save(commit=False)
+                creatinine_data.ultplan = ultplan
+                creatinine_data.user = request.user
+                if creatinine_data.value:
+                    creatinine_data.save()
+            if hemoglobin_form.is_valid():
+                hemoglobin_data = hemoglobin_form.save(commit=False)
+                if hemoglobin_data.value:
+                    hemoglobin_data.ultplan = ultplan
+                    hemoglobin_data.user = request.user
+                    hemoglobin_data.save()
+            if platelet_form.is_valid():
+                platelet_data = platelet_form.save(commit=False)
+                if platelet_data.value:
+                    platelet_data.ultplan = ultplan
+                    platelet_data.user = request.user
+                    platelet_data.save()
+            if WBC_form.is_valid():
+                WBC_data = WBC_form.save(commit=False)
+                if WBC_data.value:
+                    WBC_data.ultplan = ultplan
+                    WBC_data.user = request.user
+                    WBC_data.save()
+            if urate_form.is_valid():
+                urate_data = urate_form.save(commit=False)
+                if urate_data.value:
+                    urate_data.ultplan = ultplan
+                    urate_data.user = request.user
+                    urate_data.save()
             return self.form_valid(ALT_form)
         else:
             return self.render_to_response(

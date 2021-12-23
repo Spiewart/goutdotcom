@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.apps import apps
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -55,7 +56,9 @@ class ULTPlanCreate(LoginRequiredMixin, View):
                     dose=self.ppxaid.decision_aid().get("dose"),
                     freq=self.ppxaid.decision_aid().get("freq"),
                     dose2=None,
+                    freq2=None,
                     dose3=None,
+                    freq3=None,
                     user=request.user,
                     ppxaid=self.ppxaid,
                 )
@@ -79,6 +82,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             PPx.ultplan = ultplan
             PPx.save()
             # Return redirect to ultplan:detail
+            messages.success(request, "ULTPlan created.")
             return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": ultplan.pk}))
         # These last 2 elif and else statements will only be called if a user types in the ultplan:create url rather than following the button-links displayed on their ULTAid detail page
         # If View ultaid exists but ppxaid does not, redirect to ppxaid:ultaid-create with kwargs user.ultaid.pk

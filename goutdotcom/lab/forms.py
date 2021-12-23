@@ -26,18 +26,15 @@ class ALTForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ALTForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        # self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log an ALT",
+                "ALT",
                 "value",
+                "date_drawn",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
@@ -61,18 +58,15 @@ class ASTForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ASTForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log an AST",
+                "AST",
                 "value",
+                "date_drawn",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
@@ -96,18 +90,15 @@ class CreatinineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreatinineForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log a creatinine",
+                "Creatinine",
                 "value",
+                "date_drawn",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
@@ -131,18 +122,15 @@ class HemoglobinForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HemoglobinForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log a hemoglobin",
+                "Hemoglobin",
                 "value",
+                "date_drawn",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
@@ -166,18 +154,15 @@ class PlateletForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PlateletForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log a platelet",
+                "Platelet",
                 "value",
+                "date_drawn",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
@@ -201,18 +186,15 @@ class WBCForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(WBCForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log a WBC",
+                "WBC",
                 "value",
+                "date_drawn",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
@@ -236,18 +218,15 @@ class UrateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UrateForm, self).__init__(*args, **kwargs)
-
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
+        self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
-                "Log a uric acid",
+                "Uric acid",
                 "value",
+                "date_drawn",
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
 
 
@@ -265,11 +244,8 @@ class UrateFlareForm(UrateForm):
         super(UrateFlareForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
         self.fields["value"].label = "Do you know what your uric acid was during your flare?"
-        # If you pass FormHelper constructor a form instance
-        # It builds a default layout with all its fields
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        # You can dynamically adjust your layout
         self.helper.layout = Layout(
             Fieldset(
                 "",

@@ -12,6 +12,7 @@ from ..profiles.models import PatientProfile
 from ..ultaid.models import ULTAid
 from ..ultplan.models import ULTPlan
 
+
 # Create your models here.
 class Lab(TimeStampedModel):
     user = models.ForeignKey(
@@ -19,7 +20,6 @@ class Lab(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     ultplan = models.ForeignKey(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True)
-    value = BooleanField()
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "lab"
     date_drawn = models.DateTimeField(
@@ -55,37 +55,49 @@ class Urate(Lab):
         null=True,
         blank=True,
     )
-    value = models.DecimalField(max_digits=3, decimal_places=1, help_text="Typically reported in mg/dL")
+    value = models.DecimalField(
+        max_digits=3, decimal_places=1, help_text="Uric acid is typically reported in micrograms per deciliter (mg/dL)"
+    )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "urate"
 
 
 class ALT(Lab):
-    value = models.IntegerField(help_text="ALT / SGPT")
+    value = models.IntegerField(help_text="ALT (SGPT) is typically reported in units per liter (U/L)")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "ALT"
 
 
 class AST(Lab):
-    value = models.IntegerField(help_text="AST / SGOT")
+    value = models.IntegerField(help_text="AST (SGOT) is typically reported in units per liter (U/L)")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "AST"
 
 
 class Platelet(Lab):
-    value = models.IntegerField(help_text="PLT / platelets")
+    value = models.IntegerField(
+        help_text="PLT (platelets) is typically reported in platelets per microliter (PLT/microL)"
+    )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=PLTMICROL)
     name = "platelet"
 
 
 class WBC(Lab):
-    value = models.DecimalField(max_digits=3, decimal_places=1, help_text="WBC")
+    value = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        help_text="WBC (white blood cells) is typically reported as cells per cubic millimeter (cells/mm^3)",
+    )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=CELLSMM3)
     name = "WBC"
 
 
 class Hemoglobin(Lab):
-    value = models.DecimalField(max_digits=3, decimal_places=1, help_text="HGB")
+    value = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        help_text="HGB (hemoglobin) is typically reporeted in grams per deciliter (g/dL)",
+    )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=GDL)
     name = "hemoglobin"
 
@@ -98,7 +110,9 @@ def round_decimal(value, places):
 
 
 class Creatinine(Lab):
-    value = models.DecimalField(max_digits=4, decimal_places=2, help_text="creatinine")
+    value = models.DecimalField(
+        max_digits=4, decimal_places=2, help_text="Creatinine is typically reported as milligrams per deciliter (mg/dL)"
+    )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "creatinine"
 
