@@ -1,9 +1,12 @@
 from django.apps import apps
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import modelform_factory
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -43,7 +46,9 @@ class LabAbout(TemplateView):
         return context
 
 
-class LabCreate(LoginRequiredMixin, CreateView):
+class LabCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    success_message = "Lab created!"
+
     def get(self, request, *args, **kwargs):
         self.object = None
         self.lab = self.kwargs["lab"]
@@ -94,6 +99,13 @@ class LabCreate(LoginRequiredMixin, CreateView):
             }
         )
         return context
+
+    def get_success_Url(self):
+        print(self.kwargs)
+        if self.kwargs["ultplan"]:
+            return reverse("ultplan:detail", kwargs={"pk": self.kwargs["ultplan"]})
+        else:
+            return reverse("lab:detail", kwargs={"lab": self.kwargs["lab"]})
 
 
 class LabDetail(LoginRequiredMixin, DetailView):
@@ -233,7 +245,8 @@ class ULTPlanCreate(CreateView):
 
     def form_valid(self, form):
         # Fetch ULTForm.pk from **kwargs, assign to form instance
-        self.ultplan = ULTPlan.objects.get(pk=self.kwargs.get("ultplan"))
+        if self.kwargs["pk"]:
+            self.ultplan = ULTPlan.objects.get(pk=self.kwargs.get("pk"))
         form.instance.ultplan = self.ultplan
         # Check if user is authenticated, assign to form instance if so
         if self.request.user.is_authenticated:

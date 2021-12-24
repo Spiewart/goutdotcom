@@ -5,13 +5,19 @@
           Log a Lab
         </button>
         <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='urate' pk=view.kwargs.pk %}">Uric Acid</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='ALT' pk=view.kwargs.pk %}">ALT</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='AST' pk=view.kwargs.pk %}">AST</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='WBC' pk=view.kwargs.pk %}">WBC</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='hemoglobin' pk=view.kwargs.pk %}">Hemoglobin</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='platelet' pk=view.kwargs.pk %}">Platelets</a></li>
-          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='creatinine' pk=view.kwargs.pk %}">Creatinine</a></li>
+          <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' lab='urate' ultplan=view.kwargs.pk %}">Uric Acid</a></li>
+          <li><a class="dropdown-item"
+              href="{% url 'lab:single-ultplan-create' lab='ALT' ultplan=view.kwargs.pk %}">ALT</a></li>
+          <li><a class="dropdown-item"
+              href="{% url 'lab:single-ultplan-create' lab='AST' ultplan=view.kwargs.pk %}">AST</a></li>
+          <li><a class="dropdown-item"
+              href="{% url 'lab:single-ultplan-create' lab='WBC' ultplan=view.kwargs.pk %}">WBC</a></li>
+          <li><a class="dropdown-item"
+              href="{% url 'lab:single-ultplan-create' lab='hemoglobin' ultplan=view.kwargs.pk %}">Hemoglobin</a></li>
+          <li><a class="dropdown-item"
+              href="{% url 'lab:single-ultplan-create' lab='platelet' ultplan=view.kwargs.pk %}">Platelets</a></li>
+          <li><a class="dropdown-item"
+              href="{% url 'lab:single-ultplan-create' lab='creatinine' ultplan=view.kwargs.pk %}">Creatinine</a></li>
         </ul>
       </div>
     </div>
