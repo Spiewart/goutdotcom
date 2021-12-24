@@ -80,6 +80,9 @@ class LabCreate(LoginRequiredMixin, CreateView):
     ]
 
     def form_valid(self, form):
+        # Check if ultplan kwarg was sent via the url and, if so, assign it to the lab ultplan via the template button => POST request
+        if self.kwargs.get("ultplan"):
+            form.instance.ultplan = ULTPlan.objects.get(pk=self.kwargs.get("ultplan"))
         form.instance.user = self.request.user
         return super().form_valid(form)
 

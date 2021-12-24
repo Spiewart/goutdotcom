@@ -7,6 +7,7 @@
     style="float: right;">Lab Checkin</a>
   <a class="btn btn-primary btn-lg" href="{% url 'ultplan:delete' pk=object.pk %}" role="button"
     style="float: right;">Delete</a>
+  {% include 'lab/_ultplan_lab_create_button.html' %}
 <h1>{{ object }}</h1>
 <ul>
   <li>User: {{ object.user }}</li>

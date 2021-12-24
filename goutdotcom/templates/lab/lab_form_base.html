@@ -22,11 +22,18 @@
       </div>
     </form>
   {% else %}
+  {% if view.kwarg.ultplan %}
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:create' lab ultplan=view.kwarg.pk %}">
+  {% else %}
     <form class="form-horizontal gdc-default" method="post" action="{% url 'lab:create' lab %}">
+  {% endif %}
       {% csrf_token %}
       {{ form|crispy }}
       <div class="control-group">
         <div class="controls">
+          <button type="submit" class="btn btn-primary">
+            Create
+          </button>
           <button type="submit" class="btn btn-primary">
             Create
           </button>
