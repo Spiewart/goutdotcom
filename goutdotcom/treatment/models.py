@@ -240,9 +240,9 @@ class Prednisone(FlareTreatment):
 
     def __str__(self):
         if self.dose and self.dose2:
-            return f"{str(self.generic_name)} mg {str(self.dose)} {str(self.freq)} then {str(self.dose2)} {str(self.freq2)} for {str(self.duration)} days or until flare resolves"
+            return f"{str(self.generic_name)} {str(self.dose)} mg {str(self.freq)} then {str(self.dose2)} {str(self.freq2)} for {str(self.duration)} days or until flare resolves"
         elif self.dose:
-            return f"{str(self.generic_name)} mg {str(self.dose)} {str(self.freq)}"
+            return f"{str(self.generic_name)} {str(self.dose)} mg {str(self.freq)}"
         else:
             return f'{str(self.generic_name) + " (dose not recorded)"}'
 

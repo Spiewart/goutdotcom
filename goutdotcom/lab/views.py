@@ -47,8 +47,6 @@ class LabAbout(TemplateView):
 
 
 class LabCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    success_message = "Lab created!"
-
     def get(self, request, *args, **kwargs):
         self.object = None
         self.lab = self.kwargs["lab"]
@@ -89,6 +87,7 @@ class LabCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         if self.kwargs.get("ultplan"):
             form.instance.ultplan = ULTPlan.objects.get(pk=self.kwargs.get("ultplan"))
         form.instance.user = self.request.user
+        messages.success(self.request, f"{self.kwargs['lab'].capitalize()} created successfully!")
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -100,8 +99,7 @@ class LabCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         )
         return context
 
-    def get_success_Url(self):
-        print(self.kwargs)
+    def get_success_url(self):
         if self.kwargs["ultplan"]:
             return reverse("ultplan:detail", kwargs={"pk": self.kwargs["ultplan"]})
         else:

@@ -1,12 +1,12 @@
 {% extends "base_form.html" %}
 {% load crispy_forms_tags %}
-
+{% block header %}
+<h1><b>DELETE</b>: {{ object|capfirst }}</h1>
+{% endblock header %}
 {% block form %}
-  {{ request.user.ultplan }}
 <form method="post" action="{% url 'ultplan:delete' pk=request.user.ultplan.pk %}">
   {% csrf_token %}
-
-  <p>Are you sure you want to delete "{{ object }}"?</p>
-  <input type="submit" value="Confirm">
+  <p>Are you sure you want to delete your ULTPlan?</p>
+  <input class="btn btn-primary btn-lg" type="submit" value="Confirm">
 </form>
 {% endblock form %}

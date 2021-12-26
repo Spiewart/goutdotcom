@@ -11,14 +11,28 @@
 <h1>{{ object }}</h1>
 <ul>
   <li>User: {{ object.user }}</li>
-  <li>ULTAid: {{ object.ultaid }}</li>
-  <li>ULTAid: {{ object.allopurinol }}</li>
-  <li>ULTAid: {{ object.febuxostat }}</li>
-  <li>PPxAid: {{ object.ppxaid }}</li>
-  <li>PPxAid: {{ object.naproxen }}</li>
-  <li>PPxAid: {{ object.ibuprofen }}</li>
-  <li>PPxAid: {{ object.prednisone }}</li>
-  <li>PPxAid: {{ object.colchicine }}</li>
+  <li>ULTAid:
+  {% if object.allopurinol %}
+  {{ object.allopurinol }}
+  {% endif %}
+  {% if object.febuxostat %}
+  {{ object.febuxostat }}
+  {% endif %}
+  </li>
+  <li>PPxAid:
+  {% if object.naproxen %}
+  {{ object.naproxen }}
+  {% endif %}
+  {% if object.ibuprofen %}
+  {{ object.ibuprofen }}
+  {% endif %}
+  {% if object.prednisone %}
+  {{ object.prednisone }}
+  {% endif %}
+  {% if object.colchicine %}
+  {{ object.colchicine }}
+  {% endif %}
+  </li>
   <li>Goal uric acid: {{ object.goal_urate }}</li>
   <li>Interval between labs: {{ object.lab_interval }}</li>
   <li>Under titration: {{ object.titrating }}</li>

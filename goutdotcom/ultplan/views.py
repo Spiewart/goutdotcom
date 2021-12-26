@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.views.generic import DeleteView, DetailView, TemplateView, View
 
 from ..ppxaid.models import PPxAid
-from ..treatment.models import Colchicine
+from ..treatment.models import Colchicine, Prednisone
 from ..ultaid.models import ULTAid
 from .models import ULTPlan
 
@@ -59,6 +59,17 @@ class ULTPlanCreate(LoginRequiredMixin, View):
                     freq2=None,
                     dose3=None,
                     freq3=None,
+                    user=request.user,
+                    ppxaid=self.ppxaid,
+                )
+            if PPx_model == Prednisone:
+                print(self.ppxaid)
+                PPx = PPx_model.objects.create(
+                    dose=self.ppxaid.decision_aid().get("dose"),
+                    freq=self.ppxaid.decision_aid().get("freq"),
+                    dose2=None,
+                    freq2=None,
+                    duration2=None,
                     user=request.user,
                     ppxaid=self.ppxaid,
                 )

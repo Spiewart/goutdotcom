@@ -19,13 +19,13 @@ class Lab(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    ultplan = models.ForeignKey(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True)
+    ultplan = models.ForeignKey(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "lab"
     date_drawn = models.DateTimeField(
         help_text="What day was this lab drawn?", default=timezone.now, null=True, blank=True
     )
-    ULTAid = models.ForeignKey(ULTAid, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    ultaid = models.ForeignKey(ULTAid, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     class Meta:
         abstract = True
