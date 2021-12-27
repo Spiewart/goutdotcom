@@ -1,6 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
-from datewidget.widgets import DateWidget
+from datetimewidget.widgets import DateWidget
 from django import forms
 
 from .models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet, Urate
@@ -173,16 +173,6 @@ class WBCForm(forms.ModelForm):
             "value",
             "date_drawn",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_drawn": DateWidget(
-                options=dateTimeOptions, attrs={"id": "WBC-date_drawn.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(WBCForm, self).__init__(*args, **kwargs)

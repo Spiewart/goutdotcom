@@ -1,5 +1,7 @@
-{% extends "base.html" %} {% block title %} {{ user.username }}
-{% endblock title %} {% block content %}
+{% extends "base.html" %}
+
+{% block title %} {{ user.username }} {{% endblock title %}
+{% block content %}
 <main class="container aidcreateupdate-form">
   {% block header %}
   <h1>{{ user.username|capfirst }}</h1>
