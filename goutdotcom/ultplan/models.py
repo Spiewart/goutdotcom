@@ -24,14 +24,104 @@ class ULTPlan(TimeStampedModel):
     )
     last_titration = models.DateField(help_text="When was the ULT dose last titrated?", null=True, blank=True)
 
-    def lab_status(self, lab):
-        lab_set = f"{lab}_set"
+    def alt_status(self):
+        # Takes
         try:
-            self.lab = self.lab_set.last()
+            self.alt = self.alt_set.last()
         except:
-            self.lab = None
-        if self.lab:
-            if datetime.now(timezone.utc) - self.lab.created >= timedelta(days=self.lab_interval):
+            self.alt = None
+        if self.alt:
+            if datetime.now(timezone.utc) - self.alt.created >= timedelta(days=self.lab_interval):
+                due = True
+            else:
+                due = False
+        else:
+            due = True
+        return due
+
+    def ast_status(self):
+        # Takes
+        try:
+            self.ast = self.ast_set.last()
+        except:
+            self.ast = None
+        if self.ast:
+            if datetime.now(timezone.utc) - self.ast.created >= timedelta(days=self.lab_interval):
+                due = True
+            else:
+                due = False
+        else:
+            due = True
+        return due
+
+    def creatinine_status(self):
+        # Takes
+        try:
+            self.creatinine = self.creatinine_set.last()
+        except:
+            self.creatinine = None
+        if self.creatinine:
+            if datetime.now(timezone.utc) - self.creatinine.created >= timedelta(days=self.lab_interval):
+                due = True
+            else:
+                due = False
+        else:
+            due = True
+        return due
+
+    def hemoglobin_status(self):
+        # Takes
+        try:
+            self.hemoglobin = self.hemoglobin_set.last()
+        except:
+            self.hemoglobin = None
+        if self.hemoglobin:
+            if datetime.now(timezone.utc) - self.hemoglobin.created >= timedelta(days=self.lab_interval):
+                due = True
+            else:
+                due = False
+        else:
+            due = True
+        return due
+
+    def platelet_status(self):
+        # Takes
+        try:
+            self.platelet = self.platelet_set.last()
+        except:
+            self.platelet = None
+        if self.platelet:
+            if datetime.now(timezone.utc) - self.platelet.created >= timedelta(days=self.lab_interval):
+                due = True
+            else:
+                due = False
+        else:
+            due = True
+        return due
+
+    def wbc_status(self):
+        # Takes
+        try:
+            self.wbc = self.wbc_set.last()
+        except:
+            self.wbc = None
+        if self.ast:
+            if datetime.now(timezone.utc) - self.wbc.created >= timedelta(days=self.lab_interval):
+                due = True
+            else:
+                due = False
+        else:
+            due = True
+        return due
+
+    def urate_status(self):
+        # Takes
+        try:
+            self.urate = self.urate_set.last()
+        except:
+            self.urate = None
+        if self.ast:
+            if datetime.now(timezone.utc) - self.urate.created >= timedelta(days=self.lab_interval):
                 due = True
             else:
                 due = False
@@ -41,30 +131,30 @@ class ULTPlan(TimeStampedModel):
 
     def labs_due(self):
         if (
-            self.lab_status("alt") == False
-            and self.lab_status("ast") == False
-            and self.lab_status("creatinine") == False
-            and self.lab_status("hemoglobin") == False
-            and self.lab_status("platelet") == False
-            and self.lab_status("wbc") == False
-            and self.lab_status("urate") == False
+            self.alt_status() == False
+            and self.ast_status() == False
+            and self.creatinine_status() == False
+            and self.hemoglobin_status() == False
+            and self.platelet_status() == False
+            and self.wbc_status() == False
+            and self.urate_status() == False
         ):
             return True
         else:
             overdue_labs = []
-            if self.lab_status("alt")  == True:
+            if self.alt_status() == True:
                 overdue_labs.append("ALT")
-            if self.lab_status("ast") == True:
+            if self.ast_status() == True:
                 overdue_labs.append("AST")
-            if self.lab_status("creatinine") == True:
+            if self.creatinine_status() == True:
                 overdue_labs.append("creatinine")
-            if self.lab_status("hemoglobin") == True:
+            if self.hemoglobin_status() == True:
                 overdue_labs.append("hemoglobin")
-            if self.lab_status("platelet") == True:
+            if self.platelet_status() == True:
                 overdue_labs.append("platelets")
-            if self.lab_status("wbc") == True:
+            if self.wbc_status() == True:
                 overdue_labs.append("WBC")
-            if self.lab_status("urate") == True:
+            if self.urate_status() == True:
                 overdue_labs.append("urate")
             overdue_labs_string = ""
             if len(overdue_labs) > 1:

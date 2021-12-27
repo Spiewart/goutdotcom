@@ -117,6 +117,15 @@ body {
     color: $border-color;
   };
 
+  .content {
+    border-color: $border-color;
+    border-width: 2px;
+  }
+
+  .content ul {
+    list-style-type: none;
+  }
+
   #FlareAid-btn {
     float: none;
   }
@@ -147,7 +156,6 @@ body {
   justify-content: center;
   align-items: center;
   };
-
 }
 
 // For FlareAid, ULTAid, ULT create/update forms

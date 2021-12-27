@@ -77,6 +77,11 @@ body {
   .content-container .active, .content-container .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
     color: #e7e7e7; }
+  .content-container .content {
+    border-color: #e7e7e7;
+    border-width: 2px; }
+  .content-container .content ul {
+    list-style-type: none; }
   .content-container #FlareAid-btn {
     float: none; }
   .content-container #cardiac_risk_list ul {

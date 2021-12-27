@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% load lab_extras %}
 
 {% block content %}
-<main role="main">
-  <div class="container default-container">
+<main role="main" class="container content-container">
     <h1 class="content-heading">{{ request.user|capfirst }}'s Labs<a class="btn btn-primary" href="{% url 'lab:about' 'alllabs' %}" role="button" style="float: right;">About Gout Labs</a>
     {% if request.user.is_authenticated %}
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
@@ -26,132 +26,19 @@
     {% endif %}
     </h1>
     <div class="row">
-        {% if urate_list %}
-        <div class="col">
-          <div class="container content-heading">
-          <h2 class="default-container"><a href="{% url 'lab:list' 'urate' %}">Uric Acid</a></h2>
-          {% for urate in urate_list %}
-          <div class="container default-container">
-            <p>{{ urate.value }} {{ urate.units }}</p>
-            {% if urate.date %}
-            <p>Date: <a href="{% url 'lab:detail' 'urate' urate.pk %}">{{ urate.date_drawn }}</a></p>
-            {% else %}
-            <p>Date: not recorded</p>
-            {% endif %}
-          </div>
+      <div class="col">
+        {% if labs %}
+          {% for lab in labs %}
+            <div class="container content">
+              <h2><a href="{% url 'lab:list' lab.name %}">{{ lab.name|capfirst}}</h2></a>
+              <ul>
+                <li>{{ lab.value }} {{ lab.urate.units }}</li>
+                <li>{% if lab.date_drawn %} Drawn: {{ lab.date_drawn }} {% else %} Created: {{ lab.created }}{% endif %}</li>
+              </ul>
+            </div>
           {% endfor %}
-          </div>
-        </div>
         {% endif %}
-        {% if creatinine_list %}
-        <div class="col">
-          <div class="container content-heading">
-            <h2 class="default-container"><a href="{% url 'lab:list' 'creatinine' %}">Creatinine</a></h2>
-            {% for creatinine in creatinine_list %}
-              <div class="container default-container">
-                <p>{{ creatinine.value }} {{ creatinine.units }} (eGFR: {{ creatinine.eGFR_calculator }})</p>
-                {% if creatinine.date_drawn %}
-                <p>Date: <a href="{% url 'lab:detail' 'creatinine' creatinine.pk %}">{{ creatinine.date_drawn }}</a></p>
-                {% else %}
-                <p>Date: not recorded</p>
-                {% endif %}
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-        </div>
-        <div class="row">
-          {% if ALT_list %}
-            <div class="col">
-              <div class="container content-heading">
-            <h2 class="default-container"><a href="{% url 'lab:list' 'ALT' %}">ALT</a></h2>
-            {% for ALT in ALT_list %}
-            <div class="container default-container">
-              <p>{{ ALT.value }} {{ ALT.units}}</p>
-              {% if ALT.date_drawn %}
-              <p>Date: <a href="{% url 'lab:detail' 'ALT' ALT.pk %}">{{ ALT.date_drawn }}</a></p>
-              {% else %}
-              <p>Date: not recorded</p>
-              {% endif %}
-            </div>
-            {% endfor %}
-            </div>
-          </div>
-          {% endif %}
-          {% if AST_list %}
-          <div class="col">
-            <div class="container content-heading">
-            <h2 class="default-container"><a href="{% url 'lab:list' 'AST' %}">AST</a></h2>
-            {% for AST in AST_list %}
-            <div class="container default-container">
-              <p>{{ AST.value }} {{ AST.units }}</p>
-              {% if AST.date_drawn %}
-              <p>Date: <a href="{% url 'lab:detail' 'AST' AST.pk %}">{{ AST.date_drawn }}</a></p>
-              {% else %}
-              <p>Date: not recorded</p>
-              {% endif %}
-            </div>
-            {% endfor %}
-            </div>
-          </div>
-          {% endif %}
-      </div>
-      <div class="row">
-        {% if platelet_list %}
-        <div class="col">
-          <div class="container content-heading">
-          <h2 class="default-container"><a href="{% url 'lab:list' 'platelet' %}">Platelets</a></h2>
-          {% for platelet in platelet_list %}
-          <div class="container default-container">
-            <p>{{ platelet.value }} {{ platelet.units}}</p>
-            {% if platelet.date_drawn %}
-            <p>Date: <a href="{% url 'lab:detail' 'platelet' platelet.pk %}">{{ platelet.date_drawn }}</a></p>
-            {% else %}
-            <p>Date: not recorded</p>
-            {% endif %}
-          </div>
-          {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-        {% if WBC_list %}
-        <div class="col">
-          <div class="container content-heading">
-            <h2 class="default-container"><a href="{% url 'lab:list' 'WBC' %}">WBC</a></h2>
-            {% for WBC in WBC_list %}
-            <div class="container default-container">
-              <p>{{ WBC.value }} {{ WBC.units }}</p>
-              {% if WBC.date_drawn %}
-              <p>Date: <a href="{% url 'lab:detail' 'WBC' WBC.pk %}">{{ WBC.date_drawn }}</a></p>
-              {% else %}
-              <p>Date: not recorded</p>
-              {% endif %}
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-       {% if hemoglobin_list %}
-       <div class="col">
-         <div class="container content-heading">
-          <h2 class="default-container"><a href="{% url 'lab:list' 'hemoglobin' %}">Hemoglobin</a></h2>
-          {% for hemoglobin in hemoglobin_list %}
-          <div class="container default-container">
-            <p>{{ hemoglobin.value }} {{ hemoglobin.units }}</p>
-            {% if hemoglobin.date_drawn %}
-            <p>Date: <a href="{% url 'lab:detail' 'hemoglobin' hemoglobin.pk %}">{{ hemoglobin.date_drawn }}</a></p>
-            {% else %}
-            <p>Date: not recorded</p>
-            {% endif %}
-          </div>
-          {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-      </div>
       </div>
     </div>
-  </div>
-  </main>
+</main>
 {% endblock content %}

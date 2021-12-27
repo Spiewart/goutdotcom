@@ -1,6 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
-from datetimewidget.widgets import DateTimeWidget
+from datewidget.widgets import DateWidget
 from django import forms
 
 from .models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet, Urate
@@ -19,7 +19,7 @@ class ALTForm(forms.ModelForm):
         }
         widgets = {
             # Use localization and bootstrap 3
-            "date_drawn": DateTimeWidget(
+            "date_drawn": DateWidget(
                 options=dateTimeOptions, attrs={"id": "ALT-date_drawn.pk"}, usel10n=True, bootstrap_version=3
             )
         }
@@ -51,7 +51,7 @@ class ASTForm(forms.ModelForm):
         }
         widgets = {
             # Use localization and bootstrap 3
-            "date_drawn": DateTimeWidget(
+            "date_drawn": DateWidget(
                 options=dateTimeOptions, attrs={"id": "AST-date_drawn.pk"}, usel10n=True, bootstrap_version=3
             )
         }
@@ -83,7 +83,7 @@ class CreatinineForm(forms.ModelForm):
         }
         widgets = {
             # Use localization and bootstrap 3
-            "date_drawn": DateTimeWidget(
+            "date_drawn": DateWidget(
                 options=dateTimeOptions, attrs={"id": "creatinine-date_drawn.pk"}, usel10n=True, bootstrap_version=3
             )
         }
@@ -115,7 +115,7 @@ class HemoglobinForm(forms.ModelForm):
         }
         widgets = {
             # Use localization and bootstrap 3
-            "date_drawn": DateTimeWidget(
+            "date_drawn": DateWidget(
                 options=dateTimeOptions, attrs={"id": "hemoglobin-date_drawn.pk"}, usel10n=True, bootstrap_version=3
             )
         }
@@ -147,7 +147,7 @@ class PlateletForm(forms.ModelForm):
         }
         widgets = {
             # Use localization and bootstrap 3
-            "date_drawn": DateTimeWidget(
+            "date_drawn": DateWidget(
                 options=dateTimeOptions, attrs={"id": "platelet-date_drawn.pk"}, usel10n=True, bootstrap_version=3
             )
         }
@@ -179,7 +179,7 @@ class WBCForm(forms.ModelForm):
         }
         widgets = {
             # Use localization and bootstrap 3
-            "date_drawn": DateTimeWidget(
+            "date_drawn": DateWidget(
                 options=dateTimeOptions, attrs={"id": "WBC-date_drawn.pk"}, usel10n=True, bootstrap_version=3
             )
         }
@@ -211,7 +211,7 @@ class UrateForm(forms.ModelForm):
         }
         widgets = {
             # Use localization and bootstrap 3
-            "date_drawn": DateTimeWidget(
+            "date_drawn": DateWidget(
                 options=dateTimeOptions, attrs={"id": "urate-date_drawn.pk"}, usel10n=True, bootstrap_version=3
             )
         }

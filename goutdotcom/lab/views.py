@@ -215,13 +215,15 @@ class IndexView(LoginRequiredMixin, ListView):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update(
             {
-                "urate_list": Urate.objects.filter(user=self.request.user).order_by("-date_drawn")[:1],
-                "ALT_list": ALT.objects.filter(user=self.request.user).order_by("-date_drawn")[:1],
-                "AST_list": AST.objects.filter(user=self.request.user).order_by("-date_drawn")[:1],
-                "platelet_list": Platelet.objects.filter(user=self.request.user).order_by("-date_drawn")[:1],
-                "WBC_list": WBC.objects.filter(user=self.request.user).order_by("-date_drawn")[:1],
-                "hemoglobin_list": Hemoglobin.objects.filter(user=self.request.user).order_by("-date_drawn")[:1],
-                "creatinine_list": Creatinine.objects.filter(user=self.request.user).order_by("-date_drawn")[:1],
+                "labs": [
+                Urate.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                ALT.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                AST.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                Platelet.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                WBC.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                Hemoglobin.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                Creatinine.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                ]
             }
         )
         return context

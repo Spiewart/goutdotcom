@@ -22,16 +22,14 @@ class Lab(TimeStampedModel):
     ultplan = models.ForeignKey(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "lab"
-    date_drawn = models.DateTimeField(
-        help_text="What day was this lab drawn?", default=timezone.now, null=True, blank=True
-    )
+    date_drawn = models.DateField(help_text="What day was this lab drawn?", default=None, null=True, blank=True)
     ultaid = models.ForeignKey(ULTAid, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     class Meta:
         abstract = True
 
     def __str__(self):
-        return str(self.value)
+        return f"{self.name} {self.value} {self.units}"
 
     def get_absolute_url(self):
         return reverse("lab:detail", kwargs={"pk": self.pk, "lab": self.name})
