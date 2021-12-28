@@ -64,6 +64,9 @@
       {% else %}
       Created {{ object.created }}
       {% endif %}
+      {% if object.ult %}
+        {{ object.ult }}
+      {% endif %}
     </h3>
       {% if request.user.is_authenticated %}
         {% if object.decision_aid|get_ultaid:'rheumatologist' == True or object.decision_aid|get_ultaid:'dialysis' == True or object.decision_aid|get_ultaid:'need' == False or object.decision_aid|get_ultaid:'want' == False %}

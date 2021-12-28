@@ -5,7 +5,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import modelform_factory
 from django.http.response import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import (
     CreateView,
@@ -103,7 +103,7 @@ class LabCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         if self.kwargs.get("ultplan"):
             return reverse("ultplan:detail", kwargs={"pk": self.kwargs["ultplan"]})
         else:
-            return reverse("lab:detail", kwargs={"lab": self.kwargs["lab"], 'pk': self.object.pk})
+            return reverse("lab:detail", kwargs={"lab": self.kwargs["lab"], "pk": self.object.pk})
 
 
 class LabDetail(LoginRequiredMixin, DetailView):
@@ -211,18 +211,28 @@ class IndexView(LoginRequiredMixin, ListView):
     template_name = "lab/index.html"
     model = Urate
 
+    def dispatch(self, *args, **kwargs):
+        # Check if user has a ULTPlan, redirect to lab:about all labs if not, send message to User indicating they need to make a ULTPlan before its worth reporting
+        try:
+            ultplan = self.request.user.ultplan
+        except ULTPlan.DoesNotExist:
+            messages.info(self.request, f"No reason to have labs without a ULTPlan!")
+            return redirect("lab:about", lab="alllabs")
+        if self.ultplan:
+            return super().dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update(
             {
                 "labs": [
-                Urate.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
-                ALT.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
-                AST.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
-                Platelet.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
-                WBC.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
-                Hemoglobin.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
-                Creatinine.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                    Urate.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                    ALT.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                    AST.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                    Platelet.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                    WBC.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                    Hemoglobin.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
+                    Creatinine.objects.filter(user=self.request.user, ultplan=self.request.user.ultplan).last(),
                 ]
             }
         )

@@ -10,18 +10,28 @@ from goutdotcom.history.models import HeartAttack
 from ..history.models import (
     CKD,
     AllopurinolHypersensitivity,
+    Erosions,
     FebuxostatHypersensitivity,
     HeartAttack,
     OrganTransplant,
     Stroke,
+    Tophi,
     XOIInteractions,
 )
+from ..ult.models import ULT
 from ..ultplan.models import ULTPlan
 from .choices import *
 
 
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    ult = models.OneToOneField(
+        ULT,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
+    )
     ultplan = models.OneToOneField(
         ULTPlan,
         on_delete=models.CASCADE,
@@ -83,6 +93,18 @@ class ULTAid(TimeStampedModel):
     )
     stroke = models.ForeignKey(
         Stroke,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    erosions = models.ForeignKey(
+        Erosions,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    tophi = models.ForeignKey(
+        Tophi,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

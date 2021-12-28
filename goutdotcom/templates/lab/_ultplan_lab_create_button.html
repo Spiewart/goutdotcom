@@ -1,28 +1,30 @@
-    <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
-      <div class="btn-group" role="group">
-        <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
-          aria-expanded="false">
-          Log a Lab
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
-          <li><a class="dropdown-item"
-              href="{% url 'lab:single-ultplan-create' lab='urate' ultplan=request.user.ultplan.pk %}">Uric Acid</a>
-          </li>
-          <li><a class="dropdown-item"
-              href="{% url 'lab:single-ultplan-create' lab='ALT' ultplan=request.user.ultplan.pk %}">ALT</a></li>
-          <li><a class="dropdown-item"
-              href="{% url 'lab:single-ultplan-create' lab='AST' ultplan=request.user.ultplan.pk %}">AST</a></li>
-          <li><a class="dropdown-item"
-              href="{% url 'lab:single-ultplan-create' lab='WBC' ultplan=request.user.ultplan.pk %}">WBC</a></li>
-          <li><a class="dropdown-item"
-              href="{% url 'lab:single-ultplan-create' lab='hemoglobin' ultplan=request.user.ultplan.pk %}">Hemoglobin</a>
-              </li>
-          <li><a class="dropdown-item"
-              href="{% url 'lab:single-ultplan-create' lab='platelet' ultplan=request.user.ultplan.pk %}">Platelets</a>
-              </li>
-          <li><a class="dropdown-item"
-              href="{% url 'lab:single-ultplan-create' lab='creatinine' ultplan=request.user.ultplan.pk %}">Creatinine</a>
-              </li>
-        </ul>
-      </div>
+{% if request.user.ultplan %}
+  <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+    <div class="btn-group" role="group">
+      <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
+        aria-expanded="false">
+        Log a Lab
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='urate' ultplan=request.user.ultplan.pk %}">Uric Acid</a>
+        </li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='ALT' ultplan=request.user.ultplan.pk %}">ALT</a></li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='AST' ultplan=request.user.ultplan.pk %}">AST</a></li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='WBC' ultplan=request.user.ultplan.pk %}">WBC</a></li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='hemoglobin' ultplan=request.user.ultplan.pk %}">Hemoglobin</a>
+            </li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='platelet' ultplan=request.user.ultplan.pk %}">Platelets</a>
+            </li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='creatinine' ultplan=request.user.ultplan.pk %}">Creatinine</a>
+            </li>
+      </ul>
     </div>
+  </div>
+{% endif %}

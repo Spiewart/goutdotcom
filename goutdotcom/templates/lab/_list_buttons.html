@@ -8,8 +8,10 @@
     <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
       <li><a class="dropdown-item" href="{% url 'lab:about' object_list|list_to_name %}">About
         </a></li>
+    {% if request.user.ultplan %}
       <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' object_list|list_to_name request.user.ultplan.pk %}">New
         </a></li>
+    {% endif %}
     </ul>
   </div>
 </div>

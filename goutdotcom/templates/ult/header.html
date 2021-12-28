@@ -1,13 +1,21 @@
-{% if request.user.is_authenticated %}
-<a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Update</a>
-{% else %}
-<a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Recalculate</a>
-{% endif %}
-{% if object.calculator == "Indicated" %}
-<h1><a href="{% url 'treatment:about-ult' %}">ULT</a>: Strongly Recommended
-</h1>
+<div class="row">
+  <div class="col">
+    {% if object.calculator == "Indicated" %}
+    <h1><a href="{% url 'treatment:about-ult' %}">ULT</a>: Strongly Recommended
+    </h1>
+    </div>
+  <div class="col">
+    {% if request.user.is_authenticated %}
+    <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Update</a>
+    {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Recalculate</a>
+    {% endif %}
+    <a class="btn btn-primary btn-lg" href="{% url 'ultaid:ult-create' ult=object.pk %}" role="button">ULT Helper</a>
+  </div>
+</div>
 <p>This means there is general medical consensus that you would benefit from ULT (urate-lowering therapy).
 This is backed by scientific evidence that you will be better off with than without preventative treatment.</p>
+
 <span>
 {% if request.user.is_authenticated %}
 {{ request.user|capfirst }},
@@ -32,7 +40,6 @@ Created: {{ object.created }}
 <h1>ULT Not Indicated</h1>
 <p>ULT is not recommended for your gout.</p>
 {% endif %}
-<a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">ULTAid</a>
 <hr class="my-6" color="white">
 
 

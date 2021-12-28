@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import Http404
 from django.shortcuts import redirect
@@ -283,6 +284,7 @@ class FlareAidList(ListView):
         try:
             return super().dispatch(*args, **kwargs)
         except Http404:
+            messages.info(self.request, f"No Flare Helpers to list!")
             return redirect("flare:about")
 
     def get_context_data(self, **kwargs):

@@ -14,6 +14,11 @@ class ULTAidForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
+        # Define self.ult from kwargs before calling super, which overwrites the kwargs
+        # pop() ult from kwargs to set form self.ult to the ULT model instance passed to the ULTAidCreate view
+        self.ult = kwargs.pop("ult", None)
+        self.no_user = kwargs.pop("no_user", False)
+        self.ckd = kwargs.pop("ckd", None)
         super(ULTAidForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.layout = Layout(
@@ -76,6 +81,18 @@ class ULTAidForm(forms.ModelForm):
                     ),
                     HTML(
                         """
+                        {% load crispy_forms_tags %}
+                        {% crispy erosions_form %}
+                        """
+                    ),
+                    HTML(
+                        """
+                        {% load crispy_forms_tags %}
+                        {% crispy tophi_form %}
+                        """
+                    ),
+                    HTML(
+                        """
                     <hr size="6" color="white" id="subfields-line">
                     """
                     ),
@@ -84,3 +101,9 @@ class ULTAidForm(forms.ModelForm):
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )
+        # Check if there is a ULT associated with ULTAid and hide ckd field if so, value will be set in the view
+        if self.ult:
+            if self.no_user == True:
+                self.helper.layout[0][3].pop(1)
+                self.helper.layout[0][3].pop(6)
+                self.helper.layout[0][3].pop(6)

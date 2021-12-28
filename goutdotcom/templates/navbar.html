@@ -66,8 +66,8 @@
               {% if request.user.ultplan %}
               <a class="dropdown-item" href="{% url 'ultplan:detail' request.user.ultplan.pk %}">ULTPlan</a>
               <div class="dropdown-divider"></div>
-              {% endif %}
               <a class="dropdown-item" href="{% url 'lab:index' %}">Labs</a>
+              {% endif %}
               <a class="dropdown-item" href="{% url 'treatment:index' %}">Treatments</a>
               <a class="dropdown-item" href="{% url 'users:detail' request.user.username  %}">{% trans "Profile" %}</a>
             </div>
