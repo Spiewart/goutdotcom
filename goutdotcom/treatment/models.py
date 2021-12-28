@@ -176,7 +176,10 @@ class Naproxen(FlareTreatment):
 
     def __str__(self):
         if self.dose == 220 or self.dose == 250:
-            return f"{str(self.generic_name)} {str(self.dose)} mg (1 tab) {str(self.freq)} (twice daily) for {str(self.duration)} days"
+            if self.prn == True:
+                return f"{str(self.generic_name)} {str(self.dose)} mg (1 tab) {str(self.freq)} (twice daily) for {str(self.duration)} days"
+            else:
+                return f"{str(self.generic_name)} {str(self.dose)} mg (1 tab) {str(self.freq)} (twice daily)"
         if self.dose == 440 or self.dose == 500:
             return f"{str(self.generic_name)} {str(self.dose)} mg (2 tabs) {str(self.freq)} (twice daily) for {str(self.duration)} days"
         else:

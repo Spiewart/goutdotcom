@@ -10,9 +10,11 @@ class UrateAdmin(admin.ModelAdmin):
         "user",
         "value",
         "date_drawn",
+        "ultplan",
         "created",
         "pk",
     )
+
 
 class ALTAdmin(admin.ModelAdmin):
     list_display = (
@@ -67,7 +69,6 @@ class CreatinineAdmin(admin.ModelAdmin):
         "date_drawn",
         "created",
     )
-
 
 
 admin.site.register(Urate, UrateAdmin)

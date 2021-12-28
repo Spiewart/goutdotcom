@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import HTML, ButtonHolder, Fieldset, Layout, Submit
+from crispy_forms.layout import HTML, ButtonHolder, Field, Fieldset, Layout, Submit
 from datetimewidget.widgets import DateWidget
 from django import forms
 
@@ -13,16 +13,6 @@ class ALTForm(forms.ModelForm):
             "value",
             "date_drawn",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_drawn": DateWidget(
-                options=dateTimeOptions, attrs={"id": "ALT-date_drawn.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(ALTForm, self).__init__(*args, **kwargs)
@@ -45,16 +35,6 @@ class ASTForm(forms.ModelForm):
             "value",
             "date_drawn",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_drawn": DateWidget(
-                options=dateTimeOptions, attrs={"id": "AST-date_drawn.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(ASTForm, self).__init__(*args, **kwargs)
@@ -77,16 +57,6 @@ class CreatinineForm(forms.ModelForm):
             "value",
             "date_drawn",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_drawn": DateWidget(
-                options=dateTimeOptions, attrs={"id": "creatinine-date_drawn.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(CreatinineForm, self).__init__(*args, **kwargs)
@@ -109,16 +79,6 @@ class HemoglobinForm(forms.ModelForm):
             "value",
             "date_drawn",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_drawn": DateWidget(
-                options=dateTimeOptions, attrs={"id": "hemoglobin-date_drawn.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(HemoglobinForm, self).__init__(*args, **kwargs)
@@ -141,16 +101,6 @@ class PlateletForm(forms.ModelForm):
             "value",
             "date_drawn",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_drawn": DateWidget(
-                options=dateTimeOptions, attrs={"id": "platelet-date_drawn.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(PlateletForm, self).__init__(*args, **kwargs)
@@ -195,16 +145,6 @@ class UrateForm(forms.ModelForm):
             "value",
             "date_drawn",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_drawn": DateWidget(
-                options=dateTimeOptions, attrs={"id": "urate-date_drawn.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(UrateForm, self).__init__(*args, **kwargs)

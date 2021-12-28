@@ -120,7 +120,7 @@ class ULTPlan(TimeStampedModel):
             self.urate = self.urate_set.last()
         except:
             self.urate = None
-        if self.ast:
+        if self.urate:
             if datetime.now(timezone.utc) - self.urate.created >= timedelta(days=self.lab_interval):
                 due = True
             else:
