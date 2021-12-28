@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView
 
 from ..history.forms import (
@@ -156,6 +157,19 @@ class PPxAidCreate(CreateView):
                 kwargs["stroke"] = ultaid.stroke
                 kwargs["heartattack"] = ultaid.heartattack
         return kwargs
+
+    def get_success_url(self):
+        if self.kwargs.get("ultaid"):
+            return reverse("ultaid:detail", kwargs={"pk": self.kwargs["ultaid"]})
+        else:
+            return reverse(
+                "ppxaid:detail",
+                # Need comma at end of kwargs for some picky Django reason
+                # https://stackoverflow.com/questions/52575418/reverse-with-prefix-argument-after-must-be-an-iterable-not-int/52575419
+                kwargs={
+                    "pk": self.object.pk,
+                },
+            )
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=PPxAid())

@@ -100,10 +100,10 @@ class LabCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return context
 
     def get_success_url(self):
-        if self.kwargs["ultplan"]:
+        if self.kwargs.get("ultplan"):
             return reverse("ultplan:detail", kwargs={"pk": self.kwargs["ultplan"]})
         else:
-            return reverse("lab:detail", kwargs={"lab": self.kwargs["lab"]})
+            return reverse("lab:detail", kwargs={"lab": self.kwargs["lab"], 'pk': self.object.pk})
 
 
 class LabDetail(LoginRequiredMixin, DetailView):

@@ -38,17 +38,19 @@
       </h2>
       </div>
       <div class="col">
-        <h3>
-          {% if object.modified %}
-          Modified {{ object.modified }}
+        <h2><u>Prophylaxis</u>:
+          {% if request.user.ppxaid %}
+          <a href="{% url 'ppxaid:detail' request.user.ppxaid.pk %}">{{ ultaid.ppxaid }}</a>
           {% else %}
-          Created {{ object.created }}
+          <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button"
+            style="float: none;">Create PPxAid</a>
           {% endif %}
-        </h3>
+        </h2>
       </div>
     </div>
     <div class="row">
       <div class="col">
+
     <h3><u>Frequency of lab checks</u>: every 6 weeks</h3>
     <p>We recommend checking labs every 6 weeks. In addition to <a href="{% url 'lab:about' 'urate' %}">uric acid</a>, <a
         href="{% url 'lab:about' 'creatinine' %}">creatinine</a>, <a href="{% url 'lab:about' 'hemoglobin' %}">hemoglobin</a>,
@@ -56,6 +58,13 @@
         href="{% url 'lab:about' 'AST' %}">AST</a>,
       and
       <a href="{% url 'lab:about' 'ALT' %}">ALT</a> are checked with every blood draw to monitor for clinically significant changes.</p>
+    <h3>
+      {% if object.modified %}
+      Modified {{ object.modified }}
+      {% else %}
+      Created {{ object.created }}
+      {% endif %}
+    </h3>
       {% if request.user.is_authenticated %}
         {% if object.decision_aid|get_ultaid:'rheumatologist' == True or object.decision_aid|get_ultaid:'dialysis' == True or object.decision_aid|get_ultaid:'need' == False or object.decision_aid|get_ultaid:'want' == False %}
         {% else %}
@@ -65,11 +74,7 @@
             <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"
               value="treatment">ULTPlan</button>
           </form>
-          <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:detail' pk=object.ppxaid.pk %}" role="button"
-            style="float: right;">PPxAid</a>
           {% else %}
-          <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button"
-            style="float: right;">Create PPxAid</a>
           {% endif %}
         {% endif %}
       {% endif %}

@@ -42,9 +42,14 @@
     {% else %}
     FlareAid: none
     </li>
-    <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
-      href="{% url 'flareaid:flare-create' flare=flare.pk %}"
-        role="button">Create</a>
+      {% if flare.flareaid %}
+        <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
+          href="{% url 'flareaid:detail' pk=flare.flareaid.pk %}" role="button">Flare Helper</a>
+      {% else %}
+        <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
+          href="{% url 'flareaid:flare-create' flare=flare.pk %}"
+            role="button">Flare Helper</a>
+      {% endif %}
     {% endif %}
   </div>
   </ul>

@@ -11,7 +11,7 @@ urlpatterns = [
     path("about/prophylaxis/", view=AboutProphylaxis.as_view(), name="about-prophylaxis"),
     path("about/ult/", view=AboutULT.as_view(), name="about-ult"),
     path("about/<treatment>", view=TreatmentAbout.as_view(), name="about"),
-    path("dashboard/", view=DashboardView.as_view(), name="dashboard"),
+    path("", view=IndexView.as_view(), name="index"),
     path("flare/", FlareView.as_view(), name="flare"),
     path("prophylaxis/", ProphylaxisView.as_view(), name="prophylaxis"),
     path("ult/", ULTView.as_view(), name="ult"),
@@ -20,6 +20,8 @@ urlpatterns = [
     path("create/<treatment>/", view=TreatmentCreate.as_view(), name="create"),
     path("create/flareaid/<int:pk>/<treatment>/", view=FlareAidTreatmentCreate.as_view(), name="flareaid-create"),
     path("create/ppx/<treatment>/", view=ProphylaxisCreate.as_view(), name="prophylaxis-create"),
-    path("create/ppxaid/<int:pk>/<treatment>/<dose>/<freq>/", view=PPxAidTreatmentCreate.as_view(), name="ppxaid-create"),
+    path(
+        "create/ppxaid/<int:pk>/<treatment>/<dose>/<freq>/", view=PPxAidTreatmentCreate.as_view(), name="ppxaid-create"
+    ),
     path("update/<treatment>/<int:pk>/", view=TreatmentUpdate.as_view(), name="update"),
 ]

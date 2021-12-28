@@ -93,12 +93,12 @@ class TreatmentAbout(TemplateView):
         return context
 
 
-class DashboardView(LoginRequiredMixin, ListView):
-    template_name = "treatment/dashboard.html"
+class IndexView(LoginRequiredMixin, ListView):
+    template_name = "treatment/index.html"
     model = Allopurinol
 
     def get_context_data(self, **kwargs):
-        context = super(DashboardView, self).get_context_data(**kwargs)
+        context = super(IndexView, self).get_context_data(**kwargs)
         context.update(
             {
                 "allopurinol_list": Allopurinol.objects.filter(user=self.request.user),

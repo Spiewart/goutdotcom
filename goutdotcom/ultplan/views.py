@@ -24,18 +24,18 @@ class ULTPlanCreate(LoginRequiredMixin, View):
     returns: ULTPlan instance"""
 
     def post(self, request, *args, **kwargs):
-        # Checks if user has created a PPxAid, sets View ppxaid reference to None if not
-        try:
-            self.ppxaid = PPxAid.objects.get(user=request.user)
-        # Assigns user PPxAid to View ppxaid if exists
-        except PPxAid.DoesNotExist:
-            self.ppxaid = None
         # Checks if user has created a ULTAid, sets View ULTAid reference to None if not
         try:
             self.ultaid = ULTAid.objects.get(user=request.user)
         # Assigns user ULTAid to View ultaid if exists
         except ULTAid.DoesNotExist:
             self.ultaid = None
+        # Checks if user has created a PPxAid, sets View ppxaid reference to None if not
+        try:
+            self.ppxaid = PPxAid.objects.get(user=request.user)
+        # Assigns user PPxAid to View ppxaid if exists
+        except PPxAid.DoesNotExist:
+            self.ppxaid = None
         try:
             self.ultplan = ULTPlan.objects.get(user=request.user)
         except ULTPlan.DoesNotExist:
@@ -83,15 +83,17 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             # Set last_titration to datetime.today()
             ultplan = ULTPlan.objects.create(
                 user=request.user,
-                ultaid=self.ultaid,
-                ppxaid=self.ppxaid,
                 goal_urate=self.ultaid.decision_aid().get("goal_urate"),
                 lab_interval=self.ultaid.decision_aid().get("lab_interval"),
                 last_titration=datetime.today(),
             )
             # After ultplan created, assign ULT.ultplan and PPx.ultplan to ultplan just created
+            self.ultaid.ultplan = ultplan
+            self.ultaid.save()
             ULT.ultplan = ultplan
             ULT.save()
+            self.ppxaid.ultplan = ultplan
+            self.ppxaid.save()
             PPx.ultplan = ultplan
             PPx.save()
             # Return redirect to ultplan:detail
@@ -110,7 +112,7 @@ class ULTPlanDelete(LoginRequiredMixin, DeleteView):
     model = ULTPlan
 
     def get_success_url(self):
-        return reverse("ultaid:detail", kwargs={"pk": self.request.user.ultaid.pk})
+        return reverse("users:detail", kwargs={"username": self.request.user.username})
 
 
 class ULTPlanDetail(LoginRequiredMixin, DetailView):

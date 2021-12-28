@@ -16,24 +16,29 @@ from ..history.models import (
     Stroke,
     XOIInteractions,
 )
+from ..ultplan.models import ULTPlan
 from .choices import *
 
 
 class ULTAid(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-
+    ultplan = models.OneToOneField(
+        ULTPlan,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
+    )
     need = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Need ULT?",
         help_text=format_lazy("""Do you need <a href='{}' target='_blank'>ULT</a>?""", reverse_lazy("ult:create")),
     )
-
     want = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Want ULT?",
         help_text="Will you take daily medication to get rid of your gout?",
     )
-
     ckd = models.ForeignKey(
         CKD,
         on_delete=models.SET_NULL,

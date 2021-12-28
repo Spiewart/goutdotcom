@@ -18,6 +18,7 @@ from ..history.models import (
 )
 from ..treatment.choices import *
 from ..ultaid.models import ULTAid
+from ..ultplan.models import ULTPlan
 from .choices import *
 
 
@@ -35,6 +36,13 @@ class PPxAid(TimeStampedModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+    )
+    ultplan = models.OneToOneField(
+        ULTPlan,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
     )
     perfect_health = models.BooleanField(
         choices=BOOL_CHOICES,

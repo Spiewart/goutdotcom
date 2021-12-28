@@ -279,7 +279,7 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
                     instance=self.request.user.medicalprofile.heartattack
                 )
             if "hypertension_form" not in context:
-                context["hypertension_form"] = self.angina_form_class(
+                context["hypertension_form"] = self.hypertension_form_class(
                     instance=self.request.user.medicalprofile.hypertension
                 )
             if "CHF_form" not in context:

@@ -10,9 +10,11 @@
 </a></li>
       <li><a class="dropdown-item" href="{% url 'lab:about' object|to_class_name %}">About
 </a></li>
+    {% if request.user.ultplan %}
       <li><a class="dropdown-item"
-          href="{% url 'lab:create' lab:single-ultplan-create' object_list|list_to_name request.user.ultplan.pk %}">New
+          href="{% url 'lab:single-ultplan-create' object_list|list_to_name request.user.ultplan.pk %}">New
 </a></li>
+    {% endif %}
       <li><a class="dropdown-item" href="{% url 'lab:list' object|to_class_name %}">List
 </a></li>
     </ul>

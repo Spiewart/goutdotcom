@@ -174,6 +174,10 @@ class ULTAidCreate(CreateView):
                 ULTAid_data.heartattack = heartattack_data
                 ULTAid_data.stroke = stroke_data
                 ULTAid_data.save()
+                # Check if User has already created a PPxAid for some reason and, if so, assign it to the newly created/saved ULTAid to that attribute on the PPxAid
+                if request.user.ppxaid:
+                    request.user.ppxaid.ultaid = ULTAid_data
+                    request.user.ppxaid.save()
             else:
                 CKD_form = self.CKD_form_class(request.POST, instance=CKD())
                 CKD_data = CKD_form.save(commit=False)

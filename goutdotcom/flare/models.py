@@ -175,7 +175,7 @@ class Flare(TimeStampedModel):
         if len(cardiac_risk_factors) > 1:
             for i in range(len(cardiac_risk_factors) - 1):
                 cardiac_string += str(cardiac_risk_factors[i]) + ", "
-            cardiac_string += str(cardiac_risk_factors[len(cardiac_risk_factors)-1])
+            cardiac_string += str(cardiac_risk_factors[len(cardiac_risk_factors) - 1])
         elif len(cardiac_risk_factors) == 1:
             cardiac_string += str(cardiac_risk_factors[0])
         return cardiac_string
@@ -241,7 +241,6 @@ class Flare(TimeStampedModel):
         calc_package = {"result": "no data", "likelihood": "unknown", "prevalence": "unknown", "caveat": None}
 
         points = 0
-        cardiac_disease_equivalent = False
 
         if self.monoarticular == False:
             calc_package[
@@ -260,7 +259,6 @@ class Flare(TimeStampedModel):
             points = points + 2.5
         if self.get_cardiac_risk_factors():
             points = points + 1.5
-
         if self.urate:
             if self.urate.value >= 6.0:
                 points = points + 3.5
@@ -273,7 +271,7 @@ class Flare(TimeStampedModel):
             calc_package["result"] = EQUIVOCAL
             calc_package["likelihood"] = MIDRANGE
             calc_package["prevalence"] = MODPREV
-        if points > 8:
+        if points >= 8:
             calc_package["result"] = LIKELY
             calc_package["likelihood"] = HIGHRANGE
             calc_package["prevalence"] = HIGHPREV

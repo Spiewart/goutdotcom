@@ -5,10 +5,10 @@
     <li>Location: {{ flare.locations }}</li>
       {% if flare.redness == True %}
       <li>Erythema (redness) </li>
+      {% else %}
+      <li>Erythema (redness): absent</li>
       {% endif %}
-      {% if flare.onset %}
       <li>Onset: time to maximal symptoms {% if flare.onset == True %} under 24 hours{% elif flare.onset == False %} over 24 hours {% endif %}</li>
-      {% endif %}
       {% if flare.duration %}
       <li>Duration: {{ flare.duration }}</li>
       {% endif %}

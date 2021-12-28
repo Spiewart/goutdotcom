@@ -5,13 +5,13 @@ from datetimewidget.widgets import DateWidget
 from django import forms
 
 from .models import (
-    Angina,
     CHF,
     CKD,
     IBD,
     PVD,
     Alcohol,
     AllopurinolHypersensitivity,
+    Angina,
     Anticoagulation,
     Bleed,
     ColchicineInteractions,
@@ -41,9 +41,7 @@ class AnginaForm(forms.ModelForm):
 
     class Meta:
         model = Angina
-        fields = (
-            "value",
-        )
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(AnginaForm, self).__init__(*args, **kwargs)
@@ -53,11 +51,12 @@ class AnginaForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Fieldset(
-                "Angina",
+                "",
                 "value",
                 id="angina_for_profile",
             ),
         )
+
 
 class AnticoagulationForm(forms.ModelForm):
     prefix = "Anticoagulation"

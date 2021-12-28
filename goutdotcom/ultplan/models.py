@@ -5,15 +5,11 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
-from ..ppxaid.models import PPxAid
-from ..ultaid.models import ULTAid
 from .choices import BOOL_CHOICES
 
 
 class ULTPlan(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    ultaid = models.OneToOneField(ULTAid, on_delete=models.CASCADE)
-    ppxaid = models.OneToOneField(PPxAid, on_delete=models.CASCADE)
 
     goal_urate = models.FloatField(help_text="What is the goal uric acid?", verbose_name="Goal Uric Acid", default=6.0)
     lab_interval = models.IntegerField(

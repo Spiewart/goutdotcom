@@ -73,7 +73,7 @@ class FlareTreatment(Treatment):
 
 
 class ULTTreatment(Treatment):
-    ultplan = models.OneToOneField(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    ultplan = models.OneToOneField(ULTPlan, on_delete=models.CASCADE, null=True, blank=True, default=None)
     date_started = models.DateField(default=datetime.datetime.now, null=True, blank=True)
 
     class Meta:
