@@ -1,0 +1,15 @@
+{% load lab_extras %}
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+  <div class="btn-group" role="group">
+    <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
+      aria-expanded="false">
+      {{ object_list|list_to_name }}
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
+      <li><a class="dropdown-item" href="{% url 'lab:about' object_list|list_to_name %}">About
+        </a></li>
+      <li><a class="dropdown-item" href="{% url 'lab:single-ultplan-create' object_list|list_to_name request.user.ultplan.pk %}">New
+        </a></li>
+    </ul>
+  </div>
+</div>

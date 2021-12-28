@@ -3,24 +3,22 @@
 {% load lab_extras %}
 
 {% block content %}
-<main class="container default-container">
+<main class="container content-container">
   {% if object_list %}
     <header class="page-header">
     {% block lab_title %}
         <h1 class="content-heading">{{ object_list|list_to_name }}s
     {% endblock lab_title %}
     {% block buttons %}
-    <a class="btn btn-primary" href="{% url 'lab:about' lab %}" role="button" style="float: right;">About: {{ lab|capfirst }}</a>
-    <a class="btn btn-primary" href="{% url 'lab:create' lab %}" role="button" style="float: right;">New: {{ lab|capfirst }}</a>
-    <a class="btn btn-primary" href="{% url 'lab:index' %}" role="button" style="float: right;">Lab Home</a>
+      {% include 'lab/_list_buttons.html' %}
     {% endblock buttons %}
     </h1>
     </header>
     <div class="row">
         <div class="col">
           {% for lab in object_list %}
-              <div class="container content-heading">
-                  <h2 class="default-container">{{ lab.value }} {{ lab.units }} <a href="{{ lab.get_absolute_url }}" class="hyperlink">{{ lab.date_drawn.date }}</a></h2>
+              <div class="container content-item">
+                  <h2>{{ lab.value }} {{ lab.units }} <a href="{{ lab.get_absolute_url }}" class="hyperlink">{% if lab.date_drawn %}{{ lab.date_drawn }}{% else %} {{ lab.created }} {% endif %}</a></h2>
                   {% if lab.name == 'creatinine' %}
                   <li class="gdc-list">eGFR: {{ lab.eGFR_calculator }}</li>
                   {% endif %}

@@ -15,17 +15,30 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'about' %}">About</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link link-flareaid" href="{% url 'flare:create' %}">Flare</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Flares
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'flare:create' %}">Calculator</a>
+              <a class="dropdown-item" href="{% url 'flareaid:create' %}">Helper</a>
+              {% if request.user.is_authenticated %}
+              <a class="dropdown-item" href="{% url 'flare:list' %}">List</a>
+              {% endif %}
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'flare:about' %}">About</a>
+            </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link link-flareaid" href="{% url 'flareaid:create' %}">FlareAid</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'ult:create' %}">ULT</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'ultaid:create' %}">ULTAid</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              ULT
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'ult:create' %}">Calculator</a>
+              <a class="dropdown-item" href="{% url 'ultaid:create' %}">Helper</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'treatment:about-ult' %}">About</a>
+            </div>
           </li>
           <li class="nav-item">{% if request.user.is_authenticated %}</li>
           <li class="nav-item">

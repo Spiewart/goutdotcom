@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
@@ -46,6 +47,7 @@ class FlareList(LoginRequiredMixin, ListView):
         try:
             return super().dispatch(*args, **kwargs)
         except Http404:
+            messages.info(self.request, f"No flares to list!")
             return redirect("flare:about")
 
     def get_context_data(self, **kwargs):

@@ -3,40 +3,35 @@
 {% load lab_extras %}
 
 {% block content %}
-<main class="container content-container">
-    <div class="row">
-      <div class="col">
-          {% block lab_title %}
-          <h1 class="content-heading">
-            {{ object|to_class_name }}
-            {% if object.date_drawn.date %} (drawn: {{ object.date_drawn.date }})
-            {% else %}
-            (logged: {{ object.created }})
-            {% endif %}
-          </h1>
-          {% endblock lab_title %}
-          <ul>
-            <li>{{ object.value }} {{ object.units }}</li>
-            {% if object.name == 'creatinine' %}
-            <li>eGFR: {{ object.eGFR_calculator }}</li>
-            {% endif %}
-            <li>Drawn on: {{ object.date_drawn }}</li>
-            {% if object.ultplan %}
-              <li>{{ object.ultplan }}</li>
-            {% endif %}
-            <li>Logged: {{ object.created }}</li>
-            <li>Last modified: {{ object.modified }}</li>
-          </ul>
-          <a class="btn btn-primary btn-lg" href="{% url 'lab:update' object|to_class_name object.pk%}" role="button">Update</a>
-      </div>
-    </div>
+  <main class="container content-container">
+    {% block header %}
+    {% block buttons %}
+      {% include 'lab/_detail_buttons.html' %}
+    {% endblock buttons %}
+    {% block lab_title %}
+      <h1 class="content-heading">
+        {{ object|to_class_name }}
+        {% if object.date_drawn.date %} ({{ object.date_drawn.date }})
+        {% else %}
+        ({{ object.created.date }})
+        {% endif %}
+      </h1>
+    {% endblock lab_title %}
+    {% endblock header %}
+    <ul>
+      <li>{{ object.value }} {{ object.units }}</li>
+      {% if object.name == 'creatinine' %}
+      <li>eGFR: {{ object.eGFR_calculator }}</li>
+      {% endif %}
+      <li>Drawn on: {{ object.date_drawn }}</li>
+      {% if object.ultplan %}
+        <li>{{ object.ultplan }}</li>
+      {% endif %}
+      <li>Logged: {{ object.created }}</li>
+      <li>Last modified: {{ object.modified }}</li>
+    </ul>
 
-  {% block buttons %}
-  <a class="btn btn-primary btn-lg" href="{% url 'lab:about' object|to_class_name %}" role="button">About: {{ object|to_class_name }}</a>
-  <a class="btn btn-primary btn-lg" href="{% url 'lab:list' object|to_class_name %}" role="button">List: {{ object|to_class_name }}</a>
-  <a class="btn btn-primary btn-lg" href="{% url 'lab:create' object|to_class_name %}" role="button">New: {{ object|to_class_name }}</a>
-  <a class="btn btn-primary btn-lg" href="{% url 'lab:index' %}" role="button">Lab Home</a>
-  {% endblock buttons %}
 
-</main>
+
+  </main>
 {% endblock content %}
