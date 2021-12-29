@@ -1,7 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView
 
 from ..history.forms import (
@@ -51,9 +49,16 @@ class ULTAidCreate(CreateView):
             form.instance.ult = ULT.objects.get(pk=self.kwargs.get("ult"))
             form.instance.erosions = form.instance.ult.erosions
             form.instance.tophi = form.instance.ult.tophi
+            # Check if ULT calculator() result was indicated or conditional and set ULTAid need field true if so, False if not
+            if form.instance.ult.calculator() == "Indicated" or form.instance.ult.calculator() == "Conditional":
+                form.instance.need = True
+            else:
+                form.instance.need = False
             # If user is not authenticated and created a ULTAid from a ULT, use ULT CKD instance instead of making new one, removed forms in form via Kwargs and layout objects
             if self.request.user.is_authenticated == False:
-                form.instance.ckd = form.instance.ult.ckd
+                if form.instance.ult.ckd.value == False:
+                    form.instance.ckd = form.instance.ult.ckd
+
         if self.request.user.is_authenticated:
             form.instance.user = self.request.user
             return super().form_valid(form)
@@ -138,7 +143,7 @@ class ULTAidCreate(CreateView):
             if "tophi_form" not in context:
                 context["tophi_form"] = self.tophi_form_class(self.request.GET)
             return context
-        
+
     def get_form_kwargs(self):
         """Ovewrites get_form_kwargs() to look for 'ult' kwarg in GET request, uses 'ult' to query database for associated ULT for use in ULTAidForm
         returns: [dict: dict containing 'ult' kwarg for form]"""
@@ -159,9 +164,14 @@ class ULTAidCreate(CreateView):
                 kwargs["ckd"] = ult.ckd
         return kwargs
 
-    def post(self, request):
-        form = self.form_class(request.POST, instance=ULTAid())
+    # This unfortunately needs to get rewritten and the object assigned at the start of POST once you mess with enough CBV code. Not sure what exactly triggers it.
+    def get_object(self):
+        object = self.model
+        return object
 
+    def post(self, request, **kwargs):
+        form = self.form_class(request.POST, instance=ULTAid())
+        self.object = self.get_object()
         if form.is_valid():
             ULTAid_data = form.save(commit=False)
             ## WOULD LIKE TO CONSOLIDATE REQUEST.USER ADD TO RIGHT BEFORE SAVE(), THEN CAN COMBINE THE REST
@@ -271,7 +281,7 @@ class ULTAidCreate(CreateView):
                 stroke_data.save()
                 tophi_form = self.tophi_form_class(request.POST, instance=Tophi())
                 tophi_data = tophi_form.save(commit=False)
-                tophi_data = "ULTAid"
+                tophi_data.last_modified = "ULTAid"
                 tophi_data.save()
                 ULTAid_data.ckd = CKD_data
                 ULTAid_data.erosions = erosions_data
@@ -289,26 +299,28 @@ class ULTAidCreate(CreateView):
             if request.user.is_authenticated:
                 return self.render_to_response(
                     self.get_context_data(
-                        form = form,
-                        CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD),
-                        erosions_form = self.erosions_form_class(request.POST, instance=request.user.medicalprofile.erosions),
-                        XOI_interactions_form = self.XOI_interactions_form_class(
+                        form=form,
+                        CKD_form=self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD),
+                        erosions_form=self.erosions_form_class(
+                            request.POST, instance=request.user.medicalprofile.erosions
+                        ),
+                        XOI_interactions_form=self.XOI_interactions_form_class(
                             request.POST, instance=request.user.medicalprofile.XOI_interactions
                         ),
-                        organ_transplant_form = self.organ_transplant_form_class(
+                        organ_transplant_form=self.organ_transplant_form_class(
                             request.POST, instance=request.user.medicalprofile.organ_transplant
                         ),
-                        allopurinol_hypersensitivity_form = self.allopurinol_hypersensitivity_form_class(
+                        allopurinol_hypersensitivity_form=self.allopurinol_hypersensitivity_form_class(
                             request.POST, instance=request.user.medicalprofile.allopurinol_hypersensitivity
                         ),
-                        febuxostat_hypersensitivity_form = self.febuxostat_hypersensitivity_form_class(
+                        febuxostat_hypersensitivity_form=self.febuxostat_hypersensitivity_form_class(
                             request.POST, instance=request.user.medicalprofile.febuxostat_hypersensitivity
                         ),
-                        heartattack_form = self.heartattack_form_class(
+                        heartattack_form=self.heartattack_form_class(
                             request.POST, instance=request.user.medicalprofile.heartattack
                         ),
-                        stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
-                        tophi_form = self.tophi_form_class(request.POST, instance=request.user.medicalprofile.tophi)
+                        stroke_form=self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
+                        tophi_form=self.tophi_form_class(request.POST, instance=request.user.medicalprofile.tophi),
                     )
                 )
             else:
@@ -331,7 +343,7 @@ class ULTAidCreate(CreateView):
                         ),
                         heartattack_form=self.heartattack_form_class(request.POST, instance=HeartAttack()),
                         stroke_form=self.stroke_form_class(request.POST, instance=Stroke()),
-                        tophi_form = self.tophi_form_class(request.POST, instance=Tophi()),
+                        tophi_form=self.tophi_form_class(request.POST, instance=Tophi()),
                     )
                 )
 
@@ -495,29 +507,29 @@ class ULTAidUpdate(LoginRequiredMixin, UpdateView):
             ULTAid_data.stroke = stroke_data
             ULTAid_data.tophi = tophi_data
             ULTAid_data.save()
-            return HttpResponseRedirect(reverse("ultaid:detail", kwargs={"pk": ULTAid_data.pk}))
+            return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(
-                    form = form,
-                    CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD),
-                    erosions_form = self.erosions_form_class(request.POST, instance=request.user.medicalprofile.erosions),
-                    XOI_interactions_form = self.XOI_interactions_form_class(
+                    form=form,
+                    CKD_form=self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD),
+                    erosions_form=self.erosions_form_class(request.POST, instance=request.user.medicalprofile.erosions),
+                    XOI_interactions_form=self.XOI_interactions_form_class(
                         request.POST, instance=request.user.medicalprofile.XOI_interactions
                     ),
-                    organ_transplant_form = self.organ_transplant_form_class(
+                    organ_transplant_form=self.organ_transplant_form_class(
                         request.POST, instance=request.user.medicalprofile.organ_transplant
                     ),
-                    allopurinol_hypersensitivity_form = self.allopurinol_hypersensitivity_form_class(
+                    allopurinol_hypersensitivity_form=self.allopurinol_hypersensitivity_form_class(
                         request.POST, instance=request.user.medicalprofile.allopurinol_hypersensitivity
                     ),
-                    febuxostat_hypersensitivity_form = self.febuxostat_hypersensitivity_form_class(
+                    febuxostat_hypersensitivity_form=self.febuxostat_hypersensitivity_form_class(
                         request.POST, instance=request.user.medicalprofile.febuxostat_hypersensitivity
                     ),
-                    heartattack_form = self.heartattack_form_class(
+                    heartattack_form=self.heartattack_form_class(
                         request.POST, instance=request.user.medicalprofile.heartattack
                     ),
-                    stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
-                    tophi_form = self.tophi_form_class(request.POST, instance=request.user.medicalprofile.tophi),
+                    stroke_form=self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
+                    tophi_form=self.tophi_form_class(request.POST, instance=request.user.medicalprofile.tophi),
                 )
             )

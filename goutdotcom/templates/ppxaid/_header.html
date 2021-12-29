@@ -1,46 +1,9 @@
 {% load ppxaid_extras %}
 <h1 id="rec">
-  {{ request.user|capfirst }}'s PPxAid:
-  {% if object.decision_aid|get_key:'doctor' == True %}
-  See a Doctor
-  {% elif object.decision_aid|get_key:'drug' == "prednisone" %}
-  <a href="{% url 'treatment:about-corticosteroids' %}">steroids</a>
-  {% elif object.decision_aid|get_key:'drug' == "colchicine" %}
-  <a href="{% url 'treatment:about' 'colchicine' %}">colchicine</a>
-  {% elif object.decision_aid|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug' == "naproxen" %}
-  <a href="{% url 'treatment:about-NSAIDs' %}">NSAIDs</a>
-  {% elif object.decision_aid|get_key:'needinfo' == True %}
-  more information needed
-  {% else %}
-  ERROR
+  {% if request.user.is_authenticated %}
+  {{ request.user|capfirst }}'s
   {% endif %}
+  Prophylaxis Helper
   <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-prophylaxis' %}" role="button">About Prophylaxis</a>
 </h1>
-<div class="row">
-  <div class="col">
-    <ul>
-      <li>{{ object }}</li>
-      <li>ULTAid:
-      {% if object.ultaid %}
-        <a href="{% url 'ultaid:detail' pk=object.ultaid.pk%}">{{ object.ultaid }}</a>
-      {% else %}
-        none
-      {% endif %}
-      </li>
-      <li>ULTPlan:
-      {% if object.ultplan %}
-        <a href="{% url 'ultplan:detail' pk=object.ultplan.pk%}">{{ object.ultplan }}</a>
-      {% else %}
-        none
-      {% endif %}
-      </li>
-    </ul>
-  </div>
-</div>
-<div class="row">
-  <div class="col">
-    {% if object.flare %}
-    <h4><a href="{% url 'flare:detail' object.flare.pk %}">Flare</a>: {{ object.flare }}</h4>
-    {% endif %}
-  </div>
-</div>
+

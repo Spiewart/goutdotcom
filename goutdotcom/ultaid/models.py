@@ -43,11 +43,15 @@ class ULTAid(TimeStampedModel):
         choices=BOOL_CHOICES,
         verbose_name="Need ULT?",
         help_text=format_lazy("""Do you need <a href='{}' target='_blank'>ULT</a>?""", reverse_lazy("ult:create")),
+        null=True,
+        blank=True,
     )
     want = models.BooleanField(
         choices=BOOL_CHOICES,
         verbose_name="Want ULT?",
         help_text="Will you take daily medication to get rid of your gout?",
+        null=True,
+        blank=True,
     )
     ckd = models.ForeignKey(
         CKD,

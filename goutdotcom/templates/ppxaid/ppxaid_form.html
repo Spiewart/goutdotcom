@@ -36,6 +36,20 @@
 {% endblock form %}
 {% block inline_javascript %}
 <script>
+  $(document).ready(function () {
+  // sets up PPxAid Create page by hiding all fields other than whether or not one is in perfect health
+  ppx_aid_initial();
+  });
+  $(document).ready(function () {
+  // checks if perfect_health is true and, if so, hides other fields, else displays long list of other fields to fill out
+  $("#id_perfect_health").change(ppx_aid_fields);
+  ppx_aid_fields.call($("#id_perfect_health").get(0));
+  });
+  $(document).ready(function () {
+   // checks if ckd is true and, if so, displays ckd subfields
+  $("#id_CKD-value").change(ppx_aid_dialysis);
+  ppx_aid_dialysis.call($("#id_CKD-value").get(0));
+  });
   jQuery(function ($) {
     var path = window.location.href;
     $('li a').each(function () {

@@ -103,7 +103,8 @@ class ULTAidForm(forms.ModelForm):
         )
         # Check if there is a ULT associated with ULTAid and hide ckd field if so, value will be set in the view
         if self.ult:
+            self.helper.layout[0].pop(0)
             if self.no_user == True:
-                self.helper.layout[0][3].pop(1)
-                self.helper.layout[0][3].pop(6)
-                self.helper.layout[0][3].pop(6)
+                self.helper.layout[0][2].pop(1)
+                self.helper.layout[0][2].pop(8)
+                self.helper.layout[0][2].pop(7)

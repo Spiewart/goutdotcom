@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView
 
 from ..history.forms import (
-    CKDSimpleForm,
+    CKDForm,
     ErosionsForm,
     HyperuricemiaForm,
     TophiForm,
@@ -19,7 +19,7 @@ from .models import ULT
 class ULTCreate(CreateView):
     model = ULT
     form_class = ULTForm
-    CKD_form_class = CKDSimpleForm
+    CKD_form_class = CKDForm
     erosions_form_class = ErosionsForm
     hyperuricemia_form_class = HyperuricemiaForm
     tophi_form_class = TophiForm
@@ -165,7 +165,7 @@ class ULTDetail(DetailView):
 class ULTUpdate(LoginRequiredMixin, UpdateView):
     model = ULT
     form_class = ULTForm
-    CKD_form_class = CKDSimpleForm
+    CKD_form_class = CKDForm
     erosions_form_class = ErosionsForm
     hyperuricemia_form_class = HyperuricemiaForm
     tophi_form_class = TophiForm

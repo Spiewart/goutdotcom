@@ -321,12 +321,18 @@ function ULT_exists_checker() {
 function need_want_checker() {
 // function that checks whether need/want are checked and shows subfields <div> if both True
   if ($('#id_need').val() == 'True' && $('#id_want').val() == 'True') {
-      $('#subfields').show();
+    $('#subfields').show();
   }
+  // length == 0 works for checking whether id_need is in the form or not
+  else if ($('#id_need').length == 0 && $('#id_want').val() == 'True') {
+    $('#subfields').show();
+  }
+
   else {
     $('#subfields').hide();
   }
 }
+
 // function that checks whether or not CKD is checked and hides/shows dialysis/stage fields as appropriate
 function CKD_checker() {
 // function that checks whether CKD is checked or not, shows dialysis and stage fields or hides/empties them
@@ -422,10 +428,13 @@ function check_ckd() {
 // function that checks whether CKD is checked or not, shows dialysis field or hides/empties it
   if ($('#id_CKD-value').is(":checked")) {
       $('#div_id_CKD-dialysis').show();
+      $('#div_id_CKD-stage').show();
   }
   else {
     $('#div_id_CKD-dialysis').hide();
+    $('#div_id_CKD-stage').hide();
     $('#id_CKD-dialysis').prop("checked", false);
+    $('#id_CKD-stage').prop("checked", false);
   }
 }
 
@@ -642,5 +651,74 @@ function treatment_decider() {
   }
   else if ($('#treatment-logged').val() == "No") {
     $('#treatment-desire').hide();
+  }
+}
+
+/* PPxAid app JS */
+// Function that loads on PPxAid Create page, hides all fields other than the first (perfect_health)
+function ppx_aid_initial() {
+  if ($('#id_anticoagulation-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_bleed-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_CKD-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_Colchicine_Interactions-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_diabetes-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_heartattack-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_IBD-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_Osteoporosis-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else if ($('#id_stroke-value').is(":checked")) {
+    $('#id_perfect_health').val('False');
+    $('#subfields').show();
+  }
+  else {
+    $('#subfields').hide();
+  }
+}
+
+function ppx_aid_fields () {
+  if ($('#id_perfect_health').val() == "True") {
+    $('#subfields').hide();
+  }
+  else if ($('#id_perfect_health').val() == "False") {
+    $('#subfields').show();
+  }
+  else {
+    $('#subfields').hide();
+  }
+}
+
+function ppx_aid_dialysis () {
+  if ($('#id_CKD-value').is(":checked")) {
+    $('#div_id_CKD-dialysis').show();
+    $('#div_id_CKD-stage').show();
+  }
+  else {
+    $('#div_id_CKD-stage').hide();
+    $('#id_CKD-stage').prop("checked", false);
+    $('#div_id_CKD-dialysis').hide();
+    $('#id_CKD-dialysis').prop("checked", false);
   }
 }

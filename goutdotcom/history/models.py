@@ -63,8 +63,10 @@ class VascularHistory(MedicalHistory):
     number = models.IntegerField(help_text="How many have you had?", default=1, null=True, blank=True)
     date = models.DateField(help_text="When was it? The most recent if multiple.", null=True, blank=True)
 
+
 class Angina(MedicalHistory):
     """Model for history of cardiac chest pain. True or False."""
+
     ### COULD BE EXPANDED LATER FOR UNSTABLE TO BE USED IN OTHER AIDS ###
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     name = "angina"
@@ -73,20 +75,21 @@ class Angina(MedicalHistory):
         help_text=mark_safe(
             "Do you get <a href='https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain' target='_blank'>angina</a>?"
         ),
-        verbose_name="Angina (Cardiac Chest Pain)",
+        verbose_name="Angina (cardiac chest pain)",
         null=True,
         blank=True,
     )
+
 
 class CKD(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Stage(models.IntegerChoices):
-        I = 1, _('I')
-        II = 2, _('II')
-        III = 3, _('III')
-        IV = 4, _('IV')
-        V = 5, _('V')
+        I = 1, _("I")
+        II = 2, _("II")
+        III = 3, _("III")
+        IV = 4, _("IV")
+        V = 5, _("V")
 
     stage = IntegerField(
         choices=Stage.choices,
@@ -143,6 +146,7 @@ class Hypertension(MedicalHistory):
         blank=True,
     )
 
+
 class PVD(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     name = "peripheral vascular disease"
@@ -155,6 +159,7 @@ class PVD(MedicalHistory):
         null=True,
         blank=True,
     )
+
 
 class CHF(MedicalHistory):
     systolic = BooleanField(

@@ -1,0 +1,42 @@
+{% load ppxaid_extras %}
+
+{% if object.decision_aid %}
+  {% if object.decision_aid|get_key:'needinfo' == True %}
+  <span>We really need more information if we are going to make a quality recommendation. Start by telling us
+    whether or not you are in perfect health.</span>
+  {% elif object.decision_aid|get_key:'doctor' == True  %}
+  <span>Your medical situation is complex enough that you should see a doctor, ideally a <a
+      href="https://en.wikipedia.org/wiki/Rheumatology" target="_blank">rheumatologist</a>, for your gout flare
+    treatment.</span>
+  {% else %}
+  <div class="row">
+    <div class="col-sm">
+      <h2><u>
+        Prophylaxis</u>: <a
+          href="{% url 'treatment:about'  object.decision_aid|get_key:'drug' %}"> {{ object.decision_aid|get_key:'drug' }}</a> {{ object.decision_aid|get_key:'dose' }}
+        {{ object.decision_aid|get_key:'freq' }}
+      </h2>
+    </div>
+    {% if object.decision_aid|get_key:'drug' == "colchicine" %}
+        {% if object.colchicine_interactions is None %}
+        <span><b>WARNING</b>: You did not report whether or not you have any <a
+            href="#colchicine_contraindications">contraindications</a> to using colchicine. This could potentially
+          change the recommendation and/or be dangerous.
+          {% if request.user.is_authenticated %}
+          <a href="{% url 'flareaid:update' object.pk %}">
+            <b>Update</b>
+          </a>
+          your history for better recommendations.
+          {% else %}
+          Submit a
+          <a href="{% url 'flareaid:create' %}">
+            <b>new</b>
+          </a>
+          set of info for better recommendations.
+          {% endif %}
+        </span>
+        {% endif %}
+    {% endif %}
+  </div>
+  {% endif %}
+{% endif %}

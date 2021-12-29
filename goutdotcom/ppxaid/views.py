@@ -8,7 +8,7 @@ from django.views.generic import CreateView, DetailView, UpdateView
 from ..history.forms import (
     AnticoagulationSimpleForm,
     BleedSimpleForm,
-    CKDSimpleForm,
+    CKDForm,
     ColchicineInteractionsSimpleForm,
     DiabetesSimpleForm,
     HeartAttackSimpleForm,
@@ -37,7 +37,7 @@ class PPxAidCreate(CreateView):
     form_class = PPxAidForm
     anticoagulation_form_class = AnticoagulationSimpleForm
     bleed_form_class = BleedSimpleForm
-    CKD_form_class = CKDSimpleForm
+    CKD_form_class = CKDForm
     colchicine_interactions_form_class = ColchicineInteractionsSimpleForm
     diabetes_form_class = DiabetesSimpleForm
     heartattack_form_class = HeartAttackSimpleForm
@@ -312,7 +312,7 @@ class PPxAidUpdate(LoginRequiredMixin, UpdateView):
     form_class = PPxAidForm
     anticoagulation_form_class = AnticoagulationSimpleForm
     bleed_form_class = BleedSimpleForm
-    CKD_form_class = CKDSimpleForm
+    CKD_form_class = CKDForm
     colchicine_interactions_form_class = ColchicineInteractionsSimpleForm
     diabetes_form_class = DiabetesSimpleForm
     heartattack_form_class = HeartAttackSimpleForm
