@@ -246,6 +246,7 @@ class IndexView(LoginRequiredMixin, ListView):
 
 class ULTPlanCreate(LoginRequiredMixin, CreateView):
     model = ALT
+    
     form_class = ALTForm
     AST_form_class = ASTForm
     creatinine_form_class = CreatinineForm
@@ -282,31 +283,44 @@ class ULTPlanCreate(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        ALT_form = self.form_class(request.POST, instance=ALT(), prefix="ALT_form")
-        AST_form = self.AST_form_class(request.POST, instance=AST(), prefix="AST_form")
+        form = self.form_class(request.POST, instance=ALT(), prefix="ALT_form")
+        ast_form = self.AST_form_class(request.POST, instance=AST(), prefix="AST_form")
         creatinine_form = self.creatinine_form_class(request.POST, instance=Creatinine(), prefix="creatinine_form")
         hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=Hemoglobin(), prefix="hemoglobin_form")
         platelet_form = self.platelet_form_class(request.POST, instance=Platelet(), prefix="platelet_form")
         WBC_form = self.WBC_form_class(request.POST, instance=WBC(), prefix="WBC_form")
         urate_form = self.urate_form_class(request.POST, instance=Urate(), prefix="urate_form")
-
+        print("ALT")
+        print(form.is_valid())
+        print("AST")
+        print(ast_form.is_valid())
+        print("creatinine")
+        print(creatinine_form.is_valid())
+        print("hemoglobin")
+        print(hemoglobin_form.is_valid())
+        print("platelet")
+        print(platelet_form.is_valid())
+        print("WBC")
+        print(WBC_form.is_valid())
+        print("urate")
+        print(urate_form.is_valid())
         if (
-            ALT_form.is_valid()
-            or AST_form.is_valid()
-            or creatinine_form.is_valid()
-            or hemoglobin_form.is_valid()
-            or platelet_form.is_valid()
-            or WBC_form.is_valid()
-            or urate_form.is_valid()
+            form.is_valid()
+            and ast_form.is_valid()
+            and creatinine_form.is_valid()
+            and hemoglobin_form.is_valid()
+            and platelet_form.is_valid()
+            and WBC_form.is_valid()
+            and urate_form.is_valid()
         ):
-            if ALT_form.is_valid():
-                ALT_data = ALT_form.save(commit=False)
+            if form.is_valid():
+                ALT_data = form.save(commit=False)
                 ALT_data.ultplan = request.user.ultplan
                 ALT_data.user = request.user
                 if ALT_data.value:
                     ALT_data.save()
-            if AST_form.is_valid():
-                AST_data = AST_form.save(commit=False)
+            if ast_form.is_valid():
+                AST_data = ast_form.save(commit=False)
                 AST_data.ultplan = request.user.ultplan
                 AST_data.user = request.user
                 if AST_data.value:
@@ -341,12 +355,13 @@ class ULTPlanCreate(LoginRequiredMixin, CreateView):
                     urate_data.ultplan = request.user.ultplan
                     urate_data.user = request.user
                     urate_data.save()
-            return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": request.user.ultplan.pk}))
+            return self.form_valid(form)
+            # return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": request.user.ultplan.pk}))
         else:
             return self.render_to_response(
                 self.get_context_data(
-                    ALT_form=self.form_class(request.POST, instance=ALT()),
-                    AST_form=self.AST_form_class(request.POST, instance=AST()),
+                    form=self.form_class(request.POST, instance=ALT()),
+                    ast_form=self.AST_form_class(request.POST, instance=AST()),
                     creatinine_form=self.creatinine_form_class(request.POST, instance=Creatinine()),
                     hemoglobin_form=self.hemoglobin_form_class(request.POST, instance=Hemoglobin()),
                     platelet_form=self.platelet_form_class(request.POST, instance=Platelet()),

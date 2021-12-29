@@ -126,7 +126,7 @@ class FlareCreate(CreateView):
         return context
 
     def get_form_kwargs(self):
-        """Ovewrites get_form_kwargs() to look for 'flare' kwarg in GET request, uses 'flare' to query database for associated flare for use in FlareAidForm
+        """Overwrites get_form_kwargs() to look for 'flare' kwarg in GET request, uses 'flare' to query database for associated flare for use in FlareAidForm
         returns: [dict: dict containing 'flare' kwarg for form]"""
         # Assign self.gender to None so FlareForm won't error on loading from GET request kwargs before calling super() which will overwrite kwargs
         self.gender = None
