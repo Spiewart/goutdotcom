@@ -1,19 +1,17 @@
+from datetime import datetime, timedelta, timezone
 from decimal import *
 
 from django.conf import settings
 from django.db import models
-from django.db.models.fields import BooleanField
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 
-from ..lab.choices import CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
+from ..lab.choices import BOOL_CHOICES, CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
 from ..profiles.models import PatientProfile
-from ..ultaid.models import ULTAid
 from ..ultplan.models import ULTPlan
 
 
-# Create your models here.
 class Lab(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -23,7 +21,6 @@ class Lab(TimeStampedModel):
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "lab"
     date_drawn = models.DateField(help_text="What day was this lab drawn?", default=None, null=True, blank=True)
-    ultaid = models.ForeignKey(ULTAid, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     class Meta:
         abstract = True
@@ -176,3 +173,30 @@ class Creatinine(Lab):
                 else:
                     return "Something went wrong with eGFR calculation"
         return "Can't calculate eGFR without an age (make a profile)"
+
+
+class LabCheck(TimeStampedModel):
+    """Model to coordinate labs for monitoring ULTPlan titration. Methods for checking status of lab"""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ultplan = models.ForeignKey(ULTPlan, on_delete=models.CASCADE)
+    # Related labs
+    alt = models.OneToOneField(ALT, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    ast = models.OneToOneField(AST, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    creatinine = models.OneToOneField(Creatinine, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    hemoglobin = models.OneToOneField(Hemoglobin, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    platelet = models.OneToOneField(Platelet, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    wbc = models.OneToOneField(WBC, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    urate = models.OneToOneField(Urate, on_delete=models.CASCADE, null=True, blank=True, default=None)
+
+    due = models.DateField(
+        help_text="When is this lab check due?",
+        default=(datetime.now(timezone.utc) + timedelta(days=ultplan.lab_interval)),
+    )
+    completed = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this lab check completed?", default=False)
+
+    def overdue(self):
+        if datetime.now(timezone.utc) >= self.due:
+            return True
+        elif datetime.now(timezone.utc) < self.due:
+            return False

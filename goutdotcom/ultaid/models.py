@@ -5,8 +5,6 @@ from django.utils.safestring import mark_safe
 from django.utils.text import format_lazy
 from django_extensions.db.models import TimeStampedModel
 
-from goutdotcom.history.models import HeartAttack
-
 from ..history.models import (
     CKD,
     AllopurinolHypersensitivity,
