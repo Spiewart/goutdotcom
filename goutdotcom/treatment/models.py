@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 from decimal import *
 
 from django.conf import settings
@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
+from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 
 from ..flareaid.models import FlareAid
@@ -75,7 +76,7 @@ class FlareTreatment(Treatment):
 
 class ULTTreatment(Treatment):
     ultplan = models.ForeignKey(ULTPlan, on_delete=models.CASCADE, null=True, blank=True, default=None)
-    date_started = models.DateField(default=datetime.datetime.now, null=True, blank=True)
+    date_started = models.DateField(default=timezone.now, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -115,10 +116,10 @@ class Allopurinol(ULTTreatment):
 
 
 class AllopurinolHistory(ULTTreatment):
-    allopurinol = ForeignKey(Allopurinol)
+    allopurinol = ForeignKey(Allopurinol, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = "-pk"
+        ordering = ["-pk"]
 
 
 class Febuxostat(ULTTreatment):
@@ -154,10 +155,10 @@ class Febuxostat(ULTTreatment):
 
 
 class FebuxostatHistory(ULTTreatment):
-    febuxostat = ForeignKey(Febuxostat)
+    febuxostat = ForeignKey(Febuxostat, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = "-pk"
+        ordering = ["-pk"]
 
 
 class Colchicine(FlareTreatment):
@@ -359,10 +360,10 @@ class Probenecid(ULTTreatment):
 
 
 class ProbenecidHistory(ULTTreatment):
-    probenecid = ForeignKey(Probenecid)
+    probenecid = ForeignKey(Probenecid, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = "-pk"
+        ordering = ["-pk"]
 
 
 class Tinctureoftime(FlareTreatment):

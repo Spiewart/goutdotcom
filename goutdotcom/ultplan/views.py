@@ -78,13 +78,17 @@ class ULTPlanCreate(LoginRequiredMixin, View):
                 )
             else:
                 PPx = PPx_model.objects.create(
-                    dose=self.ppxaid.decision_aid().get("dose"), prn=False, as_prophylaxis=True, user=request.user, ppxaid=self.ppxaid
+                    dose=self.ppxaid.decision_aid().get("dose"),
+                    prn=False,
+                    as_prophylaxis=True,
+                    user=request.user,
+                    ppxaid=self.ppxaid,
                 )
             # Create ULTPlan with the User, their ULTAid and PPxAid, ULTAid decision_aid() dict fields "dose", 'goal_urate' and 'lab_interval'
             # Set last_titration to datetime.today()
             ultplan = ULTPlan.objects.create(
                 user=request.user,
-                dose_adjustment=self.ultaid.decision_aid().get("dose")
+                dose_adjustment=self.ultaid.decision_aid().get("dose"),
                 goal_urate=self.ultaid.decision_aid().get("goal_urate"),
                 lab_interval=self.ultaid.decision_aid().get("lab_interval"),
                 last_titration=datetime.today(),

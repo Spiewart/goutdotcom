@@ -175,6 +175,10 @@ class Creatinine(Lab):
         return "Can't calculate eGFR without an age (make a profile)"
 
 
+def get_ultplan(ultplan):
+    return ULTPlan.objects.get(pk=ultplan.pk)
+
+
 class LabCheck(TimeStampedModel):
     """Model to coordinate labs for monitoring ULTPlan titration. Methods for checking status of lab"""
 
@@ -191,7 +195,7 @@ class LabCheck(TimeStampedModel):
 
     due = models.DateField(
         help_text="When is this lab check due?",
-        default=(datetime.now(timezone.utc) + timedelta(days=ultplan.lab_interval)),
+        default=(datetime.now(timezone.utc) + timedelta(days=42)),
     )
     completed = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this lab check completed?", default=False)
 

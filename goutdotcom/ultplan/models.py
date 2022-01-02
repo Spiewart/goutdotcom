@@ -5,9 +5,7 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
-from ..lab.models import LabCheck
 from .choices import BOOL_CHOICES
-
 
 class ULTPlan(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -229,22 +227,8 @@ class ULTPlan(TimeStampedModel):
         if prednisone:
             return prednisone
 
-    def __str__(self):
-        return f"{str(self.user)}'s ULTPlan"
-
-    def get_absolute_url(self):
-        return reverse("ultplan:detail", kwargs={"pk": self.pk})
-
-
-class Titration(TimeStampedModel):
-    """Model to generate a titration object. Related fields"""
-
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    ultplan = models.ForeignKey(ULTPlan, on_delete=models.CASCADE)
-    labcheck = models.OneToOneField(LabCheck, on_delete=models.CASCADE)
-
-    def titrate(self):
-        if self.labcheck.completed == True:
+    def titrate(self, labcheck):
+        if labcheck.completed == True:
             self.ult = self.ultplan.get_ult()
             self.dose_adjustment = self.ultplan.dose_adjustment
             self.ppx = self.ultplan.get_ppx()
@@ -252,7 +236,7 @@ class Titration(TimeStampedModel):
                 self.urates = self.ultplan.urate_set
             except:
                 self.urates = None
-            if self.labcheck.urate.value <= self.ultplan.goal_urate:
+            if labcheck.urate.value <= self.ultplan.goal_urate:
 
                 self.urates = self.urates.objects.filter(
                     user=self.user,
@@ -284,4 +268,10 @@ class Titration(TimeStampedModel):
             if self.urate.value > self.ultplan.goal_urate:
                 self.ult.dose = self.ult.dose + self.dose_adjustment
                 self.ult.dose.save()
-                LabCheck.objects.create(user=self.user, ultplan=self.ultplan)
+                ### CREATE NEW LABCHECK
+
+    def __str__(self):
+        return f"{str(self.user)}'s ULTPlan"
+
+    def get_absolute_url(self):
+        return reverse("ultplan:detail", kwargs={"pk": self.pk})
