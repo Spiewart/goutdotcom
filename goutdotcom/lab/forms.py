@@ -1,9 +1,8 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, ButtonHolder, Field, Fieldset, Layout, Submit
-from datetimewidget.widgets import DateWidget
 from django import forms
 
-from .models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet, Urate
+from .models import ALT, AST, WBC, Creatinine, Hemoglobin, LabCheck, Platelet, Urate
 
 
 class ALTForm(forms.ModelForm):
@@ -16,7 +15,7 @@ class ALTForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ALTForm, self).__init__(*args, **kwargs)
-        # self.fields["value"].required = False
+        self.fields["value"].required = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -90,6 +89,24 @@ class HemoglobinForm(forms.ModelForm):
                 "Hemoglobin",
                 "value",
                 "date_drawn",
+            ),
+        )
+
+
+class LabCheckForm(forms.ModelForm):
+    """Form for creating new lab check and related lab models."""
+
+    class Meta:
+        model = LabCheck
+        fields = ()
+
+    def __init__(self, *args, **kwargs):
+        super(LabCheckForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "Lab Check",
             ),
         )
 

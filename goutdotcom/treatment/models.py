@@ -75,7 +75,7 @@ class FlareTreatment(Treatment):
 
 
 class ULTTreatment(Treatment):
-    ultplan = models.ForeignKey(ULTPlan, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    ultplan = models.OneToOneField(ULTPlan, on_delete=models.CASCADE, null=True, blank=True, default=None)
     date_started = models.DateField(default=timezone.now, null=True, blank=True)
 
     class Meta:
@@ -97,30 +97,6 @@ class Allopurinol(ULTTreatment):
     de_sensitized = models.BooleanField(null=True, blank=True, help_text="Have you been de-sensitized to allopurinol?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
 
-    def save(self):
-        allopurinol = super(Allopurinol, self).save()
-
-        AllopurinolHistory.objects.create(
-            allopurinol=allopurinol,
-            user=allopurinol.user,
-            ultplan=allopurinol.ultplan,
-            generic_name=allopurinol.generic_name,
-            brand_names=allopurinol.brand_names,
-            date_started=allopurinol.date_started,
-            dose=allopurinol.dose,
-            freq=allopurinol.freq,
-            side_effects=allopurinol.side_effects,
-            de_sensitized=allopurinol.de_sensitized,
-            drug_class=allopurinol.drug_class,
-        )
-
-
-class AllopurinolHistory(ULTTreatment):
-    allopurinol = ForeignKey(Allopurinol, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ["-pk"]
-
 
 class Febuxostat(ULTTreatment):
     generic_name = models.CharField(max_length=60, choices=MEDICATION_CHOICES, default=FEBUXOSTAT)
@@ -135,30 +111,6 @@ class Febuxostat(ULTTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
-
-    def save(self):
-        febuxostat = super(Febuxostat, self).save()
-
-        FebuxostatHistory.objects.create(
-            febuxostat=febuxostat,
-            user=febuxostat.user,
-            ultplan=febuxostat.ultplan,
-            generic_name=febuxostat.generic_name,
-            brand_names=febuxostat.brand_names,
-            date_started=febuxostat.date_started,
-            dose=febuxostat.dose,
-            freq=febuxostat.freq,
-            side_effects=febuxostat.side_effects,
-            de_sensitized=febuxostat.de_sensitized,
-            drug_class=febuxostat.drug_class,
-        )
-
-
-class FebuxostatHistory(ULTTreatment):
-    febuxostat = ForeignKey(Febuxostat, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ["-pk"]
 
 
 class Colchicine(FlareTreatment):
@@ -340,30 +292,6 @@ class Probenecid(ULTTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=URATEEXCRETAGOGUE)
-
-    def save(self):
-        probenecid = super(Probenecid, self).save()
-
-        ProbenecidHistory.objects.create(
-            febuxostat=probenecid,
-            user=probenecid.user,
-            ultplan=probenecid.ultplan,
-            generic_name=probenecid.generic_name,
-            brand_names=probenecid.brand_names,
-            date_started=probenecid.date_started,
-            dose=probenecid.dose,
-            freq=probenecid.freq,
-            side_effects=probenecid.side_effects,
-            de_sensitized=probenecid.de_sensitized,
-            drug_class=probenecid.drug_class,
-        )
-
-
-class ProbenecidHistory(ULTTreatment):
-    probenecid = ForeignKey(Probenecid, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ["-pk"]
 
 
 class Tinctureoftime(FlareTreatment):

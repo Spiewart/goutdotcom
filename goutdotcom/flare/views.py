@@ -248,7 +248,6 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(FlareUpdate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
         if self.request.POST:
             if "urate_form" not in context:
                 context["urate_form"] = self.urate_form_class(self.request.POST, instance=self.object.urate)

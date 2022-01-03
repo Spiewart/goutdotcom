@@ -16,6 +16,19 @@ class AllopurinolAdmin(admin.ModelAdmin):
     )
 
 
+class AllopurinolHistoryAdmin(admin.ModelAdmin):
+    list_display = (
+        "__str__",
+        "user",
+        "ultplan",
+        "dose",
+        "freq",
+        "created",
+        "modified",
+        "pk",
+    )
+
+
 class FebuxostatAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",

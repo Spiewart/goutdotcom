@@ -195,12 +195,24 @@ class LabCheck(TimeStampedModel):
 
     due = models.DateField(
         help_text="When is this lab check due?",
-        default=(datetime.now(timezone.utc) + timedelta(days=42)),
+        default=(datetime.today().date() + timedelta(days=42)),
     )
     completed = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this lab check completed?", default=False)
+    completed_date = models.DateField(
+        help_text="When was this lab check completed?",
+        blank=True,
+        null=True,
+        default=None,
+    )
 
-    def overdue(self):
-        if datetime.now(timezone.utc) >= self.due:
-            return True
-        elif datetime.now(timezone.utc) < self.due:
-            return False
+    # def overdue(self):
+    # if datetime.today().date() >= self.due:
+    # return True
+    # elif datetime.today().date() < self.due:
+    # return False
+
+    def __str__(self):
+        return f"{str(self.user)}'s lab check due str({self.due})"
+
+    def get_absolute_url(self):
+        return reverse("ultplan:detail", kwargs={"pk": self.ultplan.pk})

@@ -3,7 +3,7 @@
 
 {% block content %}
 <main class="container-fluid content-container">
-  <a class="btn btn-primary btn-lg" href="{% url 'lab:ultplan-create' ultplan=object.pk %}" role="button"
+  <a class="btn btn-primary btn-lg" href="{% url 'lab:labcheck-create' %}" role="button"
     style="float: right;">Lab Checkin</a>
   <a class="btn btn-primary btn-lg" href="{% url 'ultplan:delete' pk=object.pk %}" role="button"
     style="float: right;">Delete</a>
@@ -11,28 +11,8 @@
 <h1>{{ object }}</h1>
 <ul>
   <li>User: {{ object.user }}</li>
-  <li>ULTAid:
-  {% if object.allopurinol %}
-  {{ object.allopurinol }}
-  {% endif %}
-  {% if object.febuxostat %}
-  {{ object.febuxostat }}
-  {% endif %}
-  </li>
-  <li>PPxAid:
-  {% if object.naproxen %}
-  {{ object.naproxen }}
-  {% endif %}
-  {% if object.ibuprofen %}
-  {{ object.ibuprofen }}
-  {% endif %}
-  {% if object.prednisone %}
-  {{ object.prednisone }}
-  {% endif %}
-  {% if object.colchicine %}
-  {{ object.colchicine }}
-  {% endif %}
-  </li>
+  <li>ULTAid: {{ object.get_ult }}</li>
+  <li>PPxAid: {{ object.get_ppx }} </li>
   <li>Goal uric acid: {{ object.goal_urate }}</li>
   <li>Interval between labs: {{ object.lab_interval }}</li>
   <li>Under titration: {{ object.titrating }}</li>

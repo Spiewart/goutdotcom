@@ -2,43 +2,38 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-{% if form.instance.pk %} Update ULTPlan {% else %} New ULTPlan {% endif %} {% endblock%}
+{% if form.instance.pk %} Update Lab Check {% else %} New Lab Check {% endif %} {% endblock%}
 {% block header %}
 {% if form.instance.pk %}
-<h1>Update ULTPlan</h1>
+<h1>Update Lab Check</h1>
 {% else %}
-<h1>New ULTPlan</h1>
+<h1>New Lab Check</h1>
 {% endif %}
 {% endblock header %}
 {% block form %}
 {% if form.instance.pk %}
-  <form method="post" action="{% url 'lab:ultplan-update' pk=object.pk ultplan=view.kwargs.ultplan %}">
+  <form method="post" action="{% url 'lab:labcheck-update' pk=object.pk %}">
     {% csrf_token %}
     {% crispy form %}
-    {% crispy AST_form %}
+    {% crispy alt_form %}
+    {% crispy ast_form %}
     {% crispy creatinine_form %}
     {% crispy hemoglobin_form %}
     {% crispy platelet_form %}
-    {% crispy WBC_form %}
+    {% crispy wbc_form %}
     {% crispy urate_form %}
   </form>
 {% else %}
-  <form method="post" action="{% url 'lab:ultplan-create' view.kwargs.ultplan %}">
+  <form method="post" action="{% url 'lab:labcheck-create' %}">
     {% csrf_token %}
     {% crispy form %}
-    <hr size="6" color="white">
-    {% crispy AST_form %}
-    <hr size="6" color="white">
+    {% crispy alt_form %}
+    {% crispy ast_form %}
     {% crispy creatinine_form %}
-    <hr size="6" color="white">
     {% crispy hemoglobin_form %}
-    <hr size="6" color="white">
     {% crispy platelet_form %}
-    <hr size="6" color="white">
-    {% crispy WBC_form %}
-    <hr size="6" color="white">
+    {% crispy wbc_form %}
     {% crispy urate_form %}
-    <hr size="6" color="white">
     <input class="btn btn-primary btn-lg" type="submit" value="Submit">
   </form>
 {% endif %}

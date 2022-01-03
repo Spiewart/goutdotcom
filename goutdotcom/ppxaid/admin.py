@@ -7,6 +7,7 @@ class PPxAidAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "user",
+        "created",
         "pk",
     )
 

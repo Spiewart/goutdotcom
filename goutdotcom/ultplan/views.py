@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import DeleteView, DetailView, TemplateView, View
 
+from ..lab.models import LabCheck
 from ..ppxaid.models import PPxAid
 from ..treatment.models import Colchicine, Prednisone
 from ..ultaid.models import ULTAid
@@ -85,13 +86,11 @@ class ULTPlanCreate(LoginRequiredMixin, View):
                     ppxaid=self.ppxaid,
                 )
             # Create ULTPlan with the User, their ULTAid and PPxAid, ULTAid decision_aid() dict fields "dose", 'goal_urate' and 'lab_interval'
-            # Set last_titration to datetime.today()
             ultplan = ULTPlan.objects.create(
                 user=request.user,
                 dose_adjustment=self.ultaid.decision_aid().get("dose"),
                 goal_urate=self.ultaid.decision_aid().get("goal_urate"),
                 lab_interval=self.ultaid.decision_aid().get("lab_interval"),
-                last_titration=datetime.today(),
             )
             # After ultplan created, assign ULT.ultplan and PPx.ultplan to ultplan just created
             self.ultaid.ultplan = ultplan
@@ -102,6 +101,11 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             self.ppxaid.save()
             PPx.ultplan = ultplan
             PPx.save()
+            LabCheck.objects.create(
+                user=request.user,
+                ultplan=ultplan,
+                due=datetime.today().date(),
+            )
             # Return redirect to ultplan:detail
             messages.success(request, "ULTPlan created.")
             return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": ultplan.pk}))

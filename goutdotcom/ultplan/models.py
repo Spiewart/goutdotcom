@@ -7,6 +7,7 @@ from django_extensions.db.models import TimeStampedModel
 
 from .choices import BOOL_CHOICES
 
+
 class ULTPlan(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
@@ -200,6 +201,8 @@ class ULTPlan(TimeStampedModel):
             return febuxostat
         if probenecid:
             return probenecid
+        else:
+            return "No ULT!!!"
 
     def get_ppx(self):
         try:
@@ -226,6 +229,8 @@ class ULTPlan(TimeStampedModel):
             return naproxen
         if prednisone:
             return prednisone
+        else:
+            return "No PPx!!!"
 
     def titrate(self, labcheck):
         if labcheck.completed == True:
@@ -237,7 +242,6 @@ class ULTPlan(TimeStampedModel):
             except:
                 self.urates = None
             if labcheck.urate.value <= self.ultplan.goal_urate:
-
                 self.urates = self.urates.objects.filter(
                     user=self.user,
                     ultplan=self.ultplan,
@@ -265,10 +269,12 @@ class ULTPlan(TimeStampedModel):
                             pass
                 else:
                     pass
-            if self.urate.value > self.ultplan.goal_urate:
+            elif self.urate.value > self.ultplan.goal_urate:
                 self.ult.dose = self.ult.dose + self.dose_adjustment
                 self.ult.dose.save()
                 ### CREATE NEW LABCHECK
+            elif self.urate:
+                pass
 
     def __str__(self):
         return f"{str(self.user)}'s ULTPlan"

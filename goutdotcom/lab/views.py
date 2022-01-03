@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,11 +24,12 @@ from .forms import (
     ASTForm,
     CreatinineForm,
     HemoglobinForm,
+    LabCheckForm,
     PlateletForm,
     UrateForm,
     WBCForm,
 )
-from .models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet, Urate
+from .models import ALT, AST, WBC, Creatinine, Hemoglobin, LabCheck, Platelet, Urate
 
 
 # Create your views here.
@@ -244,33 +247,73 @@ class IndexView(LoginRequiredMixin, ListView):
         return queryset.filter(user=self.request.user)
 
 
-class ULTPlanCreate(LoginRequiredMixin, CreateView):
-    model = ALT
-    
-    form_class = ALTForm
-    AST_form_class = ASTForm
+class LabCheckCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = LabCheck
+
+    form_class = LabCheckForm
+    alt_form_class = ALTForm
+    ast_form_class = ASTForm
     creatinine_form_class = CreatinineForm
     hemoglobin_form_class = HemoglobinForm
     platelet_form_class = PlateletForm
-    WBC_form_class = WBCForm
+    wbc_form_class = WBCForm
     urate_form_class = UrateForm
 
+    def form_valid(self, form):
+        # Assign LabCheck instance User and ULTPlan based off request.user
+        form.instance.user = self.request.user
+        form.instance.ultplan = self.request.user.ultplan
+        try:
+            self.alt = form.instance.alt
+        except:
+            self.alt = None
+        try:
+            self.ast = form.instance.ast
+        except:
+            self.ast = None
+        try:
+            self.creatinine = form.instance.creatinine
+        except:
+            self.creatinine = None
+        try:
+            self.hemoglobin = form.instance.hemoglobin
+        except:
+            self.hemoglobin = None
+        try:
+            self.platelet = form.instance.platelet
+        except:
+            self.platelet = None
+        try:
+            self.wbc = form.instance.wbc
+        except:
+            self.wbc = None
+        try:
+            self.urate = form.instance.urate
+        except:
+            self.urate = None
+        # If all related models exist, mark LabCheck completed as of today's date
+        if self.alt and self.ast and self.creatinine and self.hemoglobin and self.platelet and self.wbc and self.urate:
+            form.instance.completed = True
+            form.instance.completed_date = datetime.today().date()
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
-        context = super(ULTPlanCreate, self).get_context_data(**kwargs)
-        if "ALT_form" not in context:
-            context["ALT_form"] = self.form_class(self.request.GET)
-        if "AST_form" not in context:
-            context["AST_form"] = self.AST_form_class(self.request.GET)
+        # Update context with related models forms. NEED to use prefix on GET to get the form inputs associated with the correct model
+        context = super(LabCheckCreate, self).get_context_data(**kwargs)
+        if "alt_form" not in context:
+            context["alt_form"] = self.alt_form_class(self.request.GET, prefix="alt_form")
+        if "ast_form" not in context:
+            context["ast_form"] = self.ast_form_class(self.request.GET, prefix="ast_form")
         if "creatinine_form" not in context:
-            context["creatinine_form"] = self.creatinine_form_class(self.request.GET)
+            context["creatinine_form"] = self.creatinine_form_class(self.request.GET, prefix="creatinine_form")
         if "hemoglobin_form" not in context:
-            context["hemoglobin_form"] = self.hemoglobin_form_class(self.request.GET)
+            context["hemoglobin_form"] = self.hemoglobin_form_class(self.request.GET, prefix="hemoglobin_form")
         if "platelet_form" not in context:
-            context["platelet_form"] = self.platelet_form_class(self.request.GET)
-        if "WBC_form" not in context:
-            context["WBC_form"] = self.WBC_form_class(self.request.GET)
+            context["platelet_form"] = self.platelet_form_class(self.request.GET, prefix="platelet_form")
+        if "wbc_form" not in context:
+            context["wbc_form"] = self.wbc_form_class(self.request.GET, prefix="wbc_form")
         if "urate_form" not in context:
-            context["urate_form"] = self.urate_form_class(self.request.GET)
+            context["urate_form"] = self.urate_form_class(self.request.GET, prefix="urate_form")
         return context
 
     def get_object(self):
@@ -278,94 +321,193 @@ class ULTPlanCreate(LoginRequiredMixin, CreateView):
         return object
 
     def get_template_names(self):
-        template = "lab/ultplan_form.html"
+        template = "lab/labcheck_form.html"
         return template
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, instance=ALT(), prefix="ALT_form")
-        ast_form = self.AST_form_class(request.POST, instance=AST(), prefix="AST_form")
+        form = self.form_class(request.POST, instance=LabCheck(), prefix="labcheck_form")
+        alt_form = self.alt_form_class(request.POST, instance=ALT(), prefix="alt_form")
+        ast_form = self.ast_form_class(request.POST, instance=AST(), prefix="ast_form")
         creatinine_form = self.creatinine_form_class(request.POST, instance=Creatinine(), prefix="creatinine_form")
         hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=Hemoglobin(), prefix="hemoglobin_form")
         platelet_form = self.platelet_form_class(request.POST, instance=Platelet(), prefix="platelet_form")
-        WBC_form = self.WBC_form_class(request.POST, instance=WBC(), prefix="WBC_form")
+        wbc_form = self.wbc_form_class(request.POST, instance=WBC(), prefix="wbc_form")
         urate_form = self.urate_form_class(request.POST, instance=Urate(), prefix="urate_form")
-        print("ALT")
-        print(form.is_valid())
-        print("AST")
-        print(ast_form.is_valid())
-        print("creatinine")
-        print(creatinine_form.is_valid())
-        print("hemoglobin")
-        print(hemoglobin_form.is_valid())
-        print("platelet")
-        print(platelet_form.is_valid())
-        print("WBC")
-        print(WBC_form.is_valid())
-        print("urate")
-        print(urate_form.is_valid())
-        if (
-            form.is_valid()
-            and ast_form.is_valid()
-            and creatinine_form.is_valid()
-            and hemoglobin_form.is_valid()
-            and platelet_form.is_valid()
-            and WBC_form.is_valid()
-            and urate_form.is_valid()
-        ):
-            if form.is_valid():
-                ALT_data = form.save(commit=False)
-                ALT_data.ultplan = request.user.ultplan
-                ALT_data.user = request.user
+        if form.is_valid():
+            form_data = form.save(commit=False)
+            if alt_form.is_valid():
+                ALT_data = alt_form.save(commit=False)
                 if ALT_data.value:
+                    ALT_data.ultplan = request.user.ultplan
+                    ALT_data.user = request.user
                     ALT_data.save()
+                    form_data.alt = ALT_data
+                else:
+                    form_data.alt = None
             if ast_form.is_valid():
                 AST_data = ast_form.save(commit=False)
-                AST_data.ultplan = request.user.ultplan
-                AST_data.user = request.user
                 if AST_data.value:
+                    AST_data.ultplan = request.user.ultplan
+                    AST_data.user = request.user
                     AST_data.save()
+                    form_data.ast = AST_data
+                else:
+                    form_data.ast = None
             if creatinine_form.is_valid():
                 creatinine_data = creatinine_form.save(commit=False)
-                creatinine_data.ultplan = request.user.ultplan
-                creatinine_data.user = request.user
                 if creatinine_data.value:
+                    creatinine_data.ultplan = request.user.ultplan
+                    creatinine_data.user = request.user
                     creatinine_data.save()
+                    form_data.creatinine = creatinine_data
+                else:
+                    form_data.creatinine = None
             if hemoglobin_form.is_valid():
                 hemoglobin_data = hemoglobin_form.save(commit=False)
                 if hemoglobin_data.value:
                     hemoglobin_data.ultplan = request.user.ultplan
                     hemoglobin_data.user = request.user
                     hemoglobin_data.save()
+                    form_data.hemoglobin = hemoglobin_data
+                else:
+                    form_data.hemoglobin = None
             if platelet_form.is_valid():
                 platelet_data = platelet_form.save(commit=False)
                 if platelet_data.value:
                     platelet_data.ultplan = request.user.ultplan
                     platelet_data.user = request.user
                     platelet_data.save()
-            if WBC_form.is_valid():
-                WBC_data = WBC_form.save(commit=False)
+                    form_data.platelet = platelet_data
+                else:
+                    form_data.platelet = None
+            if wbc_form.is_valid():
+                WBC_data = wbc_form.save(commit=False)
                 if WBC_data.value:
                     WBC_data.ultplan = request.user.ultplan
                     WBC_data.user = request.user
                     WBC_data.save()
+                    form_data.wbc = WBC_data
+                else:
+                    form_data.wbc = None
             if urate_form.is_valid():
                 urate_data = urate_form.save(commit=False)
                 if urate_data.value:
                     urate_data.ultplan = request.user.ultplan
                     urate_data.user = request.user
                     urate_data.save()
+                    form_data.urate = urate_data
+                else:
+                    form_data.urate = None
             return self.form_valid(form)
             # return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": request.user.ultplan.pk}))
         else:
             return self.render_to_response(
                 self.get_context_data(
-                    form=self.form_class(request.POST, instance=ALT()),
-                    ast_form=self.AST_form_class(request.POST, instance=AST()),
+                    form=self.form_class(request.POST, instance=LabCheck()),
+                    alt_form=self.alt_form_class(request.POST, instance=ALT()),
+                    ast_form=self.ast_form_class(request.POST, instance=AST()),
                     creatinine_form=self.creatinine_form_class(request.POST, instance=Creatinine()),
                     hemoglobin_form=self.hemoglobin_form_class(request.POST, instance=Hemoglobin()),
                     platelet_form=self.platelet_form_class(request.POST, instance=Platelet()),
-                    WBC_form=self.WBC_form_class(request.POST, instance=Platelet()),
+                    WBC_form=self.wbc_form_class(request.POST, instance=Platelet()),
                     urate_form=self.urate_form_class(request.POST, instance=Urate()),
                 )
             )
+
+class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = LabCheck
+
+    form_class = LabCheckForm
+    alt_form_class = ALTForm
+    ast_form_class = ASTForm
+    creatinine_form_class = CreatinineForm
+    hemoglobin_form_class = HemoglobinForm
+    platelet_form_class = PlateletForm
+    wbc_form_class = WBCForm
+    urate_form_class = UrateForm
+
+    def form_valid(self, form):
+        # Assign LabCheck instance User and ULTPlan based off request.user
+        form.instance.user = self.request.user
+        form.instance.ultplan = self.request.user.ultplan
+        try:
+            self.alt = form.instance.alt
+        except:
+            self.alt = None
+        try:
+            self.ast = form.instance.ast
+        except:
+            self.ast = None
+        try:
+            self.creatinine = form.instance.creatinine
+        except:
+            self.creatinine = None
+        try:
+            self.hemoglobin = form.instance.hemoglobin
+        except:
+            self.hemoglobin = None
+        try:
+            self.platelet = form.instance.platelet
+        except:
+            self.platelet = None
+        try:
+            self.wbc = form.instance.wbc
+        except:
+            self.wbc = None
+        try:
+            self.urate = form.instance.urate
+        except:
+            self.urate = None
+        # If all related models exist, mark LabCheck completed as of today's date
+        if self.alt and self.ast and self.creatinine and self.hemoglobin and self.platelet and self.wbc and self.urate:
+            form.instance.completed = True
+            form.instance.completed_date = datetime.today().date()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        # Update context with related models forms, with instance if POST. NEED to use prefix on GET to get the form inputs associated with the correct model.
+        context = super(LabCheckCreate, self).get_context_data(**kwargs)
+        if self.request.POST:
+            if "alt_form" not in context:
+                context["alt_form"] = self.alt_form_class(self.request.POST, instance=self.object.alt, prefix="alt_form")
+            if "ast_form" not in context:
+                context["ast_form"] = self.ast_form_class(self.request.POST, instance=self.object.ast, prefix="ast_form")
+            if "creatinine_form" not in context:
+                context["creatinine_form"] = self.creatinine_form_class(self.request.POST, instance=self.object.creatinine, prefix="creatinine_form")
+            if "hemoglobin_form" not in context:
+                context["hemoglobin_form"] = self.hemoglobin_form_class(self.request.POST, instance=self.object.hemoglobin, prefix="hemoglobin_form")
+            if "platelet_form" not in context:
+                context["platelet_form"] = self.platelet_form_class(self.request.POST, instance=self.object.platelet, prefix="platelet_form")
+            if "wbc_form" not in context:
+                context["wbc_form"] = self.wbc_form_class(self.request.POST, instance=self.object.wbc, prefix="wbc_form")
+            if "urate_form" not in context:
+                context["urate_form"] = self.urate_form_class(self.request.POST, instance=self.object.urate, prefix="urate_form")
+            return context
+        else:
+            if "alt_form" not in context:
+                context["alt_form"] = self.alt_form_class(instance=self.object.alt, prefix="alt_form")
+            if "ast_form" not in context:
+                context["ast_form"] = self.ast_form_class(instance=self.object.ast, prefix="ast_form")
+            if "creatinine_form" not in context:
+                context["creatinine_form"] = self.creatinine_form_class(instance=self.object.creatinine, prefix="creatinine_form")
+            if "hemoglobin_form" not in context:
+                context["hemoglobin_form"] = self.hemoglobin_form_class(instance=self.object.hemoglobin, prefix="hemoglobin_form")
+            if "platelet_form" not in context:
+                context["platelet_form"] = self.platelet_form_class(instance=self.object.platelet, prefix="platelet_form")
+            if "wbc_form" not in context:
+                context["wbc_form"] = self.wbc_form_class(instance=self.object.wbc, prefix="wbc_form")
+            if "urate_form" not in context:
+                context["urate_form"] = self.urate_form_class(instance=self.object.urate, prefix="urate_form")
+            return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object, prefix="labcheck_form")
+        alt_form = self.alt_form_class(request.POST, instance=self.object.alt, prefix="alt_form")
+        ast_form = self.ast_form_class(request.POST, instance=self.object.ast, prefix="ast_form")
+        creatinine_form = self.creatinine_form_class(request.POST, instance=self.object.creatinine, prefix="creatinine_form")
+        hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=self.object.hemoglobin, prefix="hemoglobin_form")
+        platelet_form = self.platelet_form_class(request.POST, instance=self.object.platelet, prefix="platelet_form")
+        wbc_form = self.wbc_form_class(request.POST, instance=self.object.wbc, prefix="wbc_form")
+        urate_form = self.urate_form_class(request.POST, instance=self.object.urate, prefix="urate_form")

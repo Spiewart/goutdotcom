@@ -34,6 +34,25 @@ class ASTAdmin(admin.ModelAdmin):
     )
 
 
+class LabCheckAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "ultplan",
+        "alt",
+        "ast",
+        "creatinine",
+        "hemoglobin",
+        "platelet",
+        "wbc",
+        "urate",
+        "due",
+        "completed",
+        "completed_date",
+        # "overdue",
+        "created",
+    )
+
+
 class PlateletAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -74,6 +93,7 @@ class CreatinineAdmin(admin.ModelAdmin):
 admin.site.register(Urate, UrateAdmin)
 admin.site.register(ALT, ALTAdmin)
 admin.site.register(AST, ASTAdmin)
+admin.site.register(LabCheck, LabCheckAdmin)
 admin.site.register(Platelet, PlateletAdmin)
 admin.site.register(WBC, WBCAdmin)
 admin.site.register(Hemoglobin, HemoglobinAdmin)
