@@ -7,22 +7,26 @@
       </button>
       <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="dropdown">
         <li><a class="dropdown-item"
-            href="{% url 'lab:single-ultplan-create' lab='urate' ultplan=request.user.ultplan.pk %}">Uric Acid</a>
+            href="{% url 'lab:single-ultplan-create' lab='urate' ultplan=request.user.ultplan.last_labcheck.pk %}">Uric
+            Acid</a>
         </li>
         <li><a class="dropdown-item"
-            href="{% url 'lab:single-ultplan-create' lab='ALT' ultplan=request.user.ultplan.pk %}">ALT</a></li>
-        <li><a class="dropdown-item"
-            href="{% url 'lab:single-ultplan-create' lab='AST' ultplan=request.user.ultplan.pk %}">AST</a></li>
-        <li><a class="dropdown-item"
-            href="{% url 'lab:single-ultplan-create' lab='WBC' ultplan=request.user.ultplan.pk %}">WBC</a></li>
-        <li><a class="dropdown-item"
-            href="{% url 'lab:single-ultplan-create' lab='hemoglobin' ultplan=request.user.ultplan.pk %}">Hemoglobin</a>
+            href="{% url 'lab:single-ultplan-create' lab='ALT' ultplan=request.user.ultplan.last_labcheck.pk %}">ALT</a>
             </li>
         <li><a class="dropdown-item"
-            href="{% url 'lab:single-ultplan-create' lab='platelet' ultplan=request.user.ultplan.pk %}">Platelets</a>
+            href="{% url 'lab:single-ultplan-create' lab='AST' ultplan=request.user.ultplan.last_labcheck.pk %}">AST</a>
             </li>
         <li><a class="dropdown-item"
-            href="{% url 'lab:single-ultplan-create' lab='creatinine' ultplan=request.user.ultplan.pk %}">Creatinine</a>
+            href="{% url 'lab:single-ultplan-create' lab='WBC' ultplan=request.user.ultplan.last_labcheck.pk %}">WBC</a>
+            </li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='hemoglobin' ultplan=request.user.ultplan.last_labcheck.pk %}">Hemoglobin</a>
+            </li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='platelet' ultplan=request.user.ultplan.last_labcheck.pk %}">Platelets</a>
+            </li>
+        <li><a class="dropdown-item"
+            href="{% url 'lab:single-ultplan-create' lab='creatinine' ultplan=request.user.ultplan.last_labcheck.pk %}">Creatinine</a>
             </li>
       </ul>
     </div>

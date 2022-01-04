@@ -167,14 +167,24 @@ class ULTPlan(TimeStampedModel):
                 overdue_labs_string += overdue_labs[0]
             return overdue_labs_string
 
-    def labcheck_status(self):
-        """Model method that determines if the ULTPlan has an associated uric acid within the defined lab interval (preceding x number of days)"""
+    def last_labcheck(self):
         try:
             self.labcheck = self.labcheck_set.last()
         except:
             self.labcheck = None
         if self.labcheck:
-            if datetime.now(timezone.utc) - self.urate.created >= timedelta(days=self.lab_interval):
+            return self.labcheck
+        else:
+            return None
+
+    def labcheck_due(self):
+        """Model method that determines if the most recent LabCheck for the ULTPlan is due, returns False if not"""
+        try:
+            self.labcheck = self.labcheck_set.last()
+        except:
+            self.labcheck = None
+        if self.labcheck.completed == False:
+            if datetime.today().date() > self.labcheck.due:
                 due = True
             else:
                 due = False

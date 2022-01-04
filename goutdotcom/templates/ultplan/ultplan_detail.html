@@ -3,23 +3,40 @@
 
 {% block content %}
 <main class="container-fluid content-container">
-  <a class="btn btn-primary btn-lg" href="{% url 'lab:labcheck-create' %}" role="button"
-    style="float: right;">Lab Checkin</a>
   <a class="btn btn-primary btn-lg" href="{% url 'ultplan:delete' pk=object.pk %}" role="button"
     style="float: right;">Delete</a>
   {% include 'lab/_ultplan_lab_create_button.html' %}
 <h1>{{ object }}</h1>
-<ul>
-  <li>User: {{ object.user }}</li>
-  <li>ULTAid: {{ object.get_ult }}</li>
-  <li>PPxAid: {{ object.get_ppx }} </li>
-  <li>Goal uric acid: {{ object.goal_urate }}</li>
-  <li>Interval between labs: {{ object.lab_interval }}</li>
-  <li>Under titration: {{ object.titrating }}</li>
-  <li>Last medication titration: {{ object.last_titration}}</li>
-  <li>Overdue labs: {{ object.labs_due }}
-</ul>
+<div class="row">
+  <div class="col">
+    <h2>Treatment</h2>
+    <ul>
+      <li>ULTAid: {{ object.get_ult }}</li>
+      <li>PPxAid: {{ object.get_ppx }} </li>
 
+      <li>Under titration: {{ object.titrating }}</li>
+      <li>Last medication titration: {{ object.last_titration}}</li>
+    </ul>
+  </div>
+  <div>
+    {% if object.last_labcheck %}
+      {% if object.labcheck_due == True %}
+      <a class="btn btn-primary btn-sm" href="{% url 'lab:labcheck-update' object.last_labcheck.pk %}" role="button"
+        style="float: right;">Log Labs</a>
+      {% endif %}
+      <h2>
+        Lab Monitoring
+      </h2>
+      <ul>
+        <li>Goal uric acid: {{ object.goal_urate }}</li>
+        <li>Interval between labs: {{ object.lab_interval }}</li>
+        <li>Lab Check: {{ object.last_labcheck }}</li>
+        <li>Due: {{ object.labcheck.due }}
+        <li>Overdue labs: {{ object.labs_due }}
+      </ul>
+    {% endif %}
+  </div>
+</div>
 </main>
 {% endblock content %}
 

@@ -414,6 +414,7 @@ class LabCheckCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                 )
             )
 
+
 class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = LabCheck
 
@@ -466,22 +467,36 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         # Update context with related models forms, with instance if POST. NEED to use prefix on GET to get the form inputs associated with the correct model.
-        context = super(LabCheckCreate, self).get_context_data(**kwargs)
+        context = super(LabCheckUpdate, self).get_context_data(**kwargs)
         if self.request.POST:
             if "alt_form" not in context:
-                context["alt_form"] = self.alt_form_class(self.request.POST, instance=self.object.alt, prefix="alt_form")
+                context["alt_form"] = self.alt_form_class(
+                    self.request.POST, instance=self.object.alt, prefix="alt_form"
+                )
             if "ast_form" not in context:
-                context["ast_form"] = self.ast_form_class(self.request.POST, instance=self.object.ast, prefix="ast_form")
+                context["ast_form"] = self.ast_form_class(
+                    self.request.POST, instance=self.object.ast, prefix="ast_form"
+                )
             if "creatinine_form" not in context:
-                context["creatinine_form"] = self.creatinine_form_class(self.request.POST, instance=self.object.creatinine, prefix="creatinine_form")
+                context["creatinine_form"] = self.creatinine_form_class(
+                    self.request.POST, instance=self.object.creatinine, prefix="creatinine_form"
+                )
             if "hemoglobin_form" not in context:
-                context["hemoglobin_form"] = self.hemoglobin_form_class(self.request.POST, instance=self.object.hemoglobin, prefix="hemoglobin_form")
+                context["hemoglobin_form"] = self.hemoglobin_form_class(
+                    self.request.POST, instance=self.object.hemoglobin, prefix="hemoglobin_form"
+                )
             if "platelet_form" not in context:
-                context["platelet_form"] = self.platelet_form_class(self.request.POST, instance=self.object.platelet, prefix="platelet_form")
+                context["platelet_form"] = self.platelet_form_class(
+                    self.request.POST, instance=self.object.platelet, prefix="platelet_form"
+                )
             if "wbc_form" not in context:
-                context["wbc_form"] = self.wbc_form_class(self.request.POST, instance=self.object.wbc, prefix="wbc_form")
+                context["wbc_form"] = self.wbc_form_class(
+                    self.request.POST, instance=self.object.wbc, prefix="wbc_form"
+                )
             if "urate_form" not in context:
-                context["urate_form"] = self.urate_form_class(self.request.POST, instance=self.object.urate, prefix="urate_form")
+                context["urate_form"] = self.urate_form_class(
+                    self.request.POST, instance=self.object.urate, prefix="urate_form"
+                )
             return context
         else:
             if "alt_form" not in context:
@@ -489,11 +504,17 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             if "ast_form" not in context:
                 context["ast_form"] = self.ast_form_class(instance=self.object.ast, prefix="ast_form")
             if "creatinine_form" not in context:
-                context["creatinine_form"] = self.creatinine_form_class(instance=self.object.creatinine, prefix="creatinine_form")
+                context["creatinine_form"] = self.creatinine_form_class(
+                    instance=self.object.creatinine, prefix="creatinine_form"
+                )
             if "hemoglobin_form" not in context:
-                context["hemoglobin_form"] = self.hemoglobin_form_class(instance=self.object.hemoglobin, prefix="hemoglobin_form")
+                context["hemoglobin_form"] = self.hemoglobin_form_class(
+                    instance=self.object.hemoglobin, prefix="hemoglobin_form"
+                )
             if "platelet_form" not in context:
-                context["platelet_form"] = self.platelet_form_class(instance=self.object.platelet, prefix="platelet_form")
+                context["platelet_form"] = self.platelet_form_class(
+                    instance=self.object.platelet, prefix="platelet_form"
+                )
             if "wbc_form" not in context:
                 context["wbc_form"] = self.wbc_form_class(instance=self.object.wbc, prefix="wbc_form")
             if "urate_form" not in context:
@@ -505,8 +526,12 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         form = self.form_class(request.POST, instance=self.object, prefix="labcheck_form")
         alt_form = self.alt_form_class(request.POST, instance=self.object.alt, prefix="alt_form")
         ast_form = self.ast_form_class(request.POST, instance=self.object.ast, prefix="ast_form")
-        creatinine_form = self.creatinine_form_class(request.POST, instance=self.object.creatinine, prefix="creatinine_form")
-        hemoglobin_form = self.hemoglobin_form_class(request.POST, instance=self.object.hemoglobin, prefix="hemoglobin_form")
+        creatinine_form = self.creatinine_form_class(
+            request.POST, instance=self.object.creatinine, prefix="creatinine_form"
+        )
+        hemoglobin_form = self.hemoglobin_form_class(
+            request.POST, instance=self.object.hemoglobin, prefix="hemoglobin_form"
+        )
         platelet_form = self.platelet_form_class(request.POST, instance=self.object.platelet, prefix="platelet_form")
         wbc_form = self.wbc_form_class(request.POST, instance=self.object.wbc, prefix="wbc_form")
         urate_form = self.urate_form_class(request.POST, instance=self.object.urate, prefix="urate_form")
