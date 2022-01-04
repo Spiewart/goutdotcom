@@ -21,6 +21,7 @@
               {{ object.decision_aid|get_key:'drug2'|get_key:'drug' }}
             </a>
           </h4>
+          {% if request.user.is_authenticated %}
           <li class="or">
             <form method="post"
               action="{% url 'treatment:flareaid-create' pk=object.pk treatment=object.decision_aid|get_key:'drug2'|get_key:'drug' %}">
@@ -29,8 +30,9 @@
                 value="treatment">Create</button>
             </form>
           </li>
+          {% endif %}
           <li class="or">
-            {{ object.decision_string }}
+            {{ object|get_drug_string:'drug2' }}
           </li>
           </div>
           <div class="col-sm">
@@ -42,6 +44,7 @@
                 {{ object.decision_aid|get_key:'drug1'|get_key:'drug' }}
               </a>
             </h4>
+            {% if request.user.is_authenticated %}
             <li class="or">
               <form method="post"
                 action="{% url 'treatment:flareaid-create' pk=object.pk treatment=object.decision_aid|get_key:'drug1'|get_key:'drug' %}">
@@ -50,6 +53,7 @@
                   value="treatment">Create</button>
               </form>
             </li>
+            {% endif %}
             <li class="or">
               {{ object.decision_string }}
             </li>

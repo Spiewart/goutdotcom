@@ -400,7 +400,6 @@ class LabCheckCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                 else:
                     form_data.urate = None
             return self.form_valid(form)
-            # return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": request.user.ultplan.pk}))
         else:
             return self.render_to_response(
                 self.get_context_data(
@@ -511,3 +510,82 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         platelet_form = self.platelet_form_class(request.POST, instance=self.object.platelet, prefix="platelet_form")
         wbc_form = self.wbc_form_class(request.POST, instance=self.object.wbc, prefix="wbc_form")
         urate_form = self.urate_form_class(request.POST, instance=self.object.urate, prefix="urate_form")
+        if form.is_valid():
+            form_data = form.save(commit=False)
+            if alt_form.is_valid():
+                ALT_data = alt_form.save(commit=False)
+                if ALT_data.value:
+                    ALT_data.ultplan = request.user.ultplan
+                    ALT_data.user = request.user
+                    ALT_data.save()
+                    form_data.alt = ALT_data
+                else:
+                    form_data.alt = None
+            if ast_form.is_valid():
+                AST_data = ast_form.save(commit=False)
+                if AST_data.value:
+                    AST_data.ultplan = request.user.ultplan
+                    AST_data.user = request.user
+                    AST_data.save()
+                    form_data.ast = AST_data
+                else:
+                    form_data.ast = None
+            if creatinine_form.is_valid():
+                creatinine_data = creatinine_form.save(commit=False)
+                if creatinine_data.value:
+                    creatinine_data.ultplan = request.user.ultplan
+                    creatinine_data.user = request.user
+                    creatinine_data.save()
+                    form_data.creatinine = creatinine_data
+                else:
+                    form_data.creatinine = None
+            if hemoglobin_form.is_valid():
+                hemoglobin_data = hemoglobin_form.save(commit=False)
+                if hemoglobin_data.value:
+                    hemoglobin_data.ultplan = request.user.ultplan
+                    hemoglobin_data.user = request.user
+                    hemoglobin_data.save()
+                    form_data.hemoglobin = hemoglobin_data
+                else:
+                    form_data.hemoglobin = None
+            if platelet_form.is_valid():
+                platelet_data = platelet_form.save(commit=False)
+                if platelet_data.value:
+                    platelet_data.ultplan = request.user.ultplan
+                    platelet_data.user = request.user
+                    platelet_data.save()
+                    form_data.platelet = platelet_data
+                else:
+                    form_data.platelet = None
+            if wbc_form.is_valid():
+                WBC_data = wbc_form.save(commit=False)
+                if WBC_data.value:
+                    WBC_data.ultplan = request.user.ultplan
+                    WBC_data.user = request.user
+                    WBC_data.save()
+                    form_data.wbc = WBC_data
+                else:
+                    form_data.wbc = None
+            if urate_form.is_valid():
+                urate_data = urate_form.save(commit=False)
+                if urate_data.value:
+                    urate_data.ultplan = request.user.ultplan
+                    urate_data.user = request.user
+                    urate_data.save()
+                    form_data.urate = urate_data
+                else:
+                    form_data.urate = None
+            return self.form_valid(form)
+        else:
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    alt_form=self.alt_form_class(request.POST, instance=ALT()),
+                    ast_form=self.ast_form_class(request.POST, instance=AST()),
+                    creatinine_form=self.creatinine_form_class(request.POST, instance=Creatinine()),
+                    hemoglobin_form=self.hemoglobin_form_class(request.POST, instance=Hemoglobin()),
+                    platelet_form=self.platelet_form_class(request.POST, instance=Platelet()),
+                    WBC_form=self.wbc_form_class(request.POST, instance=Platelet()),
+                    urate_form=self.urate_form_class(request.POST, instance=Urate()),
+                )
+            )

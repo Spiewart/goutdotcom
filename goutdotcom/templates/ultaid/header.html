@@ -12,38 +12,49 @@
   </h1>
 <div class="row">
   <div class="col">
-    {% if object.decision_aid|get_ultaid:'want' == False %}
+    {% if object.decision_aid|get_key:'want' == False %}
       <h2>ULT not desired</h2>
       <p>You indicated you won't take medication daily to get rid of your gout.
-      {% if object.decision_aid|get_ultaid:'need' == True %}
+      {% if object.decision_aid|get_key:'need' == True %}
         That's unfortunate because ULT is indicated for your gout based on your report or the Gouthelper <a
           href="{% url 'ult:create' %}" target="_blank">ULT calculator</a>! Gout sucks and it can be completely
         eliminated with medications.
       {% endif %}
       </p>
-    {% elif object.decision_aid|get_ultaid:'need' == False %}
+    {% elif object.decision_aid|get_key:'need' == False %}
       <h2>ULT not indicated</h2>
       <p>You indicated that you don't need ULT. This could either be from the Gouthelper <a
           href="{% url 'ult:create' %}" target="_blank">ULT calculator</a> or from the advice of your doctor.</p>
-    {% elif object.decision_aid|get_ultaid:'dialysis' == True %}
+    {% elif object.decision_aid|get_key:'dialysis' == True %}
       <h2><u>Dialysis</u></h2>
       <p>Dialysis filters off uric acid like a healthy set of kidneys would. Thus most people who are on dialysis
         don't need ULT.</p>
-    {% elif object.decision_aid|get_ultaid:'rheumatologist' == True %}
+    {% elif object.decision_aid|get_key:'rheumatologist' == True %}
       <h2><u>Rheumatologist</u></h2>
       <p>Your medical situation is complicated enough that you should see a rheumatologist for the next step in your gout care.</p>
     {% else %}
       <h2><u>Medication</u>: <a
-          href="{% url 'treatment:about' object.decision_aid|get_ultaid:'drug' %}">{{ object.decision_aid|get_ultaid:'drug'|capfirst }}</a>
+          href="{% url 'treatment:about' object.decision_aid|get_key:'drug' %}">{{ object.decision_aid|get_key:'drug'|capfirst }}</a>
       </h2>
       </div>
       <div class="col">
         <h2><u>Prophylaxis</u>:
-          {% if request.user.ppxaid %}
-          <a href="{% url 'ppxaid:detail' request.user.ppxaid.pk %}">{{ ultaid.ppxaid }}</a>
+          {% if request.user.is_authenticated %}
+            {% if request.user.ppxaid %}
+            <a href="{% url 'ppxaid:detail' request.user.ppxaid.pk %}">{{ ultaid.ppxaid }}</a>
+            {% else %}
+              <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}"
+                role="button" style="float: none;">Create PPxAid</a>
+            {% endif %}
           {% else %}
-          <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button"
-            style="float: none;">Create PPxAid</a>
+            {% if object.ppxaid %}
+              <a href="{% url 'treatment:about' object.ppxaid.decision_aid|get_key:'drug' %}">
+              {{ object.ppxaid.decision_aid|get_key:'drug' }}
+              </a>
+            {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}" role="button"
+              style="float: none;">Create PPxAid</a>
+            {% endif %}
           {% endif %}
         </h2>
       </div>
@@ -69,7 +80,7 @@
       {% endif %}
     </h3>
       {% if request.user.is_authenticated %}
-        {% if object.decision_aid|get_ultaid:'rheumatologist' == True or object.decision_aid|get_ultaid:'dialysis' == True or object.decision_aid|get_ultaid:'need' == False or object.decision_aid|get_ultaid:'want' == False %}
+        {% if object.decision_aid|get_key:'rheumatologist' == True or object.decision_aid|get_key:'dialysis' == True or object.decision_aid|get_key:'need' == False or object.decision_aid|get_key:'want' == False %}
         {% else %}
           {% if request.user.ppxaid %}
           <form method="post" action="{% url 'ultplan:create' %}">
@@ -83,12 +94,12 @@
       {% endif %}
       </div>
       <div class="col">
-      <h3><u>Titration dose</u>: {{ object.decision_aid|get_ultaid:'dose'|capfirst }} mg daily</h3>
-      <p>With every lab check, increase the dose of {{ object.decision_aid|get_ultaid:'drug' }} by
-        {{ object.decision_aid|get_ultaid:'dose'|capfirst }} mg daily until the
+      <h3><u>Titration dose</u>: {{ object.decision_aid|get_key:'dose'|capfirst }} mg daily</h3>
+      <p>With every lab check, increase the dose of {{ object.decision_aid|get_key:'drug' }} by
+        {{ object.decision_aid|get_key:'dose'|capfirst }} mg daily until the
         uric acid is at <a href="#goal">goal</a>.</p>
-      <h3 id="goal"><u>Goal uric acid</u>: {{ object.decision_aid|get_ultaid:'goal_urate' }} mg/dL</h3>
-      <p>Gout will be best eliminated with a <a href="NEED PAGE ABOUT GOAL URIC ACID">goal uric acid</a> of {{ object.decision_aid|get_ultaid:'goal_urate' }} mg/dL.</p>
+      <h3 id="goal"><u>Goal uric acid</u>: {{ object.decision_aid|get_key:'goal_urate' }} mg/dL</h3>
+      <p>Gout will be best eliminated with a <a href="NEED PAGE ABOUT GOAL URIC ACID">goal uric acid</a> of {{ object.decision_aid|get_key:'goal_urate' }} mg/dL.</p>
       {% endif %}
   </div>
 </div>

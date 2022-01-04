@@ -9,3 +9,7 @@ def index(indexable, i):
 @register.filter(name='get_key')
 def get_key(dictionary, key):
     return dictionary.get(key)
+
+@register.filter(name='get_drug_string')
+def get_drug_string(flareaid, drug):
+    return flareaid.decision_string(drug)

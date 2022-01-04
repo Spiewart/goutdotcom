@@ -336,7 +336,7 @@ class FlareUpdate(LoginRequiredMixin, UpdateView):
             flare_data.stroke = stroke_data
             flare_data.PVD = PVD_data
             flare_data.save()
-            return HttpResponseRedirect(reverse("flare:detail", kwargs={"pk": flare_data.pk}))
+            return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(

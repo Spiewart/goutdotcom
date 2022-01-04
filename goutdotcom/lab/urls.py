@@ -4,6 +4,7 @@ from .views import (
     IndexView,
     LabAbout,
     LabCheckCreate,
+    LabCheckUpdate,
     LabCreate,
     LabDetail,
     LabList,
@@ -18,6 +19,7 @@ urlpatterns = [
     path("create/<lab>/", view=LabCreate.as_view(), name="create"),
     path("create/<lab>/ultplan/<int:ultplan>/", view=LabCreate.as_view(), name="single-ultplan-create"),
     path("list/<lab>/", view=LabList.as_view(), name="list"),
+    path("update/labcheck/<int:pk>/", view=LabCheckUpdate.as_view(), name="labcheck-update"),
     path("update/<lab>/<int:pk>/", view=LabUpdate.as_view(), name="update"),
     path("<lab>/<int:pk>/", view=LabDetail.as_view(), name="detail"),
 ]
