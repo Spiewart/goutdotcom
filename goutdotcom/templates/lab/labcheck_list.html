@@ -6,9 +6,7 @@
 <main class="container content-container">
   {% if object_list %}
   <header class="page-header">
-    {% block title %}
     <h1 class="content-heading">{{ object_list|list_to_name }}s
-      {% endblock title %}
       {% block buttons %}
       {% include 'lab/_list_buttons.html' %}
       {% endblock buttons %}
@@ -16,33 +14,75 @@
   </header>
   <div class="row">
     <div class="col">
+      <h2><u>Pending</u></h2>
       {% for labcheck in object_list %}
-      <div class="container content-item">
-        <h2>{{ labcheck }} <a href="{{ labcheck.get_absolute_url }}"
-            class="hyperlink">{{ labcheck.date_due }}</a>
-        </h2>
-        {% if labcheck.alt %}
-        <li><a href="{% url 'lab:detail' 'alt' labcheck.alt.pk %}">{{ labcheck.ast}}</a></li>
-        {% endif %}
-        {% if labcheck.ast %}
-        <li><a href="{% url 'lab:detail' 'ast' labcheck.ast.pk %}">{{ labcheck.ast}}</a></li>
-        {% endif %}
-        {% if labcheck.creatinine %}
-        <li><a href="{% url 'lab:detail' 'creatinine' labcheck.creatinine.pk %}">{{ labcheck.creatinine}}</a></li>
-        {% endif %}
-        {% if labcheck.hemoglobin %}
-        <li><a href="{% url 'lab:detail' 'hemoglobin' labcheck.hemoglobin.pk %}">{{ labcheck.hemoglobin}}</a></li>
-        {% endif %}
-        {% if labcheck.platelet %}
-        <li><a href="{% url 'lab:detail' 'platelet' labcheck.platelet.pk %}">{{ labcheck.platelet}}</a></li>
-        {% endif %}
-        {% if labcheck.wbc %}
-        <li><a href="{% url 'lab:detail' 'wbc' labcheck.wbc.pk %}">{{ labcheck.wbc}}</a></li>
-        {% endif %}
-        {% if labcheck.urate %}
-        <li><a href="{% url 'lab:detail' 'urate' labcheck.urate.pk %}">{{ labcheck.urate}}</a></li>
-        {% endif %}
+      {% if labcheck.completed == False %}
+        <div class="container content-item">
+          <h2>{{ labcheck }} <a href="{{ labcheck.get_absolute_url }}"
+              class="hyperlink">{{ labcheck.date_due }}</a>
+          </h2>
+          <ul>
+          {% if labcheck.alt %}
+          <li><a href="{% url 'lab:detail' 'alt' labcheck.alt.pk %}">{{ labcheck.ast}}</a></li>
+          {% endif %}
+          {% if labcheck.ast %}
+          <li><a href="{% url 'lab:detail' 'ast' labcheck.ast.pk %}">{{ labcheck.ast}}</a></li>
+          {% endif %}
+          {% if labcheck.creatinine %}
+          <li><a href="{% url 'lab:detail' 'creatinine' labcheck.creatinine.pk %}">{{ labcheck.creatinine}}</a></li>
+          {% endif %}
+          {% if labcheck.hemoglobin %}
+          <li><a href="{% url 'lab:detail' 'hemoglobin' labcheck.hemoglobin.pk %}">{{ labcheck.hemoglobin}}</a></li>
+          {% endif %}
+          {% if labcheck.platelet %}
+          <li><a href="{% url 'lab:detail' 'platelet' labcheck.platelet.pk %}">{{ labcheck.platelet}}</a></li>
+          {% endif %}
+          {% if labcheck.wbc %}
+          <li><a href="{% url 'lab:detail' 'wbc' labcheck.wbc.pk %}">{{ labcheck.wbc}}</a></li>
+          {% endif %}
+          {% if labcheck.urate %}
+          <li><a href="{% url 'lab:detail' 'urate' labcheck.urate.pk %}">{{ labcheck.urate}}</a></li>
+          {% endif %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endfor %}
       </div>
+      <div class="col">
+    <h2><u>Completed</u></h2>
+    {% for labcheck in object_list %}
+      {% if labcheck.completed == True %}
+        <div class="container content-item">
+          <h2>{{ labcheck }} <a href="{{ labcheck.get_absolute_url }}"
+              class="hyperlink">{{ labcheck.date_due }}</a>
+          </h2>
+          <ul>
+          {% if labcheck.alt %}
+          <li><a href="{% url 'lab:detail' 'alt' labcheck.alt.pk %}">{{ labcheck.ast}}</a></li>
+          {% endif %}
+          {% if labcheck.ast %}
+          <li><a href="{% url 'lab:detail' 'ast' labcheck.ast.pk %}">{{ labcheck.ast}}</a></li>
+          {% endif %}
+          {% if labcheck.creatinine %}
+          <li><a href="{% url 'lab:detail' 'creatinine' labcheck.creatinine.pk %}">{{ labcheck.creatinine}}</a>
+          </li>
+          {% endif %}
+          {% if labcheck.hemoglobin %}
+          <li><a href="{% url 'lab:detail' 'hemoglobin' labcheck.hemoglobin.pk %}">{{ labcheck.hemoglobin}}</a>
+          </li>
+          {% endif %}
+          {% if labcheck.platelet %}
+          <li><a href="{% url 'lab:detail' 'platelet' labcheck.platelet.pk %}">{{ labcheck.platelet}}</a></li>
+          {% endif %}
+          {% if labcheck.wbc %}
+          <li><a href="{% url 'lab:detail' 'wbc' labcheck.wbc.pk %}">{{ labcheck.wbc}}</a></li>
+          {% endif %}
+          {% if labcheck.urate %}
+          <li><a href="{% url 'lab:detail' 'urate' labcheck.urate.pk %}">{{ labcheck.urate}}</a></li>
+          {% endif %}
+        </ul>
+        </div>
+      {% endif %}
       <br>
       {% endfor %}
       <footer class="page-footer">

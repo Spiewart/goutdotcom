@@ -301,6 +301,18 @@ function contraindications_profile_bleed() {
   }
 }
 
+/* Lab app JS */
+// Function that checks whether all the labs were drawn on the same date and hides the model-specific date_drawn form inputs, otherwise displays them individually for each
+function date_drawn_checker() {
+$('#div_id_alt_form-date_drawn').hide();
+$('#div_id_ast_form-date_drawn').hide();
+$('#div_id_creatinine_form-date_drawn').hide();
+$('#div_id_hemoglobin_form-date_drawn').hide();
+$('#div_id_platelet_form-date_drawn').hide();
+$('#div_id_wbc_form-date_drawn').hide();
+$('#div_id_urate_form-date_drawn').hide();
+}
+
 /* ULTAid app JS */
 function ULT_exists_checker() {
   var ult = JSON.parse(document.getElementById('user_ult').textContent);

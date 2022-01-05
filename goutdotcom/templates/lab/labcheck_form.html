@@ -40,4 +40,10 @@
 {% endif %}
 {% endblock form %}
 {% block inline_javascript %}
+<script>
+// this is executed once when the page loads
+$(document).ready(function() {
+date_drawn_checker();
+});
+</script>
 {% endblock inline_javascript %}

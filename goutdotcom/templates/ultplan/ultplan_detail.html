@@ -13,12 +13,11 @@
     <ul>
       <li>ULTAid: {{ object.get_ult }}</li>
       <li>PPxAid: {{ object.get_ppx }} </li>
-
       <li>Under titration: {{ object.titrating }}</li>
       <li>Last medication titration: {{ object.last_titration}}</li>
     </ul>
   </div>
-  <div>
+  <div class="col">
     {% if object.last_labcheck %}
       {% if object.labcheck_due == True %}
       <a class="btn btn-primary btn-sm" href="{% url 'lab:labcheck-update' pk=object.last_labcheck.pk %}" role="button"

@@ -251,7 +251,7 @@ class ULTPlan(TimeStampedModel):
             self.dose_adjustment = self.dose_adjustment
             self.ppx = self.get_ppx()
 
-            self.labchecks = self.labcheck_set
+            self.labchecks = self.labcheck_set.all()
 
             if len(self.labchecks) == 1:
                 # If there is only 1 LabCheck for ULTPlan, it is the first and no titration will be performed

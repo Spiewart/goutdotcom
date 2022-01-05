@@ -16,6 +16,7 @@ class ALTForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ALTForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -38,6 +39,7 @@ class ASTForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ASTForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -60,6 +62,7 @@ class CreatinineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreatinineForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -82,6 +85,7 @@ class HemoglobinForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(HemoglobinForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -106,7 +110,7 @@ class LabCheckForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "Lab Check",
+                "",
             ),
         )
 
@@ -122,6 +126,7 @@ class PlateletForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PlateletForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -144,6 +149,7 @@ class WBCForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(WBCForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -166,6 +172,7 @@ class UrateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UrateForm, self).__init__(*args, **kwargs)
         self.fields["value"].required = False
+        self.fields["value"].label = False
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
