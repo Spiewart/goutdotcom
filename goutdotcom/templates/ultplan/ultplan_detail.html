@@ -21,12 +21,17 @@
   <div>
     {% if object.last_labcheck %}
       {% if object.labcheck_due == True %}
-      <a class="btn btn-primary btn-sm" href="{% url 'lab:labcheck-update' object.last_labcheck.pk %}" role="button"
+      <a class="btn btn-primary btn-sm" href="{% url 'lab:labcheck-update' pk=object.last_labcheck.pk %}" role="button"
         style="float: right;">Log Labs</a>
       {% endif %}
+      <a class="btn btn-primary btn-sm" href="{% url 'lab:list' lab='labcheck' %}"
+        role="button" style="float: right;">Lab List</a>
       <h2>
         Lab Monitoring
       </h2>
+      {% if object.labcheck_due == False %}
+
+      {% endif %}
       <ul>
         <li>Goal uric acid: {{ object.goal_urate }}</li>
         <li>Interval between labs: {{ object.lab_interval }}</li>

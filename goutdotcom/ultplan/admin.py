@@ -9,7 +9,7 @@ class ULTPlanAdmin(admin.ModelAdmin):
         "ultaid",
         "ppxaid",
         "goal_urate",
-        "lab_interval",
+        #"lab_interval",
         "titrating",
         "last_titration",
         "pk",

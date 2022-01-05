@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from django.apps import apps
 from django.contrib import messages
@@ -138,7 +138,10 @@ class LabList(LoginRequiredMixin, ListView):
         return self.queryset.filter(user=self.request.user).order_by("-created")
 
     def get_template_names(self, **kwargs):
-        template = "lab/lab_list_base.html"
+        if self.kwargs["lab"] == "labcheck":
+            template = "lab/labcheck_list.html"
+        else:
+            template = "lab/lab_list_base.html"
         return template
 
     def get_context_data(self, **kwargs):
@@ -415,7 +418,7 @@ class LabCheckCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             )
 
 
-class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = LabCheck
 
     form_class = LabCheckForm
@@ -463,67 +466,150 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         if self.alt and self.ast and self.creatinine and self.hemoglobin and self.platelet and self.wbc and self.urate:
             form.instance.completed = True
             form.instance.completed_date = datetime.today().date()
+            self.request.user.ultplan.titrate(form.instance)
+            ### LOGIC TO CHECK IF ULTPLAN IS FINISHED
+            LabCheck.objects.create(
+                user=form.instance.user,
+                ultplan=form.instance.ultplan,
+                due=datetime.today().date() + timedelta(days=form.instance.ultplan.lab_interval),
+            )
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        # Update context with related models forms, with instance if POST. NEED to use prefix on GET to get the form inputs associated with the correct model.
+        # Long block of try/except statements to determine if LabCheck has associated lab models
+        try:
+            self.alt = self.object.alt
+        except:
+            self.alt = None
+        try:
+            self.ast = self.object.ast
+        except:
+            self.ast = None
+        try:
+            self.creatinine = self.object.creatinine
+        except:
+            self.creatinine = None
+        try:
+            self.hemoglobin = self.object.hemoglobin
+        except:
+            self.hemoglobin = None
+        try:
+            self.platelet = self.object.platelet
+        except:
+            self.platelet = None
+        try:
+            self.wbc = self.object.wbc
+        except:
+            self.wbc = None
+        try:
+            self.urate = self.object.urate
+        except:
+            self.urate = None
+        # Update context with related models forms, with existing instance if it exists, otherwise a new instance. NEED to use prefix on GET to get the form inputs associated with the correct model.
         context = super(LabCheckUpdate, self).get_context_data(**kwargs)
         if self.request.POST:
             if "alt_form" not in context:
-                context["alt_form"] = self.alt_form_class(
-                    self.request.POST, instance=self.object.alt, prefix="alt_form"
-                )
+                if self.alt:
+                    context["alt_form"] = self.alt_form_class(self.request.POST, instance=self.alt, prefix="alt_form")
+                else:
+                    context["alt_form"] = self.alt_form_class(self.request.POST, instance=ALT(), prefix="alt_form")
             if "ast_form" not in context:
-                context["ast_form"] = self.ast_form_class(
-                    self.request.POST, instance=self.object.ast, prefix="ast_form"
-                )
+                if self.ast:
+                    context["ast_form"] = self.ast_form_class(self.request.POST, instance=self.ast, prefix="ast_form")
+                else:
+                    context["ast_form"] = self.ast_form_class(self.request.POST, instance=AST(), prefix="ast_form")
             if "creatinine_form" not in context:
-                context["creatinine_form"] = self.creatinine_form_class(
-                    self.request.POST, instance=self.object.creatinine, prefix="creatinine_form"
-                )
+                if self.creatinine:
+                    context["creatinine_form"] = self.creatinine_form_class(
+                        self.request.POST, instance=self.creatinine, prefix="creatinine_form"
+                    )
+                else:
+                    context["creatinine_form"] = self.creatinine_form_class(
+                        self.request.POST, instance=Creatinine(), prefix="creatinine_form"
+                    )
             if "hemoglobin_form" not in context:
-                context["hemoglobin_form"] = self.hemoglobin_form_class(
-                    self.request.POST, instance=self.object.hemoglobin, prefix="hemoglobin_form"
-                )
+                if self.hemoglobin:
+                    context["hemoglobin_form"] = self.hemoglobin_form_class(
+                        self.request.POST, instance=self.hemoglobin, prefix="hemoglobin_form"
+                    )
+                else:
+                    context["hemoglobin_form"] = self.hemoglobin_form_class(
+                        self.request.POST, instance=Hemoglobin(), prefix="hemoglobin_form"
+                    )
             if "platelet_form" not in context:
-                context["platelet_form"] = self.platelet_form_class(
-                    self.request.POST, instance=self.object.platelet, prefix="platelet_form"
-                )
+                if self.platelet:
+                    context["platelet_form"] = self.platelet_form_class(
+                        self.request.POST, instance=self.platelet, prefix="platelet_form"
+                    )
+                else:
+                    context["platelet_form"] = self.platelet_form_class(
+                        self.request.POST, instance=Platelet(), prefix="platelet_form"
+                    )
             if "wbc_form" not in context:
-                context["wbc_form"] = self.wbc_form_class(
-                    self.request.POST, instance=self.object.wbc, prefix="wbc_form"
-                )
+                if self.wbc:
+                    context["wbc_form"] = self.wbc_form_class(self.request.POST, instance=self.wbc, prefix="wbc_form")
+                else:
+                    context["wbc_form"] = self.wbc_form_class(self.request.POST, instance=WBC(), prefix="wbc_form")
             if "urate_form" not in context:
-                context["urate_form"] = self.urate_form_class(
-                    self.request.POST, instance=self.object.urate, prefix="urate_form"
-                )
+                if self.urate:
+                    context["urate_form"] = self.urate_form_class(
+                        self.request.POST, instance=self.urate, prefix="urate_form"
+                    )
+                else:
+                    context["urate_form"] = self.urate_form_class(
+                        self.request.POST, instance=Urate(), prefix="urate_form"
+                    )
             return context
         else:
             if "alt_form" not in context:
-                context["alt_form"] = self.alt_form_class(instance=self.object.alt, prefix="alt_form")
+                if self.alt:
+                    context["alt_form"] = self.alt_form_class(instance=self.alt, prefix="alt_form")
+                else:
+                    context["alt_form"] = self.alt_form_class(instance=ALT(), prefix="alt_form")
             if "ast_form" not in context:
-                context["ast_form"] = self.ast_form_class(instance=self.object.ast, prefix="ast_form")
+                if self.ast:
+                    context["ast_form"] = self.ast_form_class(instance=self.ast, prefix="ast_form")
+                else:
+                    context["ast_form"] = self.ast_form_class(instance=AST(), prefix="ast_form")
             if "creatinine_form" not in context:
-                context["creatinine_form"] = self.creatinine_form_class(
-                    instance=self.object.creatinine, prefix="creatinine_form"
-                )
+                if self.creatinine:
+                    context["creatinine_form"] = self.creatinine_form_class(
+                        instance=self.creatinine, prefix="creatinine_form"
+                    )
+                else:
+                    context["creatinine_form"] = self.creatinine_form_class(
+                        instance=Creatinine(), prefix="creatinine_form"
+                    )
             if "hemoglobin_form" not in context:
-                context["hemoglobin_form"] = self.hemoglobin_form_class(
-                    instance=self.object.hemoglobin, prefix="hemoglobin_form"
-                )
+                if self.hemoglobin:
+                    context["hemoglobin_form"] = self.hemoglobin_form_class(
+                        instance=self.hemoglobin, prefix="hemoglobin_form"
+                    )
+                else:
+                    context["hemoglobin_form"] = self.hemoglobin_form_class(
+                        instance=Hemoglobin(), prefix="hemoglobin_form"
+                    )
             if "platelet_form" not in context:
-                context["platelet_form"] = self.platelet_form_class(
-                    instance=self.object.platelet, prefix="platelet_form"
-                )
+                if self.platelet:
+                    context["platelet_form"] = self.platelet_form_class(instance=self.platelet, prefix="platelet_form")
+                else:
+                    context["platelet_form"] = self.platelet_form_class(instance=Platelet(), prefix="platelet_form")
             if "wbc_form" not in context:
-                context["wbc_form"] = self.wbc_form_class(instance=self.object.wbc, prefix="wbc_form")
+                if self.wbc:
+                    context["wbc_form"] = self.wbc_form_class(instance=self.wbc, prefix="wbc_form")
+                else:
+                    context["wbc_form"] = self.wbc_form_class(instance=WBC(), prefix="wbc_form")
             if "urate_form" not in context:
-                context["urate_form"] = self.urate_form_class(instance=self.object.urate, prefix="urate_form")
+                if self.urate:
+                    context["urate_form"] = self.urate_form_class(instance=self.urate, prefix="urate_form")
+                else:
+                    context["urate_form"] = self.urate_form_class(instance=Urate(), prefix="urate_form")
             return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, instance=self.object, prefix="labcheck_form")
+        form = self.form_class(request.POST, instance=self.object)
         alt_form = self.alt_form_class(request.POST, instance=self.object.alt, prefix="alt_form")
         ast_form = self.ast_form_class(request.POST, instance=self.object.ast, prefix="ast_form")
         creatinine_form = self.creatinine_form_class(

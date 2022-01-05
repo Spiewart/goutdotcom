@@ -212,7 +212,10 @@ class LabCheck(TimeStampedModel):
     # return False
 
     def __str__(self):
-        return f"{str(self.user)}'s lab check due {self.due}"
+        if self.completed == True:
+            return f"{str(self.user)}'s lab check completed {self.completed_date}"
+        else:
+            return f"{str(self.user)}'s lab check due {self.due}"
 
     def get_absolute_url(self):
         return reverse("ultplan:detail", kwargs={"pk": self.ultplan.pk})

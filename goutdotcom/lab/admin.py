@@ -38,6 +38,7 @@ class LabCheckAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "ultplan",
+        "pk",
         "alt",
         "ast",
         "creatinine",

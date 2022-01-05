@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% load lab_extras %}
+
+{% block content %}
+<main class="container content-container">
+  {% if object_list %}
+  <header class="page-header">
+    {% block title %}
+    <h1 class="content-heading">{{ object_list|list_to_name }}s
+      {% endblock title %}
+      {% block buttons %}
+      {% include 'lab/_list_buttons.html' %}
+      {% endblock buttons %}
+    </h1>
+  </header>
+  <div class="row">
+    <div class="col">
+      {% for labcheck in object_list %}
+      <div class="container content-item">
+        <h2>{{ labcheck }} <a href="{{ labcheck.get_absolute_url }}"
+            class="hyperlink">{{ labcheck.date_due }}</a>
+        </h2>
+        {% if labcheck.alt %}
+        <li><a href="{% url 'lab:detail' 'alt' labcheck.alt.pk %}">{{ labcheck.ast}}</a></li>
+        {% endif %}
+        {% if labcheck.ast %}
+        <li><a href="{% url 'lab:detail' 'ast' labcheck.ast.pk %}">{{ labcheck.ast}}</a></li>
+        {% endif %}
+        {% if labcheck.creatinine %}
+        <li><a href="{% url 'lab:detail' 'creatinine' labcheck.creatinine.pk %}">{{ labcheck.creatinine}}</a></li>
+        {% endif %}
+        {% if labcheck.hemoglobin %}
+        <li><a href="{% url 'lab:detail' 'hemoglobin' labcheck.hemoglobin.pk %}">{{ labcheck.hemoglobin}}</a></li>
+        {% endif %}
+        {% if labcheck.platelet %}
+        <li><a href="{% url 'lab:detail' 'platelet' labcheck.platelet.pk %}">{{ labcheck.platelet}}</a></li>
+        {% endif %}
+        {% if labcheck.wbc %}
+        <li><a href="{% url 'lab:detail' 'wbc' labcheck.wbc.pk %}">{{ labcheck.wbc}}</a></li>
+        {% endif %}
+        {% if labcheck.urate %}
+        <li><a href="{% url 'lab:detail' 'urate' labcheck.urate.pk %}">{{ labcheck.urate}}</a></li>
+        {% endif %}
+      </div>
+      <br>
+      {% endfor %}
+      <footer class="page-footer">
+        {% if page_obj %}
+        <div class="pagination" style="float: right;">
+          <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1" class="hyperlink">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="hyperlink">previous</a>
+            {% endif %}
+            <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="hyperlink">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
+            {% endif %}
+          </span>
+          {% endif %}
+        </div>
+      </footer>
+    </div>
+    {% endif %}
+</main>
+{% endblock content %}
