@@ -205,11 +205,11 @@ class LabCheck(TimeStampedModel):
         default=None,
     )
 
-    # def overdue(self):
-    # if datetime.today().date() >= self.due:
-    # return True
-    # elif datetime.today().date() < self.due:
-    # return False
+    def overdue(self):
+        if datetime.today().date() >= self.due:
+            return True
+        elif datetime.today().date() < self.due:
+            return False
 
     def __str__(self):
         if self.completed == True:
