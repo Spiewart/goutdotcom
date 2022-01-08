@@ -186,7 +186,7 @@ class ULTPlan(TimeStampedModel):
         except:
             self.labcheck = None
         if self.labcheck.completed == False:
-            if datetime.today().date() >= self.labcheck.due:
+            if (self.labcheck.due + timedelta(days=7)) >= datetime.today().date() >= (self.labcheck.due - timedelta(days=7)):
                 due = True
             else:
                 due = False
@@ -275,7 +275,7 @@ class ULTPlan(TimeStampedModel):
                 self.ult.dose = self.ult.dose + self.dose_adjustment
                 self.ult.save()
                 # Set last titration to now/today
-                self.last_titration = datetime.today()
+                self.last_titration = datetime.today().date()
                 # New LabCheck created by the view
                 return True
         else:

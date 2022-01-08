@@ -28,6 +28,9 @@
       <h2>
         Lab Monitoring
       </h2>
+      {% if object.labcheck.overdue %}
+        <h3>LabCheck Overdue: {{ object.labcheck.overdue }}</h3>
+      {% endif %}
       {% if object.labcheck_due == False %}
 
       {% endif %}
