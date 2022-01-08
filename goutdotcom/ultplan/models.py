@@ -185,14 +185,19 @@ class ULTPlan(TimeStampedModel):
             self.labcheck = self.labcheck_set.last()
         except:
             self.labcheck = None
-        if self.labcheck.completed == False:
-            if (self.labcheck.due + timedelta(days=7)) >= datetime.today().date() >= (self.labcheck.due - timedelta(days=7)):
-                due = True
+        if self.labcheck == None:
+            return True
+        elif self.labcheck.completed == False:
+            if (
+                (self.labcheck.due + timedelta(days=7))
+                >= datetime.today().date()
+                >= (self.labcheck.due - timedelta(days=7))
+            ):
+                return True
             else:
-                due = False
+                return False
         else:
-            due = True
-        return due
+            return True
 
     def get_ult(self):
         """Returns ULTPlan associated ULT (allopurinol, febuxostat, probenecid)"""

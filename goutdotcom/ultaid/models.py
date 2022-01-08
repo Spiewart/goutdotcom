@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
@@ -123,7 +125,7 @@ class ULTAid(TimeStampedModel):
             "drug": "allopurinol",
             "dose": 100,
             "goal_urate": 6.0,
-            "lab_interval": 42,
+            "lab_interval": timedelta(days=42),
             "dialysis": False,
             "rheumatologist": False,
             "need": True,
