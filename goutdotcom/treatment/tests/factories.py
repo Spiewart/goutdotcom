@@ -4,9 +4,10 @@ import factory
 import factory.fuzzy
 import pytest
 
-from goutdotcom.treatment.choices import ALLOPURINOL_DOSE_CHOICES, ALLOPURINOL_SIDE_EFFECT_CHOICES, FEBUXOSTAT_DOSE_CHOICES, FEBUXOSTAT_SIDE_EFFECT_CHOICES, COLCHICINE_DOSE_CHOICES, COLCHICINE_SIDE_EFFECT_CHOICES, PROBENECID_DOSE_CHOICES, PROBENECID_SIDE_EFFECT_CHOICES, IBUPROFEN_DOSE_CHOICES, NSAID_SIDE_EFFECT_CHOICES, NAPROXEN_DOSE_CHOICES, MELOXICAM_DOSE_CHOICES, CELECOXIB_DOSE_CHOICES, PREDNISONE_SIDE_EFFECT_CHOICES, METHYLPREDNISOLONE_DOSE_CHOICES, INJECTION_SIDE_EFFECT_CHOICES, FREQ_CHOICES, BOOL_CHOICES
-from goutdotcom.treatment.models import Allopurinol, Febuxostat, Colchicine, Probenecid, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Methylprednisolone, Prednisone, Othertreat, Tinctureoftime
-from goutdotcom.users.tests.factories import UserFactory
+from ...treatment.choices import ALLOPURINOL_DOSE_CHOICES, ALLOPURINOL_SIDE_EFFECT_CHOICES, FEBUXOSTAT_DOSE_CHOICES, FEBUXOSTAT_SIDE_EFFECT_CHOICES, COLCHICINE_DOSE_CHOICES, COLCHICINE_SIDE_EFFECT_CHOICES, PROBENECID_DOSE_CHOICES, PROBENECID_SIDE_EFFECT_CHOICES, IBUPROFEN_DOSE_CHOICES, NSAID_SIDE_EFFECT_CHOICES, NAPROXEN_DOSE_CHOICES, MELOXICAM_DOSE_CHOICES, CELECOXIB_DOSE_CHOICES, PREDNISONE_SIDE_EFFECT_CHOICES, METHYLPREDNISOLONE_DOSE_CHOICES, INJECTION_SIDE_EFFECT_CHOICES, FREQ_CHOICES, BOOL_CHOICES
+from ...treatment.models import Allopurinol, Febuxostat, Colchicine, Probenecid, Ibuprofen, Naproxen, Meloxicam, Celecoxib, Methylprednisolone, Prednisone, Othertreat, Tinctureoftime
+from ...ultplan.tests.factories import ULTPlanFactory
+from ...users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -20,6 +21,8 @@ class TreatmentFactory(DjangoModelFactory):
 
 
 class AllopurinolFactory(TreatmentFactory):
+    user = factory.SubFactory(UserFactory)
+    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     dose = factory.fuzzy.FuzzyChoice(ALLOPURINOL_DOSE_CHOICES, getter=lambda c: c[0])
     freq = factory.fuzzy.FuzzyChoice(FREQ_CHOICES, getter=lambda c: c[0])
     side_effects = factory.fuzzy.FuzzyChoice(ALLOPURINOL_SIDE_EFFECT_CHOICES, getter=lambda c: c[0])
@@ -30,6 +33,8 @@ class AllopurinolFactory(TreatmentFactory):
 
 
 class FebuxostatFactory(TreatmentFactory):
+    user = factory.SubFactory(UserFactory)
+    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     dose = factory.fuzzy.FuzzyChoice(FEBUXOSTAT_DOSE_CHOICES, getter=lambda c: c[0])
     freq = factory.fuzzy.FuzzyChoice(FREQ_CHOICES, getter=lambda c: c[0])
     side_effects = factory.fuzzy.FuzzyChoice(FEBUXOSTAT_SIDE_EFFECT_CHOICES, getter=lambda c: c[0])

@@ -9,14 +9,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('ultaid', '0001_initial'),
-        ('ppxaid', '0001_initial'),
+        ('ultplan', '0001_initial'),
+        ('lab', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ppxaid',
-            name='ultaid',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ultaid.ultaid'),
+            model_name='wbc',
+            name='ultplan',
+            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='ultplan.ultplan'),
         ),
     ]

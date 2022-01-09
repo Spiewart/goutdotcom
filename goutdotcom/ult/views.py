@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -62,9 +63,8 @@ class ULTCreate(CreateView):
     def form_valid(self, form):
         if self.request.user.is_authenticated:
             form.instance.user = self.request.user
-            return super().form_valid(form)
-        else:
-            return super().form_valid(form)
+        messages.success(self.request, "ULT created!")
+        return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
@@ -124,7 +124,7 @@ class ULTCreate(CreateView):
             ult_data.tophi = tophi_data
             ult_data.stones = urate_kidney_stones_data
             ult_data.save()
-            return HttpResponseRedirect(reverse("ult:detail", kwargs={"pk": ult_data.pk}))
+            return self.form_valid(form)
         else:
             if request.user.is_authenticated:
                 return self.render_to_response(
@@ -215,6 +215,10 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
                 )
             return context
 
+    def form_valid(self, form):
+        messages.success(self.request, "ULT updated!")
+        return super().form_valid(form)
+
     def post(self, request, **kwargs):
         form = self.form_class(request.POST, instance=self.get_object())
         CKD_form = self.CKD_form_class(request.POST, instance=self.request.user.medicalprofile.CKD)
@@ -252,7 +256,7 @@ class ULTUpdate(LoginRequiredMixin, UpdateView):
             ult_data.tophi = tophi_data
             ult_data.stones = urate_kidney_stones_data
             ult_data.save()
-            return HttpResponseRedirect(reverse("ult:detail", kwargs={"pk": ult_data.pk}))
+            return self.form_valid(form)
 
         else:
             return self.render_to_response(

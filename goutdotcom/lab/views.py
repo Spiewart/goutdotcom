@@ -466,6 +466,7 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         if self.alt and self.ast and self.creatinine and self.hemoglobin and self.platelet and self.wbc and self.urate:
             form.instance.completed = True
             form.instance.completed_date = datetime.today().date()
+            # Run ULTPlan titrate() function with form LabCheck instance as argument to see if titration is needed
             self.request.user.ultplan.titrate(form.instance)
             ### LOGIC TO CHECK IF ULTPLAN IS FINISHED
             LabCheck.objects.create(

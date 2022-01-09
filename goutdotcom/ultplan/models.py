@@ -197,7 +197,7 @@ class ULTPlan(TimeStampedModel):
             else:
                 return False
         else:
-            return True
+            return False
 
     def get_ult(self):
         """Returns ULTPlan associated ULT (allopurinol, febuxostat, probenecid)"""
@@ -261,15 +261,14 @@ class ULTPlan(TimeStampedModel):
             if len(self.labchecks) == 1:
                 # If there is only 1 LabCheck for ULTPlan, it is the first and no titration will be performed
                 return False
-
             if labcheck.urate.value <= self.goal_urate:
                 # If LabCheck urate is less than ULTPlan goal, check if urate has been under 6.0 for 6 months or longer in order to determine whether or not to discontinue PPx
                 if len(self.labchecks) > 1:
                     for i in reversed(self.labchecks):
-                        if i.urate < 6.0:
-                            if (i).urate < 6.0 and self.labchecks[len(self.labchecks) - 1] - (i).created > timedelta(
-                                days=180
-                            ):
+                        if i.urate.value < self.goal_urate:
+                            if self.labchecks[len(self.labchecks) - 1].urate.value < self.goal_urate and (
+                                i.created - self.labchecks[len(self.labchecks) - 1].created
+                            ) > timedelta(days=180):
                                 # Check if urates are greater than 6 months apart to determine whether or not to stop PPx, reduce frequency of ULTPlan.lab_interval
                                 self.titrating = False
                                 return True
