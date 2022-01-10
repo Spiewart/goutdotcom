@@ -239,6 +239,8 @@ class TestULTPlanMethods:
         assert self.ULTPlan.titrate(self.labcheck2) == True
         # Check that Febuxostat dose was correctly increased by titrate()
         assert self.febuxostat.dose == 40
+        # Check that ULTPlan last_titration set to today()
+        assert self.ULTPlan.last_titration == datetime.today().date()
         self.labcheck3 = LabCheckFactory(
             user=self.user,
             ultplan=self.ULTPlan,
@@ -256,6 +258,8 @@ class TestULTPlanMethods:
         assert self.ULTPlan.titrate(self.labcheck3) == True
         # Check that Febuxostat dose was correctly increased by titrate()
         assert self.febuxostat.dose == 60
+        # Check that ULTPlan last_titration set to today()
+        assert self.ULTPlan.last_titration == datetime.today().date()
         self.labcheck4 = LabCheckFactory(
             user=self.user,
             ultplan=self.ULTPlan,
@@ -265,6 +269,18 @@ class TestULTPlanMethods:
             completed=True,
             completed_date=(datetime.today() - timedelta(days=200)),
         )
-        # labcheck4.titrate() should evaluate to False because there is > 1 LabCheck for the ULTPlan and the urate was set to 4.5 (under goal) but hasn't been under goal for > 6 months
+        # labcheck5.titrate() should evaluate to True because there is > 1 LabCheck for the ULTPlan and the urate was set to 4.5 (under goal) and has been so for > 6 months
         assert self.ULTPlan.titrate(self.labcheck4) == False
         assert self.febuxostat.dose == 60
+        self.labcheck5 = LabCheckFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            # Set urate field to under goal so titrate returns False
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=4.8),
+            due=datetime.today(),
+            completed=True,
+            completed_date=datetime.today(),
+        )
+        assert self.ULTPlan.titrate(self.labcheck5) == True
+        assert self.febuxostat.dose == 60
+        assert self.ULTPlan.titrating == False

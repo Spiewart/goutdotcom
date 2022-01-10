@@ -251,12 +251,29 @@ class ULTPlan(TimeStampedModel):
             return "No PPx!!!"
 
     def titrate(self, labcheck):
+        """Method that takes a LabCheck as an argument, checks whether or not to titrate associated ULT based off Lab values. Returns True if anything was changed, False if not. Also modifies related models in the process."""
+
+        def compare_labcheck_list_indexes(labcheck_list, goal_urate, i, r):
+            """Function that takes a list of LabCheck objects and compares their Urate values back in time. i is the Index the function takes, r is the relative position of the comparator"""
+            if (i + r) == len(labcheck_list):
+                return False
+            if labcheck_list[i + r].urate.value < goal_urate:
+                print("foundit")
+                # Check if urates are greater than 6 months apart to determine whether or not to stop PPx, reduce frequency of ULTPlan.lab_interval
+                # Need to use completed_date, not created from TimeStampedModel, as the latter is overwritten at model creation. completed_date set by LabCheckUpdate view form_valid()
+                if labcheck_list[i].completed_date - labcheck_list[i + r].completed_date > timedelta(days=180):
+                    self.titrating = False
+                    return True
+                else:
+                    return compare_labcheck_list_indexes(labcheck_list, goal_urate, i, r + 1)
+            else:
+                return False
+
         if labcheck.completed == True:
             self.ult = self.get_ult()
             self.dose_adjustment = self.dose_adjustment
             self.ppx = self.get_ppx()
-
-            self.labchecks = self.labcheck_set.all()
+            self.labchecks = self.labcheck_set.all().order_by("-created")
 
             if len(self.labchecks) == 1:
                 # If there is only 1 LabCheck for ULTPlan, it is the first and no titration will be performed
@@ -264,16 +281,10 @@ class ULTPlan(TimeStampedModel):
             if labcheck.urate.value <= self.goal_urate:
                 # If LabCheck urate is less than ULTPlan goal, check if urate has been under 6.0 for 6 months or longer in order to determine whether or not to discontinue PPx
                 if len(self.labchecks) > 1:
-                    for i in reversed(self.labchecks):
-                        if i.urate.value < self.goal_urate:
-                            if self.labchecks[len(self.labchecks) - 1].urate.value < self.goal_urate and (
-                                i.created - self.labchecks[len(self.labchecks) - 1].created
-                            ) > timedelta(days=180):
-                                # Check if urates are greater than 6 months apart to determine whether or not to stop PPx, reduce frequency of ULTPlan.lab_interval
-                                self.titrating = False
-                                return True
-                        else:
-                            return False
+                    for i in range(len(self.labchecks) - 1):
+                        if self.labchecks[i].urate.value < self.goal_urate:
+                            compare_labcheck_list_indexes(self.labchecks, self.goal_urate, i, 1)
+
             elif labcheck.urate.value > self.goal_urate:
                 # If LabCheck uric acid is higher than goal, increase ult.dose by ULTPlan dose_adjustment and save ult
                 self.ult.dose = self.ult.dose + self.dose_adjustment
