@@ -62,6 +62,15 @@ class FlareTreatment(Treatment):
         blank=True,
         null=True,
     )
+    prophylaxis_finished = models.BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name="Is prophylaxis finished?",
+        help_text="Are you finished with flare prophylaxis?",
+        default=None,
+        blank=True,
+        null=True,
+
+    )
     duration = models.IntegerField(
         null=True, blank=True, default=7, validators=[MaxValueValidator(14), MinValueValidator(1)]
     )
@@ -126,7 +135,7 @@ class Colchicine(FlareTreatment):
         null=True, blank=True, default=7, validators=[MaxValueValidator(14), MinValueValidator(1)]
     )
     side_effects = models.CharField(
-        max_length=100, choices=COLCHICINE_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
+        max_length=100, choices=COLCHICINE_SIDE_EFFECT_CHOICES, blank=True, null=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
 
@@ -172,7 +181,7 @@ class Naproxen(FlareTreatment):
     dose = models.IntegerField(choices=NAPROXEN_DOSE_CHOICES, null=True, blank=True, default=440)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, null=True, blank=True, default=BID)
     side_effects = models.CharField(
-        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
+        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, null=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
@@ -194,7 +203,7 @@ class Meloxicam(FlareTreatment):
     dose = models.DecimalField(decimal_places=1, max_digits=3, choices=MELOXICAM_DOSE_CHOICES, null=True, blank=True)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
     side_effects = models.CharField(
-        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
+        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, null=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
@@ -205,7 +214,7 @@ class Celecoxib(FlareTreatment):
     dose = models.IntegerField(choices=CELECOXIB_DOSE_CHOICES, null=True, blank=True)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
     side_effects = models.CharField(
-        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
+        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, null=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
@@ -216,7 +225,7 @@ class Indomethacin(FlareTreatment):
     dose = models.IntegerField(choices=INDOMETHACIN_DOSE_CHOICES, null=True, blank=True)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
     side_effects = models.CharField(
-        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
+        max_length=100, choices=NSAID_SIDE_EFFECT_CHOICES, blank=True, null=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
 
@@ -258,7 +267,7 @@ class Methylprednisolone(FlareTreatment):
     dose = models.IntegerField(choices=METHYLPREDNISOLONE_DOSE_CHOICES, null=True, blank=True)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, blank=True)
     side_effects = models.CharField(
-        max_length=100, choices=INJECTION_SIDE_EFFECT_CHOICES, blank=True, help_text="Have you had any side effects?"
+        max_length=100, choices=INJECTION_SIDE_EFFECT_CHOICES, blank=True, null=True, help_text="Have you had any side effects?"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=LOCSTEROID)
     as_injection = models.BooleanField(
@@ -330,7 +339,8 @@ class Othertreat(FlareTreatment):
         blank=True,
         help_text="Any optional information on your frequency?",
     )
-    side_effects = models.CharField(max_length=400, blank=True, help_text="Have you had any side effects? Please list")
+    side_effects = models.CharField(max_length=400, blank=True, null=True,
+                                    help_text="Have you had any side effects? Please list")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=OTHER)
 
     def __str__(self):

@@ -320,7 +320,7 @@ function ULT_exists_checker() {
     $('#id_need').val('True');
   }
   else if (ult == "Conditional") {
-    $('#id_need').val('False');
+    $('#id_need').val('True');
   }
   else if (ult == "Not Indicated") {
     $('#id_need').val('False');

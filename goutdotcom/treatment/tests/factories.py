@@ -44,6 +44,8 @@ class FebuxostatFactory(TreatmentFactory):
 
 
 class ColchicineFactory(TreatmentFactory):
+    user = factory.SubFactory(UserFactory)
+    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     dose = factory.fuzzy.FuzzyChoice(COLCHICINE_DOSE_CHOICES, getter=lambda c: c[0])
     freq = factory.fuzzy.FuzzyChoice(FREQ_CHOICES, getter=lambda c: c[0])
     side_effects = factory.fuzzy.FuzzyChoice(COLCHICINE_SIDE_EFFECT_CHOICES, getter=lambda c: c[0])

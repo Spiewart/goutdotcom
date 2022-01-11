@@ -80,8 +80,10 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             else:
                 PPx = PPx_model.objects.create(
                     dose=self.ppxaid.decision_aid().get("dose"),
+                    date_started=datetime.today(),
                     prn=False,
                     as_prophylaxis=True,
+                    prophylaxis_finished=False,
                     user=request.user,
                     ppxaid=self.ppxaid,
                 )

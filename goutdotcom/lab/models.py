@@ -9,7 +9,6 @@ from django_extensions.db.models import TimeStampedModel
 
 from ..lab.choices import BOOL_CHOICES, CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
 from ..profiles.models import PatientProfile
-from ..ultplan.models import ULTPlan
 
 
 class Lab(TimeStampedModel):
@@ -17,7 +16,7 @@ class Lab(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    ultplan = models.ForeignKey(ULTPlan, on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.SET_NULL, null=True, blank=True, default=None)
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "lab"
     date_drawn = models.DateField(help_text="What day was this lab drawn?", default=None, null=True, blank=True)
@@ -174,16 +173,12 @@ class Creatinine(Lab):
                     return "Something went wrong with eGFR calculation"
         return "Can't calculate eGFR without an age (make a profile)"
 
-
-def get_ultplan(ultplan):
-    return ULTPlan.objects.get(pk=ultplan.pk)
-
-
 class LabCheck(TimeStampedModel):
-    """Model to coordinate labs for monitoring ULTPlan titration. Methods for checking status of lab"""
+    """Model to coordinate labs for monitoring ULTPlan titration."""
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    ultplan = models.ForeignKey(ULTPlan, on_delete=models.CASCADE)
+    # Need to use alternative nomenclature for referencing ULTPlan model to avoid circular imports
+    ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.CASCADE)
     # Related labs
     alt = models.OneToOneField(ALT, on_delete=models.CASCADE, null=True, blank=True, default=None)
     ast = models.OneToOneField(AST, on_delete=models.CASCADE, null=True, blank=True, default=None)
@@ -213,9 +208,9 @@ class LabCheck(TimeStampedModel):
 
     def __str__(self):
         if self.completed == True:
-            return f"{str(self.user)}'s lab check completed {self.completed_date}"
+            return f"{str(self.user).capitalize()}'s lab check completed {self.completed_date}"
         else:
-            return f"{str(self.user)}'s lab check due {self.due}"
+            return f"{str(self.user).capitalize()}'s lab check due {self.due}"
 
     def get_absolute_url(self):
         return reverse("ultplan:detail", kwargs={"pk": self.ultplan.pk})

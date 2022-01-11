@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load ultplan_extras %}
 
 {% block content %}
 <main class="container-fluid content-container">
@@ -36,7 +37,7 @@
       {% endif %}
       <ul>
         <li>Goal uric acid: {{ object.goal_urate }}</li>
-        <li>Interval between labs: {{ object.lab_interval }}</li>
+        <li>Interval between labs: {{ object.lab_interval|duration_in_days }}</li>
         <li>Lab Check: {{ object.last_labcheck }}</li>
         <li>Due: {{ object.labcheck.due }}
         <li>Overdue labs: {{ object.labs_due }}

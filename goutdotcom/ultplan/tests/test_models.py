@@ -13,7 +13,11 @@ from ...profiles.tests.factories import (
     SocialProfileFactory,
 )
 from ...treatment.choices import QDAY
-from ...treatment.tests.factories import AllopurinolFactory, FebuxostatFactory
+from ...treatment.tests.factories import (
+    AllopurinolFactory,
+    ColchicineFactory,
+    FebuxostatFactory,
+)
 from ...users.tests.factories import UserFactory
 from .factories import ULTPlanFactory
 
@@ -154,6 +158,7 @@ class TestULTPlanMethods:
         self.labcheck1 = LabCheckFactory(
             user=self.user,
             ultplan=self.ULTPlan,
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=17.5),
             due=(datetime.today() - timedelta(days=42)),
             completed=False,
             completed_date=None,
@@ -163,6 +168,8 @@ class TestULTPlanMethods:
         # Switch first LabCheck to completed = True
         self.labcheck1.completed = True
         self.labcheck1.completed_date = datetime.today() - timedelta(days=42)
+        # Need to save LabCheck after modifying attributes...
+        self.labcheck1.save()
         # Check that titrate() still returns False because there is only 1 LabCheck associated with the ULTPlan (initial)
         assert self.ULTPlan.titrate(self.labcheck1) == False
         # Create second LabCheck due = the day of creation
@@ -180,6 +187,8 @@ class TestULTPlanMethods:
         # Switch labcheck2.completed to = True, titrate() should evaluate to True because there is > 1 LabCheck for the ULTPlan and the urate was set to 14.5
         self.labcheck2.completed = True
         self.labcheck2.completed_date = datetime.today()
+        # Need to save LabCheck after modifying attributes
+        self.labcheck2.save()
         assert self.ULTPlan.titrate(self.labcheck2) == True
         # Check that Allopurinol dose was correctly increased by titrate()
         assert self.allopurinol.dose == 200
@@ -206,10 +215,21 @@ class TestULTPlanMethods:
             date_started=(datetime.today() - timedelta(days=365)),
             side_effects=None,
         )
+        self.colchicine = ColchicineFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            dose=0.6,
+            freq=QDAY,
+            prn=False,
+            as_prophylaxis=True,
+            date_started=(datetime.today() - timedelta(days=365)),
+            side_effects=None,
+        )
         # Create uncompleted initial LabCheck due = 52 weeks prior
         self.labcheck1 = LabCheckFactory(
             user=self.user,
             ultplan=self.ULTPlan,
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=17.5),
             due=(datetime.today() - timedelta(days=365)),
             completed=False,
             completed_date=None,
@@ -219,6 +239,8 @@ class TestULTPlanMethods:
         # Switch first LabCheck to completed = True
         self.labcheck1.completed = True
         self.labcheck1.completed_date = datetime.today() - timedelta(days=365)
+        # Need to save LabCheck after modifying attributes...
+        self.labcheck1.save()
         # Check that titrate() still returns False because there is only 1 LabCheck associated with the ULTPlan (initial)
         assert self.ULTPlan.titrate(self.labcheck1) == False
         # Create second LabCheck due = the day of creation
@@ -233,12 +255,17 @@ class TestULTPlanMethods:
         )
         # Check that titration() returns False because last LabCheck is not completed
         assert self.ULTPlan.titrate(self.labcheck2) == False
+        assert self.febuxostat.dose == 20
+        assert self.colchicine.dose == 0.6
         # Switch labcheck2.completed to = True, titrate() should evaluate to True because there is > 1 LabCheck for the ULTPlan and the urate was set to 14.5
         self.labcheck2.completed = True
-        self.labcheck2.completed_date = datetime.today()
+        self.labcheck2.completed_date = datetime.today() - timedelta(days=323)
+        # Need to save LabCheck after modifying attributes...
+        self.labcheck2.save()
         assert self.ULTPlan.titrate(self.labcheck2) == True
         # Check that Febuxostat dose was correctly increased by titrate()
         assert self.febuxostat.dose == 40
+        assert self.colchicine.dose == 0.6
         # Check that ULTPlan last_titration set to today()
         assert self.ULTPlan.last_titration == datetime.today().date()
         self.labcheck3 = LabCheckFactory(
@@ -255,9 +282,12 @@ class TestULTPlanMethods:
         # Switch labcheck3.completed to = True, titrate() should evaluate to True because there is > 1 LabCheck for the ULTPlan and the urate was set to 9.5
         self.labcheck3.completed = True
         self.labcheck3.completed_date = datetime.today() - timedelta(days=270)
+        # Need to save LabCheck after modifying attributes...
+        self.labcheck3.save()
         assert self.ULTPlan.titrate(self.labcheck3) == True
         # Check that Febuxostat dose was correctly increased by titrate()
         assert self.febuxostat.dose == 60
+        assert self.colchicine.dose == 0.6
         # Check that ULTPlan last_titration set to today()
         assert self.ULTPlan.last_titration == datetime.today().date()
         self.labcheck4 = LabCheckFactory(
@@ -269,9 +299,12 @@ class TestULTPlanMethods:
             completed=True,
             completed_date=(datetime.today() - timedelta(days=200)),
         )
-        # labcheck5.titrate() should evaluate to True because there is > 1 LabCheck for the ULTPlan and the urate was set to 4.5 (under goal) and has been so for > 6 months
+        # labcheck4.titrate() should evaluate to False because, while the urate is under goal_urate, it has not been so for 6 months or longer (six_months_at_goal() returns False)
         assert self.ULTPlan.titrate(self.labcheck4) == False
+        # Febuxostat dose should have not been titrated up because Urate was at goal
         assert self.febuxostat.dose == 60
+        assert self.colchicine.dose == 0.6
+        # labcheck5.titrate() should evaluate to True because there is > 1 LabCheck for the ULTPlan and the urate was set to 4.5 (under goal) and has been so for > 6 months
         self.labcheck5 = LabCheckFactory(
             user=self.user,
             ultplan=self.ULTPlan,
@@ -283,4 +316,7 @@ class TestULTPlanMethods:
         )
         assert self.ULTPlan.titrate(self.labcheck5) == True
         assert self.febuxostat.dose == 60
+        assert self.colchicine.dose == 0.6
+        assert self.colchicine.prophylaxis_finished == True
+        assert self.colchicine.date_ended == datetime.today().date()
         assert self.ULTPlan.titrating == False
