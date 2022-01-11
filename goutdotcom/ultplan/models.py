@@ -254,11 +254,10 @@ class ULTPlan(TimeStampedModel):
         """Method that takes a LabCheck as an argument, checks whether or not to titrate associated ULT based off Lab values. Returns True if anything was changed, False if not. Also modifies related models in the process."""
 
         def compare_labcheck_list_indexes(labcheck_list, goal_urate, i, r):
-            """Function that takes a list of LabCheck objects and compares their Urate values back in time. i is the Index the function takes, r is the relative position of the comparator"""
+            """Function that takes a list of LabCheck objects and compares their Urate values back in time. i is the Index the function takes from list iteration, r is the relative position of the comparator"""
             if (i + r) == len(labcheck_list):
                 return False
             if labcheck_list[i + r].urate.value < goal_urate:
-                print("foundit")
                 # Check if urates are greater than 6 months apart to determine whether or not to stop PPx, reduce frequency of ULTPlan.lab_interval
                 # Need to use completed_date, not created from TimeStampedModel, as the latter is overwritten at model creation. completed_date set by LabCheckUpdate view form_valid()
                 if labcheck_list[i].completed_date - labcheck_list[i + r].completed_date > timedelta(days=180):
@@ -283,8 +282,8 @@ class ULTPlan(TimeStampedModel):
                 if len(self.labchecks) > 1:
                     for i in range(len(self.labchecks) - 1):
                         if self.labchecks[i].urate.value < self.goal_urate:
-                            compare_labcheck_list_indexes(self.labchecks, self.goal_urate, i, 1)
-
+                            # compare_labcheck_list_indexes function needs to be returned in order to fetch the True or False (and make tests pass)
+                            return compare_labcheck_list_indexes(self.labchecks, self.goal_urate, i, 1)
             elif labcheck.urate.value > self.goal_urate:
                 # If LabCheck uric acid is higher than goal, increase ult.dose by ULTPlan dose_adjustment and save ult
                 self.ult.dose = self.ult.dose + self.dose_adjustment
