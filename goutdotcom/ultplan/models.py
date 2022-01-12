@@ -5,7 +5,16 @@ from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
-from ..lab.models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet, Urate
+from ..lab.models import (
+    ALT,
+    AST,
+    WBC,
+    Creatinine,
+    Hemoglobin,
+    LabCheck,
+    Platelet,
+    Urate,
+)
 from .choices import BOOL_CHOICES
 
 
@@ -18,10 +27,15 @@ class ULTPlan(TimeStampedModel):
         default=100,
     )
     goal_urate = models.FloatField(help_text="What is the goal uric acid?", verbose_name="Goal Uric Acid", default=6.0)
-    lab_interval = models.DurationField(
-        help_text="How frequently are labs required to be checked?",
-        verbose_name="Lab Check Interval",
+    titration_lab_interval = models.DurationField(
+        help_text="How frequently are labs required to be checked duration ULT titration?",
+        verbose_name="Titration Lab Check Interval",
         default=timedelta(days=42),
+    )
+    monitoring_lab_interval = models.DurationField(
+        help_text="How frequently are labs required to be checked during routine monitoring?",
+        verbose_name="Monitoring Lab Check Interval",
+        default=timedelta(days=180),
     )
     titrating = models.BooleanField(
         choices=BOOL_CHOICES, help_text="Is this ULTPlan still in the titration phase?", default=True
@@ -130,7 +144,11 @@ class ULTPlan(TimeStampedModel):
             return False
 
     def get_ult(self):
-        """Returns ULTPlan associated ULT (allopurinol, febuxostat, probenecid)"""
+        """
+        Returns ULTPlan associated ULT (allopurinol, febuxostat, probenecid)
+        returns:
+        object: ULT Treatment object
+        """
         try:
             allopurinol = self.allopurinol
         except:
@@ -153,6 +171,11 @@ class ULTPlan(TimeStampedModel):
             return "No ULT!!!"
 
     def get_ppx(self):
+        """
+        Returns ULTPlan associated PPx (colchicine, ibuprofen, naproxen, or prednisone)
+        returns:
+        object: PPx Treatment
+        """
         try:
             colchicine = self.colchicine
         except:
@@ -181,7 +204,12 @@ class ULTPlan(TimeStampedModel):
             return "No PPx!!!"
 
     def titrate(self, labcheck):
-        """Method that takes a LabCheck as an argument, checks whether or not to titrate associated ULT based off Lab values. Returns True if anything was changed, False if not. Also modifies related models in the process."""
+        """
+        Method that takes a LabCheck as an argument and is called when that LabCheck is successfully updated by LabCheckUpdate view.
+        Checks whether or not to titrate associated ULT based off Lab values.
+        Returns:
+        boolean = True if anything was changed, False if not. Also modifies related models in the process.
+        """
 
         def six_months_at_goal(labcheck_list, goal_urate, r):
             """Recursive function that takes a list of LabChecks, ordered by their completed_date, and a goal_urate as arguments.
@@ -203,6 +231,26 @@ class ULTPlan(TimeStampedModel):
             else:
                 return False
 
+        def create_labcheck(self):
+            """Method that checks if ULTPLan titrating attribute is False, if so creates the next LabCheck monitoring_lab_interval days into the future.
+            Otherwise sets it titration_lab_interval days into the future.
+            returns: nothing
+            """
+            # If User's ULTPlan is no longer titrating, create LabCheck for monitoring further into the future
+            if self.titrating == False:
+                LabCheck.objects.create(
+                    user=self.user,
+                    ultplan=self,
+                    due=datetime.today().date() + self.monitoring_lab_interval,
+                )
+            # If User's ULTPlan is still titrating (titrating == True), create LabCheck for continued titration lab monitoring
+            else:
+                LabCheck.objects.create(
+                    user=self.user,
+                    ultplan=self,
+                    due=(datetime.today().date() + self.titration_lab_interval),
+                )
+
         if labcheck.completed == True:
             # If the LabCheck is completed, fetch ULT, dose_adjustment, PPx, and all LabChecks for ULTPlan
             self.ult = self.get_ult()
@@ -212,12 +260,16 @@ class ULTPlan(TimeStampedModel):
 
             if len(self.labchecks) == 1:
                 # If there is only 1 LabCheck for ULTPlan, it is the first and no titration will be performed
+                # Call create_labcheck() to create the next LabCheck that's due
+                create_labcheck(self)
                 return False
             if labcheck.urate.value <= self.goal_urate:
                 # If LabCheck urate is less than ULTPlan goal, check if urate has been under 6.0 for 6 months or longer in order to determine whether or not to discontinue PPx
                 if len(self.labchecks) > 1:
                     # If six_months_at_goal returns False, no titration performed, maintain the status quo for treatment
                     if six_months_at_goal(self.labchecks, self.goal_urate, 1) == False:
+                        # Call create_labcheck() to create the next LabCheck that's due
+                        create_labcheck(self)
                         return False
                     # If six_months_at_Goal returns True, titration is performed,
                     elif six_months_at_goal(self.labchecks, self.goal_urate, 1) == True:
@@ -228,14 +280,23 @@ class ULTPlan(TimeStampedModel):
                         # Switch titration to False as titration is finished, add last_titration date to today()
                         self.titrating = False
                         self.last_titration = datetime.today().date()
+                        # Call create_labcheck() to create the next LabCheck that's due
+                        create_labcheck(self)
                         return True
             elif labcheck.urate.value > self.goal_urate:
                 # If LabCheck uric acid is higher than goal, increase ult.dose by ULTPlan dose_adjustment and save ult
                 self.ult.dose = self.ult.dose + self.dose_adjustment
                 self.ult.save()
                 # Set last titration to now/today
+                if self.titrating == False:
+                    if self.ppx.prophylaxis_finished == True:
+                        self.ppx.prophylaxis_finished = False
+                        self.ppx.date_ended = None
+                        self.ppx.save()
+                    self.titrating = True
                 self.last_titration = datetime.today().date()
-                # New LabCheck created by the view
+                # Call create_labcheck() to create the next LabCheck that's due
+                create_labcheck(self)
                 return True
         else:
             return False

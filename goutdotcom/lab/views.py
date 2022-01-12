@@ -468,20 +468,6 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             form.instance.completed_date = datetime.today().date()
             # Run ULTPlan titrate() function with form LabCheck instance as argument to see if titration is needed
             self.request.user.ultplan.titrate(form.instance)
-            # Check if User's ULTPlan is still titrating, if not, create LabCheck 6 months later for routine lab monitoring
-            if self.request.user.ultplan.titrating == False:
-                LabCheck.objects.create(
-                    user=form.instance.user,
-                    ultplan=form.instance.ultplan,
-                    due=datetime.today().date() + timedelta(days=180),
-                )
-            # If User's ULTPlan is still titrating (titrating == True), create LabCheck for continued titration lab monitoring
-            else:
-                LabCheck.objects.create(
-                    user=form.instance.user,
-                    ultplan=form.instance.ultplan,
-                    due=(datetime.today().date() + form.instance.ultplan.lab_interval),
-                )
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

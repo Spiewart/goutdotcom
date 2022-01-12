@@ -37,7 +37,7 @@
       {% endif %}
       <ul>
         <li>Goal uric acid: {{ object.goal_urate }}</li>
-        <li>Interval between labs: {{ object.lab_interval|duration_in_days }}</li>
+        <li>Interval between labs: {{ object.titration_lab_interval|duration_in_days }}</li>
         <li>Lab Check: {{ object.last_labcheck }}</li>
         <li>Due: {{ object.labcheck.due }}
         <li>Overdue labs: {{ object.labs_due }}

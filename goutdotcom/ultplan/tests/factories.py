@@ -16,7 +16,7 @@ class ULTPlanFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     dose_adjustment = factory.Faker("pyint", min_value=20, max_value=150)
     goal_urate = factory.fuzzy.FuzzyFloat(5.0, 6.0)
-    lab_interval = datetime.timedelta(days=42)
+    titration_lab_interval = datetime.timedelta(days=42)
     titrating = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
     last_titration = factory.Faker("date")
 

@@ -16,7 +16,7 @@
     <li>ULTAid: {{ request.user.ultaid }}</li>
     <li>PPxAid: {{ request.user.ppxaid }}</li>
     <li>Goal uric acid: {{ request.user.ultaid.decision_aid|get_key:'goal_urate' }}</li>
-    <li>Interval between labs: {{ request.user.ultaid.decision_aid|get_key:'lab_interval' }}</li>
+    <li>Interval between labs: {{ request.user.ultaid.decision_aid|get_key:'titration_lab_interval' }}</li>
 </main>
 {% endblock content %}
 

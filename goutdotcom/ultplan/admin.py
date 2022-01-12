@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import *
 
+
 class ULTPlanAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
@@ -9,7 +10,8 @@ class ULTPlanAdmin(admin.ModelAdmin):
         "ultaid",
         "ppxaid",
         "goal_urate",
-        #"lab_interval",
+        "titration_lab_interval",
+        "monitoring_lab_interval",
         "titrating",
         "last_titration",
         "pk",

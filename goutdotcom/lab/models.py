@@ -20,6 +20,14 @@ class Lab(TimeStampedModel):
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
     name = "lab"
     date_drawn = models.DateField(help_text="What day was this lab drawn?", default=None, null=True, blank=True)
+    reference_lower = models.IntegerField(
+        default=100,
+        help_text="Lower limit of normal values for Lab"
+    )
+    reference_upper = models.IntegerField(
+        default=200,
+        help_text="Upper limit of normal values for Lab"
+    )
 
     class Meta:
         abstract = True
@@ -41,6 +49,63 @@ class Lab(TimeStampedModel):
             pass
         return has_profile
 
+    def lab_abnormal_low(self):
+        """
+        Function that checks whether a Lab.value is less than the lower limit of normal.
+
+        Returns:
+            bool: returns True if Lab.value is less than the lower limit of normal, False if not.
+        """
+        if self.value < self.reference_lower:
+            return True
+        else:
+            return False
+
+    def lab_abnoraml_high(self):
+        """
+        Function tahat checks whether a Lab.value is greater than the upper limit of normal.
+
+        Returns:
+            bool: returns True if Lab.value is greater than the upper limit of normal, False if not.
+        """
+        if self.value > self.reference_upper:
+            return True
+        else:
+            return False
+
+    def three_x_high(self):
+        """
+        Function that checks whether a lab value which is greater than the upper limit of normal is greater than 3 times the upper limit of normal.
+
+        Returns:
+            bool: returns true if Lab.value is greater than 3 times the upper limit of normal
+        """
+        if self.value > (3*self.reference_upper):
+            return True
+        else:
+            return False
+
+    def abnormal_checker(self):
+        """
+        Function that checks whether or not a Lab.value is abnormal.
+
+        Returns:
+            dictionary or bool: Returns a dictionary with descriptors of the Lab.value abnormality if present, otherwise returns None
+        """
+        abnormalities = {'bool': None, 'upordown': None, 'threex': None}
+
+        if self.lab_abnormal_low == True:
+            abnormalities['bool'] = True
+            abnormalities['upordown'] = "down"
+            return abnormalities
+        elif self.lab_abnormal_high == True:
+            abnormalities['bool'] = True
+            abnormalities['upordown'] = "up"
+            if self.three_x_high == True:
+                abnormalities['threex'] = True
+            return abnormalities
+        else:
+            return None
 
 class Urate(Lab):
     user = models.ForeignKey(
@@ -54,29 +119,74 @@ class Urate(Lab):
     )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "urate"
-
+    reference_lower = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=3.5,
+        help_text="Lower limit of normal values for urate"
+    )
+    reference_upper = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=7.2,
+        help_text="Upper limit of normal values for urate"
+    )
 
 class ALT(Lab):
+    LOWER_LIMIT = 7
+    UPPER_LIMIT = 55
+
     value = models.IntegerField(help_text="ALT (SGPT) is typically reported in units per liter (U/L)")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "ALT"
-
+    reference_lower = models.IntegerField(
+        default=LOWER_LIMIT,
+        help_text="Lower limit of normal values for ALT"
+    )
+    reference_upper = models.IntegerField(
+        default=UPPER_LIMIT,
+        help_text="Upper limit of normal values for ALT"
+    )
 
 class AST(Lab):
+    LOWER_LIMIT = 10
+    UPPER_LIMIT = 40
+
     value = models.IntegerField(help_text="AST (SGOT) is typically reported in units per liter (U/L)")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "AST"
+    reference_lower = models.IntegerField(
+        default=LOWER_LIMIT,
+        help_text="Lower limit of normal values for AST"
+    )
+    reference_upper = models.IntegerField(
+        default=UPPER_LIMIT,
+        help_text="Upper limit of normal values for AST"
+    )
 
 
 class Platelet(Lab):
+    LOWER_LIMIT = 150
+    UPPER_LIMIT = 450
+
     value = models.IntegerField(
         help_text="PLT (platelets) is typically reported in platelets per microliter (PLT/microL)"
     )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=PLTMICROL)
     name = "platelet"
-
+    reference_lower = models.IntegerField(
+        default=LOWER_LIMIT,
+        help_text="Lower limit of normal values for platelets"
+    )
+    reference_upper = models.IntegerField(
+        default=UPPER_LIMIT,
+        help_text="Upper limit of normal values for platelets"
+    )
 
 class WBC(Lab):
+    LOWER_LIMIT = Decimal(4.5)
+    UPPER_LIMIT = Decimal(11.0)
+
     value = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -84,9 +194,23 @@ class WBC(Lab):
     )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=CELLSMM3)
     name = "WBC"
-
+    reference_lower = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=LOWER_LIMIT,
+        help_text="Lower limit of normal values for WBC"
+    )
+    reference_upper = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=UPPER_LIMIT,
+        help_text="Upper limit of normal values for WBC"
+    )
 
 class Hemoglobin(Lab):
+    LOWER_LIMIT = Decimal(13.5)
+    UPPER_LIMIT = Decimal(17.5)
+
     value = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -94,7 +218,18 @@ class Hemoglobin(Lab):
     )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=GDL)
     name = "hemoglobin"
-
+    reference_lower = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=LOWER_LIMIT,
+        help_text="Lower limit of normal values for hemoglobin"
+    )
+    reference_upper = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=UPPER_LIMIT,
+        help_text="Upper limit of normal values for hemoglobin"
+    )
 
 def round_decimal(value, places):
     if value is not None:
@@ -104,11 +239,26 @@ def round_decimal(value, places):
 
 
 class Creatinine(Lab):
+    LOWER_LIMIT = Decimal(0.74)
+    UPPER_LIMIT = Decimal(1.35)
+
     value = models.DecimalField(
         max_digits=4, decimal_places=2, help_text="Creatinine is typically reported as milligrams per deciliter (mg/dL)"
     )
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
     name = "creatinine"
+    reference_lower = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        default=LOWER_LIMIT,
+        help_text="Lower limit of normal values for creatinine"
+    )
+    reference_upper = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        default=UPPER_LIMIT,
+        help_text="Upper limit of normal values for creatinine"
+    )
 
     def sex_vars_kappa(self):
         if self.user.patientprofile.gender == "male":

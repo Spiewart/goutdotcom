@@ -125,7 +125,7 @@ class ULTAid(TimeStampedModel):
             "drug": "allopurinol",
             "dose": 100,
             "goal_urate": 6.0,
-            "lab_interval": timedelta(days=42),
+            "titration_lab_interval": timedelta(days=42),
             "dialysis": False,
             "rheumatologist": False,
             "need": True,

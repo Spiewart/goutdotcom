@@ -52,6 +52,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             # Create ULT instance from ULT_model and User's ULTAid decision_aid() 'dose' dict field
             ULT = ULT_model.objects.create(dose=self.ultaid.decision_aid().get("dose"), user=request.user)
             # Check if the PPx_model is Colchicine because the defaults for Colchicine need to be modified at object creation
+            print(PPx_model)
             if PPx_model == Colchicine:
                 PPx = PPx_model.objects.create(
                     dose=self.ppxaid.decision_aid().get("dose"),
@@ -65,7 +66,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
                     user=request.user,
                     ppxaid=self.ppxaid,
                 )
-            if PPx_model == Prednisone:
+            elif PPx_model == Prednisone:
                 PPx = PPx_model.objects.create(
                     dose=self.ppxaid.decision_aid().get("dose"),
                     freq=self.ppxaid.decision_aid().get("freq"),
@@ -87,12 +88,12 @@ class ULTPlanCreate(LoginRequiredMixin, View):
                     user=request.user,
                     ppxaid=self.ppxaid,
                 )
-            # Create ULTPlan with the User, their ULTAid and PPxAid, ULTAid decision_aid() dict fields "dose", 'goal_urate' and 'lab_interval'
+            # Create ULTPlan with the User, their ULTAid and PPxAid, ULTAid decision_aid() dict fields "dose", 'goal_urate' and 'titration_lab_interval'
             ultplan = ULTPlan.objects.create(
                 user=request.user,
                 dose_adjustment=self.ultaid.decision_aid().get("dose"),
                 goal_urate=self.ultaid.decision_aid().get("goal_urate"),
-                lab_interval=self.ultaid.decision_aid().get("lab_interval"),
+                titration_lab_interval=self.ultaid.decision_aid().get("titration_lab_interval"),
             )
             # After ultplan created, assign ULT.ultplan and PPx.ultplan to ultplan just created
             self.ultaid.ultplan = ultplan
@@ -103,6 +104,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             self.ppxaid.save()
             PPx.ultplan = ultplan
             PPx.save()
+            # Create initial LabCheck object for baseline labs
             LabCheck.objects.create(
                 user=request.user,
                 ultplan=ultplan,
