@@ -29,19 +29,34 @@
       <h2>
         Lab Monitoring
       </h2>
-      {% if object.labcheck.overdue %}
-        <h3>LabCheck Overdue: {{ object.labcheck.overdue }}</h3>
-      {% endif %}
-      {% if object.labcheck_due == False %}
-
-      {% endif %}
+      <h3>Goal uric acid: {{ object.goal_urate }}</h3>
+      <h3>Interval between labs: {{ object.titration_lab_interval|duration_in_days }}</h3>
+      <h3>Next LabCheck: {{ object.last_labcheck }}</h3>
       <ul>
-        <li>Goal uric acid: {{ object.goal_urate }}</li>
-        <li>Interval between labs: {{ object.titration_lab_interval|duration_in_days }}</li>
-        <li>Lab Check: {{ object.last_labcheck }}</li>
-        <li>Due: {{ object.labcheck.due }}
-        <li>Overdue labs: {{ object.labs_due }}
+        <li>Due: {{ object.last_labcheck.due }}</li>
+        {% if object.last_labcheck.overdue %}
+          <li>LabCheck Overdue: {{ object.labcheck.overdue }}</li>
+          {% if object.labs_due != "none" %}
+            <li>Overdue labs: {{ object.labs_due }}</li>
+          {% endif %}
+        {% endif %}
       </ul>
+
+      {% if object.last_completed_labcheck %}
+        <h3>Last Lab Check: {{ object.last_completed_labcheck }}</h3>
+          <ul>
+            {% if object.last_completed_labcheck.check_completed_labs %}
+              <li><h4>Abnormal Labs</h4></li>
+              <ul>
+              {% for lab in object.last_completed_labcheck.check_completed_labs %}
+                <li>{{ lab }} ({{ object.last_completed_labcheck.check_completed_labs|get_key:lab|get_key:'highorlow' }})</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+            <li>Due: {{ object.last_completed_labcheck.due }}</li>
+            <li>Completed: {{ object.last_completed_labcheck.due }}</li>
+          </ul>
+      {% endif %}
     {% endif %}
   </div>
 </div>

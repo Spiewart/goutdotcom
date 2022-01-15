@@ -23,6 +23,12 @@ class Treatment(TimeStampedModel):
     dose = models.IntegerField(null=True, blank=True)
     freq = models.CharField(max_length=50, choices=FREQ_CHOICES, default=QDAY, null=True, blank=True)
     side_effects = models.CharField(max_length=100, null=True, blank=True, help_text="Have you had any side effects?")
+    intolerant = models.BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name="Intolerance",
+        help_text=f"Are you intolerant or should / will not take {generic_name}?",
+        default=False,
+    )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES)
     date_started = models.DateField(null=True, blank=True)
     date_ended = models.DateField(null=True, blank=True, default=None)

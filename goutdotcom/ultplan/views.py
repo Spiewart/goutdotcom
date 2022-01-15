@@ -52,7 +52,6 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             # Create ULT instance from ULT_model and User's ULTAid decision_aid() 'dose' dict field
             ULT = ULT_model.objects.create(dose=self.ultaid.decision_aid().get("dose"), user=request.user)
             # Check if the PPx_model is Colchicine because the defaults for Colchicine need to be modified at object creation
-            print(PPx_model)
             if PPx_model == Colchicine:
                 PPx = PPx_model.objects.create(
                     dose=self.ppxaid.decision_aid().get("dose"),
@@ -131,3 +130,32 @@ class ULTPlanDelete(LoginRequiredMixin, DeleteView):
 
 class ULTPlanDetail(LoginRequiredMixin, DetailView):
     model = ULTPlan
+
+class ULTPlanUpdate(LoginRequiredMixin, View):
+    """View to change a User's ULTPlan based on abnormal labs or reported medication side effects.
+    returns: ULTPlan instance"""
+
+    def post(self, request, *args, **kwargs):
+        # Get User's ULTPlan
+        try:
+            self.ultplan = ULTPlan.objects.get(user=request.user)
+        except ULTPlan.DoesNotExist:
+            self.ultplan = None
+
+        # Get ULTPlan's ULT and PPx
+        self.ult = self.ultplan.get_ult()
+        self.ppx = self.ultplan.get_ppx()
+
+        # Attribute that will be used to tell the overall method whether to switch ULT or, in all other cases, to change the dosing
+        switch = False
+
+        if self.ult.intolerant == True:
+            switch = True
+            
+        if self.ult._meta.model.__name__ == "Allopurinol":
+            pass
+        elif self.ult._meta.model.__name__ == "Febuxostat":
+            pass
+        else:
+            pass
+

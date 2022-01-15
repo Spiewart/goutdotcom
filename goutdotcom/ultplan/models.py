@@ -49,7 +49,22 @@ class ULTPlan(TimeStampedModel):
             [object]: [LabCheck]
         """
         try:
-            self.labcheck = self.labcheck_set.last()
+            self.labcheck = self.labcheck_set.order_by("created").last()
+        except:
+            self.labcheck = None
+        if self.labcheck:
+            return self.labcheck
+        else:
+            return None
+
+    def last_completed_labcheck(self):
+        """Function that fetches the last completed LabCheck for the ULTPlan
+
+        Returns:
+            [object]: [LabCheck]
+        """
+        try:
+            self.labcheck = self.labcheck_set.filter(completed=True).order_by("created").last()
         except:
             self.labcheck = None
         if self.labcheck:
