@@ -151,11 +151,13 @@ class ULTPlanUpdate(LoginRequiredMixin, View):
 
         if self.ult.intolerant == True:
             switch = True
-            
+
         if self.ult._meta.model.__name__ == "Allopurinol":
-            pass
+            if self.ultplan.allopurinol.intolerant == True:
+                pass
         elif self.ult._meta.model.__name__ == "Febuxostat":
-            pass
+            if self.ultplan.febuxostat.intolerant == True:
+                pass
         else:
             pass
 

@@ -119,8 +119,6 @@ class ULTAid(TimeStampedModel):
 
         returns {dict}: {dict containing drug, dose, goal uric acid, whether or not the patient is on dialysis, whether or not he or she should see a rheumatologist, and whether or not they are unwilling to take ULT.}"""
 
-        ### NEED TO LINK IN ULT to CALCULATE GOAL_URATE
-
         ult_choice = {
             "drug": "allopurinol",
             "dose": 100,
