@@ -181,7 +181,7 @@ class ULTAid(TimeStampedModel):
                         ult_choice["dose"] = 50
             if self.user:
                 if self.user.ult:
-                    if self.user.ult.erosions == True or self.user.ult.tophi == True:
+                    if self.user.ult.erosions.value == True or self.user.ult.tophi.value == True:
                         ult_choice["goal_urate"] = 5.0
         elif self.need == False and self.want == True:
             ult_choice["need"] = False

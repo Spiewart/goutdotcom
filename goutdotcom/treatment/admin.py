@@ -1,22 +1,11 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import *
 
 
 # Register your models here.
-class AllopurinolAdmin(admin.ModelAdmin):
-    list_display = (
-        "__str__",
-        "user",
-        "dose",
-        "freq",
-        "created",
-        "modified",
-        "pk",
-    )
-
-
-class AllopurinolHistoryAdmin(admin.ModelAdmin):
+class AllopurinolHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -27,9 +16,11 @@ class AllopurinolHistoryAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class FebuxostatAdmin(admin.ModelAdmin):
+class FebuxostatHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -39,9 +30,11 @@ class FebuxostatAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class NaproxenAdmin(admin.ModelAdmin):
+class NaproxenHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -51,9 +44,11 @@ class NaproxenAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class CelecoxibAdmin(admin.ModelAdmin):
+class CelecoxibHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -63,9 +58,11 @@ class CelecoxibAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class IbuprofenAdmin(admin.ModelAdmin):
+class IbuprofenHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -75,9 +72,11 @@ class IbuprofenAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class PrednisoneAdmin(admin.ModelAdmin):
+class PrednisoneHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -91,9 +90,11 @@ class PrednisoneAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class MethylprednisoloneAdmin(admin.ModelAdmin):
+class MethylprednisoloneHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -103,9 +104,11 @@ class MethylprednisoloneAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class ProbenecidAdmin(admin.ModelAdmin):
+class ProbenecidHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -115,9 +118,11 @@ class ProbenecidAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class ColchicineAdmin(admin.ModelAdmin):
+class ColchicineHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -127,9 +132,11 @@ class ColchicineAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class MeloxicamAdmin(admin.ModelAdmin):
+class MeloxicamHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -139,9 +146,11 @@ class MeloxicamAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class TinctureoftimeAdmin(admin.ModelAdmin):
+class TinctureoftimeHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -150,9 +159,11 @@ class TinctureoftimeAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class OthertreatAdmin(admin.ModelAdmin):
+class OthertreatHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "__str__",
         "user",
@@ -163,17 +174,19 @@ class OthertreatAdmin(admin.ModelAdmin):
         "modified",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-admin.site.register(Allopurinol, AllopurinolAdmin)
-admin.site.register(Febuxostat, FebuxostatAdmin)
-admin.site.register(Ibuprofen, IbuprofenAdmin)
-admin.site.register(Naproxen, NaproxenAdmin)
-admin.site.register(Celecoxib, CelecoxibAdmin)
-admin.site.register(Prednisone, PrednisoneAdmin)
-admin.site.register(Methylprednisolone, MethylprednisoloneAdmin)
-admin.site.register(Probenecid, ProbenecidAdmin)
-admin.site.register(Colchicine, ColchicineAdmin)
-admin.site.register(Meloxicam, MeloxicamAdmin)
-admin.site.register(Tinctureoftime, TinctureoftimeAdmin)
-admin.site.register(Othertreat, OthertreatAdmin)
+admin.site.register(Allopurinol, AllopurinolHistoryAdmin)
+admin.site.register(Febuxostat, FebuxostatHistoryAdmin)
+admin.site.register(Ibuprofen, IbuprofenHistoryAdmin)
+admin.site.register(Naproxen, NaproxenHistoryAdmin)
+admin.site.register(Celecoxib, CelecoxibHistoryAdmin)
+admin.site.register(Prednisone, PrednisoneHistoryAdmin)
+admin.site.register(Methylprednisolone, MethylprednisoloneHistoryAdmin)
+admin.site.register(Probenecid, ProbenecidHistoryAdmin)
+admin.site.register(Colchicine, ColchicineHistoryAdmin)
+admin.site.register(Meloxicam, MeloxicamHistoryAdmin)
+admin.site.register(Tinctureoftime, TinctureoftimeHistoryAdmin)
+admin.site.register(Othertreat, OthertreatHistoryAdmin)

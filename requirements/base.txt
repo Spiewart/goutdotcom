@@ -17,3 +17,4 @@ django-crispy-forms==1.11.1  # https://github.com/django-crispy-forms/django-cri
 django-redis==4.12.1  # https://github.com/jazzband/django-redis
 django-datetime-widget2==0.9.5  # https://pypi.org/project/django-datetime-widget2/
 django-multiselectfield==0.1.12  # https://pypi.org/project/django-multiselectfield/
+django-simple-history==3.0.0 # https://django-simple-history.readthedocs.io/en/stable/quick_start.html

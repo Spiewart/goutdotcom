@@ -8,6 +8,7 @@ from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
+from simple_history.models import HistoricalRecords
 
 from ..flareaid.models import FlareAid
 from ..ppxaid.models import PPxAid
@@ -32,6 +33,7 @@ class Treatment(TimeStampedModel):
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES)
     date_started = models.DateField(null=True, blank=True)
     date_ended = models.DateField(null=True, blank=True, default=None)
+    history = HistoricalRecords(inherit=True)
 
     class Meta:
         abstract = True
