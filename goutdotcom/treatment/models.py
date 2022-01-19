@@ -4,7 +4,6 @@ from decimal import *
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
@@ -31,6 +30,12 @@ class Treatment(TimeStampedModel):
         default=False,
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES)
+    active = models.BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name="Active Status",
+        help_text=f"Is this medication active?",
+        default=True,
+    )
     date_started = models.DateField(null=True, blank=True)
     date_ended = models.DateField(null=True, blank=True, default=None)
     history = HistoricalRecords(inherit=True)

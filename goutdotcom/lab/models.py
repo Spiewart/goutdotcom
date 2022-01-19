@@ -85,19 +85,19 @@ class Lab(TimeStampedModel):
     def abnormal_checker(self):
         """
         Function that checks whether or not a Lab.value is abnormal.
+        If lab is abnormal, set abnormal_flag attribute to True.
 
         Returns:
-            dictionary or bool: Returns a dictionary with descriptors of the Lab.value abnormality if present, otherwise returns None
+            dictionary or None: Returns a dictionary with descriptors of the Lab.value abnormality if present, otherwise returns None
         """
-        abnormalities = {"bool": None, "upordown": None, "threex": None}
+        abnormalities = {"highorlow": None, "threex": False}
 
+        # Check if lab is lower than reference range
         if self.lab_abnormal_low() == True:
-            abnormalities["bool"] = True
             abnormalities["highorlow"] = "L"
             self.abnormal_flag = True
             return abnormalities
         elif self.lab_abnormal_high() == True:
-            abnormalities["bool"] = True
             abnormalities["highorlow"] = "H"
             self.abnormal_flag = True
             if self.three_x_high() == True:
@@ -293,6 +293,8 @@ class LabCheck(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # Need to use alternative nomenclature for referencing ULTPlan model to avoid circular imports
     ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.CASCADE)
+    # Related model LabCheck in the event a LabCheck with abnormal labs needs F/U Labs
+    abnormal_labcheck = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, default=None)
     # Related labs
     alt = models.OneToOneField(ALT, on_delete=models.CASCADE, null=True, blank=True, default=None)
     ast = models.OneToOneField(AST, on_delete=models.CASCADE, null=True, blank=True, default=None)
@@ -331,19 +333,19 @@ class LabCheck(TimeStampedModel):
         abnormal_labs = {}
         # Call abnormal_checker() for each Lab in completed LabCheck
         if self.alt.abnormal_checker():
-            abnormal_labs[self.alt] = self.alt.abnormal_checker()
+            abnormal_labs["alt"] = self.alt.abnormal_checker()
         if self.ast.abnormal_checker():
-            abnormal_labs[self.ast] = self.ast.abnormal_checker()
+            abnormal_labs["ast"] = self.ast.abnormal_checker()
         if self.creatinine.abnormal_checker():
-            abnormal_labs[self.creatinine] = self.creatinine.abnormal_checker()
+            abnormal_labs["creatinine"] = self.creatinine.abnormal_checker()
         if self.hemoglobin.abnormal_checker():
-            abnormal_labs[self.hemoglobin] = self.hemoglobin.abnormal_checker()
+            abnormal_labs["hemoglobin"] = self.hemoglobin.abnormal_checker()
         if self.platelet.abnormal_checker():
-            abnormal_labs[self.platelet] = self.platelet.abnormal_checker()
+            abnormal_labs["platelet"] = self.platelet.abnormal_checker()
         if self.wbc.abnormal_checker():
-            abnormal_labs[self.wbc] = self.wbc.abnormal_checker()
+            abnormal_labs["wbc"] = self.wbc.abnormal_checker()
         if self.urate.abnormal_checker():
-            abnormal_labs[self.urate] = self.urate.abnormal_checker()
+            abnormal_labs["urate"] = self.urate.abnormal_checker()
         # Return abnormal_labs dictionary with subdictionaries for each abnormal lab
         return abnormal_labs
 
