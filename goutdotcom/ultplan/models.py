@@ -316,6 +316,105 @@ class ULTPlan(TimeStampedModel):
         else:
             return False
 
+    def change_therapy(self):
+        """Function that checks if a ULTPLan therapy is in need of changing and does so using associated ULTAid data if so.
+
+        returns {dict}: {dict containing drug, dose, goal uric acid, whether or not the patient is on dialysis, whether or not he or she should see a rheumatologist, and whether or not they are unwilling to take ULT.}"""
+
+        # ult_choice dictionary is the function output for use in views, other methods, and templates
+        ult_choice = {
+            "drug": "allopurinol",
+            "dose": 100,
+            "goal_urate": 6.0,
+            "titration_lab_interval": timedelta(days=42),
+            "dialysis": False,
+            "rheumatologist": False,
+            "need": True,
+            "want": True,
+        }
+        # First check if there is a medication intolerance which would prompt considering switching to the other ULT option
+        if self.get_ult().intolerant == True:
+            if self.get_ult()._meta.model.__name__ == "Allopurinol":
+                # If there's an intolerance to the other option, rheumatologist = True for processing
+                if self.user.medicalprofile.febuxostat_hypersensitivity.value == True:
+                    ult_choice["rheumatologist"] = True
+                # Else pick other ULT option
+                else:
+                    ult_choice["drug"] = "febuxostat"
+                    # Dose for presence or absence of CKD
+                    if self.user.medicalprofile.ckd.value == True:
+                        if self.user.medicalprofile.ckd.stage != None:
+                            if self.user.medicalprofile.ckd.stage < 3:
+                                ult_choice["dose"] = 40
+                            else:
+                                ult_choice["dose"] = 20
+                        else:
+                            ult_choice["dose"] = 20
+                    else:
+                        ult_choice["dose"] = 40
+            elif self.ultplan.get_ult()._meta.model.__name__ == "Febuxostat":
+                # If there's an intolerance to the other option, rheumatologist = True for processing
+                if self.user.medicalprofile.allopurinol_hypersensitivity.value == True:
+                    ult_choice["rheumatologist"] = True
+                # Dose adjust for presence/absence of CKD
+                if self.user.medicalprofile.ckd.value == True:
+                    if self.user.medicalprofile.ckd.stage != None:
+                        if self.user.medicalprofile.ckd.stage < 3:
+                            ult_choice["dose"] = 100
+                    else:
+                        ult_choice["dose"] = 50
+        else:
+            # If this isn't about a medication intolerance, then just recalculate ULTAid based on User profile options
+            if (
+                self.user.medicalprofile.XOI_interactions.value == True
+                or self.user.medicalprofile.organ_transplant.value == True
+            ):
+                ult_choice["rheumatologist"] = True
+            if self.user.medicalprofile.ckd.value == True:
+                if self.user.medicalprofile.ckd.dialysis == True:
+                    ult_choice["dialysis"] = True
+                if self.user.medicalprofile.ckd.stage != None:
+                    if ult_choice["drug"] == "febuxostat":
+                        if self.user.medicalprofile.ckd.stage < 3:
+                            ult_choice["dose"] = 40
+                        else:
+                            ult_choice["dose"] = 20
+                    else:
+                        if self.user.medicalprofile.ckd.stage < 3:
+                            ult_choice["dose"] = 100
+                        else:
+                            ult_choice["dose"] = 50
+            if self.user.medicalprofile.allopurinol_hypersensitivity.value == True:
+                if (
+                    self.user.medicalprofile.febuxostat_hypersensitivity.value == True
+                    or self.user.medicalprofile.heartattack.value == True
+                    or self.user.medicalprofile.stroke.value == True
+                ):
+                    ult_choice["rheumatologist"] = True
+                ult_choice["drug"] = "febuxostat"
+                if self.user.medicalprofile.ckd.value == True:
+                    if self.user.medicalprofile.ckd.stage != None:
+                        if self.user.medicalprofile.ckd.stage < 3:
+                            ult_choice["dose"] = 40
+                        else:
+                            ult_choice["dose"] = 20
+                    else:
+                        ult_choice["dose"] = 20
+                else:
+                    ult_choice["dose"] = 40
+            if self.user.medicalprofile.febuxostat_hypersensitivity.value == True:
+                if self.user.medicalprofile.allopurinol_hypersensitivity.value == True:
+                    ult_choice["rheumatologist"] = True
+                if self.user.medicalprofile.ckd.value == True:
+                    if self.user.medicalprofile.ckd.stage != None:
+                        if self.user.medicalprofile.ckd.stage < 3:
+                            ult_choice["dose"] = 100
+                    else:
+                        ult_choice["dose"] = 50
+            if self.user.medicalprofile.ult.erosions.value == True or self.user.medicalprofile.ult.tophi.value == True:
+                ult_choice["goal_urate"] = 5.0
+        return ult_choice
+
     def __str__(self):
         return f"{str(self.user)}'s ULTPlan"
 
