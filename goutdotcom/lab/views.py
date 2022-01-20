@@ -1,4 +1,4 @@
- from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 from django.apps import apps
 from django.contrib import messages
@@ -466,8 +466,12 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         if self.alt and self.ast and self.creatinine and self.hemoglobin and self.platelet and self.wbc and self.urate:
             form.instance.completed = True
             form.instance.completed_date = datetime.today().date()
-            # Run ULTPlan titrate() function with form LabCheck instance as argument to see if titration is needed
-            self.request.user.ultplan.titrate(form.instance)
+            # Run LabCheck check_for_abnormal_labs() function and save to abnormal_labs variable to avoid rerunning function
+            # If False (no urgent lab abnormalities), process titration
+            abnormal_labs = form.instance.ultplan.check_for_abnormal_labs()
+            if abnormal_labs == False:
+                # Run ULTPlan titrate() function with form LabCheck instance as argument to see if titration is needed
+                form.instance.ultplan.titrate(form.instance)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
