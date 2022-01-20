@@ -82,6 +82,18 @@ class Lab(TimeStampedModel):
         else:
             return False
 
+    def var_x_high(self, var):
+        """
+        Function that checks whether a lab value which is greater than the upper limit of normal is greater than input var times the upper limit of normal.
+
+        Returns:
+            bool: returns true if Lab.value is greater than var times the upper limit of normal
+        """
+        if self.value > (var * self.reference_upper):
+            return True
+        else:
+            return False
+
     def abnormal_checker(self):
         """
         Function that checks whether or not a Lab.value is abnormal.
@@ -263,7 +275,7 @@ class Creatinine(Lab):
     def eGFR_calculator(self):
         if self.user_has_profile() == True:
             if self.user.patientprofile.gender == "non-binary":
-                return "Need biologic sex to calculate eGFR"
+                return None
             else:
                 kappa = self.sex_vars_kappa()
                 alpha = self.sex_vars_alpha()
@@ -281,11 +293,25 @@ class Creatinine(Lab):
                         )
                         return round_decimal(eGFR, 2)
                     else:
-                        return "Something went wrong with eGFR calculation"
+                        return None
                 else:
-                    return "Something went wrong with eGFR calculation"
-        return "Can't calculate eGFR without an age (make a profile)"
+                    return None
+        return None
 
+    def stage_calculator(self):
+        eGFR = self.eGFR_calculator()
+        if eGFR >= 90:
+            return 1
+        if 90 > eGFR >= 60:
+            return 2
+        if 60 > eGFR >= 30:
+            return 3
+        if 30 > eGFR >= 15:
+            return 4
+        if eGFR < 15:
+            return 5
+        else:
+            return None
 
 class LabCheck(TimeStampedModel):
     """Model to coordinate labs for monitoring ULTPlan titration."""

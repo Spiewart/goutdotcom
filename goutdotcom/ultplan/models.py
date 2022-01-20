@@ -336,14 +336,12 @@ class ULTPlan(TimeStampedModel):
             Sets new LabCheck object FK to LabCheck argument in function.
             returns: nothing
             """
-            # If User's ULTPlan is no longer titrating, create LabCheck for monitoring further into the future
-            if self.titrating == False:
-                LabCheck.objects.create(
-                    user=self.user,
-                    ultplan=self,
-                    abnormal_labcheck = labcheck,
-                    due=datetime.today().date() + self.urgent_lab_interval,
-                )
+            LabCheck.objects.create(
+                user=self.user,
+                ultplan=self,
+                abnormal_labcheck = labcheck,
+                due=datetime.today().date() + self.urgent_lab_interval,
+            )
         # Assemble dictionary of abnormal labs, None if there are none
         self.labs = labcheck.check_completed_labs()
         # If there are abnormal labs in labs (dict), set them to instance variables
@@ -411,12 +409,48 @@ class ULTPlan(TimeStampedModel):
                     # Check if there is only one completed LabCheck
                     # If so, check if User MedicalProfile has CKD == True, if not, calculate stage and mark == True
                     if len(self.labchecks) == 1:
+                        # If this is the User's first LabCheck, mark CKD on MedicalProfile to True because creatinine is abnormal.
                         if self.user.medicalprofile.ckd.value == False:
                             self.user.medicalprofile.ckd.value == True
+                            # Calculate CKD stage if eGFR can be calculated
+                            if self.user.medicalprofile.ckd.eGFR_calculator():
+                                self.user.medicalprofile.ckd.stage = self.user.medicalprofile.ckd.stage_calculator()
                             self.user.medicalprofile.ckd.save()
-                            # CALCULATE CKD STAGE BASED ON CREATININE VALUE
-                            # MODIFY ULTPLAN TO REFLECT PRESENCE OF CKD
                         return False
+                    # Check if first LabCheck creatinine was abnormal
+                    elif self.labchecks[len(self.labchecks)-1].creatinine.abnormal_checker == None:
+                        # If LabCheck Creatinine is < 1.5 times the upper limit of normal, schedule urgent LabCheck
+                        # But continue medications, don't pause ULTPlan
+                        if self.labcheck.creatinine <= self.labchecks[len(self.labchecks)-1].creatinine.var_x_high(1.5):
+                            create_urgent_labcheck()
+                            return True
+                        # If LabCheck Creatinine is > 2.0 times the upper limit of normal, schedule urgent LabCheck.
+                        # Discontinue ULT and PPx, pause ULTPlan
+                        elif self.labcheck.creatinine > self.labchecks[len(self.labchecks)-1].creatinine.var_x_high(2):
+                            self.ult.active = False
+                            self.ult.save()
+                            self.ppx.active = False
+                            self.ppx.save()
+                            self.pause = True
+                            create_urgent_labcheck()
+                            return True
+                    # If first LabCheck Creatinine was abnormal, fluctuations will be larger so have more stringent criteria for follow up labs and ULTPlan modification
+                    elif self.labchecks[len(self.labchecks)-1].creatinine.abnormal_checker:
+                        # If LabCheck Creatinine is < 1.25 times the upper limit of normal, schedule urgent LabCheck
+                        # But continue medications, don't pause ULTPlan
+                        if self.labcheck.creatinine <= self.labchecks[len(self.labchecks)-1].creatinine.var_x_high(1.25):
+                            create_urgent_labcheck()
+                            return True
+                        # If LabCheck Creatinine is > 1.5 times the upper limit of normal, schedule urgent LabCheck.
+                        # Discontinue ULT and PPx, pause ULTPlan
+                        elif self.labcheck.creatinine > self.labchecks[len(self.labchecks)-1].creatinine.var_x_high(1.5):
+                            self.ult.active = False
+                            self.ult.save()
+                            self.ppx.active = False
+                            self.ppx.save()
+                            self.pause = True
+                            create_urgent_labcheck()
+                            return True
             if "hemoglobin" in self.labs:
                 pass
             if "platelets" in self.labs:
