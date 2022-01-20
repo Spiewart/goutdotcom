@@ -337,8 +337,6 @@ class ULTPlan(TimeStampedModel):
             "titration_lab_interval": timedelta(days=42),
             "dialysis": False,
             "rheumatologist": False,
-            "need": True,
-            "want": True,
         }
         # First check if there is a medication intolerance which would prompt considering switching to the other ULT option
         if self.get_ult().intolerant == True:
