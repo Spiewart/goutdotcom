@@ -3,9 +3,16 @@ from decimal import *
 
 import pytest
 
-from goutdotcom.lab.tests.factories import LabCheckFactory
-
-from ...lab.tests.factories import UrateFactory
+from ...lab.tests.factories import (
+    ALTFactory,
+    ASTFactory,
+    CreatinineFactory,
+    HemoglobinFactory,
+    LabCheckFactory,
+    PlateletFactory,
+    UrateFactory,
+    WBCFactory,
+)
 from ...profiles.tests.factories import (
     FamilyProfileFactory,
     MedicalProfileFactory,
@@ -322,3 +329,94 @@ class TestULTPlanMethods:
         assert self.colchicine.prophylaxis_finished == False
         assert self.colchicine.date_ended == None
         assert self.ULTPlan.titrating == True
+
+    def test_abnormal_alt(self):
+        """Test that checks if the ULTPlan's check_for_abnormal_labs() returns correctly.
+        Using ALT under a variety of scenarios."""
+        # Set up User with required Profile objects
+        self.user = UserFactory()
+        self.patientprofile = PatientProfileFactory(user=self.user)
+        self.medicalprofile = MedicalProfileFactory(user=self.user)
+        self.familyprofile = FamilyProfileFactory(user=self.user)
+        self.socialprofile = SocialProfileFactory(user=self.user)
+        # Create ULTPlan for User, specify fields that would typically be created by ULTAid
+        self.ULTPlan = ULTPlanFactory(
+            user=self.user, dose_adjustment=20, goal_urate=5.0, titrating=True, last_titration=None
+        )
+        # Create Febuxostat for User and ULTplan, would also typically be created at creation of ULTPlan but by view
+        self.febuxostat = FebuxostatFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            dose=20,
+            freq=QDAY,
+            # Set date_started to 52 weeks prior for to check titration() function correctly
+            date_started=(datetime.today() - timedelta(days=365)),
+            side_effects=None,
+        )
+        self.colchicine = ColchicineFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            dose=0.6,
+            freq=QDAY,
+            prn=False,
+            as_prophylaxis=True,
+            date_started=(datetime.today() - timedelta(days=365)),
+            side_effects=None,
+        )
+        # Create uncompleted initial LabCheck due = 52 weeks prior, needs to be created when it would typically be created by the ULTPlanCreate view
+        self.labcheck1 = LabCheckFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
+            ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=0.8),
+            hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
+            platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
+            wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=17.5),
+            due=(datetime.today() - timedelta(days=365)),
+            completed=False,
+            completed_date=None,
+        )
+        # Check that check_for_abnormal_labs returns None because LabCheck is not complete
+        assert self.ULTPlan.check_for_abnormal_labs(self.labcheck1) == None
+        # Switch first LabCheck to completed = True
+        self.labcheck1.completed = True
+        self.labcheck1.completed_date = datetime.today() - timedelta(days=365)
+        # Need to save LabCheck after modifying attributes...
+        self.labcheck1.save()
+        # Check that check_for_abnormal_labs() still returns False
+        # Because there is only 1 LabCheck with no abnormal labs
+        assert self.ULTPlan.check_for_abnormal_labs(self.labcheck1) == False
+        # Create second LabCheck 42 days after initial LabCheck
+        # This would be typical for starting ULT and checking labs 6 weeks later
+        # ALT is markedly elevated above the reference range
+        self.labcheck2 = LabCheckFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=340),
+            ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=0.8),
+            hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
+            platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
+            wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=11.5),
+            due=(datetime.today() - timedelta(days=323)),
+            completed=True,
+            completed_date=(datetime.today() - timedelta(days=323)),
+        )
+        print(self.labcheck2.check_completed_labs())
+        # check_for_abnormal_labs() should evaluate to True because the ALT is elevated > 3x the upper limit of normal
+        assert self.ULTPlan.check_for_abnormal_labs(self.labcheck2) == True
+        # ULTPlan should be "paused" after calling check_abnormal_labs() with the high ALT
+        assert self.ULTPlan.pause == True
+        # ULT for ULTPLan should have active set to False while figuring out what's wrong with the ALT
+        assert self.ULTPlan.get_ult().active == False
+        # PPx for ULTPlan should also have active set to False while figuring out what's wrong with the ALT
+        assert self.ULTPlan.get_ppx().active == False
+        # Check that a new LabCheck was created urgent_lab_interval days into the future
+        assert self.ULTPlan.labcheck_set.last().due == (
+            datetime.today() - timedelta(days=(323 - self.ULTPlan.urgent_lab_interval))
+        )
+        # Check that newly created LabCheck is set to not completed (False)
+        assert self.ULTPlan.labcheck_set.last().completed == False

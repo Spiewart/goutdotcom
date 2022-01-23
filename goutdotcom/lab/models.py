@@ -313,6 +313,7 @@ class Creatinine(Lab):
         else:
             return None
 
+
 class LabCheck(TimeStampedModel):
     """Model to coordinate labs for monitoring ULTPlan titration."""
 
@@ -355,25 +356,30 @@ class LabCheck(TimeStampedModel):
 
         returns: dictionary of dictionaries containing information on abnormal labs
         """
-        # Create empty dictionary of abnormal labs
-        abnormal_labs = {}
-        # Call abnormal_checker() for each Lab in completed LabCheck
-        if self.alt.abnormal_checker():
-            abnormal_labs["alt"] = self.alt.abnormal_checker()
-        if self.ast.abnormal_checker():
-            abnormal_labs["ast"] = self.ast.abnormal_checker()
-        if self.creatinine.abnormal_checker():
-            abnormal_labs["creatinine"] = self.creatinine.abnormal_checker()
-        if self.hemoglobin.abnormal_checker():
-            abnormal_labs["hemoglobin"] = self.hemoglobin.abnormal_checker()
-        if self.platelet.abnormal_checker():
-            abnormal_labs["platelet"] = self.platelet.abnormal_checker()
-        if self.wbc.abnormal_checker():
-            abnormal_labs["wbc"] = self.wbc.abnormal_checker()
-        if self.urate.abnormal_checker():
-            abnormal_labs["urate"] = self.urate.abnormal_checker()
-        # Return abnormal_labs dictionary with subdictionaries for each abnormal lab
-        return abnormal_labs
+        # Check if LabCheck completed
+        if self.completed == True:
+            # Create empty dictionary of abnormal labs
+            abnormal_labs = {}
+            # Call abnormal_checker() for each Lab in completed LabCheck
+            if self.alt.abnormal_checker():
+                abnormal_labs["alt"] = self.alt.abnormal_checker()
+            if self.ast.abnormal_checker():
+                abnormal_labs["ast"] = self.ast.abnormal_checker()
+            if self.creatinine.abnormal_checker():
+                abnormal_labs["creatinine"] = self.creatinine.abnormal_checker()
+            if self.hemoglobin.abnormal_checker():
+                abnormal_labs["hemoglobin"] = self.hemoglobin.abnormal_checker()
+            if self.platelet.abnormal_checker():
+                abnormal_labs["platelet"] = self.platelet.abnormal_checker()
+            if self.wbc.abnormal_checker():
+                abnormal_labs["wbc"] = self.wbc.abnormal_checker()
+            if self.urate.abnormal_checker():
+                abnormal_labs["urate"] = self.urate.abnormal_checker()
+            # Return abnormal_labs dictionary with subdictionaries for each abnormal lab
+            return abnormal_labs
+        # Return None if LabCheck not completed
+        else:
+            return None
 
     def __str__(self):
         if self.completed == True:
