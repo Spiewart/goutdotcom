@@ -438,8 +438,35 @@ class ULTPlan(TimeStampedModel):
                 user=self.user,
                 ultplan=self,
                 abnormal_labcheck=labcheck,
-                due=datetime.today().date() + self.urgent_lab_interval,
+                due=labcheck.completed_date + self.urgent_lab_interval,
             )
+
+        def pause_treatment(self):
+            """Method that makes ULT and PPx inactive and pauses ULTPlan.
+            Creates urgent LabCheck.
+            Called when there is an urgent lab abnormality.
+
+            Returns:
+                [bool]: [bool indicating whether or not there was an abnormal lab for the LabCheck]
+            """
+            self.ult.active = False
+            self.ult.save()
+            self.ppx.active = False
+            self.ppx.save()
+            self.pause = True
+            create_urgent_labcheck(self)
+            return True
+
+        def continue_treatment(self):
+            """Method that creates and urgent LabCheck based off an abnormal lab.
+            Does not pause ULTPlan.
+            Does not make ULT and PPx inactive.
+
+            Returns:
+                [bool]: [bool indicating whether or not there was an abnormal lab for the LabCheck]
+            """
+            self.create_urgent_labcheck(self)
+            return True
 
         # Check if LabCheck is completed, which it should be based on where function is called
         if labcheck.completed == False:
@@ -474,6 +501,10 @@ class ULTPlan(TimeStampedModel):
             self.wbc = None
         # If there are abnormal labs, process them
         if self.labs:
+            # Bool indicating whether or not there is an urgent lab abnormality that requires calling pause_treatment()
+            self.urgent_lab = False
+            # Bool indicating whether or not there is a nonurgent lab abnormality that requires calling continue_treatment()
+            self.nonurgent_lab = False
             # Fetch ULTPlan ULT
             self.ult = self.get_ult()
             # Fetch ULTPlan PPx
@@ -487,28 +518,18 @@ class ULTPlan(TimeStampedModel):
                     # Inactivate ULTPlan treatments and pause ULTPlan
                     # Create urgent LabCheck to follow up on abnormal ALT
                     if self.alt["threex"] == True:
-                        self.ult.active = False
-                        self.ult.save()
-                        self.ppx.active = False
-                        self.ppx.save()
-                        self.pause = True
-                        create_urgent_labcheck(self)
-                        return True
+                        self.urgent_lab = True
             if self.ast:
                 if self.ast["highorlow"] == "H":
                     # If AST is greater than 3 times the upper limit of normal
                     # Inactivate ULTPlan treatments and pause ULTPlan
                     # Create urgent LabCheck to follow up on abnormal AST
                     if self.ast["threex"] == True:
-                        self.ult.active = False
-                        self.ult.save()
-                        self.ppx.active = False
-                        self.ppx.save()
-                        self.pause = True
-                        self.create_urgent_labcheck(self)
-                        return True
-            if "creatinine" in self.labs:
+                        self.urgent_lab = True
+            if self.creatinine:
+                print("Creatinine in labs")
                 if self.creatinine["highorlow"] == "H":
+                    print("creatinine high")
                     # Check if there is only one completed LabCheck
                     # If so, check if User MedicalProfile has CKD == True, if not, calculate stage and mark == True
                     if len(self.labchecks) == 1:
@@ -522,67 +543,51 @@ class ULTPlan(TimeStampedModel):
                         return False
                     # Check if first LabCheck creatinine was abnormal
                     elif self.labchecks[len(self.labchecks) - 1].creatinine.abnormal_checker == None:
+                        print("First creatinine detected and normal")
                         # If LabCheck Creatinine is < 1.5 times the upper limit of normal, schedule urgent LabCheck
                         # But continue medications, don't pause ULTPlan
-                        if self.labcheck.creatinine <= self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(
-                            1.5
-                        ):
-                            self.create_urgent_labcheck(self)
-                            return True
+                        if labcheck.creatinine <= self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(1.5):
+                            print("second creatinine abnormal but < 1.5x")
+                            self.nonurgent_lab = True
                         # If LabCheck Creatinine is > 2.0 times the upper limit of normal, schedule urgent LabCheck.
                         # Discontinue ULT and PPx, pause ULTPlan
-                        elif self.labcheck.creatinine > self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(
-                            2
-                        ):
-                            self.ult.active = False
-                            self.ult.save()
-                            self.ppx.active = False
-                            self.ppx.save()
-                            self.pause = True
-                            self.create_urgent_labcheck(self)
-                            return True
+                        elif labcheck.creatinine > self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(2):
+                            self.urgent_lab = True
                     # If first LabCheck Creatinine was abnormal, fluctuations will be larger so have more stringent criteria for follow up labs and ULTPlan modification
                     elif self.labchecks[len(self.labchecks) - 1].creatinine.abnormal_checker:
                         # If LabCheck Creatinine is < 1.25 times the upper limit of normal, schedule urgent LabCheck
                         # But continue medications, don't pause ULTPlan
-                        if self.labcheck.creatinine <= self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(
-                            1.25
-                        ):
-                            self.create_urgent_labcheckself(self)
-                            return True
+                        if labcheck.creatinine <= self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(1.25):
+                            self.nonurgent_lab = True
                         # If LabCheck Creatinine is > 1.5 times the upper limit of normal, schedule urgent LabCheck.
                         # Discontinue ULT and PPx, pause ULTPlan
-                        elif self.labcheck.creatinine > self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(
-                            1.5
-                        ):
-                            self.ult.active = False
-                            self.ult.save()
-                            self.ppx.active = False
-                            self.ppx.save()
-                            self.pause = True
-                            self.create_urgent_labcheck(self)
-                            return True
-            if "hemoglobin" in self.labs:
+                        elif labcheck.creatinine > self.labchecks[len(self.labchecks) - 1].creatinine.var_x_high(1.5):
+                            self.urgent_lab = True
+            if self.hemoglobin:
                 # Check if hemoglobin is high
                 if self.hemoglobin["highorlow"] == "H":
                     pass
                 # Check if hemoglobin is low
                 if self.hemoglobin["highorlow"] == "L":
                     pass
-            if "platelets" in self.labs:
+            if self.platelet:
                 # Check if platelet is high
                 if self.platelet["highorlow"] == "H":
                     pass
                 # Check if platelet is low
                 if self.platelet["highorlow"] == "L":
                     pass
-            if "wbc" in self.labs:
+            if self.wbc:
                 # Check if WBC is high
                 if self.wbc["highorlow"] == "H":
                     pass
                 # Check if WBC is low
                 if self.wbc["highorlow"] == "L":
                     pass
+            if self.urgent_lab == True:
+                return pause_treatment(self)
+            elif self.nonurgent_lab == True:
+                return continue_treatment(self)
             return False
         else:
             return False
