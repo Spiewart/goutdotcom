@@ -423,9 +423,9 @@ class TestULTPlanMethods:
             == (datetime.today() - timedelta(days=323) + self.ULTPlan.urgent_lab_interval).date()
         )
 
-    def test_abnormal_creatinine(self):
+    def test_abnormal_creatinine_normal_baseline(self):
         """Test that checks if the ULTPlan's check_for_abnormal_labs() returns correctly.
-        Using Creatinine under a variety of scenarios."""
+        Using Creatinine which is initially within normal limits."""
         # Set up User with required Profile objects
         self.user = UserFactory()
         self.patientprofile = PatientProfileFactory(user=self.user)
@@ -479,7 +479,7 @@ class TestULTPlanMethods:
             ultplan=self.ULTPlan,
             alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
             ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
-            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=1.6),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=2.3),
             hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
             platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
             wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
@@ -490,7 +490,7 @@ class TestULTPlanMethods:
         )
         # check_for_abnormal_labs() should evaluate to True because the Creatinine is elevated
         assert self.ULTPlan.check_for_abnormal_labs(self.labcheck2) == True
-        # ULTPlan should be NOT BE "paused" after calling check_abnormal_labs() with the high Creatinine being <= 1.5x the upper limit of normal
+        # ULTPlan should NOT BE "paused" after calling check_abnormal_labs() with the high Creatinine being <= 1.5x the upper limit of normal
         assert self.ULTPlan.pause == False
         # ULT for ULTPLan should have active set to True while figuring out what's wrong with the ALT
         assert self.ULTPlan.get_ult().active == True
@@ -505,3 +505,29 @@ class TestULTPlanMethods:
             self.ULTPlan.labcheck_set.last().due
             == (datetime.today() - timedelta(days=323) + self.ULTPlan.urgent_lab_interval).date()
         )
+        # LabCheck created by check_for_abnormal_labs() above assigned to labcheck3
+        self.labcheck3 = self.ULTPlan.labcheck_set.last()
+        # Check that labcheck3 abnormal_labcheck is set to labcheck2, which created most recent LabCheck
+        assert self.labcheck3.abnormal_labcheck == self.labcheck2
+        # Assign lab values to labcheck3, including critically high creatinine value
+        self.labcheck3.alt = ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34)
+        self.labcheck3.ast = ASTFactory(user=self.user, ultplan=self.ULTPlan, value=33)
+        self.labcheck3.creatinine = CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=3.6)
+        self.labcheck3.hemoglobin = HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        self.labcheck3.platelet = PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=333)
+        self.labcheck3.wbc = WBCFactory(user=self.user, ultplan=self.ULTPlan, value=4.3)
+        self.labcheck3.urate = UrateFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        # Mark labcheck3 as completed, with date, and save()
+        self.labcheck3.completed = True
+        self.labcheck3.completed_date = (
+            datetime.today() - timedelta(days=323) + self.ULTPlan.urgent_lab_interval
+        ).date()
+        self.labcheck3.save()
+        # check_for_abnormal_labs() should evaluate to True because the Creatinine is elevated
+        assert self.ULTPlan.check_for_abnormal_labs(self.labcheck3) == True
+        # ULTPlan SHOULD BE "paused" after calling check_abnormal_labs() with the high Creatinine being > 2x the upper limit of normal
+        assert self.ULTPlan.pause == True
+        # ULT for ULTPLan should have active set to False while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ult().active == False
+        # PPx for ULTPlan should also have active set to False while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ppx().active == False

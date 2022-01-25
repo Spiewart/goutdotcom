@@ -60,7 +60,7 @@ class Lab(TimeStampedModel):
 
     def lab_abnormal_high(self):
         """
-        Function tahat checks whether a Lab.value is greater than the upper limit of normal.
+        Function that checks whether a Lab.value is greater than the upper limit of normal.
 
         Returns:
             bool: returns True if Lab.value is greater than the upper limit of normal, False if not.
@@ -90,6 +90,20 @@ class Lab(TimeStampedModel):
             bool: returns true if Lab.value is greater than var times the upper limit of normal
         """
         if self.value > (var * self.reference_upper):
+            return True
+        else:
+            return False
+
+    def var_x_baseline_high(self, var, baseline):
+        """Function that takes a percentage and calculates whether a Lab value is that percentage of a baseline Lab value specified by the function.
+
+        Args:
+            var (Float): Float percentage for calculating where the current Lab value is relative to baseline
+            baseline (Lab.value): Lab value argument for comparing the current Lab value to.
+        Returns:
+            bool: True if Lab.value is var * baseline, False if not
+        """
+        if self.value > (baseline * var):
             return True
         else:
             return False
@@ -299,6 +313,11 @@ class Creatinine(Lab):
         return None
 
     def stage_calculator(self):
+        """Method that takes calculated eGFR and returns CKD stage
+
+        Returns:
+            [integer or None]: [integer corresponding to the CKD stage otherwise None]
+        """
         eGFR = self.eGFR_calculator()
         if eGFR >= 90:
             return 1
@@ -313,6 +332,59 @@ class Creatinine(Lab):
         else:
             return None
 
+    def var_x_high(self, var):
+        """
+        Function that checks whether a lab value which is greater than the upper limit of normal is greater than input var times the upper limit of normal.
+        Has to be overwritten for Creatinine to avoid multiplying float x decimal
+        Returns:
+            bool: returns true if Lab.value is greater than var times the upper limit of normal
+        """
+        if self.value > (Decimal(var) * self.reference_upper):
+            return True
+        else:
+            return False
+
+    def abnormal_high(self, labcheck, labchecks):
+        """Function that processes a high creatinine.
+        Takes a LabCheck and list of LabChecks as argument, the latter to avoid hitting the database multiple times with several different labs.
+
+        Args:
+            labcheck ([LabCheck]): [LabCheck the Creatinine is related to.]
+            labchecks ([List]): [List of LabChecks provided by the function processing the abnormal Creatinine.]
+
+        Returns:
+            string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
+        """
+        # Check if there is only one completed LabCheck
+        # If so, check if User MedicalProfile has CKD == True, if not, calculate stage and mark == True
+        if len(labchecks) == 1:
+            # If this is the User's first LabCheck, mark CKD on MedicalProfile to True because creatinine is abnormal.
+            if self.user.medicalprofile.ckd.value == False:
+                self.user.medicalprofile.ckd.value == True
+                # Calculate CKD stage if eGFR can be calculated
+                if self.user.medicalprofile.ckd.eGFR_calculator():
+                    self.user.medicalprofile.ckd.stage = self.user.medicalprofile.ckd.stage_calculator()
+                self.user.medicalprofile.ckd.save()
+        # Check if first LabCheck creatinine was abnormal
+        elif labchecks[len(labchecks) - 1].creatinine.abnormal_checker() == None:
+            # If LabCheck Creatinine is > 2 times the upper limit of normal, schedule urgent LabCheck
+            # Discontinue ULT and PPx, pause ULTPlan
+            if labcheck.creatinine.var_x_high(2):
+                return "urgent"
+            # If LabCheck Creatinine is < 1.5 times the upper limit of normal, schedule urgent LabCheck.
+            # Continue ULT, PPx, ULTPlan
+            elif labcheck.creatinine.var_x_high(1.5):
+                return "nonurgent"
+        # If first LabCheck Creatinine was abnormal, fluctuations will be larger so have more stringent criteria for follow up labs and ULTPlan modification
+        elif labchecks[len(labchecks) - 1].creatinine.abnormal_checker():
+            # If LabCheck Creatinine is > 1.5 times the upper limit of normal, schedule urgent LabCheck.
+            # Discontinue ULT and PPx, pause ULTPlan
+            if labcheck.creatinine.var_x_high(1.5):
+                return "urgent"
+            # If LabCheck Creatinine is < 1.25 times the upper limit of normal, schedule urgent LabCheck
+            # But continue medications, don't pause ULTPlan
+            elif labcheck.creatinine.var_x_high(1.25):
+                return "nonurgent"
 
 class LabCheck(TimeStampedModel):
     """Model to coordinate labs for monitoring ULTPlan titration."""
