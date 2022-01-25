@@ -3,6 +3,7 @@ from decimal import *
 
 import pytest
 
+from ...history.tests.factories import CKDFactory
 from ...lab.tests.factories import (
     ALTFactory,
     ASTFactory,
@@ -77,6 +78,7 @@ class TestULTPlanMethods:
         assert self.ULTPlan.labcheck_due() == False
         assert self.ULTPlan.last_labcheck() == self.labcheck2
 
+    ### REWRITE THIS
     def test_labcheck_due_second_labcheck_due(self):
         """Test that checks if the ULTPlan's second LabCheck, which is due, triggers labcheck_due()=True."""
         self.user = UserFactory()
@@ -462,7 +464,7 @@ class TestULTPlanMethods:
             ultplan=self.ULTPlan,
             alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
             ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
-            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=0.8),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=1.0),
             hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
             platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
             wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
@@ -479,7 +481,7 @@ class TestULTPlanMethods:
             ultplan=self.ULTPlan,
             alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
             ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
-            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=2.3),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=1.6),
             hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
             platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
             wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
@@ -531,3 +533,291 @@ class TestULTPlanMethods:
         assert self.ULTPlan.get_ult().active == False
         # PPx for ULTPlan should also have active set to False while figuring out what's wrong with the Creatinine
         assert self.ULTPlan.get_ppx().active == False
+
+    def test_abnormal_creatinine_CKD_baseline(self):
+        """Test that checks if the ULTPlan's check_for_abnormal_labs() returns correctly.
+        User has CKD at baseline."""
+        # Set up User with required Profile objects
+        self.user = UserFactory()
+        self.patientprofile = PatientProfileFactory(user=self.user)
+        self.medicalprofile = MedicalProfileFactory(user=self.user, CKD=CKDFactory(user=self.user, value=True))
+        self.familyprofile = FamilyProfileFactory(user=self.user)
+        self.socialprofile = SocialProfileFactory(user=self.user)
+        # Create ULTPlan for User, specify fields that would typically be created by ULTAid
+        self.ULTPlan = ULTPlanFactory(
+            user=self.user, dose_adjustment=20, goal_urate=5.0, titrating=True, last_titration=None
+        )
+        # Create Febuxostat for User and ULTplan, would also typically be created at creation of ULTPlan but by view
+        self.febuxostat = FebuxostatFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            dose=20,
+            freq=QDAY,
+            # Set date_started to 52 weeks prior for to check titration() function correctly
+            date_started=(datetime.today() - timedelta(days=365)),
+            side_effects=None,
+        )
+        self.colchicine = ColchicineFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            dose=0.6,
+            freq=QDAY,
+            prn=False,
+            as_prophylaxis=True,
+            date_started=(datetime.today() - timedelta(days=365)),
+            side_effects=None,
+        )
+        # Create uncompleted initial LabCheck due = 52 weeks prior, needs to be created when it would typically be created by the ULTPlanCreate view
+        self.labcheck1 = LabCheckFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
+            ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=2.2),
+            hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
+            platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
+            wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=17.5),
+            due=(datetime.today() - timedelta(days=365)),
+            completed=True,
+            completed_date=(datetime.today() - timedelta(days=365)),
+        )
+        # Create second LabCheck 42 days after initial LabCheck
+        # This would be typical for starting ULT and checking labs 6 weeks later
+        # Creatinine is slightly elevated above the reference range (< 1.5x)
+        self.labcheck2 = LabCheckFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
+            ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=2.5),
+            hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
+            platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
+            wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=11.5),
+            due=(datetime.today() - timedelta(days=323)),
+            completed=True,
+            completed_date=(datetime.today() - timedelta(days=323)),
+        )
+        # Call check_for_abnormal_labs()
+        self.ULTPlan.check_for_abnormal_labs(self.labcheck2)
+        # ULTPlan should NOT BE "paused" after calling check_abnormal_labs() with the high Creatinine being <= 1.5x the upper limit of normal
+        assert self.ULTPlan.pause == False
+        # ULT for ULTPLan should have active set to True while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ult().active == True
+        # PPx for ULTPlan should also have active set to True while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ppx().active == True
+        # LabCheck created by check_for_abnormal_labs() above assigned to labcheck3
+        self.labcheck3 = self.ULTPlan.labcheck_set.last()
+        # Set third LabCheck to LabCheck created by 42 days after second LabCheck
+        # This would be typical for continuing ULT with a reassuring 2nd LabCheck and checking labs 6 weeks later
+        # Creatinine is > 1.25 x above the baseline
+        self.labcheck3.alt = ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34)
+        self.labcheck3.ast = ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32)
+        self.labcheck3.creatinine = CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=3.2)
+        self.labcheck3.hemoglobin = HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        self.labcheck3.platelet = PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222)
+        self.labcheck3.wbc = WBCFactory(user=self.user, ultplan=self.ULTPlan, value=4.3)
+        self.labcheck3.urate = UrateFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        self.labcheck3.completed = True
+        self.labcheck3.completed_date = (
+            datetime.today() - timedelta(days=323) + self.ULTPlan.titration_lab_interval
+        ).date()
+        self.labcheck3.save()
+        # Call check_for_abnormal_labs()
+        self.ULTPlan.check_for_abnormal_labs(self.labcheck3)
+        # ULTPlan SHOULD NOT BE "paused" after calling check_abnormal_labs() with the high Creatinine being < 1.5x the baseline
+        assert self.ULTPlan.pause == False
+        # ULT for ULTPLan should have active set to True because the Creatinine elevation isn't > 1.5x
+        assert self.ULTPlan.get_ult().active == True
+        # PPx for ULTPlan should also have active set to True because the Creatinine elevation isn't > 1.5x
+        assert self.ULTPlan.get_ppx().active == True
+        # Check that newly created LabCheck abnormal_labcheck is set to last LabCheck, which was abnormal
+        assert self.ULTPlan.labcheck_set.last().abnormal_labcheck == self.labcheck3
+        # Check that a new LabCheck was created urgent_lab_interval days into the future
+        assert (
+            self.ULTPlan.labcheck_set.last().due
+            == (
+                datetime.today()
+                - timedelta(days=323)
+                + self.ULTPlan.titration_lab_interval
+                + self.ULTPlan.urgent_lab_interval
+            ).date()
+        )
+        # LabCheck created by check_for_abnormal_labs() above assigned to labcheck4
+        self.labcheck4 = self.ULTPlan.labcheck_set.last()
+        # Check that labcheck3 abnormal_labcheck is set to labcheck2, which created most recent LabCheck
+        assert self.labcheck4.abnormal_labcheck == self.labcheck3
+        # Assign lab values to labcheck4, including critically high creatinine value
+        self.labcheck4.alt = ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34)
+        self.labcheck4.ast = ASTFactory(user=self.user, ultplan=self.ULTPlan, value=33)
+        self.labcheck4.creatinine = CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=5.5)
+        self.labcheck4.hemoglobin = HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        self.labcheck4.platelet = PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=333)
+        self.labcheck4.wbc = WBCFactory(user=self.user, ultplan=self.ULTPlan, value=4.3)
+        self.labcheck4.urate = UrateFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        # Mark labcheck4 as completed, with date, and save()
+        self.labcheck4.completed = True
+        self.labcheck4.completed_date = (
+            datetime.today()
+            - timedelta(days=323)
+            + self.ULTPlan.titration_lab_interval
+            + self.ULTPlan.urgent_lab_interval
+        ).date()
+        self.labcheck4.save()
+        # check_for_abnormal_labs() should evaluate to True because the Creatinine is elevated
+        assert self.ULTPlan.check_for_abnormal_labs(self.labcheck4) == True
+        # ULTPlan SHOULD BE "paused" after calling check_abnormal_labs() with the high Creatinine being > 2x the upper limit of normal
+        assert self.ULTPlan.pause == True
+        # ULT for ULTPLan should have active set to False while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ult().active == False
+        # PPx for ULTPlan should also have active set to False while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ppx().active == False
+
+    def test_abnormal_creatinine_twoinarow_nonurgent_CKD_baseline(self):
+        """Test that checks if the ULTPlan's check_for_abnormal_labs() returns correctly.
+        User has CKD at baseline."""
+        # Set up User with required Profile objects
+        self.user = UserFactory()
+        self.patientprofile = PatientProfileFactory(user=self.user)
+        self.medicalprofile = MedicalProfileFactory(user=self.user, CKD=CKDFactory(user=self.user, value=True))
+        self.familyprofile = FamilyProfileFactory(user=self.user)
+        self.socialprofile = SocialProfileFactory(user=self.user)
+        # Create ULTPlan for User, specify fields that would typically be created by ULTAid
+        self.ULTPlan = ULTPlanFactory(
+            user=self.user, dose_adjustment=20, goal_urate=5.0, titrating=True, last_titration=None
+        )
+        # Create Febuxostat for User and ULTplan, would also typically be created at creation of ULTPlan but by view
+        self.febuxostat = FebuxostatFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            dose=20,
+            freq=QDAY,
+            # Set date_started to 52 weeks prior for to check titration() function correctly
+            date_started=(datetime.today() - timedelta(days=365)),
+            side_effects=None,
+        )
+        self.colchicine = ColchicineFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            dose=0.6,
+            freq=QDAY,
+            prn=False,
+            as_prophylaxis=True,
+            date_started=(datetime.today() - timedelta(days=365)),
+            side_effects=None,
+        )
+        # Create uncompleted initial LabCheck due = 52 weeks prior, needs to be created when it would typically be created by the ULTPlanCreate view
+        self.labcheck1 = LabCheckFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
+            ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=2.2),
+            hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
+            platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
+            wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=17.5),
+            due=(datetime.today() - timedelta(days=365)),
+            completed=True,
+            completed_date=(datetime.today() - timedelta(days=365)),
+        )
+        # Create second LabCheck 42 days after initial LabCheck
+        # This would be typical for starting ULT and checking labs 6 weeks later
+        # Creatinine is slightly elevated above the reference range (< 1.5x)
+        self.labcheck2 = LabCheckFactory(
+            user=self.user,
+            ultplan=self.ULTPlan,
+            alt=ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34),
+            ast=ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32),
+            creatinine=CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=2.5),
+            hemoglobin=HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5),
+            platelet=PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222),
+            wbc=WBCFactory(user=self.user, ultplan=self.ULTPlan, value=9.3),
+            urate=UrateFactory(user=self.user, ultplan=self.ULTPlan, value=11.5),
+            due=(datetime.today() - timedelta(days=323)),
+            completed=True,
+            completed_date=(datetime.today() - timedelta(days=323)),
+        )
+        # check_for_abnormal_labs() should evaluate to False because the Creatinine is elevated but not far enough off the patient's baseline (initial LabCheck) to matter
+        self.ULTPlan.check_for_abnormal_labs(self.labcheck2)
+        # ULTPlan should NOT BE "paused" after calling check_abnormal_labs() with the high Creatinine being <= 1.5x the upper limit of normal
+        assert self.ULTPlan.pause == False
+        # ULT for ULTPLan should have active set to True while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ult().active == True
+        # PPx for ULTPlan should also have active set to True while figuring out what's wrong with the Creatinine
+        assert self.ULTPlan.get_ppx().active == True
+        # LabCheck created by check_for_abnormal_labs() above assigned to labcheck3
+        self.labcheck3 = self.ULTPlan.labcheck_set.last()
+        # Create third LabCheck 42 days after second LabCheck
+        # This would be typical for continuing ULT with a reassuring 2nd LabCheck and checking labs 6 weeks later
+        # Creatinine is > 1.25 x above the baseline
+        self.labcheck3.alt = ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34)
+        self.labcheck3.ast = ASTFactory(user=self.user, ultplan=self.ULTPlan, value=32)
+        self.labcheck3.creatinine = CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=3.2)
+        self.labcheck3.hemoglobin = HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        self.labcheck3.platelet = PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=222)
+        self.labcheck3.wbc = WBCFactory(user=self.user, ultplan=self.ULTPlan, value=4.3)
+        self.labcheck3.urate = UrateFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        self.labcheck3.completed = True
+        self.labcheck3.completed_date = (
+            datetime.today() - timedelta(days=323) + self.ULTPlan.titration_lab_interval
+        ).date()
+        self.labcheck3.save()
+        # check_for_abnormal_labs() should evaluate to True because the Creatinine is elevated > 1.25 x the baseline
+        self.ULTPlan.check_for_abnormal_labs(self.labcheck3)
+        # ULTPlan SHOULD NOT BE "paused" after calling check_abnormal_labs() with the high Creatinine being < 1.5x the baseline
+        assert self.ULTPlan.pause == False
+        # ULT for ULTPLan should have active set to True because the Creatinine elevation isn't > 1.5x
+        assert self.ULTPlan.get_ult().active == True
+        # PPx for ULTPlan should also have active set to True because the Creatinine elevation isn't > 1.5x
+        assert self.ULTPlan.get_ppx().active == True
+        # Check that newly created LabCheck abnormal_labcheck is set to last LabCheck, which was abnormal
+        assert self.ULTPlan.labcheck_set.last().abnormal_labcheck == self.labcheck3
+        # Check that a new LabCheck was created urgent_lab_interval days into the future
+        assert (
+            self.ULTPlan.labcheck_set.last().due
+            == (
+                datetime.today()
+                - timedelta(days=323)
+                + self.ULTPlan.titration_lab_interval
+                + self.ULTPlan.urgent_lab_interval
+            ).date()
+        )
+        # LabCheck created by check_for_abnormal_labs() above assigned to labcheck4
+        self.labcheck4 = self.ULTPlan.labcheck_set.last()
+        # Check that labcheck3 abnormal_labcheck is set to labcheck2, which created most recent LabCheck
+        assert self.labcheck4.abnormal_labcheck == self.labcheck3
+        # Assign lab values to labcheck4, including a second non-urgently high creatinine value
+        self.labcheck4.alt = ALTFactory(user=self.user, ultplan=self.ULTPlan, value=34)
+        self.labcheck4.ast = ASTFactory(user=self.user, ultplan=self.ULTPlan, value=33)
+        self.labcheck4.creatinine = CreatinineFactory(user=self.user, ultplan=self.ULTPlan, value=2.9)
+        self.labcheck4.hemoglobin = HemoglobinFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        self.labcheck4.platelet = PlateletFactory(user=self.user, ultplan=self.ULTPlan, value=333)
+        self.labcheck4.wbc = WBCFactory(user=self.user, ultplan=self.ULTPlan, value=4.3)
+        self.labcheck4.urate = UrateFactory(user=self.user, ultplan=self.ULTPlan, value=14.5)
+        # Mark labcheck4 as completed, with date, and save()
+        self.labcheck4.completed = True
+        self.labcheck4.completed_date = (
+            datetime.today()
+            - timedelta(days=323)
+            + self.ULTPlan.titration_lab_interval
+            + self.ULTPlan.urgent_lab_interval
+        ).date()
+        self.labcheck4.save()
+        # Call check_for_abnormal_labs()
+        self.ULTPlan.check_for_abnormal_labs(self.labcheck4)
+        print(self.labcheck4.abnormal_labcheck)
+        print(self.labcheck4)
+        # ULTPlan SHOULD NOT BE "paused" after calling check_abnormal_labs() with the high Creatinine being > 1.5x < 2x the upper limit of normal
+        assert self.ULTPlan.pause == False
+        # ULT for ULTPLan should have active set to True because Creatinine didn't change that much
+        assert self.ULTPlan.get_ult().active == True
+        # PPx for ULTPlan should also have active set to True because Creatinine didn't change that much
+        assert self.ULTPlan.get_ppx().active == True
+        print(self.ULTPlan.titrating)
+        print(self.ULTPlan.labcheck_set.last().abnormal_labcheck)
+        print(self.ULTPlan.labcheck_set.last())
+        assert self.ULTPlan.labcheck_set.last().due == (
+            self.labcheck4.completed_date + self.ULTPlan.titration_lab_interval - self.ULTPlan.urgent_lab_interval
+        )

@@ -166,6 +166,73 @@ class ULTPlan(TimeStampedModel):
         else:
             return False
 
+    def create_labcheck(self, labcheck=None, shorten_by=None, urgent=False):
+        """Method that creates a follow up LabCheck object.
+        Checks if the urgent argument is supplied, if true sets shortens the follow up interval to urgent_lab_interval.
+        Checks if ULTPLan titrating attribute is False, if so prolonged the follow up interval to monitoring_lab_interval.
+        Checks if there is an associated LabCheck, sets the due date of the new LabCheck to be based off the complete_date of the FK LabCheck.
+        returns: nothing
+        """
+        # If User's ULTPlan is no longer titrating, create LabCheck for monitoring further into the future
+        if urgent == True:
+            if labcheck:
+                LabCheck.objects.create(
+                    user=self.user,
+                    ultplan=self,
+                    abnormal_labcheck=labcheck,
+                    due=labcheck.completed_date + self.urgent_lab_interval,
+                )
+            else:
+                LabCheck.objects.create(
+                    user=self.user,
+                    ultplan=self,
+                    due=datetime.today().date() + self.urgent_lab_interval,
+                )
+        else:
+            if labcheck:
+                if labcheck.completed == True:
+                    if self.titrating == False:
+                        LabCheck.objects.create(
+                            user=self.user,
+                            ultplan=self,
+                            due=labcheck.completed_date + self.monitoring_lab_interval,
+                        )
+                    # If User's ULTPlan is still titrating (titrating == True), create LabCheck for continued titration lab monitoring
+                    else:
+                        if shorten_by:
+                            LabCheck.objects.create(
+                                user=self.user,
+                                ultplan=self,
+                                due=(labcheck.completed_date + self.titration_lab_interval - shorten_by),
+                            )
+                        else:
+                            LabCheck.objects.create(
+                                user=self.user,
+                                ultplan=self,
+                                due=(labcheck.completed_date + self.titration_lab_interval),
+                            )
+            else:
+                if self.titrating == False:
+                    LabCheck.objects.create(
+                        user=self.user,
+                        ultplan=self,
+                        due=datetime.today().date() + self.monitoring_lab_interval,
+                    )
+                # If User's ULTPlan is still titrating (titrating == True), create LabCheck for continued titration lab monitoring
+                else:
+                    if shorten_by:
+                        LabCheck.objects.create(
+                            user=self.user,
+                            ultplan=self,
+                            due=(datetime.today().date() + self.titration_lab_interval - shorten_by),
+                        )
+                    else:
+                        LabCheck.objects.create(
+                            user=self.user,
+                            ultplan=self,
+                            due=(datetime.today().date() + self.titration_lab_interval),
+                        )
+
     def get_ult(self):
         """
         Returns ULTPlan associated ULT (allopurinol, febuxostat, probenecid)
@@ -235,7 +302,7 @@ class ULTPlan(TimeStampedModel):
         """
 
         def six_months_at_goal(labcheck_list, goal_urate, r):
-            """Recursive function that takes a list of LabChecks, ordered by their completed_date, and a goal_urate as arguments.
+            """Recursive function that takes a list of completed LabChecks, ordered by their completed_date, and a goal_urate as arguments.
             Returns True if there is a 6 or greater month period where the current and all other preceding Urates were < goal_urate.
             Must contain at least Urate values at least 6 months apart."""
             # If index + r is greater than the length of the list, the recursion has run beyond the end of the list and has not found a 6 month period where > 1 Urates were < goal_urate, thus returns False
@@ -254,26 +321,6 @@ class ULTPlan(TimeStampedModel):
             else:
                 return False
 
-        def create_labcheck(self):
-            """Method that checks if ULTPLan titrating attribute is False, if so creates the next LabCheck monitoring_lab_interval days into the future.
-            Otherwise sets it titration_lab_interval days into the future.
-            returns: nothing
-            """
-            # If User's ULTPlan is no longer titrating, create LabCheck for monitoring further into the future
-            if self.titrating == False:
-                LabCheck.objects.create(
-                    user=self.user,
-                    ultplan=self,
-                    due=datetime.today().date() + self.monitoring_lab_interval,
-                )
-            # If User's ULTPlan is still titrating (titrating == True), create LabCheck for continued titration lab monitoring
-            else:
-                LabCheck.objects.create(
-                    user=self.user,
-                    ultplan=self,
-                    due=(datetime.today().date() + self.titration_lab_interval),
-                )
-
         if labcheck.completed == True:
             # If the LabCheck is completed, fetch ULT, dose_adjustment, PPx, and all LabChecks for ULTPlan
             self.ult = self.get_ult()
@@ -284,7 +331,7 @@ class ULTPlan(TimeStampedModel):
             if len(self.labchecks) == 1:
                 # If there is only 1 LabCheck for ULTPlan, it is the first and no titration will be performed
                 # Call create_labcheck() to create the next LabCheck that's due
-                create_labcheck(self)
+                self.create_labcheck(labcheck=labcheck)
                 return False
             if labcheck.urate.value <= self.goal_urate:
                 # If LabCheck urate is less than ULTPlan goal, check if urate has been under 6.0 for 6 months or longer in order to determine whether or not to discontinue PPx
@@ -292,7 +339,7 @@ class ULTPlan(TimeStampedModel):
                     # If six_months_at_goal returns False, no titration performed, maintain the status quo for treatment
                     if six_months_at_goal(self.labchecks, self.goal_urate, 1) == False:
                         # Call create_labcheck() to create the next LabCheck that's due
-                        create_labcheck(self)
+                        self.create_labcheck(labcheck=labcheck)
                         return False
                     # If six_months_at_Goal returns True, titration is performed,
                     elif six_months_at_goal(self.labchecks, self.goal_urate, 1) == True:
@@ -304,7 +351,7 @@ class ULTPlan(TimeStampedModel):
                         self.titrating = False
                         self.last_titration = datetime.today().date()
                         # Call create_labcheck() to create the next LabCheck that's due
-                        create_labcheck(self)
+                        self.create_labcheck(labcheck=labcheck)
                         return True
             elif labcheck.urate.value > self.goal_urate:
                 # If LabCheck uric acid is higher than goal, increase ult.dose by ULTPlan dose_adjustment and save ult
@@ -319,10 +366,46 @@ class ULTPlan(TimeStampedModel):
                     self.titrating = True
                 self.last_titration = datetime.today().date()
                 # Call create_labcheck() to create the next LabCheck that's due
-                create_labcheck(self)
+                self.create_labcheck(labcheck=labcheck)
                 return True
         else:
             return False
+
+    def pause_treatment(self, labcheck=None):
+        """Method that makes ULT and PPx inactive and pauses ULTPlan.
+        Creates urgent LabCheck.
+        Called when there is an urgent lab abnormality.
+
+        Returns:
+            [bool]: [bool indicating whether or not there was an abnormal lab for the LabCheck]
+        """
+        self.ult = self.get_ult()
+        self.ult.active = False
+        self.ult.save()
+        self.ppx = self.get_ppx()
+        self.ppx.active = False
+        self.ppx.save()
+        self.pause = True
+        if labcheck:
+            self.create_labcheck(labcheck=labcheck, urgent=True)
+        else:
+            self.create_labcheck(urgent=True)
+        return True
+
+    def continue_treatment(self, labcheck=None):
+        """Method that creates an urgent LabCheck based off an abnormal lab.
+        Takes optional LabCheck argument to associate with abnormal_labcheck.
+        Does not pause ULTPlan.
+        Does not make ULT and PPx inactive.
+
+        Returns:
+            [bool]: [bool indicating whether or not there was an abnormal lab for the LabCheck]
+        """
+        if labcheck:
+            self.create_labcheck(labcheck=labcheck, urgent=True)
+        else:
+            self.create_labcheck(urgent=True)
+        return True
 
     def change_therapy(self):
         """Function that checks if a ULTPLan therapy is in need of changing and does so using associated ULTAid data if so.
@@ -429,45 +512,6 @@ class ULTPlan(TimeStampedModel):
         boolean = True if anything was changed, False if not. Also modifies related models in the process.
         """
 
-        def create_urgent_labcheck(self):
-            """Method that creates LabCheck follow up object at urgent_lab_interval days in the future.
-            Sets new LabCheck object FK to LabCheck argument in function.
-            returns: nothing
-            """
-            LabCheck.objects.create(
-                user=self.user,
-                ultplan=self,
-                abnormal_labcheck=labcheck,
-                due=labcheck.completed_date + self.urgent_lab_interval,
-            )
-
-        def pause_treatment(self):
-            """Method that makes ULT and PPx inactive and pauses ULTPlan.
-            Creates urgent LabCheck.
-            Called when there is an urgent lab abnormality.
-
-            Returns:
-                [bool]: [bool indicating whether or not there was an abnormal lab for the LabCheck]
-            """
-            self.ult.active = False
-            self.ult.save()
-            self.ppx.active = False
-            self.ppx.save()
-            self.pause = True
-            create_urgent_labcheck(self)
-            return True
-
-        def continue_treatment(self):
-            """Method that creates and urgent LabCheck based off an abnormal lab.
-            Does not pause ULTPlan.
-            Does not make ULT and PPx inactive.
-
-            Returns:
-                [bool]: [bool indicating whether or not there was an abnormal lab for the LabCheck]
-            """
-            create_urgent_labcheck(self)
-            return True
-
         # Check if LabCheck is completed, which it should be based on where function is called
         if labcheck.completed == False:
             # Return None if Labcheck not completed
@@ -557,21 +601,28 @@ class ULTPlan(TimeStampedModel):
                 if self.wbc["highorlow"] == "L":
                     pass
             ## NEED TO CHECK OF LABCHECK IS FOLLOW UP OF ABNORMAL VALUE, WILL PROCESS DIFFERENTLY
+            # If LabCheck is a follow up on an abnormal LabCheck, process differently
+            if labcheck.abnormal_labcheck:
+                # If urgent_lab, call pause_treatment()
+                if self.urgent_lab == True:
+                    return self.pause_treatment(labcheck)
+                # If nonurgent_lab, create a new LabCheck when the previous titration_lab_check would have been due to continue titration()
+                elif self.nonurgent_lab == True:
+                    return self.create_labcheck(
+                        labcheck=labcheck,
+                        shorten_by=(self.urgent_lab_interval)
+                    )
             # If urgent_lab, call pause_treatment()
             # If nonurgent_lab, call continue_treatment, which will still schedule a follow up
-            if labcheck.abnormal_labcheck:
-                if self.urgent_lab == True:
-                    return pause_treatment(self)
-                elif self.nonurgent_lab == True:
-                    return continue_treatment(self)
             else:
                 if self.urgent_lab == True:
-                    return pause_treatment(self)
+                    return self.pause_treatment(labcheck)
                 elif self.nonurgent_lab == True:
-                    return continue_treatment(self)
-            return False
+                    return self.continue_treatment(labcheck)
+            # Titrate if the lab abnormality is not urgent or nonurgent
+            return self.titrate(labcheck)
         else:
-            return False
+            return self.titrate(labcheck)
 
     def __str__(self):
         return f"{str(self.user)}'s ULTPlan"
