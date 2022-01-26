@@ -94,6 +94,18 @@ class Lab(TimeStampedModel):
         else:
             return False
 
+    def var_x_low(self, var):
+        """
+        Function that checks whether a lab value which is lower than the lower limit of normal is lower than input var times the lower limit of normal.
+
+        Returns:
+            bool: returns true if Lab.value is lower than var times the lower limit of normal
+        """
+        if self.value < (var * self.reference_lower):
+            return True
+        else:
+            return False
+
     def var_x_baseline_high(self, var, baseline):
         """Function that takes a percentage and calculates whether a Lab value is that percentage of a baseline Lab value specified by the function.
 
@@ -187,6 +199,114 @@ class Platelet(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for platelets")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for platelets")
 
+    def abnormal_high(self, labcheck, labchecks):
+        """Function that processes a high Platelet.
+        Takes a LabCheck and list of LabChecks as argument, the latter to avoid hitting the database multiple times with several different labs.
+
+        Args:
+            labcheck ([LabCheck]): [LabCheck the Platelet is related to.]
+            labchecks ([List]): [List of LabChecks provided by the function processing the abnormal Platelet.]
+
+        Returns:
+            string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
+        """
+        # Check if labcheck is a follow up on an abnormal_labcheck
+        if labcheck.abnormal_labcheck:
+            # Check if abnormal_labcheck was for a high Platelet value
+            if labcheck.abnormal_labcheck.platelet.abnormal_checker().get("highorlow") == "H":
+                # Check if first LabCheck Lab was normal or low
+                ### NEED TO CHECK HOW FAR BACK FIRST LABCHECK WAS, SIMILAR TO CREATININE WHICH ISN'T WORKING
+                if (
+                    labchecks[len(labchecks) - 1].platelet.abnormal_checker() == None
+                    or labchecks[len(labchecks) - 1].platelet.abnormal_checker().get("highorlow") == "L"
+                ):
+                    # If Platelet value is > 1.5x times the upper limit of normal (will be second in a row), raise urgent flag
+                    # Will discontinue ULT and PPx, pause ULTPlan
+                    if labcheck.platelet.var_x_high(1.5):
+                        return "urgent"
+                    else:
+                        return None
+                # Check if Platelet values are always high by:
+                # Average the list of all platelet values
+                # Check if average is greater than 1.1x the upper limit of normal (~500K)
+                # Return None if so to ignore the high value
+                elif len(labchecks) > 3:
+                    platelet_list = []
+                    for labcheck in labchecks:
+                        platelet_list.append(labcheck.platelet.value)
+                    if sum(platelet_list) / len(platelet_list) > (self.reference_upper * 1.1):
+                        return None
+                # If first LabCheck was high, flag nonurgent and will eventually get triggered as always high
+                else:
+                    return "nonurgent"
+            else:
+                # LabCheck must be for follow up of a low Platelet value
+                # If Platelet value is 1.5x the upper limit of normal (> 675K), raise nonurgent flag
+                if labcheck.platelet.var_x_high(1.5):
+                    return "nonurgent"
+        else:
+            # LabCheck is not follow up for another abnormal_labcheck
+            # If Platelet value is 1.5x the upper limit of normal (> 675K), raise nonurgent flag
+            if labcheck.platelet.var_x_high(1.5):
+                return "nonurgent"
+
+    def abnormal_low(self, labcheck, labchecks):
+        """Function that processes a low Platelet.
+        Takes a LabCheck and list of LabChecks as argument, the latter to avoid hitting the database multiple times with several different labs.
+
+        Args:
+            labcheck ([LabCheck]): [LabCheck the Platelet is related to.]
+            labchecks ([List]): [List of LabChecks provided by the function processing the abnormal Platelet.]
+
+        Returns:
+            string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
+        """
+        # Check if labcheck is a follow up on an abnormal_labcheck
+        if labcheck.abnormal_labcheck:
+            # Check if abnormal_labcheck was for a high Platelet value
+            if labcheck.abnormal_labcheck.platelet.abnormal_checker().get("highorlow") == "L":
+                # Check if first LabCheck Lab was normal or high
+                ### NEED TO CHECK HOW FAR BACK FIRST LABCHECK WAS, SIMILAR TO CREATININE WHICH ISN'T WORKING
+                if (
+                    labchecks[len(labchecks) - 1].platelet.abnormal_checker() == None
+                    or labchecks[len(labchecks) - 1].platelet.abnormal_checker().get("highorlow") == "H"
+                ):
+                    # If Platelet value is < 75% the lower limit of normal (will be second in a row), raise urgent flag
+                    # Will discontinue ULT and PPx, pause ULTPlan
+                    if labcheck.platelet.var_x_low(0.75):
+                        return "urgent"
+                    else:
+                        return None
+                # If first LabCheck was low, evaluate how much it has dropped from the first value
+                ### NEED TO CHANGE FIRST VALUE TO A BASELINE CALCULATOR METHOD
+                else:
+                    if labcheck.platelet.value <= (0.5 * labchecks[len(labchecks) - 1].platelet.value):
+                        return "urgent"
+                    elif labcheck.platelet.value <= (0.75 * labchecks[len(labchecks) - 1].platelet.value):
+                        return "nonurgent"
+                    else:
+                        return None
+            else:
+                return "urgent"
+        else:
+            # LabCheck is not follow up for another abnormal_labcheck
+            # If Platelet value is 50% the lower limit of normal, flag urgent, stopping ULT/PPx, pausing ULTPlan
+            if labcheck.platelet.var_x_low(0.5):
+                return "urgent"
+            # If Platelet value is lower than the lower limit of normal, check if it's always low and if not, raise nonurgent follow up
+            ### THIS WILL FLAG ANYONE WITH CHRONIC THROMBOCYTOPENIA TO AN INITIAL NONURGENT FOLLOWUP
+            else:
+                # Check if there are multiple LabChecks and, if so, if the baseline (initial) value is low
+                if len(labchecks) > 1:
+                    if labchecks[len(labchecks) - 1].platelet.abnormal_checker():
+                        if labchecks[len(labchecks) - 1].platelet.abnormal_checker().get("highorlow") == "L":
+                            return None
+                        else:
+                            return "nonurgent"
+                    else:
+                        return "nonurgent"
+                else:
+                    return "nonurgent"
 
 class WBC(Lab):
     LOWER_LIMIT = Decimal(4.5)
@@ -368,14 +488,42 @@ class Creatinine(Lab):
                 # If so, set that to the baseline
                 ### NEED TO INCLUDE SOME LOGIC TO SEE HOW FAR BACK IN TIME THIS WAS
                 elif self.labchecks[len(labchecks) - 1].creatinine.abnormal_checker() == None:
-                    return self.labchecks[len(labchecks) - 1].creatinine.value
+                    # Check if initial LabCheck was over a year prior
+                    if self.labchecks[len(labchecks) - 1].completed_date <= datetime.today().date() - timedelta(
+                        days=365
+                    ):
+                        # If so, assemble a list of last year's Creatinines
+                        last_year_creatinines = []
+                        for labcheck in self.labchecks:
+                            if self.labcheck.completed_date <= (datetime.today().date() - timedelta(days=365)):
+                                last_year_creatinines.append(labcheck.creatinine.value)
+                        # If there is more than 1 Creatinine drawn in the last year, return the minimum value that year to set baseline
+                        if len(last_year_creatinines) > 1:
+                            return min(last_year_creatinines)
+                        # Otherwise return the initial normal value
+                        else:
+                            return self.labchecks[len(labchecks) - 1].creatinine.value
+                    else:
+                        return self.labchecks[len(labchecks) - 1].creatinine.value
                 # If first LabCheck was abnormal, pick the lowest Creatinine value from all the observations and set that to baseline
                 ### AGAIN NEED TO INCLUDE LOGIC TO SEE HOW FAR BACK IN TIME THIS GOES
                 elif self.labchecks[len(labchecks) - 1].creatinine.abnormal_checker():
-                    creatinines = []
-                    for labcheck in self.labchecks:
-                        creatinines.append(labcheck.creatinine.value)
-                    return min(creatinines)
+                    # Check if initial LabCheck was over a year prior
+                    if self.labchecks[len(labchecks) - 1].completed_date <= (
+                        datetime.today().date() - timedelta(days=365)
+                    ):
+                        # If so, assemble a list of last year's Creatinines
+                        last_year_creatinines = []
+                        for labcheck in self.labchecks:
+                            if self.labcheck.completed_date <= (datetime.today().date() - timedelta(days=365)):
+                                last_year_creatinines.append(labcheck.creatinine.value)
+                        # If there is at least 1 Creatinine drawn in the last year, return the minimum value that year to set baseline
+                        if last_year_creatinines:
+                            return min(last_year_creatinines)
+                        # Otherwise, return initial value
+                        ### NEED TO DIAL BACK ANOTHER YEAR, PERHAPS RECURSIVELY, TO RETURN VALUE
+                        else:
+                            return self.labchecks[len(labchecks) - 1].creatinine.value
             else:
                 return None
         else:

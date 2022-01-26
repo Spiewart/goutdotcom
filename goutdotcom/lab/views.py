@@ -465,6 +465,7 @@ class LabCheckUpdate(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         # If all related models exist, mark LabCheck completed as of today's date
         if self.alt and self.ast and self.creatinine and self.hemoglobin and self.platelet and self.wbc and self.urate:
             form.instance.completed = True
+            # MUST call date(), otherwise functions comparing dates will throw errors for comparing datetime.datetime types to datetime.date types
             form.instance.completed_date = datetime.today().date()
             # Run LabCheck check_for_abnormal_labs() function, titrate() will be called by the check_for_abnormal_labs() if appropriate
             form.instance.ultplan.check_for_abnormal_labs(form.instance)

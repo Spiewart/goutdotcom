@@ -580,19 +580,25 @@ class ULTPlan(TimeStampedModel):
                     elif followup == "nonurgent":
                         self.nonurgent_lab = True
             if self.hemoglobin:
-                # Check if hemoglobin is high
-                if self.hemoglobin["highorlow"] == "H":
-                    pass
                 # Check if hemoglobin is low
                 if self.hemoglobin["highorlow"] == "L":
                     pass
             if self.platelet:
                 # Check if platelet is high
                 if self.platelet["highorlow"] == "H":
-                    pass
+                    followup = labcheck.platelet.abnormal_high(labcheck, self.labchecks)
+                    if followup == "urgent":
+                        self.urgent_lab = True
+                    elif followup == "nonurgent":
+                        self.nonurgent_lab = True
                 # Check if platelet is low
                 if self.platelet["highorlow"] == "L":
-                    pass
+                    # Check if platelet is low
+                    followup = labcheck.platelet.abnormal_low(labcheck, self.labchecks)
+                    if followup == "urgent":
+                        self.urgent_lab = True
+                    elif followup == "nonurgent":
+                        self.nonurgent_lab = True
             if self.wbc:
                 # Check if WBC is high
                 if self.wbc["highorlow"] == "H":
@@ -608,10 +614,7 @@ class ULTPlan(TimeStampedModel):
                     return self.pause_treatment(labcheck)
                 # If nonurgent_lab, create a new LabCheck when the previous titration_lab_check would have been due to continue titration()
                 elif self.nonurgent_lab == True:
-                    return self.create_labcheck(
-                        labcheck=labcheck,
-                        shorten_by=(self.urgent_lab_interval)
-                    )
+                    return self.create_labcheck(labcheck=labcheck, shorten_by=(self.urgent_lab_interval))
             # If urgent_lab, call pause_treatment()
             # If nonurgent_lab, call continue_treatment, which will still schedule a follow up
             else:
