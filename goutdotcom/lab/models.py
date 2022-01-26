@@ -294,8 +294,10 @@ class Platelet(Lab):
             if labcheck.platelet.var_x_low(0.5):
                 return "urgent"
             # If Platelet value is lower than the lower limit of normal, check if it's always low and if not, raise nonurgent follow up
-            ### THIS WILL FLAG ANYONE WITH CHRONIC THROMBOCYTOPENIA TO AN INITIAL NONURGENT FOLLOWUP
             else:
+                # Check if this is the first LabCheck, if so, continue normally
+                if len(labchecks) == 1:
+                    return None
                 # Check if there are multiple LabChecks and, if so, if the baseline (initial) value is low
                 if len(labchecks) > 1:
                     if labchecks[len(labchecks) - 1].platelet.abnormal_checker():
