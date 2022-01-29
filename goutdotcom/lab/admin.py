@@ -1,11 +1,12 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import *
 
 # Register your models here.
 
 
-class UrateAdmin(admin.ModelAdmin):
+class UrateHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
@@ -14,27 +15,33 @@ class UrateAdmin(admin.ModelAdmin):
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class ALTAdmin(admin.ModelAdmin):
+class ALTHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
         "date_drawn",
         "created",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class ASTAdmin(admin.ModelAdmin):
+class ASTHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
         "date_drawn",
         "created",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class LabCheckAdmin(admin.ModelAdmin):
+class LabCheckHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "ultplan",
@@ -52,36 +59,44 @@ class LabCheckAdmin(admin.ModelAdmin):
         # "overdue",
         "created",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class PlateletAdmin(admin.ModelAdmin):
+class PlateletHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
         "date_drawn",
         "created",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class WBCAdmin(admin.ModelAdmin):
+class WBCHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
         "date_drawn",
         "created",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class HemoglobinAdmin(admin.ModelAdmin):
+class HemoglobinHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
         "date_drawn",
         "created",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class CreatinineAdmin(admin.ModelAdmin):
+class CreatinineHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
@@ -89,13 +104,15 @@ class CreatinineAdmin(admin.ModelAdmin):
         "date_drawn",
         "created",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-admin.site.register(Urate, UrateAdmin)
-admin.site.register(ALT, ALTAdmin)
-admin.site.register(AST, ASTAdmin)
-admin.site.register(LabCheck, LabCheckAdmin)
-admin.site.register(Platelet, PlateletAdmin)
-admin.site.register(WBC, WBCAdmin)
-admin.site.register(Hemoglobin, HemoglobinAdmin)
-admin.site.register(Creatinine, CreatinineAdmin)
+admin.site.register(Urate, UrateHistoryAdmin)
+admin.site.register(ALT, ALTHistoryAdmin)
+admin.site.register(AST, ASTHistoryAdmin)
+admin.site.register(LabCheck, LabCheckHistoryAdmin)
+admin.site.register(Platelet, PlateletHistoryAdmin)
+admin.site.register(WBC, WBCHistoryAdmin)
+admin.site.register(Hemoglobin, HemoglobinHistoryAdmin)
+admin.site.register(Creatinine, CreatinineHistoryAdmin)

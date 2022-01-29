@@ -6,6 +6,7 @@ from django.db import models, transaction
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
+from simple_history.models import HistoricalRecords
 
 from ..lab.choices import BOOL_CHOICES, CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
 from ..profiles.models import PatientProfile
@@ -28,7 +29,8 @@ class Lab(TimeStampedModel):
     baseline = models.BooleanField(
         choices=BOOL_CHOICES, help_text="Is this the baseline for this User?", verbose_name="Baseline", default=False
     )
-
+    history = HistoricalRecords(inherit=True)
+    
     class Meta:
         abstract = True
 
@@ -792,6 +794,7 @@ class LabCheck(TimeStampedModel):
         null=True,
         default=None,
     )
+    history = HistoricalRecords()
 
     def overdue(self):
         if datetime.today().date() >= self.due:

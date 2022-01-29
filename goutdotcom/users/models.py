@@ -89,6 +89,7 @@ class Patient(User):
         except self.patientprofile.DoesNotExist:
             return None
 
+
 class ProviderManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)

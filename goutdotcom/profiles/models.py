@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta, timezone
 
 from django.conf import settings
 from django.db import models
@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django_extensions.db.models import TimeStampedModel
+from simple_history.models import HistoricalRecords
 
 from goutdotcom.history.models import (
     CHF,
@@ -49,6 +50,7 @@ class FamilyProfile(TimeStampedModel):
     gout = models.OneToOneField(
         Gout, on_delete=models.CASCADE, help_text="Do you have a family history of gout?", null=True, blank=True
     )
+    history = HistoricalRecords()
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
@@ -73,8 +75,12 @@ class PatientProfile(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    picture = models.ImageField(
-        default="default_thumbnail.png", null=True, blank=True, help_text="Upload a picture for your profile"
+    provider = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
     )
     bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -90,6 +96,7 @@ class PatientProfile(TimeStampedModel):
     height = models.OneToOneField(
         Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True
     )
+    history = HistoricalRecords()
 
     def get_age(self):
         if self.date_of_birth:
@@ -153,22 +160,46 @@ class PatientProfile(TimeStampedModel):
 
 
 class ProviderProfile(TimeStampedModel):
-    # Provider User profile
-    # If you do this you need to either have a post_save signal or redirect to a profile_edit view on initial login
+    """Provider User Profile.
+    post_save() signal to check if User selected Provider Role on SignUp.
+    Creates ProviderProfile if so.
+    post_save() signal to save ProviderProfile on User save() if User Role is Provider.
+    """
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
     organization = models.CharField(max_length=200, help_text="Organization", null=True, blank=True)
+    titration_lab_interval = models.DurationField(
+        help_text="How frequently are labs required to be checked duration ULT titration?",
+        verbose_name="Titration Lab Check Interval",
+        default=timedelta(days=42),
+    )
+    monitoring_lab_interval = models.DurationField(
+        help_text="How frequently are labs required to be checked during routine monitoring?",
+        verbose_name="Monitoring Lab Check Interval",
+        default=timedelta(days=180),
+    )
+    urgent_lab_interval = models.DurationField(
+        help_text="How frequently do you recheck urgent labs?",
+        verbose_name="Urgent Lab Check Interval",
+        default=timedelta(days=14),
+    )
+    history = HistoricalRecords()
 
+    # post_save() signal to create ProviderProfile if User selected role="Provider" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_provider_profile(sender, instance, created, **kwargs):
         if created:
+            # Check if User instance Role is Provider
             if instance.role == "Provider":
                 new_profile = ProviderProfile.objects.create(user=instance)
 
+    # post_save() signal to create ProviderProfile if User selected role="Provider" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_provider_profile(sender, instance, **kwargs):
+        # Check if User instance Role is Provider
         if instance.role == "Provider":
             instance.providerprofile.save()
 
@@ -313,6 +344,7 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    history = HistoricalRecords()
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_medical_profile(sender, instance, created, **kwargs):
@@ -372,6 +404,7 @@ class SocialProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    history = HistoricalRecords()
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_social_profile(sender, instance, created, **kwargs):

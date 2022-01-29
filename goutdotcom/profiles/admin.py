@@ -1,17 +1,20 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import FamilyProfile, MedicalProfile, PatientProfile, SocialProfile
 
 
 # Register your models here.
-class FamilyProfileAdmin(admin.ModelAdmin):
+class FamilyProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "gout",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class MedicalProfileAdmin(admin.ModelAdmin):
+class MedicalProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "angina",
@@ -31,12 +34,13 @@ class MedicalProfileAdmin(admin.ModelAdmin):
         "urate_kidney_stones",
         "tophi",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class PatientProfileAdmin(admin.ModelAdmin):
+class PatientProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
-        "picture",
         "date_of_birth",
         "get_age",
         "gender",
@@ -45,18 +49,35 @@ class PatientProfileAdmin(admin.ModelAdmin):
         "height",
         "BMI_calculator",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-class SocialProfileAdmin(admin.ModelAdmin):
+class ProviderProfileHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "organization",
+        "titration_lab_interval",
+        "monitoring_lab_interval",
+        "urgent_lab_interval",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+
+class SocialProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "alcohol",
         "fructose",
         "shellfish",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-admin.site.register(FamilyProfile, FamilyProfileAdmin)
-admin.site.register(MedicalProfile, MedicalProfileAdmin)
-admin.site.register(PatientProfile, PatientProfileAdmin)
-admin.site.register(SocialProfile, SocialProfileAdmin)
+admin.site.register(FamilyProfile, FamilyProfileHistoryAdmin)
+admin.site.register(MedicalProfile, MedicalProfileHistoryAdmin)
+admin.site.register(PatientProfile, PatientProfileHistoryAdmin)
+admin.site.register(PatientProfile, ProviderProfileHistoryAdmin)
+admin.site.register(SocialProfile, SocialProfileHistoryAdmin)
