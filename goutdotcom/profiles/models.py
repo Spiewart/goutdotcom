@@ -56,12 +56,14 @@ class FamilyProfile(TimeStampedModel):
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_family_profile(sender, instance, created, **kwargs):
         if created:
-            new_profile = FamilyProfile.objects.create(user=instance)
-            new_profile.gout = Gout.objects.create(user=instance)
+            if instance.role == "Patient":
+                new_profile = FamilyProfile.objects.create(user=instance)
+                new_profile.gout = Gout.objects.create(user=instance)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_family_profile(sender, instance, **kwargs):
-        instance.familyprofile.save()
+        if instance.role == "Patient":
+            instance.familyprofile.save()
 
 
 class PatientProfile(TimeStampedModel):
@@ -139,13 +141,15 @@ class PatientProfile(TimeStampedModel):
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_patient_profile(sender, instance, created, **kwargs):
         if created:
-            new_profile = PatientProfile.objects.create(user=instance)
-            new_profile.weight = Weight.objects.create(user=instance)
-            new_profile.height = Height.objects.create(user=instance)
+            if instance.role == "Patient":
+                new_profile = PatientProfile.objects.create(user=instance)
+                new_profile.weight = Weight.objects.create(user=instance)
+                new_profile.height = Height.objects.create(user=instance)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_patient_profile(sender, instance, **kwargs):
-        instance.patientprofile.save()
+        if instance.role == "Patient":
+            instance.patientprofile.save()
 
 
 class ProviderProfile(TimeStampedModel):
@@ -160,12 +164,12 @@ class ProviderProfile(TimeStampedModel):
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_provider_profile(sender, instance, created, **kwargs):
         if created:
-            if instance.role == "PROVIDER":
+            if instance.role == "Provider":
                 new_profile = ProviderProfile.objects.create(user=instance)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_provider_profile(sender, instance, **kwargs):
-        if instance.role == "PROVIDER":
+        if instance.role == "Provider":
             instance.providerprofile.save()
 
 
@@ -310,37 +314,36 @@ class MedicalProfile(TimeStampedModel):
         blank=True,
     )
 
-    def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.user_username})
-
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_medical_profile(sender, instance, created, **kwargs):
         if created:
-            new_profile = MedicalProfile.objects.create(user=instance)
-            new_profile.angina = Angina.objects.create(user=instance)
-            new_profile.allopurinol_hypersensitivity = AllopurinolHypersensitivity.objects.create(user=instance)
-            new_profile.anticoagulation = Anticoagulation.objects.create(user=instance)
-            new_profile.bleed = Bleed.objects.create(user=instance)
-            new_profile.CKD = CKD.objects.create(user=instance)
-            new_profile.CHF = CHF.objects.create(user=instance)
-            new_profile.colchicine_interactions = ColchicineInteractions.objects.create(user=instance)
-            new_profile.diabetes = Diabetes.objects.create(user=instance)
-            new_profile.erosions = Erosions.objects.create(user=instance)
-            new_profile.febuxostat_hypersensitivity = FebuxostatHypersensitivity.objects.create(user=instance)
-            new_profile.hypertension = Hypertension.objects.create(user=instance)
-            new_profile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
-            new_profile.heartattack = HeartAttack.objects.create(user=instance)
-            new_profile.IBD = IBD.objects.create(user=instance)
-            new_profile.organ_transplant = OrganTransplant.objects.create(user=instance)
-            new_profile.osteoporosis = Osteoporosis.objects.create(user=instance)
-            new_profile.stroke = Stroke.objects.create(user=instance)
-            new_profile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
-            new_profile.tophi = Tophi.objects.create(user=instance)
-            new_profile.XOI_interactions = XOIInteractions.objects.create(user=instance)
+            if instance.role == "Patient":
+                new_profile = MedicalProfile.objects.create(user=instance)
+                new_profile.angina = Angina.objects.create(user=instance)
+                new_profile.allopurinol_hypersensitivity = AllopurinolHypersensitivity.objects.create(user=instance)
+                new_profile.anticoagulation = Anticoagulation.objects.create(user=instance)
+                new_profile.bleed = Bleed.objects.create(user=instance)
+                new_profile.CKD = CKD.objects.create(user=instance)
+                new_profile.CHF = CHF.objects.create(user=instance)
+                new_profile.colchicine_interactions = ColchicineInteractions.objects.create(user=instance)
+                new_profile.diabetes = Diabetes.objects.create(user=instance)
+                new_profile.erosions = Erosions.objects.create(user=instance)
+                new_profile.febuxostat_hypersensitivity = FebuxostatHypersensitivity.objects.create(user=instance)
+                new_profile.hypertension = Hypertension.objects.create(user=instance)
+                new_profile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
+                new_profile.heartattack = HeartAttack.objects.create(user=instance)
+                new_profile.IBD = IBD.objects.create(user=instance)
+                new_profile.organ_transplant = OrganTransplant.objects.create(user=instance)
+                new_profile.osteoporosis = Osteoporosis.objects.create(user=instance)
+                new_profile.stroke = Stroke.objects.create(user=instance)
+                new_profile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
+                new_profile.tophi = Tophi.objects.create(user=instance)
+                new_profile.XOI_interactions = XOIInteractions.objects.create(user=instance)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_medical_profile(sender, instance, **kwargs):
-        instance.medicalprofile.save()
+        if instance.role == "Patient":
+            instance.medicalprofile.save()
 
 
 class SocialProfile(TimeStampedModel):
@@ -373,14 +376,13 @@ class SocialProfile(TimeStampedModel):
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_user_social_profile(sender, instance, created, **kwargs):
         if created:
-            new_profile = SocialProfile.objects.create(user=instance)
-            new_profile.alcohol = Alcohol.objects.create(user=instance)
-            new_profile.fructose = Fructose.objects.create(user=instance)
-            new_profile.shellfish = Shellfish.objects.create(user=instance)
+            if instance.role == "Patient":
+                new_profile = SocialProfile.objects.create(user=instance)
+                new_profile.alcohol = Alcohol.objects.create(user=instance)
+                new_profile.fructose = Fructose.objects.create(user=instance)
+                new_profile.shellfish = Shellfish.objects.create(user=instance)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_social_profile(sender, instance, **kwargs):
-        instance.socialprofile.save()
-
-    def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.user_username})
+        if instance.role == "Patient":
+            instance.socialprofile.save()

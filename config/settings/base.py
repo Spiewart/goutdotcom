@@ -38,7 +38,7 @@ USE_TZ = True
 LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 
 # As good a place as any to plop this direction to the SignupForm
-ACCOUNT_SIGNUP_FORM_CLASS = "yourapp.forms.SignupForm"
+ACCOUNT_SIGNUP_FORM_CLASS = "users.forms.SignupForm"
 
 # DATABASES
 # ------------------------------------------------------------------------------

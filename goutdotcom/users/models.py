@@ -96,10 +96,10 @@ class ProviderManager(BaseUserManager):
 
 
 class Provider(User):
-    # This sets the user type to PATIENT during record creation
+    # This sets the user type to PROVIDER during record creation
     base_role = User.Roles.PROVIDER
 
-    # Ensures queries on the Patient model return only Patients
+    # Ensures queries on the Patient model return only Providers
     objects = ProviderManager()
 
     # Setting proxy to "True" means a table will not be created for this record
