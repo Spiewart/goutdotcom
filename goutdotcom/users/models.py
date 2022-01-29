@@ -17,17 +17,7 @@ class User(AbstractUser):
     name = models.CharField(_("Name of User"), blank=True, max_length=255)
     first_name = None  # type: ignore
     last_name = None  # type: ignore
-
-    # Ensures that creating new users through proxy models works
-    base_role = Roles.PATIENT
-
-    role = models.CharField(_("Role"), max_length=50, choices=Roles.choices, default=Roles.PATIENT)
-
-    def save(self, *args, **kwargs):
-        # If a new user, set the user's role based off the base_role property
-        if not self.pk:
-            self.role = self.base_role
-        return super().save(*args, **kwargs)
+    role = models.CharField(_("Role"), max_length=50, choices=Roles.choices)
 
     def get_absolute_url(self):
         """Get url for user's detail view.
@@ -38,30 +28,6 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"username": self.username})
-
-    def has_ckd(self):
-        try:
-            return self.CKD_id is not None
-        except AttributeError:
-            return False
-
-    def has_erosions(self):
-        try:
-            return self.erosions_id is not None
-        except AttributeError:
-            return False
-
-    def has_tophi(self):
-        try:
-            return self.tophi_id is not None
-        except AttributeError:
-            return False
-
-    def has_stones(self):
-        try:
-            return self.urate_kidney_stones_id is not None
-        except AttributeError:
-            return False
 
 
 class PatientManager(BaseUserManager):
@@ -100,14 +66,14 @@ class Provider(User):
     # This sets the user type to PROVIDER during record creation
     base_role = User.Roles.PROVIDER
 
-    # Ensures queries on the Patient model return only Providers
+    # Ensures queries on the Provider model return only Providers
     objects = ProviderManager()
 
     # Setting proxy to "True" means a table will not be created for this record
     class Meta:
         proxy = True
 
-    # Custom methods for Patient Role go here...
+    # Custom methods for Provider Role go here...
     @property
     def extra(self):
         try:

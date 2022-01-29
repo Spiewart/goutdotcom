@@ -1,7 +1,13 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import FamilyProfile, MedicalProfile, PatientProfile, SocialProfile
+from .models import (
+    FamilyProfile,
+    MedicalProfile,
+    PatientProfile,
+    ProviderProfile,
+    SocialProfile,
+)
 
 
 # Register your models here.
@@ -79,5 +85,5 @@ class SocialProfileHistoryAdmin(SimpleHistoryAdmin):
 admin.site.register(FamilyProfile, FamilyProfileHistoryAdmin)
 admin.site.register(MedicalProfile, MedicalProfileHistoryAdmin)
 admin.site.register(PatientProfile, PatientProfileHistoryAdmin)
-admin.site.register(PatientProfile, ProviderProfileHistoryAdmin)
+admin.site.register(ProviderProfile, ProviderProfileHistoryAdmin)
 admin.site.register(SocialProfile, SocialProfileHistoryAdmin)

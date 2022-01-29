@@ -55,17 +55,21 @@ class FamilyProfile(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
 
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_user_family_profile(sender, instance, created, **kwargs):
-        if created:
-            if instance.role == "Patient":
-                new_profile = FamilyProfile.objects.create(user=instance)
-                new_profile.gout = Gout.objects.create(user=instance)
-
+    # post_save() signal to create FamilyProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_family_profile(sender, instance, **kwargs):
-        if instance.role == "Patient":
-            instance.familyprofile.save()
+        # Check if User instance Role is Patient
+        if instance.role == "PATIENT":
+            # Check if Patient has FamilyrProfile, save() if so, otherwise create() and assign User to Patient
+            try:
+                familyprofile = instance.familyprofile
+            except:
+                familyprofile = None
+            if familyprofile:
+                familyprofile.save()
+            else:
+                familyprofile = FamilyProfile.objects.create(user=instance)
+                familyprofile.gout = Gout.objects.create(user=instance)
 
 
 class PatientProfile(TimeStampedModel):
@@ -78,6 +82,7 @@ class PatientProfile(TimeStampedModel):
     provider = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
+        related_name="provider",
         null=True,
         blank=True,
         default=None,
@@ -145,18 +150,22 @@ class PatientProfile(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
 
+    # post_save() signal to create PatientProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_user_patient_profile(sender, instance, created, **kwargs):
-        if created:
-            if instance.role == "Patient":
-                new_profile = PatientProfile.objects.create(user=instance)
-                new_profile.weight = Weight.objects.create(user=instance)
-                new_profile.height = Height.objects.create(user=instance)
-
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def save_user_patient_profile(sender, instance, **kwargs):
-        if instance.role == "Patient":
-            instance.patientprofile.save()
+    def save_user_provider_profile(sender, instance, **kwargs):
+        # Check if User instance Role is Patient
+        if instance.role == "PATIENT":
+            # Check if Patient has PatientProfile, save() if so, otherwise create() and assign User to Patient
+            try:
+                patientprofile = instance.patientprofile
+            except:
+                patientprofile = None
+            if patientprofile:
+                patientprofile.save()
+            else:
+                patientprofile = PatientProfile.objects.create(user=instance)
+                patientprofile.height = Height.objects.create(user=instance)
+                patientprofile.weight = Weight.objects.create(user=instance)
 
 
 class ProviderProfile(TimeStampedModel):
@@ -190,18 +199,18 @@ class ProviderProfile(TimeStampedModel):
 
     # post_save() signal to create ProviderProfile if User selected role="Provider" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_user_provider_profile(sender, instance, created, **kwargs):
-        if created:
-            # Check if User instance Role is Provider
-            if instance.role == "Provider":
-                new_profile = ProviderProfile.objects.create(user=instance)
-
-    # post_save() signal to create ProviderProfile if User selected role="Provider" at signup
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_provider_profile(sender, instance, **kwargs):
         # Check if User instance Role is Provider
-        if instance.role == "Provider":
-            instance.providerprofile.save()
+        if instance.role == "PROVIDER":
+            # Check if Provider has ProviderProfile, save() if so, otherwise create() and assign User to Provider
+            try:
+                providerprofile = instance.providerprofile
+            except:
+                providerprofile = None
+            if providerprofile:
+                providerprofile.save()
+            else:
+                ProviderProfile.objects.create(user=instance)
 
 
 class MedicalProfile(TimeStampedModel):
@@ -346,36 +355,40 @@ class MedicalProfile(TimeStampedModel):
     )
     history = HistoricalRecords()
 
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_user_medical_profile(sender, instance, created, **kwargs):
-        if created:
-            if instance.role == "Patient":
-                new_profile = MedicalProfile.objects.create(user=instance)
-                new_profile.angina = Angina.objects.create(user=instance)
-                new_profile.allopurinol_hypersensitivity = AllopurinolHypersensitivity.objects.create(user=instance)
-                new_profile.anticoagulation = Anticoagulation.objects.create(user=instance)
-                new_profile.bleed = Bleed.objects.create(user=instance)
-                new_profile.CKD = CKD.objects.create(user=instance)
-                new_profile.CHF = CHF.objects.create(user=instance)
-                new_profile.colchicine_interactions = ColchicineInteractions.objects.create(user=instance)
-                new_profile.diabetes = Diabetes.objects.create(user=instance)
-                new_profile.erosions = Erosions.objects.create(user=instance)
-                new_profile.febuxostat_hypersensitivity = FebuxostatHypersensitivity.objects.create(user=instance)
-                new_profile.hypertension = Hypertension.objects.create(user=instance)
-                new_profile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
-                new_profile.heartattack = HeartAttack.objects.create(user=instance)
-                new_profile.IBD = IBD.objects.create(user=instance)
-                new_profile.organ_transplant = OrganTransplant.objects.create(user=instance)
-                new_profile.osteoporosis = Osteoporosis.objects.create(user=instance)
-                new_profile.stroke = Stroke.objects.create(user=instance)
-                new_profile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
-                new_profile.tophi = Tophi.objects.create(user=instance)
-                new_profile.XOI_interactions = XOIInteractions.objects.create(user=instance)
-
+    # post_save() signal to create MedicalProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def save_user_medical_profile(sender, instance, **kwargs):
-        if instance.role == "Patient":
-            instance.medicalprofile.save()
+        # Check if User instance Role is Patient
+        if instance.role == "PATIENT":
+            # Check if Patient has MedicalProfile, save() if so, otherwise create() and assign User to Patient
+            try:
+                medicalprofile = instance.medicalprofile
+            except:
+                medicalprofile = None
+            if medicalprofile:
+                medicalprofile.save()
+            else:
+                medicalprofile = MedicalProfile.objects.create(user=instance)
+                medicalprofile.angina = Angina.objects.create(user=instance)
+                medicalprofile.allopurinol_hypersensitivity = AllopurinolHypersensitivity.objects.create(user=instance)
+                medicalprofile.anticoagulation = Anticoagulation.objects.create(user=instance)
+                medicalprofile.bleed = Bleed.objects.create(user=instance)
+                medicalprofile.CKD = CKD.objects.create(user=instance)
+                medicalprofile.CHF = CHF.objects.create(user=instance)
+                medicalprofile.colchicine_interactions = ColchicineInteractions.objects.create(user=instance)
+                medicalprofile.diabetes = Diabetes.objects.create(user=instance)
+                medicalprofile.erosions = Erosions.objects.create(user=instance)
+                medicalprofile.febuxostat_hypersensitivity = FebuxostatHypersensitivity.objects.create(user=instance)
+                medicalprofile.hypertension = Hypertension.objects.create(user=instance)
+                medicalprofile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
+                medicalprofile.heartattack = HeartAttack.objects.create(user=instance)
+                medicalprofile.IBD = IBD.objects.create(user=instance)
+                medicalprofile.organ_transplant = OrganTransplant.objects.create(user=instance)
+                medicalprofile.osteoporosis = Osteoporosis.objects.create(user=instance)
+                medicalprofile.stroke = Stroke.objects.create(user=instance)
+                medicalprofile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
+                medicalprofile.tophi = Tophi.objects.create(user=instance)
+                medicalprofile.XOI_interactions = XOIInteractions.objects.create(user=instance)
 
 
 class SocialProfile(TimeStampedModel):
@@ -406,16 +419,20 @@ class SocialProfile(TimeStampedModel):
     )
     history = HistoricalRecords()
 
+    # post_save() signal to create SocialProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_user_social_profile(sender, instance, created, **kwargs):
-        if created:
-            if instance.role == "Patient":
-                new_profile = SocialProfile.objects.create(user=instance)
-                new_profile.alcohol = Alcohol.objects.create(user=instance)
-                new_profile.fructose = Fructose.objects.create(user=instance)
-                new_profile.shellfish = Shellfish.objects.create(user=instance)
-
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def save_user_social_profile(sender, instance, **kwargs):
-        if instance.role == "Patient":
-            instance.socialprofile.save()
+    def save_user_family_profile(sender, instance, **kwargs):
+        # Check if User instance Role is Patient
+        if instance.role == "PATIENT":
+            # Check if Patient has SocialProfile, save() if so, otherwise create() and assign User to Patient
+            try:
+                socialprofile = instance.socialprofile
+            except:
+                socialprofile = None
+            if socialprofile:
+                socialprofile.save()
+            else:
+                socialprofile = SocialProfile.objects.create(user=instance)
+                socialprofile.alcohol = Alcohol.objects.create(user=instance)
+                socialprofile.fructose = Fructose.objects.create(user=instance)
+                socialprofile.shellfish = Shellfish.objects.create(user=instance)

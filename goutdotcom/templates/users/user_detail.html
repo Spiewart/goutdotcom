@@ -5,12 +5,18 @@
 
 {% block content %}
 <main class="container profile-container">
-  {% if object.patientprofile %}
-    {% include "users/patientprofile.html" %}
-  {% endif %}
-  <hr size="6" color="white">
-  {% if object.medicalprofile %}
-    {% include "users/medicalprofile.html" %}
+  {% if object.role == "PATIENT" %}
+    {% if object.patientprofile %}
+      {% include "users/patientprofile.html" %}
+    {% endif %}
+    <hr size="6" color="white">
+    {% if object.medicalprofile %}
+      {% include "users/medicalprofile.html" %}
+    {% endif %}
+  {% elif object.role == "PROVIDER" %}
+      {% include "users/providerprofile.html" %}
+  {% else %}
+  bleh
   {% endif %}
 </main>
 <footer>

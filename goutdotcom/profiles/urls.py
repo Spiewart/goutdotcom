@@ -7,6 +7,7 @@ from .views import (
     MedicalProfileUpdate,
     PatientProfileCreate,
     PatientProfileUpdate,
+    ProviderProfileUpdate,
     SocialProfileCreate,
     SocialProfileUpdate,
 )
@@ -21,4 +22,5 @@ urlpatterns = [
     path("<user>/medical/<int:pk>/update/", view=MedicalProfileUpdate.as_view(), name="update-medical"),
     path("<user>/social/<int:pk>/update/", view=SocialProfileUpdate.as_view(), name="update-social"),
     path("<user>/<int:pk>/update/", view=PatientProfileUpdate.as_view(), name="update"),
+    path("provider/<user>/<int:pk>/update/", view=ProviderProfileUpdate.as_view(), name="provider-update"),
 ]

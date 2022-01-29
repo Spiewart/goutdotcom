@@ -1,0 +1,11 @@
+{% if object == request.user %}
+<div class="row">
+  <div class="col">
+    <h1>{{ object.username|capfirst}}'s Profile
+      <a class="btn btn-primary btn-lg"
+        href="{% url 'profiles:provider-update' request.user request.user.providerprofile.pk %}" role="button">Update</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
+    </h1>
+  </div>
+</div>
+{% endif %}

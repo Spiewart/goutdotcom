@@ -54,12 +54,13 @@ from goutdotcom.profiles.forms import (
     FamilyProfileForm,
     MedicalProfileForm,
     PatientProfileForm,
+    ProviderProfileForm,
     SocialProfileForm,
 )
 from goutdotcom.vitals.forms import HeightForm, WeightForm
 from goutdotcom.vitals.models import Height, Weight
 
-from .models import FamilyProfile, MedicalProfile, PatientProfile, SocialProfile
+from .models import FamilyProfile, MedicalProfile, PatientProfile, ProviderProfile, SocialProfile
 
 
 # Mixins
@@ -717,6 +718,14 @@ class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             return self.render_to_response(
                 self.get_context_data(form=form, height_form=height_form, weight_form=weight_form)
             )
+
+class ProviderProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
+    model = ProviderProfile
+    form_class = ProviderProfileForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class SocialProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):

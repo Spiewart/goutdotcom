@@ -12,6 +12,7 @@ from .models import (
     ProviderProfile,
     SocialProfile,
 )
+from .widgets import LabDurationInput
 
 
 class FamilyProfileForm(forms.ModelForm):
@@ -60,22 +61,11 @@ class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
         fields = (
-            "picture",
             "bio",
             "date_of_birth",
             "gender",
             "race",
         )
-        dateTimeOptions = {
-            "autoclose": True,
-            "pickerPosition": "bottom-left",
-        }
-        widgets = {
-            # Use localization and bootstrap 3
-            "date_of_birth": DateWidget(
-                options=dateTimeOptions, attrs={"id": "date_of_birth.pk"}, usel10n=True, bootstrap_version=3
-            )
-        }
 
     def __init__(self, *args, **kwargs):
         super(PatientProfileForm, self).__init__(*args, **kwargs)
@@ -89,7 +79,6 @@ class PatientProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 "Create your profile",
-                "picture",
                 "date_of_birth",
                 "gender",
                 "race",
@@ -100,7 +89,17 @@ class PatientProfileForm(forms.ModelForm):
 class ProviderProfileForm(forms.ModelForm):
     class Meta:
         model = ProviderProfile
-        fields = ("organization",)
+        fields = (
+            "organization",
+            "titration_lab_interval",
+            "monitoring_lab_interval",
+            "urgent_lab_interval",
+        )
+        widgets = {
+            "titration_lab_interval": LabDurationInput(),
+            "monitoring_lab_interval": LabDurationInput(),
+            "urgent_lab_interval": LabDurationInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ProviderProfileForm, self).__init__(*args, **kwargs)
@@ -115,6 +114,9 @@ class ProviderProfileForm(forms.ModelForm):
             Fieldset(
                 "Create your profile",
                 "organization",
+                "titration_lab_interval",
+                "monitoring_lab_interval",
+                "urgent_lab_interval",
             ),
         )
 
