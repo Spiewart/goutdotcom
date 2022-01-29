@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import *
 
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
@@ -24,6 +24,9 @@ class Lab(TimeStampedModel):
     reference_upper = models.IntegerField(default=200, help_text="Upper limit of normal values for Lab")
     abnormal_flag = models.BooleanField(
         choices=BOOL_CHOICES, help_text="Is this lab abnormal?", verbose_name="Abnormal Flag", default=False
+    )
+    baseline = models.BooleanField(
+        choices=BOOL_CHOICES, help_text="Is this the baseline for this User?", verbose_name="Baseline", default=False
     )
 
     class Meta:
@@ -82,40 +85,71 @@ class Lab(TimeStampedModel):
         else:
             return False
 
-    def var_x_high(self, var):
+    def var_x_high(self, var, baseline=None):
         """
-        Function that checks whether a lab value which is greater than the upper limit of normal is greater than input var times the upper limit of normal.
+        Function that checks whether a Lab value is high.
+        Takes optional argument baseline.
+        Var argument is a percentage (110%, 120%, etc.) to base the comparson by.
 
         Returns:
-            bool: returns true if Lab.value is greater than var times the upper limit of normal
+            bool: returns true if Lab.value is greater than var times the upper limit of normal or baseline if supplied.
         """
-        if self.value > (var * self.reference_upper):
-            return True
+        # Check if baseline argument provided, use that for comparison
+        if self.baseline:
+            if self.value > (var * baseline):
+                return True
+            else:
+                return False
+        # Else use reference_upper for comparison
         else:
-            return False
+            if self.value > (var * self.reference_upper):
+                return True
+            else:
+                return False
 
-    def var_x_low(self, var):
+    def var_x_low(self, var, baseline=None):
         """
-        Function that checks whether a lab value which is lower than the lower limit of normal is lower than input var times the lower limit of normal.
+        Function that checks whether a Lab value is low.
+        Takes optional argument baseline.
+        Var argument is a percentage (90%, 80%, etc.) to base the comparson by.
 
         Returns:
             bool: returns true if Lab.value is lower than var times the lower limit of normal
         """
-        if self.value < (var * self.reference_lower):
-            return True
+        if self.baseline:
+            if self.value < (var * baseline):
+                return True
+            else:
+                return False
         else:
-            return False
+            if self.value < (var * self.reference_lower):
+                return True
+            else:
+                return False
 
     def var_x_baseline_high(self, var, baseline):
-        """Function that takes a percentage and calculates whether a Lab value is that percentage of a baseline Lab value specified by the function.
+        """Function evaluated if a lab value is greater than var % of its baseline
 
         Args:
             var (Float): Float percentage for calculating where the current Lab value is relative to baseline
             baseline (Lab.value): Lab value argument for comparing the current Lab value to.
         Returns:
-            bool: True if Lab.value is var * baseline, False if not
+            bool: True if Lab.value is > var * baseline, False if not
         """
         if self.value > (baseline * var):
+            return True
+        else:
+            return False
+
+    def var_x_baseline_low(self, var, baseline):
+        """Function evaluated if a lab value is less than var % of its baseline
+        Args:
+            var (Float): Float percentage for calculating where the current Lab value is relative to baseline
+            baseline (Lab.value): Lab value argument for comparing the current Lab value to.
+        Returns:
+            bool: True if Lab.value is < var * baseline, False if not
+        """
+        if self.value < (baseline * var):
             return True
         else:
             return False
@@ -175,6 +209,15 @@ class ALT(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for ALT")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for ALT")
 
+    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
+    # Makes baseline unique for the model class for the User
+    def save(self, *args, **kwargs):
+        if not self.baseline:
+            return super(ALT, self).save(*args, **kwargs)
+        with transaction.atomic():
+            ALT.objects.filter(user=self.user, baseline=True).update(baseline=False)
+            return super(ALT, self).save(*args, **kwargs)
+
 
 class AST(Lab):
     LOWER_LIMIT = 10
@@ -185,6 +228,15 @@ class AST(Lab):
     name = "AST"
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for AST")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for AST")
+
+    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
+    # Makes baseline unique for the model class for the User
+    def save(self, *args, **kwargs):
+        if not self.baseline:
+            return super(AST, self).save(*args, **kwargs)
+        with transaction.atomic():
+            AST.objects.filter(user=self.user, baseline=True).update(baseline=False)
+            return super(AST, self).save(*args, **kwargs)
 
 
 class Platelet(Lab):
@@ -198,6 +250,26 @@ class Platelet(Lab):
     name = "platelet"
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for platelets")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for platelets")
+
+    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
+    # Makes baseline unique for the model class for the User
+    def save(self, *args, **kwargs):
+        if not self.baseline:
+            return super(Platelet, self).save(*args, **kwargs)
+        with transaction.atomic():
+            Platelet.objects.filter(user=self.user, baseline=True).update(baseline=False)
+            return super(Platelet, self).save(*args, **kwargs)
+
+    def get_baseline(self):
+        """Method that fetches the User's baseline Platelet value.
+        Returns baseline Platelet value if so.
+        Else returns None.
+        """
+        try:
+            self.baseline = Platelet.objects.filter(user=self.user).get(baseline=True).value
+        except:
+            self.baseline = None
+        return self.baseline
 
     def abnormal_high(self, labcheck, labchecks):
         """Function that processes a high Platelet.
@@ -310,6 +382,7 @@ class Platelet(Lab):
                 else:
                     return "nonurgent"
 
+
 class WBC(Lab):
     LOWER_LIMIT = Decimal(4.5)
     UPPER_LIMIT = Decimal(11.0)
@@ -327,6 +400,68 @@ class WBC(Lab):
     reference_upper = models.DecimalField(
         max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for WBC"
     )
+
+    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
+    # Makes baseline unique for the model class for the User
+    def save(self, *args, **kwargs):
+        if not self.baseline:
+            return super(WBC, self).save(*args, **kwargs)
+        with transaction.atomic():
+            WBC.objects.filter(user=self.user, baseline=True).update(baseline=False)
+            return super(WBC, self).save(*args, **kwargs)
+
+    def get_baseline(self):
+        """Method that fetches the User's baseline WBC value.
+        Returns baseline WBC value if so.
+        Else returns None.
+        """
+        try:
+            self.baseline = Platelet.objects.filter(user=self.user).get(baseline=True).values("value")
+        except:
+            self.baseline = None
+        return self.baseline
+
+    def abnormal_high(self, labcheck, labchecks):
+        """Function that processes a high WBC.
+        Takes a LabCheck and list of LabChecks as argument, the latter to avoid hitting the database multiple times with several different labs.
+
+        Args:
+            labcheck ([LabCheck]): [LabCheck the WBC is related to.]
+            labchecks ([List]): [List of LabChecks provided by the function processing the abnormal WBC.]
+
+        Returns:
+            string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
+        """
+        try:
+            self.baseline = self.get_baseline()
+        except:
+            self.baseline = None
+
+        # Check if there is a baseline WBC and if it is higher than the upper limit of normal
+        # Process high WBC differently for patient with chronic leukocytosis (high WBC)
+        if self.baseline:
+            if self.baseline >= self.reference_upper:
+                if labcheck.WBC.var_x_high(3, baseline=self.baseline):
+                    return "urgent"
+                elif labcheck.WBC.var_x_high(2, baseline=self.baseline):
+                    return "nonurgent"
+                else:
+                    return None
+        elif labcheck.abnormal_labcheck:
+            pass
+        else:
+            # LabCheck is not follow up for another abnormal_labcheck
+            # If Platelet value is 50% the lower limit of normal, flag urgent, stopping ULT/PPx, pausing ULTPlan
+            # Check if this is the first LabCheck, if so, continue normally
+            if len(labchecks) == 1:
+                return None
+            else:
+                if labcheck.WBC.var_x_high(3):
+                    return "urgent"
+                elif labcheck.WBC.var_x_high(2):
+                    return "nonurgent"
+                else:
+                    return None
 
 
 class Hemoglobin(Lab):
@@ -346,6 +481,14 @@ class Hemoglobin(Lab):
     reference_upper = models.DecimalField(
         max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for hemoglobin"
     )
+    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
+    # Makes baseline unique for the model class for the User
+    def save(self, *args, **kwargs):
+        if not self.baseline:
+            return super(Hemoglobin, self).save(*args, **kwargs)
+        with transaction.atomic():
+            Hemoglobin.objects.filter(user=self.user, baseline=True).update(baseline=False)
+            return super(Hemoglobin, self).save(*args, **kwargs)
 
 
 def round_decimal(value, places):
@@ -370,6 +513,14 @@ class Creatinine(Lab):
     reference_upper = models.DecimalField(
         max_digits=4, decimal_places=2, default=UPPER_LIMIT, help_text="Upper limit of normal values for creatinine"
     )
+    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
+    # Makes baseline unique for the model class for the User
+    def save(self, *args, **kwargs):
+        if not self.baseline:
+            return super(Creatinine, self).save(*args, **kwargs)
+        with transaction.atomic():
+            Creatinine.objects.filter(user=self.user, baseline=True).update(baseline=False)
+            return super(Creatinine, self).save(*args, **kwargs)
 
     def sex_vars_kappa(self):
         if self.user.patientprofile.gender == "male":
