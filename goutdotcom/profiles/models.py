@@ -148,9 +148,31 @@ class PatientProfile(TimeStampedModel):
         instance.patientprofile.save()
 
 
+class ProviderProfile(TimeStampedModel):
+    # Provider User profile
+    # If you do this you need to either have a post_save signal or redirect to a profile_edit view on initial login
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    organization = models.CharField(max_length=200, help_text="Organization", null=True, blank=True)
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def create_user_provider_profile(sender, instance, created, **kwargs):
+        if created:
+            if instance.role == "PROVIDER":
+                new_profile = ProviderProfile.objects.create(user=instance)
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def save_user_provider_profile(sender, instance, **kwargs):
+        if instance.role == "PROVIDER":
+            instance.providerprofile.save()
+
+
 class MedicalProfile(TimeStampedModel):
     """MedicalProfile OneToOne related to User containing OneToOne relations with history model instances of medical problems.
     These are meant to be changed in the MedicalProfile page AS WELL AS all over the site when processing Aid forms."""
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

@@ -37,6 +37,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 
+# As good a place as any to plop this direction to the SignupForm
+ACCOUNT_SIGNUP_FORM_CLASS = "yourapp.forms.SignupForm"
+
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
@@ -70,7 +73,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "datetimewidget",
     "multiselectfield",
-    'simple_history',
+    "simple_history",
 ]
 
 LOCAL_APPS = [
@@ -140,7 +143,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'simple_history.middleware.HistoryRequestMiddleware',
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 # STATIC

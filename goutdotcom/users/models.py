@@ -12,7 +12,6 @@ class User(AbstractUser):
     class Roles(models.TextChoices):
         PATIENT = "PATIENT", "Patient"
         PROVIDER = "PROVIDER", "Provider"
-        INVENTOR = "ADMINISTRATOR", "Administrator"
 
     #: First and last name do not cover name patterns around the globe
     name = models.CharField(_("Name of User"), blank=True, max_length=255)
@@ -88,4 +87,29 @@ class Patient(User):
         try:
             return self.patientprofile
         except self.patientprofile.DoesNotExist:
+            return None
+
+class ProviderManager(BaseUserManager):
+    def get_queryset(self, *args, **kwargs):
+        results = super().get_queryset(*args, **kwargs)
+        return results.filter(type=User.Roles.PROVIDER)
+
+
+class Provider(User):
+    # This sets the user type to PATIENT during record creation
+    base_role = User.Roles.PROVIDER
+
+    # Ensures queries on the Patient model return only Patients
+    objects = ProviderManager()
+
+    # Setting proxy to "True" means a table will not be created for this record
+    class Meta:
+        proxy = True
+
+    # Custom methods for Patient Role go here...
+    @property
+    def extra(self):
+        try:
+            return self.providerprofile
+        except self.providerprofile.DoesNotExist:
             return None
