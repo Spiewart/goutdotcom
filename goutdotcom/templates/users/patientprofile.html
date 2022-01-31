@@ -1,10 +1,15 @@
-    {% if object == request.user %}
+
     <div class="row">
       <div class="col">
     <h1>{{ object.username|capfirst}}'s Profile
+      {{ object }}
+    {% if object == request.user %}
     <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}"
       role="button">Update</a>
     <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
+    {% elif perms.users.can_edit_patient %}
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' object object.patientprofile.pk %}"
+      role="button">Update</a>
     {% endif %}
 
     </h1>

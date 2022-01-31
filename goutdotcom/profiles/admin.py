@@ -48,6 +48,7 @@ class PatientProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "provider",
+        "pk",
         "date_of_birth",
         "get_age",
         "gender",

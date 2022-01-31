@@ -60,7 +60,13 @@ from goutdotcom.profiles.forms import (
 from goutdotcom.vitals.forms import HeightForm, WeightForm
 from goutdotcom.vitals.models import Height, Weight
 
-from .models import FamilyProfile, MedicalProfile, PatientProfile, ProviderProfile, SocialProfile
+from .models import (
+    FamilyProfile,
+    MedicalProfile,
+    PatientProfile,
+    ProviderProfile,
+    SocialProfile,
+)
 
 
 # Mixins
@@ -72,7 +78,8 @@ class AssignUserMixin:
 
 class UserDetailRedirectMixin:
     def get_success_url(self):
-        return self.request.user.get_absolute_url()
+        if self.request.user.role == "PATIENT":
+            return self.request.user.get_absolute_url()
 
 
 # Create your views here.
@@ -400,9 +407,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
         context.update({"user": self.request.user})
         # Adds related model forms to context for rendering
         if self.request.POST:
-            context["angina_form"] = AnginaForm(
-                self.request.POST, instance=self.object.angina
-            )
+            context["angina_form"] = AnginaForm(self.request.POST, instance=self.object.angina)
             context["anticoagulation_form"] = AnticoagulationSimpleForm(
                 self.request.POST, instance=self.object.anticoagulation
             )
@@ -650,36 +655,47 @@ class PatientProfileCreate(LoginRequiredMixin, UserDetailRedirectMixin, CreateVi
 
 
 class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
+    """View for Updating PatientProfile.
+    Set up to require a PatientProfile.pk kwarg
+    Multiform view, including Height and Weight forms populated by already created objects.
+
+    Raises:
+        Http404: if PatientProfile not found matching kwarg User and kwarg pk
+
+    Returns:
+        [Http200]: success_url to UserDetail page
+    """
+
     model = PatientProfile
     form_class = PatientProfileForm
     height_form_class = HeightForm
     weight_form_class = WeightForm
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
     def get_context_data(self, **kwargs):
         context = super(PatientProfileUpdate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
+        # Add Height and Weight forms to context with previously created objects set as instance
         if self.request.POST:
+            # With request.POST if request is POST
             context["height_form"] = HeightForm(self.request.POST, instance=self.object.height)
             context["weight_form"] = WeightForm(self.request.POST, instance=self.object.weight)
         else:
-            context["height_form"] = self.height_form_class(instance=self.object.height)
-            context["weight_form"] = self.weight_form_class(instance=self.object.weight)
+            context["height_form"] = HeightForm(instance=self.object.height)
+            context["weight_form"] = WeightForm(instance=self.object.weight)
         return context
 
     def get_object(self, queryset=None):
         try:
-            queryset = self.model.objects.filter(user=self.request.user)
+            # Get PatientProfile from pk in **kwargs
+            queryset = self.model.objects.filter(pk=self.kwargs["pk"])
         except ObjectDoesNotExist:
+            # Else return 404
             raise Http404("No object found matching this query.")
         obj = super(PatientProfileUpdate, self).get_object(queryset=queryset)
         return obj
 
     def post(self, request, **kwargs):
         # NEED **kwargs even though VSCode IDE says it's not used. Can't accept <user> and <pk> from url parameter otherwise.
+        # Get object, create forms for post() processing
         self.object = self.get_object()
         form = self.form_class(request.POST, request.FILES, instance=self.object)
         height_form = self.height_form_class(request.POST, instance=self.object.height)
@@ -687,37 +703,30 @@ class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
 
         if form.is_valid() and height_form.is_valid() and weight_form.is_valid():
             profile_data = form.save(commit=False)
+            height_data = height_form.save(commit=False)
+            weight_data = weight_form.save(commit=False)
+            # Check if Height or Weight or both changed, make pk=None if so such that the ORM creates a new model instance and iterates the pk
             if "value" in height_form.changed_data:
-                height_data = height_form.save(commit=False)
                 height_data.pk = None
-                height_data.save()
-                weight_data = weight_form.save()
             elif "value" in weight_form.changed_data:
-                height_data = height_form.save()
-                weight_data = weight_form.save(commit=False)
                 weight_data.pk = None
-                weight_data.save()
             elif "value" in height_form.changed_data and "value" in weight_form.changed_data:
-                height_data = height_form.save(commit=False)
                 height_data.pk = None
-                height_data.save()
-                weight_data = weight_form.save(commit=False)
                 weight_data.pk = None
-                weight_data.save()
-            else:
-                ### WHY NOT SAVE THESE FORMS OUTRIGHT??? ###
-                height_data = height_form.save(commit=False)
-                height_data.save()
-                weight_data = weight_form.save(commit=False)
-                weight_data.save()
+            # Set Height and Weight User fields to the PatientProfile User (needed if new instances were created)
+            height_data.user = self.object.user
+            height_data.save()
+            weight_data.user = self.object.user
+            weight_data.save()
             profile_data.height = height_data
             profile_data.weight = weight_data
             profile_data.save()
-            return HttpResponseRedirect(self.request.user.get_absolute_url())
+            return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(form=form, height_form=height_form, weight_form=weight_form)
             )
+
 
 class ProviderProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
     model = ProviderProfile

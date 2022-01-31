@@ -33,7 +33,10 @@ class SignupForm(forms.ModelForm):
 class UserCreateForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
-        fields = ["username", "email",]
+        fields = [
+            "username",
+            "email",
+        ]
 
     def __init__(self, *args, **kwargs):
         super(UserCreateForm, self).__init__(*args, **kwargs)

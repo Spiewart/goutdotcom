@@ -87,7 +87,9 @@ class PatientProfile(TimeStampedModel):
         blank=True,
         default=None,
     )
-    patient_id = models.IntegerField(help_text="Does the Patient have an ID for you to reference?", null=True, blank=True)
+    patient_id = models.IntegerField(
+        help_text="Does the Patient have an ID for you to reference?", null=True, blank=True
+    )
     bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(
@@ -106,7 +108,7 @@ class PatientProfile(TimeStampedModel):
 
     def get_age(self):
         if self.date_of_birth:
-            age = datetime.date.today().year - self.date_of_birth.year
+            age = datetime.today().year - self.date_of_birth.year
             return age
         else:
             return "No date of birth recorded"

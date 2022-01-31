@@ -9,3 +9,8 @@ permission = Permission.objects.create(
     name='Can Create Patient',
     content_type=content_type,
 )
+permission = Permission.objects.create(
+    codename='can_edit_patient',
+    name='Can Edit Patient',
+    content_type=content_type,
+)
