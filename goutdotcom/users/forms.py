@@ -1,3 +1,5 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import HTML, ButtonHolder, Div, Fieldset, Layout, Submit
 from django import forms
 from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
@@ -26,3 +28,21 @@ class SignupForm(forms.ModelForm):
     def signup(self, request, user):
         user.role = self.cleaned_data["role"]
         user.save()
+
+
+class UserCreateForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ["username", "email",]
+
+    def __init__(self, *args, **kwargs):
+        super(UserCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.layout = Layout(
+            Fieldset(
+                "",
+                "username",
+                "email",
+            ),
+            ButtonHolder(Submit("submit", "Submit", css_class="button white")),
+        )

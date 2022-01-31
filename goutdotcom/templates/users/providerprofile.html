@@ -5,7 +5,19 @@
       <a class="btn btn-primary btn-lg"
         href="{% url 'profiles:provider-update' request.user request.user.providerprofile.pk %}" role="button">Update</a>
       <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'users:create' %}" role="button">Create Patient</a>
     </h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    {% if patients %}
+    <ul>
+      {% for patient in patients %}
+        <li><a href="{% url 'users:detail' patient.username %}">{{ patient.username }}</a></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
   </div>
 </div>
 {% endif %}

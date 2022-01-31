@@ -2,9 +2,9 @@ import datetime
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Fieldset, Layout
-from datetimewidget.widgets import DateWidget
 from django import forms
 
+from ..widgets.widgets import LabDurationInput
 from .models import (
     FamilyProfile,
     MedicalProfile,
@@ -12,7 +12,6 @@ from .models import (
     ProviderProfile,
     SocialProfile,
 )
-from .widgets import LabDurationInput
 
 
 class FamilyProfileForm(forms.ModelForm):

@@ -87,6 +87,7 @@ class PatientProfile(TimeStampedModel):
         blank=True,
         default=None,
     )
+    patient_id = models.IntegerField(help_text="Does the Patient have an ID for you to reference?", null=True, blank=True)
     bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(
