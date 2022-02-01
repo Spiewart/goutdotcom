@@ -198,6 +198,11 @@ class ProviderProfile(TimeStampedModel):
         verbose_name="Urgent Lab Check Interval",
         default=timedelta(days=14),
     )
+    delinquent_lab_interval = models.DurationField(
+        help_text="How frequently do you recheck urgent labs?",
+        verbose_name="Urgent Lab Check Interval",
+        default=timedelta(days=21),
+    )
     history = HistoricalRecords()
 
     # post_save() signal to create ProviderProfile if User selected role="Provider" at signup

@@ -82,46 +82,6 @@ class UserDetailRedirectMixin:
             return self.request.user.get_absolute_url()
 
 
-# Create your views here.
-class FamilyProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):
-    model = FamilyProfile
-    form_class = FamilyProfileForm
-    gout_form_class = GoutForm
-
-    def get_context_data(self, **kwargs):
-        context = super(FamilyProfileCreate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
-        if "gout_form" not in context:
-            context["gout_form"] = self.gout_form_class(self.request.GET)
-        return context
-
-    def get_object(self, queryset=None):
-        object = self.model
-        return object
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, instance=FamilyProfile())
-        gout_form = self.gout_form_class(request.POST, instance=Gout())
-
-        if form.is_valid() and gout_form.is_valid():
-            family_profile_data = form.save(commit=False)
-            family_profile_data.user = request.user
-            gout_data = gout_form.save(commit=False)
-            gout_data.user = request.user
-            gout_data.save()
-            family_profile_data.gout = gout_data
-            family_profile_data.save()
-            return HttpResponseRedirect(self.request.user.get_absolute_url())
-        else:
-            return self.render_to_response(
-                self.get_context_data(
-                    form=form,
-                    gout_form=gout_form,
-                )
-            )
-
-
 class FamilyProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, UpdateView):
     model = FamilyProfile
     form_class = FamilyProfileForm
@@ -165,222 +125,6 @@ class FamilyProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
             )
 
 
-class MedicalProfileCreate(LoginRequiredMixin, AssignUserMixin, CreateView):
-    model = MedicalProfile
-    form_class = MedicalProfileForm
-    angina_form_class = AnginaForm
-    anticoagulation_form_class = AnticoagulationSimpleForm
-    bleed_form_class = BleedSimpleForm
-    CHF_form_class = CHFForm
-    CKD_form_class = CKDForm
-    colchicine_interactions_form_class = ColchicineInteractionsForm
-    diabetes_form_class = DiabetesSimpleForm
-    erosions_form_class = ErosionsForm
-    heartattack_form_class = HeartAttackSimpleForm
-    hypertension_form_class = HypertensionForm
-    hyperuricemia_form_class = HyperuricemiaForm
-    IBD_form_class = IBDForm
-    organ_transplant_form_class = OrganTransplantForm
-    osteoporosis_form_class = OsteoporosisForm
-    stroke_form_class = StrokeSimpleForm
-    urate_kidney_stone_form_class = UrateKidneyStonesForm
-    tophi_form_class = TophiForm
-
-    def get_context_data(self, **kwargs):
-        context = super(MedicalProfileCreate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
-        # Adds OnetoOne related field forms to context
-        if "angina_form" not in context:
-            context["angina_form"] = self.angina_form_class(self.request.GET)
-        if "anticoagulation_form" not in context:
-            context["anticoagulation_form"] = self.anticoagulation_form_class(self.request.GET)
-        if "bleed_form" not in context:
-            context["bleed_form"] = self.bleed_form_class(self.request.GET)
-        if "CHF_form" not in context:
-            context["CHF_form"] = self.CHF_form_class(self.request.GET)
-        if "CKD_form" not in context:
-            context["CKD_form"] = self.CKD_form_class(self.request.GET)
-        if "colchicine_interactions_form" not in context:
-            context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(self.request.GET)
-        if "diabetes_form" not in context:
-            context["diabetes_form"] = self.erosions_form_class(self.request.GET)
-        if "erosions_form" not in context:
-            context["erosions_form"] = self.erosions_form_class(self.request.GET)
-        if "heartattack_form" not in context:
-            context["heartattack_form"] = self.heartattack_form_class(self.request.GET)
-        if "hypertension_form" not in context:
-            context["hypertension_form"] = self.hyperuricemia_form_class(self.request.GET)
-        if "hyperuricemia_form" not in context:
-            context["hyperuricemia_form"] = self.hyperuricemia_form_class(self.request.GET)
-        if "IBD_form" not in context:
-            context["IBD_form"] = self.IBD_form_class(self.request.GET)
-        if "organ_transplant_form" not in context:
-            context["organ_transplant_form"] = self.organ_transplant_form_class(self.request.GET)
-        if "osteoporosis_form" not in context:
-            context["osteoporosis_form"] = self.osteoporosis_form_class(self.request.GET)
-        if "stroke_form" not in context:
-            context["stroke_form"] = self.stroke_form_class(self.request.GET)
-        if "urate_kidney_stones_form" not in context:
-            context["urate_kidney_stones_form"] = self.tophi_form_class(self.request.GET)
-        if "tophi_form" not in context:
-            context["tophi_form"] = self.tophi_form_class(self.request.GET)
-        return context
-
-    #### IS get_object() NEEDED??? TRY DELETING
-    def get_object(self, queryset=None):
-        object = self.model
-        return object
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, instance=MedicalProfile())
-        angina_form = self.angina_form_class(request.POST, instance=Angina())
-        anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=Anticoagulation())
-        bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
-        CHF_form = self.CHF_form_class(request.POST, instance=CHF())
-        CKD_form = self.CKD_form_class(request.POST, instance=CKD())
-        colchicine_interactions_form = self.colchicine_interactions_form_class(
-            request.POST, instance=ColchicineInteractions()
-        )
-        diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
-        erosions_form = self.erosions_form_class(request.POST, instance=Erosions())
-        heartattack_form = self.heartattack_form_class(request.POST, instance=HeartAttack)
-        hypertension_form = self.hypertension_form_class(request.POST, instance=Hypertension())
-        hyperuricemia_form = self.hyperuricemia_form_class(request.POST, instance=Hyperuricemia())
-        IBD_form = self.IBD_form_class(request.POST, instance=IBD())
-        organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=OrganTransplant())
-        osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=Osteoporosis())
-        stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
-        urate_kidney_stones_form = self.urate_kidney_stone_form_class(request.POST, instance=UrateKidneyStones())
-        tophi_form = self.tophi_form_class(request.POST, instance=Tophi())
-
-        if (
-            form.is_valid()
-            and angina_form.is_valid()
-            and anticoagulation_form.is_valid()
-            and bleed_form.is_valid()
-            and CHF_form.is_valid()
-            and CKD_form.is_valid()
-            and colchicine_interactions_form.is_valid()
-            and diabetes_form.is_valid()
-            and erosions_form.is_valid()
-            and heartattack_form.is_valid()
-            and hypertension_form.is_valid()
-            and hypertension_form.is_valid()
-            and IBD_form.is_valid()
-            and organ_transplant_form.is_valid()
-            and osteoporosis_form.is_valid()
-            and stroke_form.is_valid()
-            and urate_kidney_stones_form.is_valid()
-            and tophi_form.is_valid()
-        ):
-            medical_profile_data = form.save(commit=False)
-            medical_profile_data.user = request.user
-            angina_data = angina_form.save(commit=False)
-            angina_data.last_modified = "MedicalProfile"
-            angina_data.user = request.user
-            angina_data.save()
-            anticoagulation_data = anticoagulation_form.save(commit=False)
-            anticoagulation_data.last_modified = "MedicalProfile"
-            anticoagulation_data.user = request.user
-            anticoagulation_data.save()
-            bleed_data = bleed_form.save(commit=False)
-            bleed_data.last_modified = "MedicalProfile"
-            bleed_data.user = request.user
-            bleed_data.save()
-            CHF_data = CHF_form.save(commit=False)
-            CHF_data.last_modified = "MedicalProfile"
-            CHF_data.user = request.user
-            CHF_data.save()
-            CKD_data = CKD_form.save(commit=False)
-            CKD_data.last_modified = "MedicalProfile"
-            CKD_data.user = request.user
-            CKD_data.save()
-            colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
-            colchicine_interactions_data.last_modified = "MedicalProfile"
-            colchicine_interactions_data.user = request.user
-            colchicine_interactions_data.save()
-            diabetes_data = diabetes_form.save(commit=False)
-            diabetes_data.last_modified = "MedicalProfile"
-            diabetes_data.user = request.user
-            diabetes_data.save()
-            erosions_data = erosions_form.save(commit=False)
-            erosions_data.last_modified = "MedicalProfile"
-            erosions_data.user = request.user
-            erosions_data.save()
-            heartattack_data = heartattack_form.save(commit=False)
-            heartattack_data.last_modified = "MedicalProfile"
-            heartattack_data.user = request.user
-            heartattack_data.save()
-            hypertension_data = hypertension_form.save(commit=False)
-            hypertension_data.last_modified = "MedicalProfile"
-            hypertension_data.user = request.user
-            hypertension_data.save()
-            hyperuricemia_data = hyperuricemia_form.save(commit=False)
-            hyperuricemia_data.last_modified = "MedicalProfile"
-            hyperuricemia_data.user = request.user
-            hyperuricemia_data.save()
-            organ_transplant_data = organ_transplant_form.save(commit=False)
-            organ_transplant_data.last_modified = "MedicalProfile"
-            organ_transplant_data.user = request.user
-            organ_transplant_data.save()
-            osteoporosis_data = osteoporosis_form.save(commit=False)
-            osteoporosis_data.last_modified = "MedicalProfile"
-            osteoporosis_data.user = request.user
-            osteoporosis_data.save()
-            stroke_data = stroke_form.save(commit=False)
-            stroke_data.last_modified = "MedicalProfile"
-            stroke_data.user = request.user
-            stroke_data.save()
-            urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
-            urate_kidney_stones_data.last_modified = "MedicalProfile"
-            urate_kidney_stones_data.user = request.user
-            urate_kidney_stones_data.save()
-            tophi_data = tophi_form.save(commit=False)
-            tophi_data.last_modified = "MedicalProfile"
-            tophi_data.user = request.user
-            tophi_data.save()
-            medical_profile_data.anticoagulation = anticoagulation_data
-            medical_profile_data.bleed = bleed_data
-            medical_profile_data.CKD = CKD_data
-            medical_profile_data.CHF = CHF_data
-            medical_profile_data.colchicine_interactions = colchicine_interactions_data
-            medical_profile_data.diabetes = diabetes_data
-            medical_profile_data.erosions = erosions_data
-            medical_profile_data.heartattack = heartattack_data
-            medical_profile_data.hypertension = hypertension_data
-            medical_profile_data.hyperuricemia = hyperuricemia_data
-            medical_profile_data.organ_transplant = organ_transplant_data
-            medical_profile_data.osteoporosis = osteoporosis_data
-            medical_profile_data.stroke = stroke_data
-            medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
-            medical_profile_data.tophi = tophi_data
-            medical_profile_data.save()
-            return HttpResponseRedirect(self.request.user.get_absolute_url())
-        else:
-            return self.render_to_response(
-                self.get_context_data(
-                    form=form,
-                    angina_form=angina_form,
-                    anticoagulation_form=anticoagulation_form,
-                    bleed_form=bleed_form,
-                    CHF_form=CHF_form,
-                    CKD_form=CKD_form,
-                    colchicine_interactions_form=colchicine_interactions_form,
-                    diabetes_form=diabetes_form,
-                    erosions_form=erosions_form,
-                    heartattack_form=heartattack_form,
-                    hypertension_form=hypertension_form,
-                    hyperuricemia_form=hyperuricemia_form,
-                    organ_transplant_form=organ_transplant_form,
-                    osteoporosis_form=osteoporosis_form,
-                    stroke_form=stroke_form,
-                    urate_kidney_stones_form=urate_kidney_stones_form,
-                    tophi_form=tophi_form,
-                )
-            )
-
-
 class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
@@ -404,7 +148,6 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
 
     def get_context_data(self, **kwargs):
         context = super(MedicalProfileUpdate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
         # Adds related model forms to context for rendering
         if self.request.POST:
             context["angina_form"] = AnginaForm(self.request.POST, instance=self.object.angina)
@@ -458,8 +201,10 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
 
     def get_object(self, queryset=None):
         try:
-            queryset = self.model.objects.filter(user=self.request.user)
+            # Get MedicalProfile from pk in **kwargs
+            queryset = self.model.objects.filter(pk=self.kwargs["pk"])
         except ObjectDoesNotExist:
+            # Else return 404
             raise Http404("No object found matching this query.")
         obj = super(MedicalProfileUpdate, self).get_object(queryset=queryset)
         return obj
@@ -511,76 +256,95 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             and urate_kidney_stones_form.is_valid()
             and tophi_form.is_valid()
         ):
+            # Check if forms are valid
+            # Check if related models are changed in form.changed_data, if so process them, assign last_modified to MedicalProfile, save to MedicalProfile
             medical_profile_data = form.save(commit=False)
-            angina_data = angina_form.save(commit=False)
-            angina_data.last_modified = "MedicalProfile"
-            angina_data.save()
-            anticoagulation_data = anticoagulation_form.save(commit=False)
-            anticoagulation_data.last_modified = "MedicalProfile"
-            anticoagulation_data.save()
-            bleed_data = bleed_form.save(commit=False)
-            bleed_data.last_modified = "MedicalProfile"
-            bleed_data.save()
-            CHF_data = CHF_form.save(commit=False)
-            CHF_data.last_modified = "MedicalProfile"
-            CHF_data.save()
-            CKD_data = CKD_form.save(commit=False)
-            CKD_data.last_modified = "MedicalProfile"
-            CKD_data.save()
-            colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
-            colchicine_interactions_data.last_modified = "MedicalProfile"
-            colchicine_interactions_data.save()
-            diabetes_data = diabetes_form.save(commit=False)
-            diabetes_data.last_modified = "MedicalProfile"
-            diabetes_data.save()
-            erosions_data = erosions_form.save(commit=False)
-            erosions_data.last_modified = "MedicalProfile"
-            erosions_data.save()
-            heartattack_data = heartattack_form.save(commit=False)
-            heartattack_data.last_modified = "MedicalProfile"
-            heartattack_data.save()
-            hypertension_data = hypertension_form.save(commit=False)
-            hypertension_data.last_modified = "MedicalProfile"
-            hypertension_data.save()
-            hyperuricemia_data = hyperuricemia_form.save(commit=False)
-            hyperuricemia_data.last_modified = "MedicalProfile"
-            hyperuricemia_data.save()
-            IBD_data = IBD_form.save(commit=False)
-            IBD_data.last_modified = "MedicalProfile"
-            IBD_data.save()
-            organ_transplant_data = organ_transplant_form.save(commit=False)
-            organ_transplant_data.last_modified = "MedicalProfile"
-            organ_transplant_data.save()
-            osteoporosis_data = osteoporosis_form.save(commit=False)
-            osteoporosis_data.last_modified = "MedicalProfile"
-            osteoporosis_data.save()
-            stroke_data = stroke_form.save(commit=False)
-            stroke_data.last_modified = "MedicalProfile"
-            stroke_data.save()
-            urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
-            urate_kidney_stones_data.last_modified = "MedicalProfile"
-            urate_kidney_stones_data.save()
-            tophi_data = tophi_form.save(commit=False)
-            tophi_data.last_modified = "MedicalProfile"
-            tophi_data.save()
-            medical_profile_data.anticoagulation = anticoagulation_data
-            medical_profile_data.bleed = bleed_data
-            medical_profile_data.ckd = CKD_data
-            medical_profile_data.CHF = CHF_data
-            medical_profile_data.colchicine_interactions = colchicine_interactions_data
-            medical_profile_data.diabetes = diabetes_data
-            medical_profile_data.erosions = erosions_data
-            medical_profile_data.heartattack = heartattack_data
-            medical_profile_data.hypertension = hypertension_data
-            medical_profile_data.hyperuricemia = hyperuricemia_data
-            medical_profile_data.IBD = IBD_data
-            medical_profile_data.organ_transplant = organ_transplant_data
-            medical_profile_data.osteoporosis = osteoporosis_data
-            medical_profile_data.stroke = stroke_data
-            medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
-            medical_profile_data.tophi = tophi_data
-            medical_profile_data.save()
-            return HttpResponseRedirect(self.request.user.get_absolute_url())
+            if "value" in angina_form.changed_data:
+                angina_data = angina_form.save(commit=False)
+                angina_data.last_modified = "MedicalProfile"
+                angina_data.save()
+                medical_profile_data.angina = angina_data
+            if "value" in anticoagulation_form.changed_data:
+                anticoagulation_data = anticoagulation_form.save(commit=False)
+                anticoagulation_data.last_modified = "MedicalProfile"
+                anticoagulation_data.save()
+                medical_profile_data.anticoagulation = anticoagulation_data
+            if "value" in bleed_form.changed_data:
+                bleed_data = bleed_form.save(commit=False)
+                bleed_data.last_modified = "MedicalProfile"
+                bleed_data.save()
+                medical_profile_data.bleed = bleed_data
+            if "value" in CHF_form.changed_data:
+                CHF_data = CHF_form.save(commit=False)
+                CHF_data.last_modified = "MedicalProfile"
+                CHF_data.save()
+                medical_profile_data.CHF = CHF_data
+            if "value" in CKD_form.changed_data:
+                CKD_data = CKD_form.save(commit=False)
+                CKD_data.last_modified = "MedicalProfile"
+                CKD_data.save()
+                medical_profile_data.CKD = CKD_data
+            if "value" in colchicine_interactions_form.changed_data:
+                colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
+                colchicine_interactions_data.last_modified = "MedicalProfile"
+                colchicine_interactions_data.save()
+                medical_profile_data.colchicine_interactions = colchicine_interactions_data
+            if "value" in diabetes_form.changed_data:
+                diabetes_data = diabetes_form.save(commit=False)
+                diabetes_data.last_modified = "MedicalProfile"
+                diabetes_data.save()
+                medical_profile_data.diabetes = diabetes_data
+            if "value" in erosions_form.changed_data:
+                erosions_data = erosions_form.save(commit=False)
+                erosions_data.last_modified = "MedicalProfile"
+                erosions_data.save()
+                medical_profile_data.erosions = erosions_data
+            if "value" in heartattack_form.changed_data:
+                heartattack_data = heartattack_form.save(commit=False)
+                heartattack_data.last_modified = "MedicalProfile"
+                heartattack_data.save()
+                medical_profile_data.heartattack = heartattack_data
+            if "value" in hypertension_form.changed_data:
+                hypertension_data = hypertension_form.save(commit=False)
+                hypertension_data.last_modified = "MedicalProfile"
+                hypertension_data.save()
+                medical_profile_data.hypertension = hypertension_data
+            if "value" in hyperuricemia_form.changed_data:
+                hyperuricemia_data = hyperuricemia_form.save(commit=False)
+                hyperuricemia_data.last_modified = "MedicalProfile"
+                hyperuricemia_data.save()
+                medical_profile_data.hyperuricemia = hyperuricemia_data
+            if "value" in IBD_form.changed_data:
+                IBD_data = IBD_form.save(commit=False)
+                IBD_data.last_modified = "MedicalProfile"
+                IBD_data.save()
+                medical_profile_data.IBD = IBD_data
+            if "value" in organ_transplant_form.changed_data:
+                organ_transplant_data = organ_transplant_form.save(commit=False)
+                organ_transplant_data.last_modified = "MedicalProfile"
+                organ_transplant_data.save()
+                medical_profile_data.organ_transplant = organ_transplant_data
+            if "value" in osteoporosis_form.changed_data:
+                osteoporosis_data = osteoporosis_form.save(commit=False)
+                osteoporosis_data.last_modified = "MedicalProfile"
+                osteoporosis_data.save()
+                medical_profile_data.osteoporosis = osteoporosis_data
+            if "value" in stroke_form.changed_data:
+                stroke_data = stroke_form.save(commit=False)
+                stroke_data.last_modified = "MedicalProfile"
+                stroke_data.save()
+                medical_profile_data.stroke = stroke_data
+            if "value" in urate_kidney_stones_form.changed_data:
+                urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
+                urate_kidney_stones_data.last_modified = "MedicalProfile"
+                urate_kidney_stones_data.save()
+                medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
+            if "value" in tophi_form.changed_data:
+                tophi_data = tophi_form.save(commit=False)
+                tophi_data.last_modified = "MedicalProfile"
+                tophi_data.save()
+                medical_profile_data.tophi = tophi_data
+            return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(
@@ -603,54 +367,6 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
                     urate_kidney_stones_form=urate_kidney_stones_form,
                     tophi_form=tophi_form,
                 )
-            )
-
-
-class PatientProfileCreate(LoginRequiredMixin, UserDetailRedirectMixin, CreateView):
-    model = PatientProfile
-    form_class = PatientProfileForm
-    height_form_class = HeightForm
-    weight_form_class = WeightForm
-
-    def get_context_data(self, **kwargs):
-        context = super(PatientProfileCreate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
-        if "height_form" not in context:
-            context["height_form"] = self.height_form_class(self.request.GET)
-        if "weight_form" not in context:
-            context["weight_form"] = self.weight_form_class(self.request.GET)
-        return context
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get_object(self, queryset=None):
-        object = self.model
-        return object
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, instance=PatientProfile())
-        height_form = self.height_form_class(request.POST, instance=Height())
-        weight_form = self.weight_form_class(request.POST, instance=Weight())
-
-        if form.is_valid() and height_form.is_valid() and weight_form.is_valid():
-            profile_data = form.save(commit=False)
-            profile_data.user = request.user
-            height_data = height_form.save(commit=False)
-            height_data.user = request.user
-            height_data.save()
-            weight_data = weight_form.save(commit=False)
-            weight_data.user = request.user
-            weight_data.save()
-            profile_data.height = height_data
-            profile_data.weight = weight_data
-            profile_data.save()
-            return HttpResponseRedirect(self.request.user.get_absolute_url())
-        else:
-            return self.render_to_response(
-                self.get_context_data(form=form, height_form=height_form, weight_form=weight_form)
             )
 
 
@@ -733,67 +449,6 @@ class ProviderProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateV
         return super().form_valid(form)
 
 
-class SocialProfileCreate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, CreateView):
-    model = SocialProfile
-    form_class = SocialProfileForm
-    alcohol_form_class = AlcoholForm
-    fructose_form_class = FructoseForm
-    shellfish_form_class = ShellfishForm
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super(SocialProfileCreate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
-        if "alcohol_form" not in context:
-            context["alcohol_form"] = self.alcohol_form_class(self.request.GET)
-        if "fructose_form" not in context:
-            context["fructose_form"] = self.fructose_form_class(self.request.GET)
-        if "shellfish_form" not in context:
-            context["shellfish_form"] = self.shellfish_form_class(self.request.GET)
-        return context
-
-    def get_object(self, queryset=None):
-        object = self.model
-        return object
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, instance=SocialProfile())
-        alcohol_form = self.alcohol_form_class(request.POST, instance=Alcohol())
-        fructose_form = self.fructose_form_class(request.POST, instance=Fructose())
-        shellfish_form = self.shellfish_form_class(request.POST, instance=Shellfish())
-
-        if form.is_valid() and alcohol_form.is_valid() and fructose_form.is_valid() and shellfish_form.is_valid():
-            social_profile_data = form.save(commit=False)
-            social_profile_data.user = request.user
-            alcohol_data = alcohol_form.save(commit=False)
-            alcohol_data.user = request.user
-            alcohol_data.save()
-            fructose_data = fructose_form.save(commit=False)
-            fructose_data.user = request.user
-            fructose_data.save()
-            shellfish_data = shellfish_form.save(commit=False)
-            shellfish_data.user = request.user
-            shellfish_data.save()
-            social_profile_data.stroke = alcohol_data
-            social_profile_data.heartattack = fructose_data
-            social_profile_data.bleed = shellfish_data
-            social_profile_data.save()
-            return HttpResponseRedirect(self.request.user.get_absolute_url())
-        else:
-            return self.render_to_response(
-                self.get_context_data(
-                    form=form,
-                    alcohol_form=alcohol_form,
-                    fructose_form=fructose_form,
-                    shellfish_form=shellfish_form,
-                )
-            )
-
-
 class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, UpdateView):
     model = SocialProfile
     form_class = SocialProfileForm
@@ -801,13 +456,9 @@ class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
     fructose_form_class = FructoseForm
     shellfish_form_class = ShellfishForm
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
     def get_context_data(self, **kwargs):
         context = super(SocialProfileUpdate, self).get_context_data(**kwargs)
-        context.update({"user": self.request.user})
+        # Add related model forms to context for GET and POST
         if self.request.POST:
             context["alcohol_form"] = AlcoholForm(self.request.POST, instance=self.object.alcohol)
             context["fructose_form"] = FructoseForm(self.request.POST, instance=self.object.fructose)
@@ -820,8 +471,10 @@ class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
 
     def get_object(self, queryset=None):
         try:
-            queryset = self.model.objects.filter(user=self.request.user)
+            # Get SocialProfile from pk in **kwargs
+            queryset = self.model.objects.filter(pk=self.kwargs["pk"])
         except ObjectDoesNotExist:
+            # Else return 404
             raise Http404("No object found matching this query.")
         obj = super(SocialProfileUpdate, self).get_object(queryset=queryset)
         return obj
@@ -835,6 +488,7 @@ class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
         shellfish_form = self.shellfish_form_class(request.POST, instance=self.object.shellfish)
 
         if form.is_valid() and alcohol_form.is_valid() and fructose_form.is_valid() and shellfish_form.is_valid():
+            # If forms are valid, assign related models to SocialProfile and call form_valid() to save
             social_profile_data = form.save(commit=False)
             alcohol_data = alcohol_form.save()
             fructose_data = fructose_form.save()
@@ -842,8 +496,7 @@ class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirec
             social_profile_data.alcohol = alcohol_data
             social_profile_data.fructose = fructose_data
             social_profile_data.shellfish = shellfish_data
-            social_profile_data.save()
-            return HttpResponseRedirect(self.request.user.get_absolute_url())
+            return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(
