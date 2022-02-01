@@ -3,14 +3,32 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import CreateView, DetailView, RedirectView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    ListView,
+    RedirectView,
+    UpdateView,
+)
 
 from .forms import UserCreateForm
+from .models import Patient
 
 User = get_user_model()
 
+
+class ProviderPatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = "users.can_view_patient"
+    model = User
+    template_name = "users/providerpatient_list.html"
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Patient.objects.filter(provider=self.request.user)
+
+
 class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'users.can_add_patient'
+    permission_required = "users.can_add_patient"
     model = User
     form_class = UserCreateForm
     template_name = "users/provideruser_form.html"

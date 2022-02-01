@@ -19,7 +19,6 @@ class UserCreationForm(admin_forms.UserCreationForm):
 
         error_messages = {"username": {"unique": _("This username has already been taken.")}}
 
-
 class SignupForm(forms.ModelForm):
     class Meta:
         model = get_user_model()

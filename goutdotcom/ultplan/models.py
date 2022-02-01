@@ -43,6 +43,11 @@ class ULTPlan(TimeStampedModel):
         verbose_name="Urgent Lab Check Interval",
         default=timedelta(days=14),
     )
+    delinquent_lab_interval = models.DurationField(
+        help_text="How long will you wait before declaring a LabCheck delinquent and pausing the ULTPlan?",
+        verbose_name="Delinquent Lab Check Interval",
+        default=timedelta(days=21),
+    )
     titrating = models.BooleanField(
         choices=BOOL_CHOICES, help_text="Is this ULTPlan still in the titration phase?", default=True
     )

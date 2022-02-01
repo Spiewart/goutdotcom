@@ -30,7 +30,7 @@ class Lab(TimeStampedModel):
         choices=BOOL_CHOICES, help_text="Is this the baseline for this User?", verbose_name="Baseline", default=False
     )
     history = HistoricalRecords(inherit=True)
-    
+
     class Meta:
         abstract = True
 
@@ -796,6 +796,14 @@ class LabCheck(TimeStampedModel):
     )
     history = HistoricalRecords()
 
+    @property
+    def delinquent(self):
+        if datetime.today().date() >= self.due - self.ultplan.delinquent_lab_interval:
+            return True
+        else:
+            return True
+
+    @property
     def overdue(self):
         if datetime.today().date() >= self.due:
             return True

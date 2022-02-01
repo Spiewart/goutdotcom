@@ -708,10 +708,7 @@ class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             # Check if Height or Weight or both changed, make pk=None if so such that the ORM creates a new model instance and iterates the pk
             if "value" in height_form.changed_data:
                 height_data.pk = None
-            elif "value" in weight_form.changed_data:
-                weight_data.pk = None
-            elif "value" in height_form.changed_data and "value" in weight_form.changed_data:
-                height_data.pk = None
+            if "value" in weight_form.changed_data:
                 weight_data.pk = None
             # Set Height and Weight User fields to the PatientProfile User (needed if new instances were created)
             height_data.user = self.object.user
@@ -720,7 +717,6 @@ class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             weight_data.save()
             profile_data.height = height_data
             profile_data.weight = weight_data
-            profile_data.save()
             return self.form_valid(form)
         else:
             return self.render_to_response(

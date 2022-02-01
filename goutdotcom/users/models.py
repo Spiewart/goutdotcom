@@ -46,6 +46,7 @@ class Patient(User):
     # Setting proxy to "True" means a table will not be created for this record
     class Meta:
         proxy = True
+        permissions = [("can_add_patient", "Can Add Patient")]
 
     # Custom methods for Patient Role go here...
     @property
@@ -72,7 +73,6 @@ class Provider(User):
     # Setting proxy to "True" means a table will not be created for this record
     class Meta:
         proxy = True
-        permissions = [('can_make_patient', 'Can make patient')]
 
     # Custom methods for Provider Role go here...
     @property

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container default-container">
+  <header class="row">
+    <div class="col">
+      {% block vital_title %}
+      <h1 class="content-heading">{{ request.user|capfirst }}'s Patients</h1>
+      {% endblock vital_title %}
+    </div>
+  </header>
+  <main class="row">
+    <div class="col">
+      {% for object in object_list %}
+      <div class="container content-heading">
+        <h2 class="default-container"> <a href="{{ object.get_absolute_url }}"
+            class="hyperlink">{{ object.username }}</a></h2>
+        <p></p>
+      </div>
+      <br>
+      {% endfor %}
+    </div>
+  </main>
+  <footer>
+    {% block buttons %}
+    <a class="btn btn-primary btn-lg" href="{% url 'users:detail' request.user %}" role="button">Profile</a>
+    <a class="btn btn-primary btn-lg" href="{% url 'home' %}" role="button">Home</a>
+    {% endblock buttons %}
+    {% if object_list %}
+    {% if page_obj %}
+    <div class="pagination" style="float: right;">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a href="?page=1" class="hyperlink">&laquo; first</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="hyperlink">previous</a>
+        {% endif %}
+        <span class="current">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="hyperlink">next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="hyperlink">last &raquo;</a>
+        {% endif %}
+      </span>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+</footer>
+{% endblock content %}
