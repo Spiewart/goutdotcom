@@ -1,8 +1,9 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
-from django.views.generic import CreateView, UpdateView
+from django.urls import reverse
+from django.views.generic import UpdateView
 
 from goutdotcom.history.forms import (
     AlcoholForm,
@@ -70,19 +71,20 @@ from .models import (
 
 
 # Mixins
-class AssignUserMixin:
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-
 class UserDetailRedirectMixin:
+    # Mixin to check if the logged in User is a Patient, redirect to his/her own UserDetail page if so
+    # If logged in User is Provider, redirect to Patient UserDetail page
+    # Else redirect to home ### NEED TO SWITCH TO ERROR REDIRECT INF UTURE
     def get_success_url(self):
         if self.request.user.role == "PATIENT":
             return self.request.user.get_absolute_url()
+        elif self.request.user.role == "PROVIDER":
+            return self.object.user.get_absolute_url()
+        else:
+            return HttpResponseRedirect(reverse("/"))
 
 
-class FamilyProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, UpdateView):
+class FamilyProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
     model = FamilyProfile
     form_class = FamilyProfileForm
     gout_form_class = GoutForm
@@ -370,7 +372,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             )
 
 
-class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
+class PatientProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UserDetailRedirectMixin, UpdateView):
     """View for Updating PatientProfile.
     Set up to require a PatientProfile.pk kwarg
     Multiform view, including Height and Weight forms populated by already created objects.
@@ -383,6 +385,7 @@ class PatientProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
     """
 
     model = PatientProfile
+    permission_required = "users.can_edit_patientprofile"
     form_class = PatientProfileForm
     height_form_class = HeightForm
     weight_form_class = WeightForm
@@ -449,7 +452,7 @@ class ProviderProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateV
         return super().form_valid(form)
 
 
-class SocialProfileUpdate(LoginRequiredMixin, AssignUserMixin, UserDetailRedirectMixin, UpdateView):
+class SocialProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
     model = SocialProfile
     form_class = SocialProfileForm
     alcohol_form_class = AlcoholForm

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
@@ -27,15 +28,30 @@ class ProviderPatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListV
         return Patient.objects.filter(provider=self.request.user)
 
 
-class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+provider_patient_list_view = ProviderPatientListView.as_view()
+
+
+class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "users.can_add_patient"
     model = User
     form_class = UserCreateForm
     template_name = "users/provideruser_form.html"
 
     def form_valid(self, form):
-        form.instance.role = "PATIENT"
-        return super().form_valid(form)
+        # Assign finished form to variable user
+        user = form.save(commit=False)
+        # If logged in User is a Provider
+        if self.request.user.role == "PROVIDER":
+            # Assign user from form a role of Patient
+            user.role = "PATIENT"
+            # Save user, which will trigger post_save() creating Profiles, including PatientProfile
+            user.save()
+            # Assign logged in Provider User to user.patientprofile.provider field
+            user.patientprofile.provider = self.request.user
+            # Save user.patientprofile
+            user.patientprofile.save()
+            # Redirect to newly created Patient's detail page
+        return HttpResponseRedirect(reverse("users:detail", kwargs={"username": user.username}))
 
     def get_success_url(self):
         return self.request.user.get_absolute_url()

@@ -4,6 +4,10 @@
         {% if object == request.user %}
             <a class="btn btn-primary btn-lg" href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}"
               role="button">Update</a>
+        {% elif perms.users.can_edit_patient %}
+            <a class="btn btn-primary btn-lg"
+              href="{% url 'profiles:update-medical' object object.medicalprofile.pk %}"
+              role="button">Update</a>
         {% endif %}
         </h1>
       </div>

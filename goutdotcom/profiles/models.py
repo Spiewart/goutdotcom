@@ -75,6 +75,7 @@ class FamilyProfile(TimeStampedModel):
 class PatientProfile(TimeStampedModel):
     # Default User profile
     # If you do this you need to either have a post_save signal or redirect to a profile_edit view on initial login
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
