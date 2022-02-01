@@ -19,19 +19,30 @@ User = get_user_model()
 
 
 class ProviderPatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """ListView for displaying all of a Provider's Patients."""
+
     permission_required = "users.can_view_patient"
     model = User
     template_name = "users/providerpatient_list.html"
     paginate_by = 5
 
+    # Overwrite get_queryset() to return Patient objects filtered by their PatientProfile provider field
+    # Fetch only Patients where the provider is equal to the requesting User (Provider)
     def get_queryset(self):
-        return Patient.objects.filter(provider=self.request.user)
+        return Patient.objects.filter(patientprofile__provider=self.request.user)
 
 
 provider_patient_list_view = ProviderPatientListView.as_view()
 
 
 class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    """View only for Providers to create Patients.
+    Assigns Patient provider field to the creating Provider.
+
+    Returns:
+        [redirect]: [Redirects to the newly created Patient's Detail page.]
+    """
+
     permission_required = "users.can_add_patient"
     model = User
     form_class = UserCreateForm
@@ -52,9 +63,6 @@ class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessage
             user.patientprofile.save()
             # Redirect to newly created Patient's detail page
         return HttpResponseRedirect(reverse("users:detail", kwargs={"username": user.username}))
-
-    def get_success_url(self):
-        return self.request.user.get_absolute_url()
 
 
 user_create_view = UserCreateView.as_view()

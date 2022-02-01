@@ -33,7 +33,7 @@ class User(AbstractUser):
 class PatientManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
-        return results.filter(type=User.Roles.PATIENT)
+        return results.filter(role=User.Roles.PATIENT)
 
 
 class Patient(User):
@@ -59,7 +59,7 @@ class Patient(User):
 class ProviderManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
-        return results.filter(type=User.Roles.PROVIDER)
+        return results.filter(role=User.Roles.PROVIDER)
 
 
 class Provider(User):
