@@ -2,11 +2,11 @@
       <div class="col">
         <h1>Medical Profile
         {% if object == request.user %}
-            <a class="btn btn-primary btn-lg" href="{% url 'profiles:update-medical' request.user request.user.medicalprofile.pk %}"
+            <a class="btn btn-primary btn-lg" href="{% url 'profiles:update-medical' request.user.username %}"
               role="button">Update</a>
         {% elif perms.users.can_edit_patient %}
             <a class="btn btn-primary btn-lg"
-              href="{% url 'profiles:update-medical' object object.medicalprofile.pk %}"
+              href="{% url 'profiles:update-medical' object.medicalprofile.user.username %}"
               role="button">Update</a>
         {% endif %}
         </h1>

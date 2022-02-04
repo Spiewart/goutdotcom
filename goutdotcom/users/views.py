@@ -23,10 +23,9 @@ from .models import Patient
 User = get_user_model()
 
 
-class ProviderPatientListView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, ListView):
+class ProviderPatientListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     """ListView for displaying all of a Provider's Patients."""
 
-    permission_required = "users.can_view_patient"
     model = User
     template_name = "users/providerpatient_list.html"
     paginate_by = 5

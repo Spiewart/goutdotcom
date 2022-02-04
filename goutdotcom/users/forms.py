@@ -19,6 +19,7 @@ class UserCreationForm(admin_forms.UserCreationForm):
 
         error_messages = {"username": {"unique": _("This username has already been taken.")}}
 
+
 class SignupForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
@@ -34,7 +35,6 @@ class UserCreateForm(forms.ModelForm):
         model = get_user_model()
         fields = [
             "username",
-            "email",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -44,7 +44,6 @@ class UserCreateForm(forms.ModelForm):
             Fieldset(
                 "",
                 "username",
-                "email",
             ),
             ButtonHolder(Submit("submit", "Submit", css_class="button white")),
         )

@@ -204,7 +204,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
     def get_object(self, queryset=None):
         try:
             # Get MedicalProfile from pk in **kwargs
-            queryset = self.model.objects.filter(pk=self.kwargs["pk"])
+            queryset = self.model.objects.filter(slug=self.kwargs["slug"])
         except ObjectDoesNotExist:
             # Else return 404
             raise Http404("No object found matching this query.")
@@ -403,8 +403,8 @@ class PatientProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
 
     def get_object(self, queryset=None):
         try:
-            # Get PatientProfile from pk in **kwargs
-            queryset = self.model.objects.filter(pk=self.kwargs["pk"])
+            # Get PatientProfile from slug in **kwargs
+            queryset = self.model.objects.filter(slug=self.kwargs["slug"])
         except ObjectDoesNotExist:
             # Else return 404
             raise Http404("No object found matching this query.")

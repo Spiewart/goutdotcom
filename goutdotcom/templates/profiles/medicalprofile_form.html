@@ -11,7 +11,7 @@
 {% endblock header %}
 {% block form %}
 {% if form.instance.pk %}
-<form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user object.pk %}" enctype="multipart/form-data">
+<form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user.username %}" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form|crispy }}
   {{ angina_form|crispy }}
@@ -53,52 +53,6 @@
   <div class="control-group">
     <div class="controls">
       <button type="submit" class="btn btn-primary btn-lg">Update</button>
-    </div>
-  </div>
-</form>
-{% else %}
-<form class="form-horizontal" method="post" action="{% url 'profiles:create-medical' %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form|crispy }}
-  {{ angina_form|crispy }}
-  <hr size="6" color="white" />
-  {{ anticoagulation_form|crispy }}
-  <hr size="6" color="white" />
-  {{ heartattack_form|crispy }}
-  <hr size="6" color="white" />
-  {{ stroke_form|crispy }}
-  <hr size="6" color="white" />
-  {{ IBD_form|crispy }}
-  <hr size="6" color="white" />
-  {{ colchicine_interactions|crispy }}
-  <hr size="6" color="white" />
-  {{ CKD_form|crispy }}
-  <hr size="6" color="white" />
-  {{ hypertension_form|crispy }}
-  <hr size="6" color="white" />
-  {{ hyperuricemia_form|crispy }}
-  <hr size="6" color="white" />
-  {{ stroke_form|crispy }}
-  <hr size="6" color="white" id="stroke_bar" />
-  {{ heartattack_form|crispy }}
-  <hr size="6" color="white" id="heartattack_bar" />
-  {{ bleed_form|crispy }}
-  <hr size="6" color="white" id="bleed_bar" />
-  {{ CHF_form|crispy }}
-  <hr size="6" color="white" />
-  {{ diabetes_form|crispy }}
-  <hr size="6" color="white" />
-  {{ erosions_form|crispy }}
-  <hr size="6" color="white" />
-  {{ organ_transplant_form|crispy }}
-  <hr size="6" color="white" />
-  {{ urate_kidney_stones_form|crispy }}
-  <hr size="6" color="white" />
-  {{ tophi_form|crispy }}
-  <hr size="6" color="white" />
-  <div class="control-group">
-    <div class="controls">
-      <button type="submit" class="btn btn-primary">Create</button>
     </div>
   </div>
 </form>

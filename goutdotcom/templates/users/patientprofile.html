@@ -3,7 +3,7 @@
       <div class="col">
     <h1>{{ object.username|capfirst}}'s Profile
     {% if object == request.user %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user request.user.patientprofile.pk %}"
+    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user.username %}"
       role="button">Update</a>
     <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
     {% elif perms.users.can_edit_patient %}
@@ -17,18 +17,6 @@
     </div>
     <hr size="6" color="white">
     <div class="row">
-      <div class="col">
-        <h2><u>Bio</u></h2>
-        {% if object.patientprofile.bio %}
-          <p>{{ object.patientprofile.bio }}</p>
-        {% else %}
-          <p>Your bio is sadly empty...</p>
-        {% endif %}
-        {% if object.patientprofile.provider %}
-          {{ object.patientprofile.provider }}
-          {{ object.patientprofile.pk }}
-        {% endif %}
-      </div>
       <div class="col">
         <h2><u>Demographics</u></h2>
         <ul id="main-profile-list">

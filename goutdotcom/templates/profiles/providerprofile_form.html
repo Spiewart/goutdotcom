@@ -9,7 +9,7 @@
 
 {% block form %}
 {% if form.instance.pk %}
-<form class="form-horizontal" method="post" action="{% url 'profiles:provider-update' request.user object.pk %}"
+<form class="form-horizontal" method="post" action="{% url 'profiles:provider-update' request.user.username %}"
   enctype='multipart/form-data'>
   {% csrf_token %}
   {{ form|crispy }}
