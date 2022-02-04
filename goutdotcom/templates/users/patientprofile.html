@@ -3,6 +3,9 @@
         <h1>{{ object.username|capfirst}}'s Profile
         <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' object.username %}" role="button">Update</a>
         <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
+        {% if request.user.role == "PROVIDER" %}
+          <a class="btn btn-primary btn-lg" href="{% url 'ultplan:create' object.username %}" role="button">ULTPlan</a>
+        {% endif %}
         </h1>
       </div>
     </div>

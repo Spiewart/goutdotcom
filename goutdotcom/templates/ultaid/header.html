@@ -6,7 +6,7 @@
   {% endif %}
   <h1>
     {% if request.user.is_authenticated %}
-    {{ request.user|capfirst }}'s
+    {{ object.user|capfirst }}'s
     {% endif %}
     ULT Recommendation
   </h1>

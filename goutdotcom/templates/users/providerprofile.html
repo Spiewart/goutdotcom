@@ -12,15 +12,4 @@
     </h1>
   </div>
 </div>
-<div class="row">
-  <div class="col">
-    {% if patients %}
-    <ul>
-      {% for patient in patients %}
-        <li><a href="{% url 'users:detail' patient.username %}">{{ patient.username }}</a></li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-  </div>
-</div>
 {% endif %}

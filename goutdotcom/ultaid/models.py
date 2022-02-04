@@ -119,6 +119,7 @@ class ULTAid(TimeStampedModel):
 
         returns {dict}: {dict containing drug, dose, goal uric acid, whether or not the patient is on dialysis, whether or not he or she should see a rheumatologist, and whether or not they are unwilling to take ULT.}"""
 
+        # Create dict to return at end of function after modification for User-provided variables
         ult_choice = {
             "drug": "allopurinol",
             "dose": 100,
@@ -130,13 +131,17 @@ class ULTAid(TimeStampedModel):
             "want": True,
         }
 
+        # Check if User both needs and wants ULT
         if self.need == True and self.want == True:
+            # Check if there are any red flags to computered-ULT
             if self.XOI_interactions.value == True or self.organ_transplant.value == True:
                 ult_choice["rheumatologist"] = True
 
+            # Check if User has CKD +/- is on dialysis
             if self.ckd.value == True:
                 if self.ckd.dialysis == True:
                     ult_choice["dialysis"] = True
+                # Check CKD stage, dose-adjsut ULT if >= stage 3
                 if self.ckd.stage != None:
                     if ult_choice["drug"] == "febuxostat":
                         if self.ckd.stage < 3:
@@ -149,14 +154,18 @@ class ULTAid(TimeStampedModel):
                         else:
                             ult_choice["dose"] = 50
 
+            # Check if prior hypersensitivity to allopurinol, choose febuxostat if so
             if self.allopurinol_hypersensitivity.value == True:
                 if (
+                    # Check if User has febuxostat hypersensitivity or other relative contraindication to febuxostat
+                    # Should see rheumatologist if so
                     self.febuxostat_hypersensitivity.value == True
                     or self.heartattack.value == True
                     or self.stroke.value == True
                 ):
                     ult_choice["rheumatologist"] = True
                 ult_choice["drug"] = "febuxostat"
+                # Dose adjust for CKD
                 if self.ckd.value == True:
                     if self.ckd.stage != None:
                         if self.ckd.stage < 3:
@@ -168,19 +177,30 @@ class ULTAid(TimeStampedModel):
                 else:
                     ult_choice["dose"] = 40
 
+            # Check if prior hypersensitivity to febuxostat, choose allopurinol if so
             if self.febuxostat_hypersensitivity.value == True:
+                # Check if User has allopurinol hypersensitivity
+                # Should see rheumatologist if so
                 if self.allopurinol_hypersensitivity.value == True:
                     ult_choice["rheumatologist"] = True
+                # Dose adjust for CKD
                 if self.ckd.value == True:
                     if self.ckd.stage != None:
                         if self.ckd.stage < 3:
                             ult_choice["dose"] = 100
                     else:
                         ult_choice["dose"] = 50
+            # Check if the ULTAid has an associated User and if the User has a ULT associated with his/her profile
             if self.user:
-                if self.user.ult:
-                    if self.user.ult.erosions.value == True or self.user.ult.tophi.value == True:
+                try:
+                    self.ult = self.user.ult
+                except:
+                    self.ult = None
+                # If there's a ULT, check if there are erosions or tophi and adjust goal_urate per ACR guidelines if so
+                if self.ult != None:
+                    if self.ult.erosions.value == True or self.ult.tophi.value == True:
                         ult_choice["goal_urate"] = 5.0
+        # Check completeness of need/want fields for return dict
         elif self.need == False and self.want == True:
             ult_choice["need"] = False
         elif self.need == True and self.want == False:
@@ -188,7 +208,7 @@ class ULTAid(TimeStampedModel):
         else:
             ult_choice["need"] = True
             ult_choice["want"] = True
-
+        # Return ult_choice dictionary for template rendering
         return ult_choice
 
     def get_absolute_url(self):

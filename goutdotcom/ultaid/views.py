@@ -116,7 +116,11 @@ class ULTAidCreate(CreateView):
             # Check if user is logged in, pass ULT results to ULTAid view/context for JQuery evaluation to update form fields
             #### IS THIS NEEDED FOR POST?
             if self.request.user.is_authenticated:
-                if self.request.user.ult:
+                try:
+                    self.ult = self.request.user.ult
+                except:
+                    self.ult = None
+                if self.ult:
                     context["user_ult"] = ULT.objects.get(user=self.request.user).calculator()
             return context
         else:
