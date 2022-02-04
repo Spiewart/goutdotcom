@@ -49,11 +49,15 @@ class Weight(Vital):
     altunit = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=KILOS)
     name = "weight"
 
-    def convert_pounds_to_kg(self):
+    @property
+    def weight_in_kgs(self):
         if self.value:
-            return round(self.value / 2.205, 1)
+            if self.value:
+                return self.value / 2.205
+            else:
+                return "Enter a weight in pounds"
         else:
-            return "Can't calculate kilograms without pounds"
+            return "Enter a weight in pounds"
 
 
 class Height(Vital):
@@ -67,16 +71,21 @@ class Height(Vital):
     altunit = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=METERS)
     name = "height"
 
-    def convert_inches_to_feet(self):
+    @property
+    def height_in_feet(self):
         if self.value:
             feet = floor(self.value / 12)
             inches = self.value - feet * 12
             return str(feet) + " foot " + str(inches) + " inches"
         else:
-            return None
+            return "Enter a height in inches"
 
-    def convert_inches_to_meters(self):
+    @property
+    def height_in_meters(self):
         if self.value:
-            return round(self.value / 39.37, 2)
+            if self.value:
+                return self.value / 39.37
+            else:
+                return "Enter a height in inches"
         else:
-            return None
+            return "Enter a height in inches"

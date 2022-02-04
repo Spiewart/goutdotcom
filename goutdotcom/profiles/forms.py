@@ -60,7 +60,7 @@ class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
         fields = (
-            "bio",
+            "patient_id",
             "date_of_birth",
             "gender",
             "race",
@@ -78,6 +78,7 @@ class PatientProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 "Create your profile",
+                "patient_id",
                 "date_of_birth",
                 "gender",
                 "race",

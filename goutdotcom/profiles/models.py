@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
@@ -50,10 +51,17 @@ class FamilyProfile(TimeStampedModel):
     gout = models.OneToOneField(
         Gout, on_delete=models.CASCADE, help_text="Do you have a family history of gout?", null=True, blank=True
     )
+    slug = models.SlugField(max_length=200)
     history = HistoricalRecords()
 
     def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.user_username})
+        return reverse("users:detail", kwargs={"slug": self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # If no id, it is a newly created object and needs slug set
+            self.slug = slugify(self.user.username)
+        super(FamilyProfile, self).save(*args, **kwargs)
 
     # post_save() signal to create FamilyProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -91,68 +99,63 @@ class PatientProfile(TimeStampedModel):
     patient_id = models.IntegerField(
         help_text="Does the Patient have an ID for you to reference?", null=True, blank=True
     )
-    bio = models.CharField(max_length=500, help_text="500 character bio", null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(
-        max_length=20, choices=sexes, help_text="Enter gender", null=True, blank=True, default="male"
+        max_length=20, choices=sexes, help_text="Enter gender", null=True, blank=True, default=None
     )
-    race = models.CharField(
-        max_length=40, choices=races, help_text="Enter race", null=True, blank=True, default="white"
-    )
+    race = models.CharField(max_length=40, choices=races, help_text="Enter race", null=True, blank=True, default=None)
     weight = models.OneToOneField(
         Weight, on_delete=models.CASCADE, help_text="How much do you weight in pounds?", null=True, blank=True
     )
     height = models.OneToOneField(
         Height, on_delete=models.CASCADE, help_text="How tall are you in feet/inches?", null=True, blank=True
     )
+    slug = models.SlugField(max_length=200)
     history = HistoricalRecords()
 
-    def get_age(self):
+    @property
+    def age(self):
         if self.date_of_birth:
             age = datetime.today().year - self.date_of_birth.year
             return age
         else:
             return "No date of birth recorded"
 
-    def BMI_calculator(self):
-        def weight_kgs_calc(self):
-            if self.weight:
-                if self.weight.value:
-                    return self.weight.value / 2.205
-                else:
-                    return "Enter a weight in pounds"
-            else:
-                return "Enter a weight in pounds"
-
-        def height_meters_calc(self):
-            if self.height:
-                if self.height.value:
-                    return self.height.value / 39.37
-                else:
-                    return "Enter a height in inches"
-            else:
-                return "Enter a height in inches"
-
+    @property
+    def BMI(self):
+        """BMI calculator and model property.
+        Requires Height and Weight Values.
+        Returns: BMI float or str telling User what is needed to calculate BMI."""
+        valid_inputs = "Enter a valid "
         if self.weight and self.height:
-            if self.weight.value and self.height.value:
-                BMI = weight_kgs_calc(self) / (height_meters_calc(self) ** 2)
+            if self.height.value is None and self.weight.value is None:
+                valid_inputs + "height and weight"
+            elif self.height.value is None:
+                valid_inputs + "height"
+            elif self.weight.value is None:
+                valid_inputs + "weight"
+            elif self.weight.value and self.height.value:
+                BMI = self.weight.weight_in_kgs(self) / (self.height.height_in_meters(self) ** 2)
                 return BMI
-        elif self.weight is None:
-            if self.height is None:
-                return "Enter a valid height and weight"
-            else:
-                return weight_kgs_calc(self)
+        elif self.weight is None and self.height is None:
+            valid_inputs + "height and weight"
         elif self.height is None:
-            if self.weight is None:
-                return "Enter a valid height and weight"
-            else:
-                return height_meters_calc(self)
+            valid_inputs + "height"
+        elif self.weight is None:
+            valid_inputs + "weight"
+        return valid_inputs
 
     def __str__(self):
         return str(self.user.username + "'s profile")
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.user_username})
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # If no id, it is a newly created object and needs slug set
+            self.slug = slugify(self.user.username)
+        super(PatientProfile, self).save(*args, **kwargs)
 
     # post_save() signal to create PatientProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -204,7 +207,14 @@ class ProviderProfile(TimeStampedModel):
         verbose_name="Urgent Lab Check Interval",
         default=timedelta(days=21),
     )
+    slug = models.SlugField(max_length=200)
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # If no id, it is a newly created object and needs slug set
+            self.slug = slugify(self.user.username)
+        super(ProviderProfile, self).save(*args, **kwargs)
 
     # post_save() signal to create ProviderProfile if User selected role="Provider" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -362,7 +372,14 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    slug = models.SlugField(max_length=200)
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # If no id, it is a newly created object and needs slug set
+            self.slug = slugify(self.user.username)
+        super(MedicalProfile, self).save(*args, **kwargs)
 
     # post_save() signal to create MedicalProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -426,7 +443,14 @@ class SocialProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    slug = models.SlugField(max_length=200)
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # If no id, it is a newly created object and needs slug set
+            self.slug = slugify(self.user.username)
+        super(SocialProfile, self).save(*args, **kwargs)
 
     # post_save() signal to create SocialProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)

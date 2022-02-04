@@ -24,6 +24,10 @@
         {% else %}
           <p>Your bio is sadly empty...</p>
         {% endif %}
+        {% if object.patientprofile.provider %}
+          {{ object.patientprofile.provider }}
+          {{ object.patientprofile.pk }}
+        {% endif %}
       </div>
       <div class="col">
         <h2><u>Demographics</u></h2>

@@ -1,11 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.urls import reverse
 from django.views.generic import UpdateView
 
-from goutdotcom.history.forms import (
+from ..history.forms import (
     AlcoholForm,
     AnginaForm,
     AnticoagulationSimpleForm,
@@ -28,7 +28,7 @@ from goutdotcom.history.forms import (
     TophiForm,
     UrateKidneyStonesForm,
 )
-from goutdotcom.history.models import (
+from ..history.models import (
     CHF,
     CKD,
     IBD,
@@ -51,16 +51,16 @@ from goutdotcom.history.models import (
     Tophi,
     UrateKidneyStones,
 )
-from goutdotcom.profiles.forms import (
+from ..utils.mixins import PatientProviderMixin
+from ..vitals.forms import HeightForm, WeightForm
+from ..vitals.models import Height, Weight
+from .forms import (
     FamilyProfileForm,
     MedicalProfileForm,
     PatientProfileForm,
     ProviderProfileForm,
     SocialProfileForm,
 )
-from goutdotcom.vitals.forms import HeightForm, WeightForm
-from goutdotcom.vitals.models import Height, Weight
-
 from .models import (
     FamilyProfile,
     MedicalProfile,
@@ -84,7 +84,7 @@ class UserDetailRedirectMixin:
             return HttpResponseRedirect(reverse("/"))
 
 
-class FamilyProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
+class FamilyProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRedirectMixin, UpdateView):
     model = FamilyProfile
     form_class = FamilyProfileForm
     gout_form_class = GoutForm
@@ -127,7 +127,7 @@ class FamilyProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVie
             )
 
 
-class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
+class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRedirectMixin, UpdateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
     angina_form_class = AnginaForm
@@ -372,7 +372,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVi
             )
 
 
-class PatientProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UserDetailRedirectMixin, UpdateView):
+class PatientProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRedirectMixin, UpdateView):
     """View for Updating PatientProfile.
     Set up to require a PatientProfile.pk kwarg
     Multiform view, including Height and Weight forms populated by already created objects.
@@ -385,7 +385,6 @@ class PatientProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UserDeta
     """
 
     model = PatientProfile
-    permission_required = "users.can_edit_patientprofile"
     form_class = PatientProfileForm
     height_form_class = HeightForm
     weight_form_class = WeightForm
@@ -443,16 +442,20 @@ class PatientProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UserDeta
             )
 
 
-class ProviderProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
+class ProviderProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UserPassesTestMixin, UpdateView):
     model = ProviderProfile
     form_class = ProviderProfileForm
+
+    # Check if User is the same as the Profile User, return 404 if not
+    def test_func(self):
+        return self.request.user == self.object.user
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
 
-class SocialProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateView):
+class SocialProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRedirectMixin, UpdateView):
     model = SocialProfile
     form_class = SocialProfileForm
     alcohol_form_class = AlcoholForm
@@ -475,7 +478,7 @@ class SocialProfileUpdate(LoginRequiredMixin, UserDetailRedirectMixin, UpdateVie
     def get_object(self, queryset=None):
         try:
             # Get SocialProfile from pk in **kwargs
-            queryset = self.model.objects.filter(pk=self.kwargs["pk"])
+            queryset = self.model.objects.filter(user__username=self.kwargs["user"])
         except ObjectDoesNotExist:
             # Else return 404
             raise Http404("No object found matching this query.")

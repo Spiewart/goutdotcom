@@ -14,10 +14,14 @@ from .models import (
 class FamilyProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
+        "slug",
         "gout",
     )
     history_list_display = ["status"]
     search_fields = ["user__username"]
+    prepopulated_fields = {
+        "slug": ("user",),
+    }
 
 
 class MedicalProfileHistoryAdmin(SimpleHistoryAdmin):
@@ -42,23 +46,30 @@ class MedicalProfileHistoryAdmin(SimpleHistoryAdmin):
     )
     history_list_display = ["status"]
     search_fields = ["user__username"]
+    prepopulated_fields = {
+        "slug": ("user",),
+    }
 
 
 class PatientProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "provider",
+        "patient_id",
         "pk",
         "date_of_birth",
-        "get_age",
+        "age",
         "gender",
         "race",
         "weight",
         "height",
-        "BMI_calculator",
+        "BMI",
     )
     history_list_display = ["status"]
     search_fields = ["user__username"]
+    prepopulated_fields = {
+        "slug": ("user",),
+    }
 
 
 class ProviderProfileHistoryAdmin(SimpleHistoryAdmin):
@@ -71,6 +82,9 @@ class ProviderProfileHistoryAdmin(SimpleHistoryAdmin):
     )
     history_list_display = ["status"]
     search_fields = ["user__username"]
+    prepopulated_fields = {
+        "slug": ("user",),
+    }
 
 
 class SocialProfileHistoryAdmin(SimpleHistoryAdmin):
@@ -82,6 +96,9 @@ class SocialProfileHistoryAdmin(SimpleHistoryAdmin):
     )
     history_list_display = ["status"]
     search_fields = ["user__username"]
+    prepopulated_fields = {
+        "slug": ("user",),
+    }
 
 
 admin.site.register(FamilyProfile, FamilyProfileHistoryAdmin)

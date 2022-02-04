@@ -1,14 +1,16 @@
 from django.contrib import admin
 
 from .models import *
+
 # Register your models here.
+
 
 class WeightAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "value",
         "units",
-        "convert_pounds_to_kg",
+        "weight_in_kgs",
         "altunit",
         "date_recorded",
         "created",
@@ -21,13 +23,14 @@ class HeightAdmin(admin.ModelAdmin):
         "user",
         "value",
         "units",
-        "convert_inches_to_meters",
+        "height_in_meters",
         "altunit",
-        "convert_inches_to_feet",
+        "height_in_feet",
         "date_recorded",
         "created",
         "pk",
     )
+
 
 admin.site.register(Weight, WeightAdmin)
 admin.site.register(Height, HeightAdmin)

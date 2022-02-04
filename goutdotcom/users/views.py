@@ -1,5 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UserPassesTestMixin,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -12,19 +16,24 @@ from django.views.generic import (
     UpdateView,
 )
 
+from ..utils.mixins import PatientProviderUserMixin
 from .forms import UserCreateForm
 from .models import Patient
 
 User = get_user_model()
 
 
-class ProviderPatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class ProviderPatientListView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, ListView):
     """ListView for displaying all of a Provider's Patients."""
 
     permission_required = "users.can_view_patient"
     model = User
     template_name = "users/providerpatient_list.html"
     paginate_by = 5
+
+    # Test whether User is Provider, if not raise 404
+    def test_func(self):
+        return self.request.user.role == "PROVIDER"
 
     # Overwrite get_queryset() to return Patient objects filtered by their PatientProfile provider field
     # Fetch only Patients where the provider is equal to the requesting User (Provider)
@@ -35,7 +44,7 @@ class ProviderPatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListV
 provider_patient_list_view = ProviderPatientListView.as_view()
 
 
-class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+class UserCreateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, CreateView):
     """View only for Providers to create Patients.
     Assigns Patient provider field to the creating Provider.
 
@@ -43,10 +52,12 @@ class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessage
         [redirect]: [Redirects to the newly created Patient's Detail page.]
     """
 
-    permission_required = "users.can_add_patient"
     model = User
     form_class = UserCreateForm
     template_name = "users/provideruser_form.html"
+
+    def test_func(self):
+        return self.request.user.role == "PROVIDER"
 
     def form_valid(self, form):
         # Assign finished form to variable user
@@ -68,7 +79,10 @@ class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessage
 user_create_view = UserCreateView.as_view()
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(LoginRequiredMixin, PatientProviderUserMixin, DetailView):
+    """Detail View for Users.
+    PatientProviderUserMixin checks role of user, determines access accordingly.
+    """
 
     model = User
     slug_field = "username"
