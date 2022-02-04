@@ -15,76 +15,111 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'about' %}">About</a>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Flares
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{% url 'flare:create' %}">Calculator</a>
-              <a class="dropdown-item" href="{% url 'flareaid:create' %}">Helper</a>
-              {% if request.user.is_authenticated %}
-              <a class="dropdown-item" href="{% url 'flare:list' %}">List</a>
-              {% endif %}
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'flare:about' %}">About</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              ULT
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if request.user.ult %}
-              <a class="dropdown-item" href="{% url 'ult:detail' request.user.ult.pk %}">Calculator</a>
-              {% else %}
-              <a class="dropdown-item" href="{% url 'ult:create' %}">Calculator</a>
-              {% endif %}
-              {% if request.user.ultaid %}
-              <a class="dropdown-item" href="{% url 'ultaid:detail' request.user.ultaid.pk %}">Helper</a>
-              {% else %}
-              <a class="dropdown-item" href="{% url 'ultaid:create' %}">Helper</a>
-              {% endif %}
-              {% if request.user.ppxaid %}
-              <a class="dropdown-item" href="{% url 'ppxaid:detail' request.user.ppxaid.pk %}">PPx</a>
-              {% else %}
-                {% if request.user.ultaid %}
-                <a class="dropdown-item" href="{% url 'ppxaid:ultaid-create' ultaid=request.user.ultaid.pk %}">PPx</a>
-                {% else %}
-                <a class="dropdown-item" href="{% url 'ppxaid:create' %}">PPx</a>
-                {% endif %}
-              {% endif %}
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'treatment:about-ult' %}">About</a>
-            </div>
-          </li>
           {% if request.user.is_authenticated %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{ request.user|capfirst }}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if request.user.ultplan %}
-              <a class="dropdown-item" href="{% url 'ultplan:detail' request.user.ultplan.pk %}">ULTPlan</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'lab:index' %}">Labs</a>
+            {% if request.user.role == "PATIENT" %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Flares
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{% url 'flare:create' %}">Calculator</a>
+                  <a class="dropdown-item" href="{% url 'flareaid:create' %}">Helper</a>
+                  <a class="dropdown-item" href="{% url 'flare:list' %}">List</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'flare:about' %}">About</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  ULT
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  {% if request.user.ult %}
+                  <a class="dropdown-item" href="{% url 'ult:detail' request.user.ult.pk %}">Calculator</a>
+                  {% else %}
+                  <a class="dropdown-item" href="{% url 'ult:create' %}">Calculator</a>
+                  {% endif %}
+                  {% if request.user.ultaid %}
+                  <a class="dropdown-item" href="{% url 'ultaid:detail' request.user.ultaid.pk %}">Helper</a>
+                  {% else %}
+                  <a class="dropdown-item" href="{% url 'ultaid:create' %}">Helper</a>
+                  {% endif %}
+                  {% if request.user.ppxaid %}
+                  <a class="dropdown-item" href="{% url 'ppxaid:detail' request.user.ppxaid.pk %}">PPx</a>
+                  {% else %}
+                    {% if request.user.ultaid %}
+                    <a class="dropdown-item" href="{% url 'ppxaid:ultaid-create' ultaid=request.user.ultaid.pk %}">PPx</a>
+                    {% else %}
+                    <a class="dropdown-item" href="{% url 'ppxaid:create' %}">PPx</a>
+                    {% endif %}
+                  {% endif %}
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'treatment:about-ult' %}">About</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ request.user|capfirst }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  {% if request.user.ultplan %}
+                  <a class="dropdown-item" href="{% url 'ultplan:detail' request.user.ultplan.pk %}">ULTPlan</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'lab:index' %}">Labs</a>
+                  {% endif %}
+                  <a class="dropdown-item" href="{% url 'treatment:index' %}">Treatments</a>
+                  <a class="dropdown-item" href="{% url 'users:detail' request.user.username  %}">{% trans "Profile" %}</a>
+                </div>
+              </li>
+              {% elif request.user.role == "PROVIDER" %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ request.user|capfirst }}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'users:detail' request.user.username  %}">{% trans "Profile" %}</a>
+                      <a class="dropdown-item" href="{% url 'users:provider-patient-list' request.user.username %}">Patients</a>
+                  </div>
+                </li>
               {% endif %}
-              <a class="dropdown-item" href="{% url 'treatment:index' %}">Treatments</a>
-              <a class="dropdown-item" href="{% url 'users:detail' request.user.username  %}">{% trans "Profile" %}</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-          </li>
+              <li class="nav-item">
+                {# URL provided by django-allauth/account/urls.py #}
+                <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+              </li>
           {% else %}
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
-          </li>
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
-          </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Flares
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'flare:create' %}">Calculator</a>
+                <a class="dropdown-item" href="{% url 'flareaid:create' %}">Helper</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'flare:about' %}">About</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                ULT
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'ult:create' %}">Calculator</a>
+
+                <a class="dropdown-item" href="{% url 'ultaid:create' %}">Helper</a>
+
+                  <a class="dropdown-item" href="{% url 'ppxaid:create' %}">PPx</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'treatment:about-ult' %}">About</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              {# URL provided by django-allauth/account/urls.py #}
+              <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+            </li>
+            <li class="nav-item">
+              {# URL provided by django-allauth/account/urls.py #}
+              <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+            </li>
           {% endif %}
         </ul>
       </div>

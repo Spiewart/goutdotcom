@@ -25,7 +25,7 @@ class PatientProviderMixin:
             else:
                 if (
                     self.object.user.patientprofile.provider
-                    and self.object.patientprofile.provider == self.request.user
+                    and self.object.user.patientprofile.provider == self.request.user
                 ):
                     # Return super().get() if so
                     return super().get(request, *args, **kwargs)

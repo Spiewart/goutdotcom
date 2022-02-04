@@ -9,7 +9,7 @@
 
 {% block form %}
   {% if form.instance.pk %}
-    <form class="form-horizontal" method="post" action="{% url 'profiles:update' request.user.username %}" enctype='multipart/form-data'>
+    <form class="form-horizontal" method="post" action="{% url 'profiles:update' object.user.username %}" enctype='multipart/form-data'>
       {% csrf_token %}
       {{ form|crispy }}
       {{ height_form|crispy }}
@@ -19,18 +19,6 @@
       <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-primary btn-lg">Update</button>
-        </div>
-      </div>
-    </form>
-  {% else %}
-    <form class="form-horizontal" method="post" action="{% url 'profiles:create' %}" enctype='multipart/form-data'>
-      {% csrf_token %}
-      {{ form|crispy }}
-      {{ height_form|crispy }}
-      {{ weight_form|crispy }}
-      <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn btn-primary">Create</button>
         </div>
       </div>
     </form>

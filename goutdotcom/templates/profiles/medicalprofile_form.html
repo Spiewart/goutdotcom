@@ -1,5 +1,5 @@
 {% extends "base_form.html" %} {% load crispy_forms_tags %}
-{% block title %}{{user.username|capfirst }}'s Profile Update{% endblock title %}
+{% block title %}{{user.username|capfirst }}'s Medical Profile Update{% endblock title %}
 {% block header %}
 <h1 class="content-heading">{{ user.username|capfirst }}'s Medical Profile</h1>
 {% if form.instance.pk %}
@@ -11,7 +11,7 @@
 {% endblock header %}
 {% block form %}
 {% if form.instance.pk %}
-<form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' request.user.username %}" enctype="multipart/form-data">
+<form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' object.user.username %}" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form|crispy }}
   {{ angina_form|crispy }}

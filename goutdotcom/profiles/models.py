@@ -135,7 +135,7 @@ class PatientProfile(TimeStampedModel):
             elif self.weight.value is None:
                 valid_inputs + "weight"
             elif self.weight.value and self.height.value:
-                BMI = self.weight.weight_in_kgs(self) / (self.height.height_in_meters(self) ** 2)
+                BMI = self.weight.weight_in_kgs / (self.height.height_in_meters ** 2)
                 return BMI
         elif self.weight is None and self.height is None:
             valid_inputs + "height and weight"

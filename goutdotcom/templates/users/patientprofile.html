@@ -1,19 +1,10 @@
-
     <div class="row">
       <div class="col">
-    <h1>{{ object.username|capfirst}}'s Profile
-    {% if object == request.user %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' request.user.username %}"
-      role="button">Update</a>
-    <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
-    {% elif perms.users.can_edit_patient %}
-    <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' object object.patientprofile.pk %}"
-      role="button">Update</a>
-    {% endif %}
-
-    </h1>
-
-    </div>
+        <h1>{{ object.username|capfirst}}'s Profile
+        <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' object.username %}" role="button">Update</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
+        </h1>
+      </div>
     </div>
     <hr size="6" color="white">
     <div class="row">
@@ -21,7 +12,7 @@
         <h2><u>Demographics</u></h2>
         <ul id="main-profile-list">
         {% if object.patientprofile.date_of_birth %}
-            <li>Age: {{ object.patientprofile.get_age }}</li>
+            <li>Age: {{ object.patientprofile.age }}</li>
         {% endif %}
         {% if object.patientprofile.gender %}
             <li>Gender: {{ object.patientprofile.gender|capfirst }}</li>
@@ -38,7 +29,7 @@
               {{ object.patientprofile.height }}</a></li>
         {% endif %}
         {% if object.patientprofile.weight.value and object.patientprofile.height.value %}
-          <li>BMI: {{ object.patientprofile.BMI_calculator|stringformat:".1f" }}</li>
+          <li>BMI: {{ object.patientprofile.BMI|stringformat:".1f" }}</li>
         {% endif %}
         </ul>
       </div>

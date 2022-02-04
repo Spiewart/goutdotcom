@@ -2,19 +2,25 @@
 {% load static %}
 
 {% block content %}
-<div class="container default-container">
+<div class="container content-container">
   <header class="row">
     <div class="col">
+      <h1>
       {% block vital_title %}
-      <h1 class="content-heading">{{ request.user|capfirst }}'s Patients</h1>
+      {{ request.user|capfirst }}'s Patients
       {% endblock vital_title %}
+      {% block buttons %}
+        <a class="btn btn-primary btn-lg" href="{% url 'users:create' %}" role="button">Create Patient</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'users:detail' request.user %}" role="button">Profile</a>
+      {% endblock buttons %}
+      </h1>
     </div>
   </header>
   <main class="row">
     <div class="col">
       {% for object in object_list %}
-      <div class="container content-heading">
-        <h2 class="default-container"> <a href="{{ object.get_absolute_url }}"
+      <div class="container">
+        <h2> <a href="{{ object.get_absolute_url }}"
             class="hyperlink">{{ object.username }}</a></h2>
         <p></p>
       </div>
@@ -23,10 +29,7 @@
     </div>
   </main>
   <footer>
-    {% block buttons %}
-    <a class="btn btn-primary btn-lg" href="{% url 'users:detail' request.user %}" role="button">Profile</a>
-    <a class="btn btn-primary btn-lg" href="{% url 'home' %}" role="button">Home</a>
-    {% endblock buttons %}
+
     {% if object_list %}
     {% if page_obj %}
     <div class="pagination" style="float: right;">
