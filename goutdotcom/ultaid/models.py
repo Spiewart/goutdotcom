@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
-from django.utils.text import format_lazy
+from django.utils.text import format_lazy, slugify
 from django_extensions.db.models import TimeStampedModel
 
 from ..history.models import (
@@ -113,6 +113,14 @@ class ULTAid(TimeStampedModel):
         null=True,
         blank=True,
     )
+    slug = models.SlugField(max_length=200, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.user:
+            if not self.id:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username)
+        super(ULTAid, self).save(*args, **kwargs)
 
     def decision_aid(self):
         """Function that evaluates ULTAid fields and returns a dictionary containing recommendations for ULT and other pertinent facts to the template for presentation.
@@ -212,7 +220,11 @@ class ULTAid(TimeStampedModel):
         return ult_choice
 
     def get_absolute_url(self):
-        return reverse("ultaid:detail", kwargs={"pk": self.pk})
+        if self.user:
+            return reverse("ultaid:user-detail", kwargs={"slug": self.slug})
+        else:
+            return reverse("ultaid:detail", kwargs={"pk": self.pk})
+
 
     def __str__(self):
         if (

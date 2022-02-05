@@ -28,7 +28,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
     returns: ULTPlan instance"""
 
     def post(self, request, *args, **kwargs):
-        self.username = self.kwargs.get('username')
+        self.username = self.kwargs.get("username")
         self.user = User.objects.get(username=self.username)
         # Checks if user has created a ULTAid, sets View ULTAid reference to None if not
         try:
@@ -123,7 +123,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse("ppxaid:ultaid-create", kwargs={"ultaid": self.user.ultaid.pk}))
         # If neither ultaid nor ppxaid exists for view, redirect to ultaid:create to start the process
         else:
-            return HttpResponseRedirect(reverse("ultaid:create"))
+            return HttpResponseRedirect(reverse("ultaid:create", kwargs={"username": self.username}))
 
 
 class ULTPlanDelete(LoginRequiredMixin, DeleteView):
@@ -135,6 +135,7 @@ class ULTPlanDelete(LoginRequiredMixin, DeleteView):
 
 class ULTPlanDetail(LoginRequiredMixin, DetailView):
     model = ULTPlan
+
 
 class ULTPlanUpdate(LoginRequiredMixin, View):
     """View to change a User's ULTPlan based on abnormal labs or reported medication side effects.
@@ -165,4 +166,3 @@ class ULTPlanUpdate(LoginRequiredMixin, View):
                 pass
         else:
             pass
-

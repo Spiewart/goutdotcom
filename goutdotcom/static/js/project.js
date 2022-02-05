@@ -681,7 +681,7 @@ function ppx_aid_initial() {
     $('#id_perfect_health').val('False');
     $('#subfields').show();
   }
-  else if ($('#id_Colchicine_Interactions-value').is(":checked")) {
+  else if ($('#id_ColchicineInteractions-value').is(":checked")) {
     $('#id_perfect_health').val('False');
     $('#subfields').show();
   }

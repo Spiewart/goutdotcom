@@ -170,7 +170,7 @@ class CKDForm(CKDSimpleForm):
 
 
 class ColchicineInteractionsForm(forms.ModelForm):
-    prefix = "Colchicine Interactions"
+    prefix = "ColchicineInteractions"
 
     class Meta:
         model = ColchicineInteractions

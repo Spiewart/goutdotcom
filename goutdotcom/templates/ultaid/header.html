@@ -1,6 +1,6 @@
 {% load ultaid_extras %}
   {% if request.user.is_authenticated %}
-  <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">Update</a>
+  <a class="btn btn-primary btn-lg" href="{% url 'ultaid:user-create' object.user.username %}" role="button" style="float: right;">Update</a>
   {% else %}
   <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">Recalculate</a>
   {% endif %}
@@ -83,7 +83,7 @@
         {% if object.decision_aid|get_key:'rheumatologist' == True or object.decision_aid|get_key:'dialysis' == True or object.decision_aid|get_key:'need' == False or object.decision_aid|get_key:'want' == False %}
         {% else %}
           {% if request.user.ppxaid %}
-          <form method="post" action="{% url 'ultplan:create' %}">
+          <form method="post" action="{% url 'ultplan:create' object.user.username %}">
             {% csrf_token %}
             <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"
               value="treatment">ULTPlan</button>
