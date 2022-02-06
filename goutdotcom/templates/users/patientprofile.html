@@ -4,6 +4,7 @@
         <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' object.username %}" role="button">Update</a>
         <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
         {% if request.user.role == "PROVIDER" %}
+        <a class="btn btn-primary btn-lg" href="{% url 'ult:user-create' object.username %}" role="button">ULT</a>
           <form method="post" action="{% url 'ultplan:create' object.username %}">
             {% csrf_token %}
             <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"

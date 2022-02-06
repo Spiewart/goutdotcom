@@ -188,14 +188,14 @@ class ULTAidCreate(CreateView):
     def post(self, request, **kwargs):
         form = self.form_class(request.POST, instance=ULTAid())
         self.object = self.get_object()
-        self.username = self.kwargs.get("username")
-        self.user = User.objects.get(username=self.username)
 
         if form.is_valid():
             ULTAid_data = form.save(commit=False)
             ## WOULD LIKE TO CONSOLIDATE REQUEST.USER ADD TO RIGHT BEFORE SAVE(), THEN CAN COMBINE THE REST
             # Check if user is authenticated and pull OnetoOne related model data from MedicalProfile if so
             if request.user.is_authenticated:
+                self.username = self.kwargs.get("username")
+                self.user = User.objects.get(username=self.username)
                 ULTAid_data.user = self.user
                 CKD_form = self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD)
                 CKD_data = CKD_form.save(commit=False)
@@ -316,6 +316,8 @@ class ULTAidCreate(CreateView):
             return self.form_valid(form)
         else:
             if request.user.is_authenticated:
+                self.username = self.kwargs.get("username")
+                self.user = User.objects.get(username=self.username)
                 return self.render_to_response(
                     self.get_context_data(
                         form=form,

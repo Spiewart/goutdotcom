@@ -3,28 +3,71 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Create ULT Calc
+ULT Calculator
 {% endblock title %}
 {% block header %}
-{% if form.instance.pk %}
-<h1>Do you still need urate-lowering therapy (ULT)?</h1>
-{% else %}
-<h1>Do you need urate-lowering therapy (ULT)?</h1>
-{% endif %}
-{% endblock header %}
-
-{% block form %}
-  {% if form.instance.pk %}
-    <form method="post" action="{% url 'ult:update' object.pk %}">
-    {% csrf_token %}
-    {% crispy form %}
-    </form>
+  {% if request.user.is_authenticated %}
+    {% if request.user.role == "PROVIDER" %}
+      {% if form.instance.pk %}
+        <h1>Do {{ object.user.username }} still need urate-lowering therapy (ULT)?</h1>
+      {% else %}
+        <h1>Does {{ object.user.username }} need urate-lowering therapy (ULT)?</h1>
+      {% endif %}
+    {% elif request.user.role == "PATIENT" %}
+      {% if form.instance.pk %}
+        <h1>Do you still need urate-lowering therapy (ULT)?</h1>
+      {% else %}
+        <h1>Do you need urate-lowering therapy (ULT)?</h1>
+      {% endif %}
+    {% endif %}
   {% else %}
-    <form method="post" action="{% url 'ult:create' %}">
-      {% csrf_token %}
-      {% crispy form %}
-    </form>
+    {% if form.instance.pk %}
+      <h1>Do you still need urate-lowering therapy (ULT)?</h1>
+    {% else %}
+      <h1>Do you need urate-lowering therapy (ULT)?</h1>
+    {% endif %}
   {% endif %}
+{% endblock header %}
+{% block form %}
+{% if request.user.is_authenticated %}
+  {% if request.user.role == "PROVIDER" %}
+    {% if form.instance.pk %}
+        <form method="post" action="{% url 'ult:user-update' view.kwargs.slug %}">
+          {% csrf_token %}
+          {% crispy form %}
+        </form>
+    {% else %}
+        <form method="post" action="{% url 'ult:user-create' view.kwargs.username %}">
+          {% csrf_token %}
+          {% crispy form %}
+        </form>
+    {% endif %}
+  {% elif request.user.role == "PATIENT" %}
+    {% if form.instance.pk %}
+        <form method="post" action="{% url 'ult:user-update' view.kwargs.slug %}">
+          {% csrf_token %}
+          {% crispy form %}
+        </form>
+    {% else %}
+        <form method="post" action="{% url 'ult:user-create' view.kwargs.username %}">
+          {% csrf_token %}
+          {% crispy form %}
+        </form>
+    {% endif %}
+  {% endif %}
+{% else %}
+  {% if form.instance.pk %}
+      <form method="post" action="{% url 'ult:update' object.pk %}">
+        {% csrf_token %}
+        {% crispy form %}
+      </form>
+  {% else %}
+      <form method="post" action="{% url 'ult:create' %}">
+        {% csrf_token %}
+        {% crispy form %}
+      </form>
+  {% endif %}
+{% endif %}
 {% endblock form %}
 
 {% block inline_javascript %}

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 
 from ..history.models import CKD, Erosions, Hyperuricemia, Tophi, UrateKidneyStones
@@ -58,6 +59,14 @@ class ULT(TimeStampedModel):
         null=True,
         blank=True,
     )
+    slug = models.SlugField(max_length=200, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.user:
+            if not self.id:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username)
+        super(ULT, self).save(*args, **kwargs)
 
     def calculator(self):
         """Function to take user-generated input from ULT and returns whether or not urate-lowering therapy is indicated

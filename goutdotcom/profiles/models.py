@@ -78,6 +78,7 @@ class FamilyProfile(TimeStampedModel):
             else:
                 familyprofile = FamilyProfile.objects.create(user=instance)
                 familyprofile.gout = Gout.objects.create(user=instance)
+                familyprofile.save()
 
 
 class PatientProfile(TimeStampedModel):
@@ -173,6 +174,7 @@ class PatientProfile(TimeStampedModel):
                 patientprofile = PatientProfile.objects.create(user=instance)
                 patientprofile.height = Height.objects.create(user=instance)
                 patientprofile.weight = Weight.objects.create(user=instance)
+                patientprofile.save()
 
 
 class ProviderProfile(TimeStampedModel):
@@ -415,6 +417,7 @@ class MedicalProfile(TimeStampedModel):
                 medicalprofile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
                 medicalprofile.tophi = Tophi.objects.create(user=instance)
                 medicalprofile.XOI_interactions = XOIInteractions.objects.create(user=instance)
+                medicalprofile.save()
 
 
 class SocialProfile(TimeStampedModel):
@@ -469,3 +472,4 @@ class SocialProfile(TimeStampedModel):
                 socialprofile.alcohol = Alcohol.objects.create(user=instance)
                 socialprofile.fructose = Fructose.objects.create(user=instance)
                 socialprofile.shellfish = Shellfish.objects.create(user=instance)
+                socialprofile.save()
