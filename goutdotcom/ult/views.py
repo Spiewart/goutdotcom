@@ -40,7 +40,7 @@ class ULTCreate(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ULTCreate, self).get_context_data(**kwargs)
-        if self.request.user.is_authenticated == True:
+        if self.request.user.is_authenticated:
             # If User is logged in, see if there is username kwarg
             try:
                 self.username = self.kwargs.get("username")
@@ -50,6 +50,7 @@ class ULTCreate(SuccessMessageMixin, CreateView):
             # Add forms with User's related model instances
             if self.username:
                 # Fetch related model instances via User object
+                self.user = User.objects.get(username=self.username)
                 if "CKD_form" not in context:
                     context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
                 if "erosions_form" not in context:
