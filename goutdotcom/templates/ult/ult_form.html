@@ -9,9 +9,9 @@ ULT Calculator
   {% if request.user.is_authenticated %}
     {% if request.user.role == "PROVIDER" %}
       {% if form.instance.pk %}
-        <h1>Do {{ object.user.username }} still need urate-lowering therapy (ULT)?</h1>
+        <h1>Does {{ object.user.username }} still need urate-lowering therapy (ULT)?</h1>
       {% else %}
-        <h1>Does {{ object.user.username }} need urate-lowering therapy (ULT)?</h1>
+        <h1>Does {{ view.kwargs.username }} need urate-lowering therapy (ULT)?</h1>
       {% endif %}
     {% elif request.user.role == "PATIENT" %}
       {% if form.instance.pk %}

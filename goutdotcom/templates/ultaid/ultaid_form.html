@@ -7,15 +7,19 @@
 {% block header %}
 {{ user_ult|json_script:'user_ult' }}
 {% if form.instance.pk %}
-<h1>Your ULT plan</h1>
+<h1>{{ object.user.username|capfirst }}'s'} ULT plan</h1>
+{% else %}
+{% if view.kwargs.username %}
+<h1>{{ view.kwargs.username|capfirst }}'s' ULT plan</h1>
 {% else %}
 <h1>Make a ULT plan</h1>
+{% endif %}
 {% endif %}
 {% endblock header %}
 
 {% block form %}
 {% if form.instance.pk %}
-<form method="post" action="{% url 'ultaid:update' object.pk %}">
+<form method="post" action="{% url 'ultaid:update' object.slug %}">
   {% csrf_token %}
   {% crispy form %}
 </form>

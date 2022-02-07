@@ -1,8 +1,6 @@
 <div class="row">
-  <div class="col">
+  <div class="col-auto">
     {% if object.calculator == "Indicated" or object.calculator == "Conditional" %}
-    <h1><a href="{% url 'treatment:about-ult' %}">ULT</a>: Strongly Recommended
-    </h1>
     </div>
   <div class="col">
     {% if request.user.is_authenticated %}
@@ -14,8 +12,8 @@
     {% endif %}
   </div>
 </div>
-<p>This means there is general medical consensus that you would benefit from ULT (urate-lowering therapy).
-This is backed by scientific evidence that you will be better off with than without preventative treatment.</p>
+{% endif %}
+
 
 <span>
 {% if object.user %}
@@ -23,6 +21,9 @@ This is backed by scientific evidence that you will be better off with than with
 {% endif %}
 Created: {{ object.created }}
 </span>
+{% if object.calculator == "Indicated" %}
+<p>This means there is general medical consensus that you would benefit from ULT (urate-lowering therapy).
+  This is backed by scientific evidence that you will be better off with than without preventative treatment.</p>
 {% elif object.calculator == "Conditional" %}
 <h1><a href="{% url 'treatment:about-ult' %}">ULT</a>: Conditionally Recommended</h1>
 <p>This means there is some general medical consensus that you would benefit from ULT (urate-lowering therapy), but it

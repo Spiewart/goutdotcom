@@ -14,14 +14,14 @@ from ..history.forms import (
     UrateKidneyStonesForm,
 )
 from ..history.models import CKD, Erosions, Hyperuricemia, Tophi, UrateKidneyStones
-from ..utils.mixins import PatientProviderMixin
+from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
 from .forms import ULTForm
 from .models import ULT
 
 User = get_user_model()
 
 
-class ULTCreate(SuccessMessageMixin, CreateView):
+class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
     """ULT CreateView.
     Intended to be responsive to whether or not the User is a Patient or Provider
     Redirects to UpdateView if ULT exists for the intended User
@@ -258,7 +258,7 @@ class ULTDetail(PatientProviderMixin, DetailView):
     model = ULT
 
 
-class ULTUpdate(LoginRequiredMixin, UpdateView):
+class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
     """ULT UpdateView.
     Intended to be responsive to whether or not the User is a Patient or Provider
 
