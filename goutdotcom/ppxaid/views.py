@@ -1,6 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.http.response import Http404
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView
@@ -30,9 +31,11 @@ from ..history.models import (
 from ..ultaid.models import ULTAid
 from .forms import PPxAidForm
 from .models import PPxAid
+from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
 
+User = get_user_model()
 
-class PPxAidCreate(CreateView):
+class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
     model = PPxAid
     form_class = PPxAidForm
     anticoagulation_form_class = AnticoagulationSimpleForm
@@ -48,6 +51,7 @@ class PPxAidCreate(CreateView):
     def form_valid(self, form):
         # Check if POST has 'ultaid' kwarg and assign PPxAid OnetoOne related object based on pk='ultaid'
         if self.kwargs.get("ultaid"):
+            if isinstance(self.kwargs.get("ultaid")
             form.instance.ultaid = ULTAid.objects.get(pk=self.kwargs.get("ultaid"))
             # If user is not authenticated and created a PPxAid from a ULTAid, use ULTAid CKD, HeartAttack, and Stroke instances instead of making new ones, removed forms in form via Kwargs and layout objects
             if self.request.user.is_authenticated == False:
