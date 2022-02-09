@@ -137,31 +137,39 @@ class PatientProviderCreateMixin:
 
     def get(self, request, *args, **kwargs):
         # Check if requesting User is a Provider
-        if self.request.user.role == "PROVIDER":
-            # Check if the User with the username provided in kwargs is a patient of Provider
-            if self.kwargs.get("username"):
-                self.user = User.objects.get(username=self.kwargs.get("username"))
-                if self.user.patientprofile.provider == self.request.user:
-                    return super().get(request, *args, **kwargs)
-                # Else raise 404
+        if self.request.user.is_authenticated:
+            if self.request.user.role == "PROVIDER":
+                # Check if the User with the username provided in kwargs is a patient of Provider
+                if self.kwargs.get("username"):
+                    self.user = User.objects.get(username=self.kwargs.get("username"))
+                    print(self.user)
+                    if self.user.patientprofile.provider == self.request.user:
+                        return super().get(request, *args, **kwargs)
+                    # Else raise 404
+                    else:
+                        return PermissionDenied
                 else:
-                    return PermissionDenied
-            else:
-                raise PermissionDenied
-        # Check if requesting User is a Patient
-        elif self.request.user.role == "PATIENT":
-            # Check if there is a username kwarg provided
-            if self.kwargs.get("username"):
-                # Check if User's username is the same as that in the kwarg
-                if self.kwargs.get("username") == self.request.user.username:
-                    # Return super().get() if so
-                    return super().get(request, *args, **kwargs)
+                    raise PermissionDenied
+            # Check if requesting User is a Patient
+            elif self.request.user.role == "PATIENT":
+                # Check if there is a username kwarg provided
+                if self.kwargs.get("username"):
+                    # Check if User's username is the same as that in the kwarg
+                    if self.kwargs.get("username") == self.request.user.username:
+                        # Return super().get() if so
+                        return super().get(request, *args, **kwargs)
+                    # Else raise 404
+                    else:
+                        raise PermissionDenied
                 # Else raise 404
                 else:
                     raise PermissionDenied
-            # Else raise 404
             else:
+                # Else raise 404
                 raise PermissionDenied
+        # If User is not logged in, restrict access to any username-based CreateViews
         else:
-            # Else raise 404
-            raise PermissionDenied
+            if self.kwargs.get("username"):
+                raise PermissionDenied
+            else:
+                return super().get(request, *args, **kwargs)

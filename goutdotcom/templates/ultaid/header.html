@@ -41,9 +41,9 @@
         <h2><u>Prophylaxis</u>:
           {% if request.user.is_authenticated %}
             {% if request.user.ppxaid %}
-            <a href="{% url 'ppxaid:detail' request.user.ppxaid.pk %}">{{ ultaid.ppxaid }}</a>
+            <a href="{% url 'ppxaid:user-detail' slug=request.user.username%}">{{ ultaid.ppxaid }}</a>
             {% else %}
-              <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}"
+              <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:user-ultaid-create' username=request.user.username ultaid=request.user.username %}"
                 role="button" style="float: none;">Create PPxAid</a>
             {% endif %}
           {% else %}

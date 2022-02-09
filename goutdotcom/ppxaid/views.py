@@ -35,6 +35,7 @@ from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
 
 User = get_user_model()
 
+
 class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
     model = PPxAid
     form_class = PPxAidForm
@@ -49,17 +50,26 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
     stroke_form_class = StrokeSimpleForm
 
     def form_valid(self, form):
-        # Check if POST has 'ultaid' kwarg and assign PPxAid OnetoOne related object based on pk='ultaid'
+        # Check if POST has 'ultaid' kwarg and assign PPxAid OnetoOne related object based on pk or slug (username)
         if self.kwargs.get("ultaid"):
-            if isinstance(self.kwargs.get("ultaid")
-            form.instance.ultaid = ULTAid.objects.get(pk=self.kwargs.get("ultaid"))
+            if isinstance(self.kwargs.get("ultaid"), int):
+                form.instance.ultaid = ULTAid.objects.get(pk=self.kwargs.get("ultaid"))
+            elif isinstance(self.kwargs.get("ultaid"), str):
+                form.instance.ultaid = ULTAid.objects.get(slug=self.kwargs.get("ultaid"))
             # If user is not authenticated and created a PPxAid from a ULTAid, use ULTAid CKD, HeartAttack, and Stroke instances instead of making new ones, removed forms in form via Kwargs and layout objects
             if self.request.user.is_authenticated == False:
                 form.instance.ckd = form.instance.ultaid.ckd
                 form.instance.heartattack = form.instance.ultaid.heartattack
                 form.instance.stroke = form.instance.ultaid.stroke
+        # If User is authenticated, check if Provider or Patient
         if self.request.user.is_authenticated:
-            form.instance.user = self.request.user
+            # If Provider, check if there isa  PK or username kwarg, assign form instance User accordingly
+            if self.request.user.role == "PROVIDER":
+                if self.kwargs.get("username"):
+                    form.instance.user = User.objects.get(username=self.kwargs.get("username"))
+            # If Patient assign to requesting Patient
+            elif self.request.user.role == "PATIENT":
+                form.instance.user = self.request.user
             return super().form_valid(form)
         else:
             return super().form_valid(form)
@@ -67,15 +77,28 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
     def get(self, request, *args, **kwargs):
         # Checks if User is authenticated and redirects to PPxAid UpdateView if so
         if self.request.user.is_authenticated:
-            try:
-                user_PPxAid = self.model.objects.get(user=self.request.user)
-            except self.model.DoesNotExist:
-                user_PPxAid = None
+            user_PPxAid = None
+            # Check if Patient or Provider
+            if self.request.user.role == "PROVIDER":
+                # Check if Username in kwargs, see if User already has PPxAid, redirect if so
+                if "username" in kwargs:
+                    try:
+                        user_PPxAid = self.model.objects.get(slug=self.kwargs.get("username"))
+                    except self.model.DoesNotExist:
+                        user_PPxAid = None
+            elif self.request.user.role == "PATIENT":
+                # If Patient has PPxAid, redirect to UpdateView
+                try:
+                    user_PPxAid = self.model.objects.get(slug=self.request.user)
+                except self.model.DoesNotExist:
+                    user_PPxAid = None
             if user_PPxAid:
-                return redirect("ppxaid:update", pk=user_PPxAid.pk)
+                return redirect("ppxaid:user-detail", slug=user_PPxAid.slug)
             else:
                 return super().get(request, *args, **kwargs)
         else:
+            # If User not logged in, check if there is a ultaid in kwargs
+            # Check if that ultaid already has a PPxAid, redirect if so
             if "ultaid" in kwargs:
                 try:
                     ultaid = ULTAid.objects.get(pk=kwargs["ultaid"])
@@ -90,34 +113,41 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(PPxAidCreate, self).get_context_data(**kwargs)
-        # Add FlareAid OnetoOne related model objects from the MedicalProfile for the logged in User
         if self.request.user.is_authenticated:
+            self.user = None
+            # If User is logged in, see if there is username kwarg
+            try:
+                self.username = self.kwargs.get("username")
+            except:
+                self.username = None
+            # If there is a username, fetch associated User and related MedicalProfile objects
+            if self.username:
+                self.user = User.objects.get(username=self.username)
+            # Add FlareAid OnetoOne related model objects from the MedicalProfile for the User
             if "anticoagulation_form" not in context:
                 context["anticoagulation_form"] = self.anticoagulation_form_class(
-                    instance=self.request.user.medicalprofile.anticoagulation
+                    instance=self.user.medicalprofile.anticoagulation
                 )
             if "bleed_form" not in context:
-                context["bleed_form"] = self.bleed_form_class(instance=self.request.user.medicalprofile.bleed)
+                context["bleed_form"] = self.bleed_form_class(instance=self.user.medicalprofile.bleed)
             if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(instance=self.request.user.medicalprofile.CKD)
+                context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
             if "colchicine_interactions_form" not in context:
                 context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
-                    instance=self.request.user.medicalprofile.colchicine_interactions
+                    instance=self.user.medicalprofile.colchicine_interactions
                 )
             if "diabetes_form" not in context:
-                context["diabetes_form"] = self.diabetes_form_class(instance=self.request.user.medicalprofile.diabetes)
+                context["diabetes_form"] = self.diabetes_form_class(instance=self.user.medicalprofile.diabetes)
             if "heartattack_form" not in context:
-                context["heartattack_form"] = self.heartattack_form_class(
-                    instance=self.request.user.medicalprofile.heartattack
-                )
+                context["heartattack_form"] = self.heartattack_form_class(instance=self.user.medicalprofile.heartattack)
             if "IBD_form" not in context:
-                context["IBD_form"] = self.IBD_form_class(instance=self.request.user.medicalprofile.IBD)
+                context["IBD_form"] = self.IBD_form_class(instance=self.user.medicalprofile.IBD)
             if "osteoporosis_form" not in context:
                 context["osteoporosis_form"] = self.osteoporosis_form_class(
-                    instance=self.request.user.medicalprofile.osteoporosis
+                    instance=self.user.medicalprofile.osteoporosis
                 )
             if "stroke_form" not in context:
-                context["stroke_form"] = self.stroke_form_class(instance=self.request.user.medicalprofile.stroke)
+                context["stroke_form"] = self.stroke_form_class(instance=self.user.medicalprofile.stroke)
             return context
         else:
             if "anticoagulation_form" not in context:
@@ -151,8 +181,13 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         kwargs = super(PPxAidCreate, self).get_form_kwargs()
         # Checks if flare kwarg came from ULTAid Detail and queries database for ultaid_pk that matches self.ultaid from initial kwargs
         if self.ultaid:
-            ultaid_pk = self.ultaid
-            ultaid = ULTAid.objects.get(pk=ultaid_pk)
+            ultaid = None
+            if isinstance(self.ultaid, int):
+                ultaid_pk = self.ultaid
+                ultaid = ULTAid.objects.get(pk=ultaid_pk)
+            elif isinstance(self.ultaid, str):
+                ultaid_slug = self.ultaid
+                ultaid = ULTAid.objects.get(slug=ultaid_slug)
             kwargs["ultaid"] = ultaid
             kwargs["no_user"] = self.no_user
             # If User is anonymous / not logged in and PPxAid has a ULTAid, pass ckd stroke and heartattack from ULTAid to PPxAid to avoid duplication of user input
@@ -163,54 +198,61 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         return kwargs
 
     def get_success_url(self):
-        if self.kwargs.get("ultaid"):
-            return reverse("ultaid:detail", kwargs={"pk": self.kwargs["ultaid"]})
+        self.ultaid = self.kwargs.get("ultaid", None)
+        self.username = self.kwargs.get("username", None)
+        if self.ultaid:
+            if self.username:
+                return reverse("ultaid:user-detail", kwargs={"slug": self.kwargs["ultaid"]})
+            else:
+                if isinstance(self.ultaid, int):
+                    return reverse("ultaid:detail", kwargs={"pk": self.kwargs["ultaid"]})
+                else:
+                    return reverse("ultaid:detail", kwargs={"slug": self.kwargs["ultaid"]})
         else:
-            return reverse(
-                "ppxaid:detail",
-                # Need comma at end of kwargs for some picky Django reason
-                # https://stackoverflow.com/questions/52575418/reverse-with-prefix-argument-after-must-be-an-iterable-not-int/52575419
-                kwargs={
-                    "pk": self.object.pk,
-                },
-            )
+            if self.username:
+                return reverse("ppxaid:detail", kwargs={"slug": self.object.slug})
+            else:
+                return reverse("ppxaid:detail", kwargs={"pk": self.object.pk})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=PPxAid())
+        anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=Anticoagulation())
+        bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
+        CKD_form = self.CKD_form_class(request.POST, instance=CKD())
+        colchicine_interactions_form = self.colchicine_interactions_form_class(
+            request.POST, instance=ColchicineInteractions()
+        )
+        diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
+        heartattack_form = self.heartattack_form_class(request.POST, instance=HeartAttack())
+        IBD_form = self.IBD_form_class(request.POST, instance=IBD())
+        osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=Osteoporosis())
+        stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
+
         ppxaid_data = form.save(commit=False)
         if request.user.is_authenticated:
+            self.username = self.kwargs.get("username", None)
+            self.user = None
             # Check if user is authenticated and pull OnetoOne related model data from MedicalProfile if so
-            ppxaid_data.user = request.user
-            anticoagulation_form = self.anticoagulation_form_class(
-                request.POST, instance=request.user.medicalprofile.anticoagulation
-            )
-            bleed_form = self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed)
-            CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD)
-            colchicine_interactions_form = self.colchicine_interactions_form_class(
-                request.POST, instance=request.user.medicalprofile.colchicine_interactions
-            )
-            diabetes_form = self.diabetes_form_class(request.POST, instance=request.user.medicalprofile.diabetes)
-            heartattack_form = self.heartattack_form_class(
-                request.POST, instance=request.user.medicalprofile.heartattack
-            )
-            IBD_form = self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD)
-            osteoporosis_form = self.osteoporosis_form_class(
-                request.POST, instance=request.user.medicalprofile.osteoporosis
-            )
-            stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke)
-        else:
-            # If not logged in show forms for new History objects without User
-            anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=Anticoagulation())
-            bleed_form = self.bleed_form_class(request.POST, instance=Bleed())
-            CKD_form = self.CKD_form_class(request.POST, instance=CKD())
-            colchicine_interactions_form = self.colchicine_interactions_form_class(
-                request.POST, instance=ColchicineInteractions()
-            )
-            diabetes_form = self.diabetes_form_class(request.POST, instance=Diabetes())
-            heartattack_form = self.heartattack_form_class(request.POST, instance=HeartAttack())
-            IBD_form = self.IBD_form_class(request.POST, instance=IBD())
-            osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=Osteoporosis())
-            stroke_form = self.stroke_form_class(request.POST, instance=Stroke())
+            if self.username:
+                self.user = User.objects.get(username=self.username)
+                ppxaid_data.user = self.user
+                anticoagulation_form = self.anticoagulation_form_class(
+                    request.POST, instance=self.user.medicalprofile.anticoagulation
+                )
+                bleed_form = self.bleed_form_class(request.POST, instance=self.user.medicalprofile.bleed)
+                CKD_form = self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD)
+                colchicine_interactions_form = self.colchicine_interactions_form_class(
+                    request.POST, instance=self.user.medicalprofile.colchicine_interactions
+                )
+                diabetes_form = self.diabetes_form_class(request.POST, instance=self.user.medicalprofile.diabetes)
+                heartattack_form = self.heartattack_form_class(
+                    request.POST, instance=self.user.medicalprofile.heartattack
+                )
+                IBD_form = self.IBD_form_class(request.POST, instance=self.user.medicalprofile.IBD)
+                osteoporosis_form = self.osteoporosis_form_class(
+                    request.POST, instance=self.user.medicalprofile.osteoporosis
+                )
+                stroke_form = self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke)
         if (
             form.is_valid()
             and anticoagulation_form.is_valid()
@@ -263,30 +305,54 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
             return self.form_valid(form)
         else:
             if request.user.is_authenticated:
-                return self.render_to_response(
-                    self.get_context_data(
-                        form=form,
-                        anticoagulation_form=self.anticoagulation_form_class(
-                            request.POST, instance=request.user.medicalprofile.anticoagulation
-                        ),
-                        bleed_form=self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed),
-                        CKD_form=self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD),
-                        colchicine_interactions_form=self.colchicine_interactions_form_class(
-                            request.POST, instance=request.user.medicalprofile.colchicine_interactions
-                        ),
-                        diabetes_form=self.diabetes_form_class(
-                            request.POST, instance=request.user.medicalprofile.diabetes
-                        ),
-                        heartattack_form=self.heartattack_form_class(
-                            request.POST, instance=request.user.medicalprofile.heartattack
-                        ),
-                        IBD_form=self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD),
-                        osteoporosis_form=self.osteoporosis_form_class(
-                            request.POST, instance=request.user.medicalprofile.osteoporosis
-                        ),
-                        stroke_form=self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
+                self.username = self.kwargs.get("username", None)
+                self.user = None
+                # Check if user is authenticated and pull OnetoOne related model data from MedicalProfile if so
+                if self.username:
+                    self.user = User.objects.get(username=self.username)
+                    return self.render_to_response(
+                        self.get_context_data(
+                            form=form,
+                            anticoagulation_form=self.anticoagulation_form_class(
+                                request.POST, instance=self.user.medicalprofile.anticoagulation
+                            ),
+                            bleed_form=self.bleed_form_class(request.POST, instance=self.user.medicalprofile.bleed),
+                            CKD_form=self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD),
+                            colchicine_interactions_form=self.colchicine_interactions_form_class(
+                                request.POST, instance=self.user.medicalprofile.colchicine_interactions
+                            ),
+                            diabetes_form=self.diabetes_form_class(
+                                request.POST, instance=self.user.medicalprofile.diabetes
+                            ),
+                            heartattack_form=self.heartattack_form_class(
+                                request.POST, instance=self.user.medicalprofile.heartattack
+                            ),
+                            IBD_form=self.IBD_form_class(request.POST, instance=self.user.medicalprofile.IBD),
+                            osteoporosis_form=self.osteoporosis_form_class(
+                                request.POST, instance=self.user.medicalprofile.osteoporosis
+                            ),
+                            stroke_form=self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke),
+                        )
                     )
-                )
+                else:
+                    return self.render_to_response(
+                        self.get_context_data(
+                            form=form,
+                            anticoagulation_form=self.anticoagulation_form_class(
+                                request.POST, instance=Anticoagulation()
+                            ),
+                            bleed_form=self.bleed_form_class(request.POST, instance=Bleed()),
+                            CKD_form=self.CKD_form_class(request.POST, instance=CKD()),
+                            colchicine_interactions_form=self.colchicine_interactions_form_class(
+                                request.POST, instance=ColchicineInteractions()
+                            ),
+                            diabetes_form=self.diabetes_form_class(request.POST, instance=Diabetes()),
+                            heartattack_form=self.heartattack_form_class(request.POST, instance=HeartAttack()),
+                            IBD_form=self.IBD_form_class(request.POST, instance=IBD()),
+                            osteoporosis_form=self.osteoporosis_form_class(request.POST, instance=Osteoporosis()),
+                            stroke_form=self.stroke_form_class(request.POST, instance=Stroke()),
+                        )
+                    )
             else:
                 return self.render_to_response(
                     self.get_context_data(
@@ -311,7 +377,7 @@ class PPxAidDetail(DetailView):
     template_name = "ppxaid/ppxaid_detail.html"
 
 
-class PPxAidUpdate(LoginRequiredMixin, UpdateView):
+class PPxAidUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
     model = PPxAid
     form_class = PPxAidForm
     anticoagulation_form_class = AnticoagulationSimpleForm
@@ -324,187 +390,189 @@ class PPxAidUpdate(LoginRequiredMixin, UpdateView):
     osteoporosis_form_class = OsteoporosisSimpleForm
     stroke_form_class = StrokeSimpleForm
 
-    def form_valid(self, form):
-        # Check if POST has 'ultaid' kwarg and assign PPxAid ULTAid OnetoOne related object based on pk='ultaid'
-        if self.kwargs.get("ultaid"):
-            form.instance.ultaid = ULTAid.objects.get(pk=self.kwargs.get("ultaid"))
-        # For updating, check if user has created a PPxTreatment model object out of previous iteration of PPxAid, if so, delete it
-        try:
-            form.instance.colchicine.delete()
-        except ObjectDoesNotExist:
-            pass
-        try:
-            form.instance.ibuprofen.delete()
-        except ObjectDoesNotExist:
-            pass
-        try:
-            form.instance.prednisone.delete()
-        except ObjectDoesNotExist:
-            pass
-        return super().form_valid(form)
-
     def get_context_data(self, **kwargs):
         context = super(PPxAidUpdate, self).get_context_data(**kwargs)
+        self.user = None
+        # See if there is username kwarg
+        try:
+            self.username = self.kwargs.get("username")
+        except:
+            self.username = None
+        # If there is a username, fetch associated User and related MedicalProfile objects
+        if self.username:
+            self.user = User.objects.get(username=self.username)
         # Add PPxAid OnetoOne related model objects from the MedicalProfile for the logged in User
         if self.request.POST:
+            self.user = None
+            # See if there is username kwarg
+            try:
+                self.username = self.kwargs.get("username")
+            except:
+                self.username = None
+            # If there is a username, fetch associated User and related MedicalProfile objects
+            if self.username:
+                self.user = User.objects.get(username=self.username)
             if "anticoagulation_form" not in context:
                 context["anticoagulation_form"] = self.anticoagulation_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.anticoagulation
+                    self.request.POST, instance=self.user.medicalprofile.anticoagulation
                 )
             if "bleed_form" not in context:
                 context["bleed_form"] = self.bleed_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.bleed
+                    self.request.POST, instance=self.user.medicalprofile.bleed
                 )
             if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.CKD
-                )
+                context["CKD_form"] = self.CKD_form_class(self.request.POST, instance=self.user.medicalprofile.CKD)
             if "colchicine_interactions_form" not in context:
                 context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.colchicine_interactions
+                    self.request.POST, instance=self.user.medicalprofile.colchicine_interactions
                 )
             if "diabetes_form" not in context:
                 context["diabetes_form"] = self.diabetes_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.diabetes
+                    self.request.POST, instance=self.user.medicalprofile.diabetes
                 )
             if "heartattack_form" not in context:
                 context["heartattack_form"] = self.heartattack_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.heartattack
+                    self.request.POST, instance=self.user.medicalprofile.heartattack
                 )
             if "IBD_form" not in context:
-                context["IBD_form"] = self.IBD_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.IBD
-                )
+                context["IBD_form"] = self.IBD_form_class(self.request.POST, instance=self.user.medicalprofile.IBD)
             if "osteoporosis_form" not in context:
                 context["osteoporosis_form"] = self.osteoporosis_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.osteoporosis
+                    self.request.POST, instance=self.user.medicalprofile.osteoporosis
                 )
             if "stroke_form" not in context:
                 context["stroke_form"] = self.stroke_form_class(
-                    self.request.POST, instance=self.request.user.medicalprofile.stroke
+                    self.request.POST, instance=self.user.medicalprofile.stroke
                 )
             return context
         else:
             if "anticoagulation_form" not in context:
                 context["anticoagulation_form"] = self.anticoagulation_form_class(
-                    instance=self.request.user.medicalprofile.anticoagulation
+                    instance=self.user.medicalprofile.anticoagulation
                 )
             if "bleed_form" not in context:
-                context["bleed_form"] = self.bleed_form_class(instance=self.request.user.medicalprofile.bleed)
+                context["bleed_form"] = self.bleed_form_class(instance=self.user.medicalprofile.bleed)
             if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(instance=self.request.user.medicalprofile.CKD)
+                context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
             if "colchicine_interactions_form" not in context:
                 context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
-                    instance=self.request.user.medicalprofile.colchicine_interactions
+                    instance=self.user.medicalprofile.colchicine_interactions
                 )
             if "diabetes_form" not in context:
-                context["diabetes_form"] = self.diabetes_form_class(instance=self.request.user.medicalprofile.diabetes)
+                context["diabetes_form"] = self.diabetes_form_class(instance=self.user.medicalprofile.diabetes)
             if "heartattack_form" not in context:
-                context["heartattack_form"] = self.heartattack_form_class(
-                    instance=self.request.user.medicalprofile.heartattack
-                )
+                context["heartattack_form"] = self.heartattack_form_class(instance=self.user.medicalprofile.heartattack)
             if "IBD_form" not in context:
-                context["IBD_form"] = self.IBD_form_class(instance=self.request.user.medicalprofile.IBD)
+                context["IBD_form"] = self.IBD_form_class(instance=self.user.medicalprofile.IBD)
             if "osteoporosis_form" not in context:
                 context["osteoporosis_form"] = self.osteoporosis_form_class(
-                    instance=self.request.user.medicalprofile.osteoporosis
+                    instance=self.user.medicalprofile.osteoporosis
                 )
             if "stroke_form" not in context:
-                context["stroke_form"] = self.stroke_form_class(instance=self.request.user.medicalprofile.stroke)
+                context["stroke_form"] = self.stroke_form_class(instance=self.user.medicalprofile.stroke)
             return context
 
-    def get_form_kwargs(self):
-        """Overwrites get_form_kwargs() to look for 'ultaid' kwarg in GET request, uses 'ultaid' to query database for associated ULTAid for use in PPxAidForm
-        returns: [dict: dict containing 'ultaid' kwarg for form]"""
-        # Assign self.ultaid from GET request kwargs before calling super() which will overwrite kwargs
-        self.ultaid = self.kwargs.get("ultaid", None)
-        kwargs = super(PPxAidUpdate, self).get_form_kwargs()
-        # Checks if ultaid kwarg came from ULTAid Detail and queries database for ultaid_pk that matches self.ultaid from initial kwargs
-        if self.ultaid:
-            ultaid_pk = self.ultaid
-            ultaid = ULTAid.objects.get(pk=ultaid_pk)
-            kwargs["ultaid"] = ultaid
-        return kwargs
-
     def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         # Uses UpdateView to get the PPxAid instance requested and put it in a form
         form = self.form_class(request.POST, instance=self.get_object())
         anticoagulation_form = self.anticoagulation_form_class(
-            request.POST, instance=request.user.medicalprofile.anticoagulation
+            request.POST, instance=self.object.user.medicalprofile.anticoagulation
         )
-        bleed_form = self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed)
-        CKD_form = self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD)
+        bleed_form = self.bleed_form_class(request.POST, instance=self.object.user.medicalprofile.bleed)
+        CKD_form = self.CKD_form_class(request.POST, instance=self.object.user.medicalprofile.CKD)
         colchicine_interactions_form = self.colchicine_interactions_form_class(
-            request.POST, instance=request.user.medicalprofile.colchicine_interactions
+            request.POST, instance=self.object.user.medicalprofile.colchicine_interactions
         )
-        diabetes_form = self.diabetes_form_class(request.POST, instance=request.user.medicalprofile.diabetes)
-        heartattack_form = self.heartattack_form_class(request.POST, instance=request.user.medicalprofile.heartattack)
-        IBD_form = self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD)
+        diabetes_form = self.diabetes_form_class(request.POST, instance=self.object.user.medicalprofile.diabetes)
+        heartattack_form = self.heartattack_form_class(
+            request.POST, instance=self.object.user.medicalprofile.heartattack
+        )
+        IBD_form = self.IBD_form_class(request.POST, instance=self.object.user.medicalprofile.IBD)
         osteoporosis_form = self.osteoporosis_form_class(
-            request.POST, instance=request.user.medicalprofile.osteoporosis
+            request.POST, instance=self.object.user.medicalprofile.osteoporosis
         )
-        stroke_form = self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke)
+        stroke_form = self.stroke_form_class(request.POST, instance=self.object.user.medicalprofile.stroke)
 
         if form.is_valid():
             ppxaid_data = form.save(commit=False)
-            anticoagulation_data = anticoagulation_form.save(commit=False)
-            anticoagulation_data.last_modified = "FlareAid"
-            anticoagulation_data.save()
-            bleed_data = bleed_form.save(commit=False)
-            bleed_data.last_modified = "FlareAid"
-            bleed_data.save()
-            ckd_data = CKD_form.save(commit=False)
-            ckd_data.last_modified = "FlareAid"
-            ckd_data.save()
-            colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
-            colchicine_interactions_data.last_modified = "FlareAid"
-            colchicine_interactions_data.save()
-            diabetes_data = diabetes_form.save(commit=False)
-            diabetes_data.last_modified = "FlareAid"
-            diabetes_data.save()
-            heartattack_data = heartattack_form.save(commit=False)
-            heartattack_data.last_modified = "FlareAid"
-            heartattack_data.save()
-            IBD_data = IBD_form.save(commit=False)
-            IBD_data.last_modified = "FlareAid"
-            IBD_data.save()
-            osteoporosis_data = osteoporosis_form.save(commit=False)
-            osteoporosis_data.last_modified = "FlareAid"
-            osteoporosis_data.save()
-            stroke_data = stroke_form.save(commit=False)
-            stroke_data.last_modified = "FlareAid"
-            stroke_data.save()
-            ppxaid_data.anticoagulation = anticoagulation_data
-            ppxaid_data.bleed = bleed_data
-            ppxaid_data.ckd = ckd_data
-            ppxaid_data.colchicine_interactions = colchicine_interactions_data
-            ppxaid_data.diabetes = diabetes_data
-            ppxaid_data.heartattack = heartattack_data
-            ppxaid_data.ibd = IBD_data
-            ppxaid_data.osteoporosis = osteoporosis_data
-            ppxaid_data.stroke = stroke_data
-            # Need to call form_valid(), not redirect. form_valid() super function returns to object DetailView
+            if anticoagulation_form.is_valid():
+                if "value" in anticoagulation_form.changed_data:
+                    anticoagulation_data = anticoagulation_form.save(commit=False)
+                    anticoagulation_data.last_modified = "FlareAid"
+                    anticoagulation_data.save()
+                    ppxaid_data.anticoagulation = anticoagulation_data
+            if bleed_form.is_valid():
+                if "value" in bleed_form.changed_data:
+                    bleed_data = bleed_form.save(commit=False)
+                    bleed_data.last_modified = "FlareAid"
+                    bleed_data.save()
+                    ppxaid_data.bleed = bleed_data
+            if CKD_form.is_valid():
+                if "value" in CKD_form.changed_data:
+                    ckd_data = CKD_form.save(commit=False)
+                    ckd_data.last_modified = "FlareAid"
+                    ckd_data.save()
+                    ppxaid_data.ckd = ckd_data
+            if colchicine_interactions_form.is_valid():
+                if "value" in colchicine_interactions_form.changed_data:
+                    colchicine_interactions_data = colchicine_interactions_form.save(commit=False)
+                    colchicine_interactions_data.last_modified = "FlareAid"
+                    colchicine_interactions_data.save()
+                    ppxaid_data.colchicine_interactions = colchicine_interactions_data
+            if diabetes_form.is_valid():
+                if "value" in diabetes_form.changed_data:
+                    diabetes_data = diabetes_form.save(commit=False)
+                    diabetes_data.last_modified = "FlareAid"
+                    diabetes_data.save()
+                    ppxaid_data.diabetes = diabetes_data
+            if heartattack_form.is_valid():
+                if "value" in heartattack_form.changed_data:
+                    heartattack_data = heartattack_form.save(commit=False)
+                    heartattack_data.last_modified = "FlareAid"
+                    heartattack_data.save()
+                    ppxaid_data.heartattack = heartattack_data
+            if IBD_form.is_valid():
+                if "value" in IBD_form.changed_data:
+                    IBD_data = IBD_form.save(commit=False)
+                    IBD_data.last_modified = "FlareAid"
+                    IBD_data.save()
+                    ppxaid_data.ibd = IBD_data
+            if osteoporosis_form.is_valid():
+                if "value" in osteoporosis_form.changed_data:
+                    osteoporosis_data = osteoporosis_form.save(commit=False)
+                    osteoporosis_data.last_modified = "FlareAid"
+                    osteoporosis_data.save()
+                    ppxaid_data.osteoporosis = osteoporosis_data
+            if stroke_form.is_valid():
+                if "value" in stroke_form.changed_data:
+                    stroke_data = stroke_form.save(commit=False)
+                    stroke_data.last_modified = "FlareAid"
+                    stroke_data.save()
+                    ppxaid_data.stroke = stroke_data
             return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
                     anticoagulation_form=self.anticoagulation_form_class(
-                        request.POST, instance=request.user.medicalprofile.anticoagulation
+                        request.POST, instance=self.object.user.medicalprofile.anticoagulation
                     ),
-                    bleed_form=self.bleed_form_class(request.POST, instance=request.user.medicalprofile.bleed),
-                    CKD_form=self.CKD_form_class(request.POST, instance=request.user.medicalprofile.CKD),
+                    bleed_form=self.bleed_form_class(request.POST, instance=self.object.user.medicalprofile.bleed),
+                    CKD_form=self.CKD_form_class(request.POST, instance=self.object.user.medicalprofile.CKD),
                     colchicine_interactions_form=self.colchicine_interactions_form_class(
-                        request.POST, instance=request.user.medicalprofile.colchicine_interactions
+                        request.POST, instance=self.object.user.medicalprofile.colchicine_interactions
                     ),
-                    diabetes_form=self.diabetes_form_class(request.POST, instance=request.user.medicalprofile.diabetes),
+                    diabetes_form=self.diabetes_form_class(
+                        request.POST, instance=self.object.user.medicalprofile.diabetes
+                    ),
                     heartattack_form=self.heartattack_form_class(
-                        request.POST, instance=request.user.medicalprofile.heartattack
+                        request.POST, instance=self.object.user.medicalprofile.heartattack
                     ),
-                    IBD_form=self.IBD_form_class(request.POST, instance=request.user.medicalprofile.IBD),
+                    IBD_form=self.IBD_form_class(request.POST, instance=self.object.user.medicalprofile.IBD),
                     osteoporosis_form=self.osteoporosis_form_class(
-                        request.POST, instance=request.user.medicalprofile.osteoporosis
+                        request.POST, instance=self.object.user.medicalprofile.osteoporosis
                     ),
-                    stroke_form=self.stroke_form_class(request.POST, instance=request.user.medicalprofile.stroke),
+                    stroke_form=self.stroke_form_class(request.POST, instance=self.object.user.medicalprofile.stroke),
                 )
             )

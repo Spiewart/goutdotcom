@@ -48,7 +48,7 @@
                   <a class="dropdown-item" href="{% url 'ppxaid:detail' request.user.ppxaid.pk %}">PPx</a>
                   {% else %}
                     {% if request.user.ultaid %}
-                    <a class="dropdown-item" href="{% url 'ppxaid:ultaid-create' ultaid=request.user.ultaid.pk %}">PPx</a>
+                    <a class="dropdown-item" href="{% url 'ppxaid:ultaid-create' pk=request.user.ultaid.pk %}">PPx</a>
                     {% else %}
                     <a class="dropdown-item" href="{% url 'ppxaid:create' %}">PPx</a>
                     {% endif %}
