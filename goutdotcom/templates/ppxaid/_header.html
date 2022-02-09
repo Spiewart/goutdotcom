@@ -1,9 +1,13 @@
 {% load ppxaid_extras %}
 <h1 id="rec">
   {% if request.user.is_authenticated %}
-  {{ request.user|capfirst }}'s
+    {% if object.slug %}
+    {{ object.slug|capfirst }}'s Prophylaxis Helper
+    {% else %}
+    Prophylaxis Helper {{ object.created|date }}
+    {% endif %}
   {% endif %}
-  Prophylaxis Helper
+
   <a class="btn btn-primary btn-lg" href="{% url 'treatment:about-prophylaxis' %}" role="button">About Prophylaxis</a>
 </h1>
 

@@ -11,7 +11,11 @@ ULT Calculator
       {% if form.instance.pk %}
         <h1>Does {{ object.user.username }} still need urate-lowering therapy (ULT)?</h1>
       {% else %}
+        {% if view.kwargs.username %}
         <h1>Does {{ view.kwargs.username }} need urate-lowering therapy (ULT)?</h1>
+        {% else %}
+        <h1>Is ULT required?</h1>
+        {% endif %}
       {% endif %}
     {% elif request.user.role == "PATIENT" %}
       {% if form.instance.pk %}
@@ -37,10 +41,17 @@ ULT Calculator
           {% crispy form %}
         </form>
     {% else %}
+        {% if view.kwargs.username %}
         <form method="post" action="{% url 'ult:user-create' view.kwargs.username %}">
           {% csrf_token %}
           {% crispy form %}
         </form>
+        {% else %}
+          <form method="post" action="{% url 'ult:create' %}">
+            {% csrf_token %}
+            {% crispy form %}
+          </form>
+        {% endif %}
     {% endif %}
   {% elif request.user.role == "PATIENT" %}
     {% if form.instance.pk %}

@@ -74,10 +74,22 @@
               {% elif request.user.role == "PROVIDER" %}
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Calcs
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'flare:create' %}">Flare</a>
+                    <a class="dropdown-item" href="{% url 'flareaid:create' %}">FlareAid</a>
+                    <a class="dropdown-item" href="{% url 'ult:create' %}">ULT</a>
+                    <a class="dropdown-item" href="{% url 'ultaid:create' %}">ULTAid</a>
+                    <a class="dropdown-item" href="{% url 'ppxaid:create' %}">PPxAid</a>
+                  </div>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ request.user|capfirst }}
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'users:detail' request.user.username  %}">{% trans "Profile" %}</a>
+                    <a class="dropdown-item" href="{% url 'users:detail' request.user.username %}">{% trans "Profile" %}</a>
                       <a class="dropdown-item" href="{% url 'users:provider-patient-list' request.user.username %}">Patients</a>
                   </div>
                 </li>

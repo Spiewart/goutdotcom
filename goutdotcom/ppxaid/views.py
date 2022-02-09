@@ -112,6 +112,14 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
             return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """Overwritten to check if the User is logged in
+        Checks if there is a username kwarg supplied
+        Check if there is a User associated with username kwarg
+        Passes to generate blank form if not
+
+        Returns:
+            [dict]: [context]
+        """
         context = super(PPxAidCreate, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             self.user = None
@@ -120,64 +128,74 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                 self.username = self.kwargs.get("username")
             except:
                 self.username = None
-            # If there is a username, fetch associated User and related MedicalProfile objects
+            # If there is a username, check for associated User and related MedicalProfile objects
             if self.username:
-                self.user = User.objects.get(username=self.username)
-            # Add FlareAid OnetoOne related model objects from the MedicalProfile for the User
-            if "anticoagulation_form" not in context:
-                context["anticoagulation_form"] = self.anticoagulation_form_class(
-                    instance=self.user.medicalprofile.anticoagulation
-                )
-            if "bleed_form" not in context:
-                context["bleed_form"] = self.bleed_form_class(instance=self.user.medicalprofile.bleed)
-            if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
-            if "colchicine_interactions_form" not in context:
-                context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
-                    instance=self.user.medicalprofile.colchicine_interactions
-                )
-            if "diabetes_form" not in context:
-                context["diabetes_form"] = self.diabetes_form_class(instance=self.user.medicalprofile.diabetes)
-            if "heartattack_form" not in context:
-                context["heartattack_form"] = self.heartattack_form_class(instance=self.user.medicalprofile.heartattack)
-            if "IBD_form" not in context:
-                context["IBD_form"] = self.IBD_form_class(instance=self.user.medicalprofile.IBD)
-            if "osteoporosis_form" not in context:
-                context["osteoporosis_form"] = self.osteoporosis_form_class(
-                    instance=self.user.medicalprofile.osteoporosis
-                )
-            if "stroke_form" not in context:
-                context["stroke_form"] = self.stroke_form_class(instance=self.user.medicalprofile.stroke)
-            return context
-        else:
-            if "anticoagulation_form" not in context:
-                context["anticoagulation_form"] = self.anticoagulation_form_class(self.request.GET)
-            if "bleed_form" not in context:
-                context["bleed_form"] = self.bleed_form_class(self.request.GET)
-            if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(self.request.GET)
-            if "colchicine_interactions_form" not in context:
-                context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(self.request.GET)
-            if "diabetes_form" not in context:
-                context["diabetes_form"] = self.diabetes_form_class(self.request.GET)
-            if "heartattack_form" not in context:
-                context["heartattack_form"] = self.heartattack_form_class(self.request.GET)
-            if "IBD_form" not in context:
-                context["IBD_form"] = self.IBD_form_class(self.request.GET)
-            if "osteoporosis_form" not in context:
-                context["osteoporosis_form"] = self.osteoporosis_form_class(self.request.GET)
-            if "stroke_form" not in context:
-                context["stroke_form"] = self.stroke_form_class(self.request.GET)
-            return context
+                try:
+                    self.user = User.objects.get(username=self.username)
+                except ObjectDoesNotExist:
+                    self.username = None
+                if self.user:
+                    # Add FlareAid OnetoOne related model objects from the MedicalProfile for the User
+                    if "anticoagulation_form" not in context:
+                        context["anticoagulation_form"] = self.anticoagulation_form_class(
+                            instance=self.user.medicalprofile.anticoagulation
+                        )
+                    if "bleed_form" not in context:
+                        context["bleed_form"] = self.bleed_form_class(instance=self.user.medicalprofile.bleed)
+                    if "CKD_form" not in context:
+                        context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
+                    if "colchicine_interactions_form" not in context:
+                        context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
+                            instance=self.user.medicalprofile.colchicine_interactions
+                        )
+                    if "diabetes_form" not in context:
+                        context["diabetes_form"] = self.diabetes_form_class(instance=self.user.medicalprofile.diabetes)
+                    if "heartattack_form" not in context:
+                        context["heartattack_form"] = self.heartattack_form_class(
+                            instance=self.user.medicalprofile.heartattack
+                        )
+                    if "IBD_form" not in context:
+                        context["IBD_form"] = self.IBD_form_class(instance=self.user.medicalprofile.IBD)
+                    if "osteoporosis_form" not in context:
+                        context["osteoporosis_form"] = self.osteoporosis_form_class(
+                            instance=self.user.medicalprofile.osteoporosis
+                        )
+                    if "stroke_form" not in context:
+                        context["stroke_form"] = self.stroke_form_class(instance=self.user.medicalprofile.stroke)
+                    return context
+                # Pass to generate blank PPxAid form if no username/user
+                else:
+                    pass
+            else:
+                pass
+        if "anticoagulation_form" not in context:
+            context["anticoagulation_form"] = self.anticoagulation_form_class(self.request.GET)
+        if "bleed_form" not in context:
+            context["bleed_form"] = self.bleed_form_class(self.request.GET)
+        if "CKD_form" not in context:
+            context["CKD_form"] = self.CKD_form_class(self.request.GET)
+        if "colchicine_interactions_form" not in context:
+            context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(self.request.GET)
+        if "diabetes_form" not in context:
+            context["diabetes_form"] = self.diabetes_form_class(self.request.GET)
+        if "heartattack_form" not in context:
+            context["heartattack_form"] = self.heartattack_form_class(self.request.GET)
+        if "IBD_form" not in context:
+            context["IBD_form"] = self.IBD_form_class(self.request.GET)
+        if "osteoporosis_form" not in context:
+            context["osteoporosis_form"] = self.osteoporosis_form_class(self.request.GET)
+        if "stroke_form" not in context:
+            context["stroke_form"] = self.stroke_form_class(self.request.GET)
+        return context
 
     def get_form_kwargs(self):
         """Ovewrites get_form_kwargs() to look for 'ultaid' kwarg in GET request, uses 'ultaid' to query database for associated ULTAid for use in PPxAidForm
         returns: [dict: dict containing 'ultaid' kwarg for form]"""
         # Assign self.ultaid from GET request kwargs before calling super() which will overwrite kwargs
         self.ultaid = self.kwargs.get("ultaid", None)
-        self.no_user = False
-        if self.request.user.is_authenticated == False:
-            self.no_user = True
+        self.no_user = True
+        if self.kwargs.get("username"):
+            self.no_user = False
         kwargs = super(PPxAidCreate, self).get_form_kwargs()
         # Checks if flare kwarg came from ULTAid Detail and queries database for ultaid_pk that matches self.ultaid from initial kwargs
         if self.ultaid:
@@ -191,8 +209,9 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
             kwargs["ultaid"] = ultaid
             kwargs["no_user"] = self.no_user
             # If User is anonymous / not logged in and PPxAid has a ULTAid, pass ckd stroke and heartattack from ULTAid to PPxAid to avoid duplication of user input
-            if self.request.user.is_authenticated == False:
-                kwargs["ckd"] = ultaid.stroke
+            print(self.no_user)
+            if self.no_user == True:
+                kwargs["ckd"] = ultaid.ckd
                 kwargs["stroke"] = ultaid.stroke
                 kwargs["heartattack"] = ultaid.heartattack
         return kwargs

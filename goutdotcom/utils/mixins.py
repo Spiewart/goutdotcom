@@ -142,14 +142,13 @@ class PatientProviderCreateMixin:
                 # Check if the User with the username provided in kwargs is a patient of Provider
                 if self.kwargs.get("username"):
                     self.user = User.objects.get(username=self.kwargs.get("username"))
-                    print(self.user)
                     if self.user.patientprofile.provider == self.request.user:
                         return super().get(request, *args, **kwargs)
                     # Else raise 404
                     else:
                         return PermissionDenied
                 else:
-                    raise PermissionDenied
+                    return super().get(request, *args, **kwargs)
             # Check if requesting User is a Patient
             elif self.request.user.role == "PATIENT":
                 # Check if there is a username kwarg provided

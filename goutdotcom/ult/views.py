@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView
@@ -117,12 +118,13 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         # Check if User is logged in
         if self.request.user.is_authenticated:
             # Check if User is a Patient
+            user_ULT = None
             if request.user.role == "PATIENT":
                 # If so, try to fetch ULT and assign to user_ULT
                 try:
                     user_ULT = self.model.objects.get(user=request.user)
                 # Else set to None
-                except:
+                except ObjectDoesNotExist:
                     user_ULT = None
             # Check if User is a Provider
             elif request.user.role == "PROVIDER":
@@ -130,7 +132,7 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                 try:
                     self.username = self.kwargs.get("username")
                 # Assign to None otherwise
-                except:
+                except ObjectDoesNotExist:
                     self.username = None
                 # If there is a username in kwargs, fetch the User its associated with
                 if self.username:

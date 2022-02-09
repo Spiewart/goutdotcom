@@ -1,15 +1,17 @@
 {% load ultaid_extras %}
   {% if request.user.is_authenticated %}
-  <a class="btn btn-primary btn-lg" href="{% url 'ultaid:user-create' object.user.username %}" role="button" style="float: right;">Update</a>
-  {% else %}
-  <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">Recalculate</a>
-  {% endif %}
-  <h1>
-    {% if request.user.is_authenticated %}
-    {{ object.user|capfirst }}'s
+    {% if object.slug %}
+      <a class="btn btn-primary btn-lg" href="{% url 'ultaid:user-create' object.user.username %}" role="button" style="float: right;">Update</a>
+      <h1>{{ object.slug }}'s ULTAid</h1>
+    {% else %}
+      <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button"
+        style="float: right;">Recalculate</a>
+      <h1>ULTAid {{ object.created|date }}</h1>
     {% endif %}
-    ULT Recommendation
-  </h1>
+  {% else %}
+    <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">Recalculate</a>
+    <h1>{{ object.slug }}'s ULTAid</h1>
+  {% endif %}
 <div class="row">
   <div class="col">
     {% if object.decision_aid|get_key:'want' == False %}
@@ -40,11 +42,31 @@
       <div class="col">
         <h2><u>Prophylaxis</u>:
           {% if request.user.is_authenticated %}
-            {% if request.user.ppxaid %}
-            <a href="{% url 'ppxaid:user-detail' slug=request.user.username%}">{{ ultaid.ppxaid }}</a>
-            {% else %}
-              <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:user-ultaid-create' username=request.user.username ultaid=request.user.username %}"
+            {% if request.user.role == "PROVIDER" %}
+              {% if object.user %}
+                {% if object.user.ppxaid %}
+                <a href="{% url 'ppxaid:user-detail' slug=object.user.username%}">{{ ultaid.ppxaid }}</a>
+                {% else %}
+                  <a class="btn btn-primary btn-lg" href="{% url 'ppxaid:user-ultaid-create' username=object.user.username ultaid=object.user.username %}"
+                    role="button" style="float: none;">Create PPxAid</a>
+                {% endif %}
+              {% else %}
+                {% if object.ppxaid %}
+                  <a href="{% url 'ppxaid:detail' object.ppxaid.pk %}">{{ object.ppxaid }}</a>
+                {% else %}
+                  <a class="btn btn-primary btn-lg"
+                    href="{% url 'ppxaid:ultaid-create' ultaid=object.pk %}"
+                    role="button" style="float: none;">Create PPxAid</a>
+                {% endif %}
+              {% endif %}
+            {% elif object.user.role == "PATIENT" %}
+              {% if request.user.ppxaid %}
+              <a href="{% url 'ppxaid:user-detail' slug=request.user.username%}">{{ ultaid.ppxaid }}</a>
+              {% else %}
+              <a class="btn btn-primary btn-lg"
+                href="{% url 'ppxaid:user-ultaid-create' username=request.user.username ultaid=request.user.username %}"
                 role="button" style="float: none;">Create PPxAid</a>
+              {% endif %}
             {% endif %}
           {% else %}
             {% if object.ppxaid %}

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView
@@ -76,18 +77,19 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
     def get(self, request, *args, **kwargs):
         # Checks if user is logged in, if they have already created a ULTAid, and redirects to UpdateView if so
         if self.request.user.is_authenticated:
-            self.username = self.kwargs.get("username")
-            self.user = User.objects.get(username=self.username)
-            try:
-                user_ULTAid = self.model.objects.get(user=self.user)
-            except self.model.DoesNotExist:
-                user_ULTAid = None
-            if user_ULTAid:
-                return redirect("ultaid:update", slug=self.username)
+            if self.kwargs.get("username"):
+                self.username = self.kwargs.get("username")
+                try:
+                    self.ultaid = ULTAid.objects.get(slug=self.username)
+                except ObjectDoesNotExist:
+                    self.ultaid = None
+                if self.ultaid:
+                    return redirect("ultaid:update", slug=self.ultaid.slug)
+                else:
+                    super().get(request, *args, **kwargs)
             else:
-                return super().get(request, *args, **kwargs)
-        else:
-            return super().get(request, *args, **kwargs)
+                super().get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(ULTAidCreate, self).get_context_data(**kwargs)
@@ -259,34 +261,32 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                 # Overwrite forms defined above with User instances
                 if self.username:
                     self.user = User.objects.get(username=self.username)
-                else:
-                    self.user = self.request.user
-                ULTAid_data.user = self.user
-                # See if User has PPxAid
-                try:
-                    self.ppxaid = self.user.ppxaid
-                except PPxAid.DoesNotExist:
-                    self.ppxaid = None
-                # Assign User to ULTAid form to avoid repeating the query in form_valid()
-                CKD_form = self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD)
-                erosions_form = self.erosions_form_class(request.POST, instance=self.user.medicalprofile.erosions)
-                XOI_interactions_form = self.XOI_interactions_form_class(
-                    request.POST, instance=self.user.medicalprofile.XOI_interactions
-                )
-                organ_transplant_form = self.organ_transplant_form_class(
-                    request.POST, instance=self.user.medicalprofile.organ_transplant
-                )
-                allopurinol_hypersensitivity_form = self.allopurinol_hypersensitivity_form_class(
-                    request.POST, instance=self.user.medicalprofile.allopurinol_hypersensitivity
-                )
-                febuxostat_hypersensitivity_form = self.febuxostat_hypersensitivity_form_class(
-                    request.POST, instance=self.user.medicalprofile.febuxostat_hypersensitivity
-                )
-                heartattack_form = self.heartattack_form_class(
-                    request.POST, instance=self.user.medicalprofile.heartattack
-                )
-                stroke_form = self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke)
-                tophi_form = self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi)
+                    ULTAid_data.user = self.user
+                    # See if User has PPxAid
+                    try:
+                        self.ppxaid = self.user.ppxaid
+                    except PPxAid.DoesNotExist:
+                        self.ppxaid = None
+                    # Assign User to ULTAid form to avoid repeating the query in form_valid()
+                    CKD_form = self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD)
+                    erosions_form = self.erosions_form_class(request.POST, instance=self.user.medicalprofile.erosions)
+                    XOI_interactions_form = self.XOI_interactions_form_class(
+                        request.POST, instance=self.user.medicalprofile.XOI_interactions
+                    )
+                    organ_transplant_form = self.organ_transplant_form_class(
+                        request.POST, instance=self.user.medicalprofile.organ_transplant
+                    )
+                    allopurinol_hypersensitivity_form = self.allopurinol_hypersensitivity_form_class(
+                        request.POST, instance=self.user.medicalprofile.allopurinol_hypersensitivity
+                    )
+                    febuxostat_hypersensitivity_form = self.febuxostat_hypersensitivity_form_class(
+                        request.POST, instance=self.user.medicalprofile.febuxostat_hypersensitivity
+                    )
+                    heartattack_form = self.heartattack_form_class(
+                        request.POST, instance=self.user.medicalprofile.heartattack
+                    )
+                    stroke_form = self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke)
+                    tophi_form = self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi)
             if CKD_form.is_valid():
                 CKD_data = CKD_form.save(commit=False)
                 CKD_data.last_modified = "ULTAid"
@@ -542,59 +542,58 @@ class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin
             # Uses related OnetoOne field forms to populate ULTAid fields, changes last_modified to ULTAid, and saves all data
             ULTAid_data = form.save(commit=False)
             if CKD_form.is_valid():
+                CKD_data = CKD_form.save(commit=False)
                 if "value" in CKD_form.changed_data:
-                    CKD_data = CKD_form.save(commit=False)
                     CKD_data.last_modified = "ULTAid"
-                    CKD_data.save()
-                    ULTAid_data.ckd = CKD_data
+                CKD_data.save()
+                ULTAid_data.ckd = CKD_data
             if erosions_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    erosions_data = erosions_form.save(commit=False)
+                erosions_data = erosions_form.save(commit=False)
+                if "value" in erosions_form.changed_data:
                     erosions_data.last_modified = "ULTAid"
-                    erosions_data.save()
-                    ULTAid_data.erosions = erosions_data
+                erosions_data.save()
+                ULTAid_data.erosions = erosions_data
             if XOI_interactions_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    XOI_interactions_data = XOI_interactions_form.save(commit=False)
+                XOI_interactions_data = XOI_interactions_form.save(commit=False)
+                if "value" in XOI_interactions_form.changed_data:
                     XOI_interactions_data.last_modified = "ULTAid"
-                    XOI_interactions_data.save()
-                    ULTAid_data.XOI_interactions = XOI_interactions_data
+                XOI_interactions_data.save()
+                ULTAid_data.XOI_interactions = XOI_interactions_data
             if organ_transplant_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    organ_transplant_data = organ_transplant_form.save(commit=False)
+                organ_transplant_data = organ_transplant_form.save(commit=False)
+                if "value" in organ_transplant_form.changed_data:
                     organ_transplant_data.last_modified = "ULTAid"
-                    organ_transplant_data.save()
-                    ULTAid_data.organ_transplant = organ_transplant_data
+                organ_transplant_data.save()
+                ULTAid_data.organ_transplant = organ_transplant_data
             if allopurinol_hypersensitivity_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    allopurinol_hypersensitivity_data = allopurinol_hypersensitivity_form.save(commit=False)
+                allopurinol_hypersensitivity_data = allopurinol_hypersensitivity_form.save(commit=False)
+                if "value" in allopurinol_hypersensitivity_form.changed_data:
                     allopurinol_hypersensitivity_data.last_modified = "ULTAid"
-                    allopurinol_hypersensitivity_data.save()
-                    ULTAid_data.allopurinol_hypersensitivity = allopurinol_hypersensitivity_data
+                allopurinol_hypersensitivity_data.save()
+                ULTAid_data.allopurinol_hypersensitivity = allopurinol_hypersensitivity_data
             if febuxostat_hypersensitivity_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    febuxostat_hypersensitivity_data = febuxostat_hypersensitivity_form.save(commit=False)
+                febuxostat_hypersensitivity_data = febuxostat_hypersensitivity_form.save(commit=False)
+                if "value" in febuxostat_hypersensitivity_form.changed_data:
                     febuxostat_hypersensitivity_data.last_modified = "ULTAid"
-                    febuxostat_hypersensitivity_data.save()
-                    ULTAid_data.febuxostat_hypersensitivity = febuxostat_hypersensitivity_data
+                febuxostat_hypersensitivity_data.save()
+                ULTAid_data.febuxostat_hypersensitivity = febuxostat_hypersensitivity_data
             if heartattack_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    heartattack_data = heartattack_form.save(commit=False)
+                heartattack_data = heartattack_form.save(commit=False)
+                if "value" in heartattack_form.changed_data:
                     heartattack_data.last_modified = "ULTAid"
-                    heartattack_data.save()
-                    ULTAid_data.heartattack = heartattack_data
+                heartattack_data.save()
+                ULTAid_data.heartattack = heartattack_data
             if stroke_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    stroke_data = stroke_form.save(commit=False)
+                stroke_data = stroke_form.save(commit=False)
+                if "value" in stroke_form.changed_data:
                     stroke_data.last_modified = "ULTAid"
-                    stroke_data.save()
-                    ULTAid_data.stroke = stroke_data
+                stroke_data.save()
+                ULTAid_data.stroke = stroke_data
             if tophi_form.is_valid():
-                if "value" in CKD_form.changed_data:
-                    tophi_data = tophi_form.save(commit=False)
-                    tophi_data.last_modified = "ULTAid"
+                tophi_data = tophi_form.save(commit=False)
+                if "value" in tophi_form.changed_data:
                     tophi_data.save()
-                    ULTAid_data.tophi = tophi_data
+                ULTAid_data.tophi = tophi_data
             return self.form_valid(form)
         else:
             return self.render_to_response(

@@ -5,8 +5,15 @@
     </div>
   <div class="col">
     {% if request.user.is_authenticated %}
-    <a class="btn btn-primary btn-lg" href="{% url 'ult:user-create' object.user.username %}" role="button" style="float: right;">Update</a>
-    <a class="btn btn-primary btn-lg" href="{% url 'ultaid:user-ult-create' ult=object.slug username=object.user.username %}" role="button">ULT Helper</a>
+      {% if object.user %}
+        <a class="btn btn-primary btn-lg" href="{% url 'ult:user-create' object.user.username %}" role="button" style="float: right;">Update</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'ultaid:user-ult-create' ult=object.slug username=object.user.username %}" role="button">ULT Helper</a>
+      {% else %}
+        <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button"
+          style="float: right;">Recalculate</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'ultaid:ult-create' ult=object.pk %}" role="button">ULT
+          Helper</a>
+      {% endif %}
     {% else %}
     <a class="btn btn-primary btn-lg" href="{% url 'ult:create' %}" role="button" style="float: right;">Recalculate</a>
     <a class="btn btn-primary btn-lg" href="{% url 'ultaid:ult-create' ult=object.pk %}" role="button">ULT Helper</a>
