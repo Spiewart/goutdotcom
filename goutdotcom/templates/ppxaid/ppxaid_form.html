@@ -13,25 +13,30 @@
 {% endblock header %}
 {% block form %}
 {% if form.instance.pk %}
-{% if view.kwargs.ultaid %}
-<form method="post" action="{% url 'ppxaid:ultaid-update' pk=object.pk ultaid=view.kwargs.ultaid %}">
-  {% csrf_token %} {% crispy form %}
-</form>
-{% else %}
-<form method="post" action="{% url 'ppxaid:update' object.pk %}" enctype="multipart/form-data">
-  {% csrf_token %} {% crispy form %}
-</form>
-{% endif %}
-{% else %}
-{% if request.user.is_authenticated %}
   {% if view.kwargs.ultaid %}
-    {% if view.kwargs.username %}
-      <form method="post" action="{% url 'ppxaid:user-ultaid-create' username=view.kwargs.username ultaid=view.kwargs.ultaid %}">
-        {% csrf_token %} {% crispy form %}
-      </form>
+  <form method="post" action="{% url 'ppxaid:ultaid-update' pk=object.pk ultaid=view.kwargs.ultaid %}">
+    {% csrf_token %} {% crispy form %}
+  </form>
+  {% else %}
+  <form method="post" action="{% url 'ppxaid:update' object.pk %}" enctype="multipart/form-data">
+    {% csrf_token %} {% crispy form %}
+  </form>
+  {% endif %}
+{% else %}
+  {% if request.user.is_authenticated %}
+    {% if view.kwargs.ultaid %}
+      {% if view.kwargs.username %}
+        <form method="post" action="{% url 'ppxaid:user-ultaid-create' username=view.kwargs.username ultaid=view.kwargs.ultaid %}">
+          {% csrf_token %} {% crispy form %}
+        </form>
+      {% else %}
+        <form method="post"
+          action="{% url 'ppxaid:ultaid-create' ultaid=view.kwargs.ultaid %}">
+          {% csrf_token %} {% crispy form %}
+        </form>
+      {% endif %}
     {% else %}
-      <form method="post"
-        action="{% url 'ppxaid:ultaid-create' ultaid=view.kwargs.ultaid %}">
+      <form method="post" action="{% url 'ppxaid:create' %}">
         {% csrf_token %} {% crispy form %}
       </form>
     {% endif %}
@@ -40,7 +45,6 @@
     {% csrf_token %} {% crispy form %}
   </form>
   {% endif %}
-{% endif %}
 {% endif %}
 {% endblock form %}
 {% block inline_javascript %}

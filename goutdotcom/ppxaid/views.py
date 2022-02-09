@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -76,6 +76,27 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         # Checks if User is authenticated and redirects to PPxAid UpdateView if so
+        # First block to set variables for rest of function to avoid multiple queries
+        self.username = self.kwargs.get("username", None)
+        self.ultaid_index = self.kwargs.get("ultaid", None)
+        self.user = None
+        self.ultaid = None
+
+        if self.username:
+            self.user = User.objects.get(username=self.username)
+        if self.ultaid_index:
+            if isinstance(self.ultaid_index, str):
+                self.ultaid = ULTAid.objects.get(slug=self.ultaid_index)
+            else:
+                self.ultaid = ULTAid.objects.get(pk=self.ultaid_index)
+
+        # Check if there is a User and ULTAid via user and ultaid kwargs
+        # If those users are not the same, raise PermissionDenied
+        # Blocks modifying another User's ULTAid instance via PPxAidCreate
+        if self.user and self.ultaid:
+            if self.ultaid.user != self.user:
+                raise PermissionDenied
+
         if self.request.user.is_authenticated:
             user_PPxAid = None
             # Check if Patient or Provider
@@ -99,14 +120,13 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         else:
             # If User not logged in, check if there is a ultaid in kwargs
             # Check if that ultaid already has a PPxAid, redirect if so
-            if "ultaid" in kwargs:
+            if self.ultaid:
                 try:
-                    ultaid = ULTAid.objects.get(pk=kwargs["ultaid"])
-                    ultaid_PPxAid = self.model.objects.get(ultaid=ultaid)
+                    ultaid_PPxAid = self.model.objects.get(ultaid=self.ultaid)
                 except self.model.DoesNotExist:
                     ultaid_PPxAid = None
                 if ultaid_PPxAid:
-                    return redirect("ppxaid:detail", pk=ultaid.ppxaid.pk)
+                    return redirect("ppxaid:detail", pk=self.ultaid.ppxaid.pk)
                 else:
                     return super().get(request, *args, **kwargs)
             return super().get(request, *args, **kwargs)
@@ -209,7 +229,6 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
             kwargs["ultaid"] = ultaid
             kwargs["no_user"] = self.no_user
             # If User is anonymous / not logged in and PPxAid has a ULTAid, pass ckd stroke and heartattack from ULTAid to PPxAid to avoid duplication of user input
-            print(self.no_user)
             if self.no_user == True:
                 kwargs["ckd"] = ultaid.ckd
                 kwargs["stroke"] = ultaid.stroke
