@@ -4,12 +4,64 @@
         <a class="btn btn-primary btn-lg" href="{% url 'profiles:update' object.username %}" role="button">Update</a>
         <a class="btn btn-primary btn-lg" href="{% url 'account_email' %}" role="button">E-Mail</a>
         {% if request.user.role == "PROVIDER" %}
-        <a class="btn btn-primary btn-lg" href="{% url 'ult:user-create' object.username %}" role="button">ULT</a>
-          <form method="post" action="{% url 'ultplan:create' object.username %}">
-            {% csrf_token %}
-            <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"
-              value="treatment">ULTPlan</button>
-          </form>
+        <div class="dropdown">
+          <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Flare
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'flare:user-create' object.username %}">Create</a>
+            <a class="dropdown-item"
+              href="{% url 'flare:list' object.username %}">List</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            FlareAid
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="">{% if object.flareaid %}UpdateLink{% else %}CreateLink{% endif %}</a>
+            <a class="dropdown-item" href="">ListLink</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            ULT
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'ult:user-detail' object.username %}">Detail</a>
+            <a class="dropdown-item" href="{% url 'ult:user-create' object.username %}">{% if object.ult %}Update{% else %}Create{% endif %}</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            ULTAid
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'ultaid:user-detail' object.username %}">Detail</a>
+            <a class="dropdown-item"
+              href="{% url 'ultaid:user-create' object.username %}">{% if object.ultaid %}Update{% else %}Create{% endif %}</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            PPxAid
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'ppxaid:user-detail' object.username %}">Detail</a>
+            <a class="dropdown-item"
+              href="{% url 'ppxaid:user-create' object.username %}">{% if object.ppxaid %}Update{% else %}Create{% endif %}</a>
+          </div>
+        </div>
+        <form method="post" action="{% url 'ultplan:create' object.username %}">
+          {% csrf_token %}
+          <button class="btn btn-primary btn-lg" role="button" id="ultplan-create" type="submit"
+            value="treatment">ULTPlan</button>
+        </form>
         {% endif %}
         </h1>
       </div>

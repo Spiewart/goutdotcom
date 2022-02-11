@@ -94,8 +94,9 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         # If those users are not the same, raise PermissionDenied
         # Blocks modifying another User's ULTAid instance via PPxAidCreate
         if self.user and self.ultaid:
-            if self.ultaid.user != self.user:
-                raise PermissionDenied
+            if self.ultaid.user:
+                if self.ultaid.user != self.user:
+                    raise PermissionDenied
 
         if self.request.user.is_authenticated:
             user_PPxAid = None

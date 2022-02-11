@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
-from django.utils.text import format_lazy
+from django.utils.text import format_lazy, slugify
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
@@ -140,12 +140,24 @@ class Flare(TimeStampedModel):
     treatment = MultiSelectField(
         choices=TREATMENT_CHOICES, blank=True, null=True, help_text="What was the flare treated with?"
     )
+    slug = models.SlugField(max_length=200, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super(Flare, self).save(*args, **kwargs)
+        if self.user:
+            if not self.slug:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
+                super(Flare, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ["created"]
 
     def get_absolute_url(self):
-        return reverse("flare:detail", kwargs={"pk": self.pk})
+        if self.slug:
+            return reverse("flare:user-detail", kwargs={"slug": self.slug})
+        else:
+            return reverse("flare:detail", kwargs={"pk": self.pk})
 
     def get_cardiac_risk_factors(self):
         cardiac_risk_factors = []

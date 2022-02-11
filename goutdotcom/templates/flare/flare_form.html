@@ -19,17 +19,27 @@ New Flare
 
 {% block form %}
   {% if form.instance.pk %}
-    <form class="form-horizontal" method="post" action="{% url 'flare:update' object.pk %}" enctype='multipart/form-data'>
+    {% if view.kwargs.username or view.kwargs.slug %}
+    <form class="form-horizontal" method="post" action="{% url 'flare:update' view.kwargs.slug %}">
       {% csrf_token %}
       {% crispy form %}
       <input class="btn btn-primary btn-lg" type="submit" value="Submit">
     </form>
+    {% endif %}
   {% else %}
-    <form class="form-horizontal" method="post" action="{% url 'flare:create' %}">
-    {% csrf_token %}
-    {% crispy form %}
-    <input class="btn btn-primary btn-lg" type="submit" value="Submit">
-    </form>
+    {% if view.kwargs.username %}
+      <form class="form-horizontal" method="post" action="{% url 'flare:user-create' view.kwargs.username %}">
+      {% csrf_token %}
+      {% crispy form %}
+      <input class="btn btn-primary btn-lg" type="submit" value="Submit">
+      </form>
+    {% else %}
+      <form class="form-horizontal" method="post" action="{% url 'flare:create' %}">
+        {% csrf_token %}
+        {% crispy form %}
+        <input class="btn btn-primary btn-lg" type="submit" value="Submit">
+        </form>
+    {% endif %}
   {% endif %}
 {% endblock form %}
 
