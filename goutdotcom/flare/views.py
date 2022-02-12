@@ -88,6 +88,7 @@ class FlareCreate(PatientProviderCreateMixin, ProfileMixin, UserMixin, CreateVie
                     else:
                         form.instance.male = False
                 form.instance.user = self.user
+            form.instance.creator = self.request.user
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

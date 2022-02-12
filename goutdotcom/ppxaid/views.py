@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView
@@ -29,9 +29,9 @@ from ..history.models import (
     Stroke,
 )
 from ..ultaid.models import ULTAid
+from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
 from .forms import PPxAidForm
 from .models import PPxAid
-from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
 
 User = get_user_model()
 
@@ -70,6 +70,7 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
             # If Patient assign to requesting Patient
             elif self.request.user.role == "PATIENT":
                 form.instance.user = self.request.user
+            form.instance.creator = self.request.user
             return super().form_valid(form)
         else:
             return super().form_valid(form)
@@ -411,7 +412,7 @@ class PPxAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                 )
 
 
-class PPxAidDetail(DetailView):
+class PPxAidDetail(PatientProviderMixin, DetailView):
     model = PPxAid
     template_name = "ppxaid/ppxaid_detail.html"
 

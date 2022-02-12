@@ -107,6 +107,12 @@ class PPxAid(TimeStampedModel):
         null=True,
         blank=True,
     )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="ppxaid_creator",
+    )
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
     def save(self, *args, **kwargs):

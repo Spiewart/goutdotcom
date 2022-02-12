@@ -71,6 +71,7 @@ class FlareAidCreate(PatientProviderCreateMixin, ProfileMixin, UserMixin, Create
         if self.request.user.is_authenticated:
             if self.user:
                 form.instance.user = self.user
+            form.instance.creator = self.request.user
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

@@ -72,6 +72,8 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
             if self.request.user.is_authenticated == False:
                 if form.instance.ult.ckd.value == False:
                     form.instance.ckd = form.instance.ult.ckd
+        if self.request.user.is_authenticated:
+            form.instance.creator = self.request.user
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):

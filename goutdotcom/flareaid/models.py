@@ -26,12 +26,7 @@ from .choices import *
 class FlareAid(TimeStampedModel):
     """Goal is to create a model that can make a recommendation for flare treatment."""
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
-    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     flare = models.OneToOneField(
         Flare,
         on_delete=models.CASCADE,
@@ -107,6 +102,12 @@ class FlareAid(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="flareaid_creator",
     )
     slug = models.SlugField(max_length=200, null=True, blank=True)
 

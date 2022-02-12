@@ -113,6 +113,12 @@ class ULTAid(TimeStampedModel):
         null=True,
         blank=True,
     )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="ultaid_creator",
+    )
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -224,7 +230,6 @@ class ULTAid(TimeStampedModel):
             return reverse("ultaid:user-detail", kwargs={"slug": self.slug})
         else:
             return reverse("ultaid:detail", kwargs={"pk": self.pk})
-
 
     def __str__(self):
         if (

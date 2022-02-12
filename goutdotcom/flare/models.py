@@ -140,6 +140,14 @@ class Flare(TimeStampedModel):
     treatment = MultiSelectField(
         choices=TREATMENT_CHOICES, blank=True, null=True, help_text="What was the flare treated with?"
     )
+
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="flare_creator",
+    )
+
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
     def save(self, *args, **kwargs):

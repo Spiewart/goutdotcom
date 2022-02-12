@@ -95,6 +95,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             # Create ULTPlan with the User, their ULTAid and PPxAid, ULTAid decision_aid() dict fields "dose", 'goal_urate' and 'titration_lab_interval'
             ultplan = ULTPlan.objects.create(
                 user=self.user,
+                creator=self.request.user,
                 dose_adjustment=self.ultaid.decision_aid().get("dose"),
                 goal_urate=self.ultaid.decision_aid().get("goal_urate"),
                 titration_lab_interval=self.ultaid.decision_aid().get("titration_lab_interval"),
@@ -114,6 +115,7 @@ class ULTPlanCreate(LoginRequiredMixin, View):
                 ultplan=ultplan,
                 due=datetime.today().date(),
             )
+
             # Return redirect to ultplan:detail
             messages.success(request, "ULTPlan created.")
             return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": ultplan.pk}))

@@ -111,6 +111,8 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         # Add message to confirm successful ULT creation
         messages.success(self.request, "ULT created!")
+        if self.request.user.is_authenticated:
+            form.instance.creator = self.request.user
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):

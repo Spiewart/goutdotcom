@@ -21,7 +21,12 @@ from .choices import BOOL_CHOICES
 
 class ULTPlan(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="ultplan_creator",
+    )
     dose_adjustment = models.IntegerField(
         help_text="What is the dose adjustment for each titration for the chosen medication?",
         verbose_name="Dose Adjustment",
