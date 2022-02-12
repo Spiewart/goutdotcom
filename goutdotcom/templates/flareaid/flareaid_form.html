@@ -14,24 +14,36 @@
 {% block form %}
 {% if form.instance.pk %}
   {% if view.kwargs.flare %}
-  <form method="post" action="{% url 'flareaid:flare-update' pk=object.pk flare=view.kwargs.flare %}">
+  <form method="post" action="{% url 'flareaid:flare-update' slug=object.slug flare=view.kwargs.flare %}">
     {% csrf_token %} {% crispy form %}
   </form>
   {% else %}
   <form
-    method="post" action="{% url 'flareaid:update' object.pk %}" enctype="multipart/form-data">
+    method="post" action="{% url 'flareaid:update' object.slug %}" enctype="multipart/form-data">
     {% csrf_token %} {% crispy form %}
   </form>
   {% endif %}
 {% else %}
-  {% if view.kwargs.flare %}
-  <form method="post" action="{% url 'flareaid:flare-create' view.kwargs.flare %}">
-    {% csrf_token %} {% crispy form %}
-  </form>
+  {% if view.kwargs.username %}
+    {% if view.kwargs.flare %}
+    <form method="post" action="{% url 'flareaid:user-flare-create' view.kwargs.username view.kwargs.flare %}">
+      {% csrf_token %} {% crispy form %}
+    </form>
+    {% else %}
+    <form method="post" action="{% url 'flareaid:user-create' view.kwargs.username %}">
+      {% csrf_token %} {% crispy form %}
+    </form>
+    {% endif %}
   {% else %}
-  <form method="post" action="{% url 'flareaid:create' %}">
-    {% csrf_token %} {% crispy form %}
-  </form>
+      {% if view.kwargs.flare %}
+      <form method="post" action="{% url 'flareaid:flare-create' view.kwargs.flare %}">
+        {% csrf_token %} {% crispy form %}
+      </form>
+      {% else %}
+      <form method="post" action="{% url 'flareaid:create' %}">
+        {% csrf_token %} {% crispy form %}
+      </form>
+      {% endif %}
   {% endif %}
 {% endif %}
 {% endblock form %}

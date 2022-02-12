@@ -36,12 +36,12 @@
     <div class="col">
       {% if object.decision_aid != "Need More Information" %}
       <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
-        {% if request.user.is_authenticated %}
+        {% if object.slug %}
           {% if object.flare %}
           <a class="btn btn-primary btn-lg"
-            href="{% url 'flareaid:flare-update' pk=object.pk flare=object.flare.pk %}" role="button">Update</a>
+            href="{% url 'flareaid:flare-update' slug=object.slug flare=object.flare.slug %}" role="button">Update</a>
           {% else %}
-          <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' pk=object.pk %}" role="button">Update</a>
+          <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' slug=object.slug %}" role="button">Update</a>
           {% endif %}
         {% endif %}
         {% if object.decision_aid|get_key:'drug1'|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug1'|get_key:'drug' == "naproxen" %}
@@ -52,8 +52,13 @@
           <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' 'steroids' %}" role="button">About</a>
         {% endif %}
       {% else %}
-        {% if request.user.is_authenticated %}
-        <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.pk %}" role="button">Update</a>
+        {% if object.slug %}
+          {% if object.flare %}
+            <a class="btn btn-primary btn-lg" href="{% url 'flareaid:flare-update' slug=object.slug flare=object.flare.slug %}"
+              role="button">Update</a>
+          {% else %}
+          <a class="btn btn-primary btn-lg" href="{% url 'flareaid:update' object.slug %}" role="button">Update</a>
+          {% endif%}
         {% else %}
         <a class="btn btn-primary btn-lg" href="{% url 'flareaid:create' %}" role="button">New</a>
         {% endif %}
@@ -63,7 +68,11 @@
   <div class="row">
     <div class="col">
       {% if object.flare %}
-        <h4><a href="{% url 'flare:detail' object.flare.pk %}">Flare</a>: {{ object.flare }}</h4>
+        {% if object.slug %}
+          <h4><a href="{% url 'flare:user-detail' object.flare.slug %}">Flare</a>: {{ object.flare }}</h4>
+        {% else %}
+          <h4><a href="{% url 'flare:detail' object.flare.pk %}">Flare</a>: {{ object.flare }}</h4>
+        {% endif %}
       {% endif %}
     </div>
   </div>

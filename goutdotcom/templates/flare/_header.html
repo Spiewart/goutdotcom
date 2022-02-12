@@ -33,24 +33,33 @@
         <li><u>WARNING</u>: {{ flare.flare_calculator|get_flare:'caveat' }}</li>
       {% endif %}
     <li>
+  {% if flare.slug %}
+    {% if flare.flareaid %}
+      FlareAid: {{ flare.flareaid }}
+      </li>
+      <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
+        href="{% url 'flareaid:user-detail' slug=flare.flareaid.slug %}" role="button">Flare Helper</a>
+    {% else %}
+      FlareAid: none
+      </li>
+      <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
+        href="{% url 'flareaid:user-flare-create' username=flare.user.username flare=flare.pk %}"
+          role="button">Flare Helper</a>
+    {% endif %}
+  {% else %}
     {% if flare.flareaid %}
     FlareAid: {{ flare.flareaid }}
     </li>
-      <a class="btn btn-primary btn-lg btn-block" id="FlareAid-btn"
-        href="{% url 'flareaid:flare-update' pk=flare.flareaid.pk flare=flare.pk %}"
-        role="button">Update FlareAid</a>
+    <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
+      href="{% url 'flareaid:detail' pk=flare.flareaid.pk %}" role="button">Flare Helper</a>
     {% else %}
     FlareAid: none
     </li>
-      {% if flare.flareaid %}
-        <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
-          href="{% url 'flareaid:detail' pk=flare.flareaid.pk %}" role="button">Flare Helper</a>
-      {% else %}
-        <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
-          href="{% url 'flareaid:flare-create' flare=flare.pk %}"
-            role="button">Flare Helper</a>
-      {% endif %}
+    <a type="button" class="btn btn-primary btn-lg btn-block"" id=" FlareAid-btn"
+      href="{% url 'flareaid:flare-create' flare=flare.pk %}" role="button">Flare
+      Helper</a>
     {% endif %}
+  {% endif %}
   </div>
   </ul>
   <div class="col">

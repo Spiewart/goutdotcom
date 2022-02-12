@@ -117,3 +117,10 @@ class FlareAidForm(forms.ModelForm):
                 if self.no_user == True:
                     self.helper.layout[0][3].pop(6)
                     self.helper.layout[0][3].pop(8)
+        if self.heartattack:
+            self.fields["perfect_health"].initial = False
+        if self.stroke:
+            self.fields["perfect_health"].initial = False
+        if self.heartattack or self.stroke:
+            if self.no_user == True:
+                self.fields["perfect_health"].widget = HiddenInput()

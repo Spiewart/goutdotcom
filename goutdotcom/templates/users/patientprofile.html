@@ -21,8 +21,9 @@
             FlareAid
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="">{% if object.flareaid %}UpdateLink{% else %}CreateLink{% endif %}</a>
-            <a class="dropdown-item" href="">ListLink</a>
+            <a class="dropdown-item"
+              href="{% url 'flareaid:user-create' object.username %}">Create</a>
+            <a class="dropdown-item" href="{% url 'flare:list' object.username %}">List</a>
           </div>
         </div>
         <div class="dropdown">

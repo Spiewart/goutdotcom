@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.text import format_lazy, slugify
 from django_extensions.db.models import TimeStampedModel
 
 from goutdotcom.treatment.choices import BID, NAPROXEN_DOSE_CHOICES
@@ -107,6 +108,17 @@ class FlareAid(TimeStampedModel):
         null=True,
         blank=True,
     )
+    slug = models.SlugField(max_length=200, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super(FlareAid, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
+                super(FlareAid, self).save(*args, **kwargs)
 
     def get_NSAID_contraindications(self):
         NSAID_contraindications = []

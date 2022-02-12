@@ -22,8 +22,8 @@
                   Flares
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="{% url 'flare:create' %}">Calculator</a>
-                  <a class="dropdown-item" href="{% url 'flareaid:create' %}">Helper</a>
+                  <a class="dropdown-item" href="{% url 'flare:user-create' request.user.username %}">Calculator</a>
+                  <a class="dropdown-item" href="{% url 'flareaid:user-create' request.user.username  %}">Helper</a>
                   <a class="dropdown-item" href="{% url 'flare:list' request.user.username %}">List</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'flare:about' %}">About</a>

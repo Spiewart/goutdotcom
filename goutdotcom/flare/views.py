@@ -1,8 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -83,22 +81,13 @@ class FlareCreate(PatientProviderCreateMixin, ProfileMixin, UserMixin, CreateVie
 
     def form_valid(self, form):
         if self.request.user.is_authenticated:
-            if self.request.user.role == "PROVIDER":
-                if self.patientprofile:
-                    if self.patientprofile.gender:
-                        if self.user.patientprofile.gender == "male":
-                            form.instance.male = True
-                        else:
-                            form.instance.male = False
-                    form.instance.user = self.user
-            elif self.request.user.role == "PATIENT":
-                if self.patientprofile:
-                    if self.patientprofile.gender:
-                        if self.patientprofile.gender == "male":
-                            form.instance.male = True
-                        else:
-                            form.instance.male = False
-                    form.instance.user = self.user
+            if self.patientprofile:
+                if self.patientprofile.gender:
+                    if self.user.patientprofile.gender == "male":
+                        form.instance.male = True
+                    else:
+                        form.instance.male = False
+                form.instance.user = self.user
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
