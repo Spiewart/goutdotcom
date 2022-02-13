@@ -30,14 +30,19 @@ from ..history.models import (
 )
 from ..ppxaid.models import PPxAid
 from ..ult.models import ULT
-from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
+from ..utils.mixins import (
+    PatientProviderCreateMixin,
+    PatientProviderMixin,
+    ProfileMixin,
+    UserMixin,
+)
 from .forms import ULTAidForm
 from .models import ULTAid
 
 User = get_user_model()
 
 
-class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
+class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin, UserMixin, CreateView):
     model = ULTAid
     form_class = ULTAidForm
     CKD_form_class = CKDForm
@@ -74,6 +79,8 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                     form.instance.ckd = form.instance.ult.ckd
         if self.request.user.is_authenticated:
             form.instance.creator = self.request.user
+        if self.user:
+            form.instance.user = self.user
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
@@ -87,93 +94,12 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                     self.ultaid = None
                 if self.ultaid:
                     return redirect("ultaid:update", slug=self.ultaid.slug)
-                else:
-                    super().get(request, *args, **kwargs)
-            else:
-                super().get(request, *args, **kwargs)
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(ULTAidCreate, self).get_context_data(**kwargs)
-        # Add ULTAid OnetoOne related model objects from the MedicalProfile for the logged in User
-        try:
-            self.ult = self.kwargs.get("ult")
-        except:
-            self.ult = None
-        if self.ult:
-            if isinstance(self.ult, int):
-                context["ult"] = ULT.objects.get(pk=self.ult)
-            else:
-                context["ult"] = ULT.objects.get(slug=self.ult)
-        if self.request.user.is_authenticated:
-            # If User is logged in, see if there is username kwarg
-            try:
-                self.username = self.kwargs.get("username")
-            except:
-                self.username = None
-            # If there is a username, fetch associated User and related MedicalProfile objects
-            # Add forms with User's related model instances
-            if self.username:
-                self.user = User.objects.get(username=self.username)
-                try:
-                    self.ult = self.user.ult
-                except:
-                    self.ult = None
-                if self.ult:
-                    context["user_ult"] = ULT.objects.get(user=self.user).calculator()
-                # Fetch related model instances via User object
-                if "CKD_form" not in context:
-                    context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
-                if "erosions_form" not in context:
-                    context["erosions_form"] = self.erosions_form_class(instance=self.user.medicalprofile.erosions)
-                if "XOI_interactions_form" not in context:
-                    context["XOI_interactions_form"] = self.XOI_interactions_form_class(
-                        instance=self.user.medicalprofile.XOI_interactions
-                    )
-                if "organ_transplant_form" not in context:
-                    context["organ_transplant_form"] = self.organ_transplant_form_class(
-                        instance=self.user.medicalprofile.organ_transplant
-                    )
-                if "allopurinol_hypersensitivity_form" not in context:
-                    context["allopurinol_hypersensitivity_form"] = self.allopurinol_hypersensitivity_form_class(
-                        instance=self.user.medicalprofile.allopurinol_hypersensitivity
-                    )
-                if "febuxostat_hypersensitivity_form" not in context:
-                    context["febuxostat_hypersensitivity_form"] = self.febuxostat_hypersensitivity_form_class(
-                        instance=self.user.medicalprofile.febuxostat_hypersensitivity
-                    )
-                if "heartattack_form" not in context:
-                    context["heartattack_form"] = self.heartattack_form_class(
-                        instance=self.user.medicalprofile.heartattack
-                    )
-                if "stroke_form" not in context:
-                    context["stroke_form"] = self.stroke_form_class(instance=self.user.medicalprofile.stroke)
-                if "tophi_form" not in context:
-                    context["tophi_form"] = self.tophi_form_class(instance=self.user.medicalprofile.tophi)
-            else:
-                if "CKD_form" not in context:
-                    context["CKD_form"] = self.CKD_form_class(self.request.GET)
-                if "erosions_form" not in context:
-                    context["erosions_form"] = self.erosions_form_class(self.request.GET)
-                if "XOI_interactions_form" not in context:
-                    context["XOI_interactions_form"] = self.XOI_interactions_form_class(self.request.GET)
-                if "organ_transplant_form" not in context:
-                    context["organ_transplant_form"] = self.organ_transplant_form_class(self.request.GET)
-                if "allopurinol_hypersensitivity_form" not in context:
-                    context["allopurinol_hypersensitivity_form"] = self.allopurinol_hypersensitivity_form_class(
-                        self.request.GET
-                    )
-                if "febuxostat_hypersensitivity_form" not in context:
-                    context["febuxostat_hypersensitivity_form"] = self.febuxostat_hypersensitivity_form_class(
-                        self.request.GET
-                    )
-                if "heartattack_form" not in context:
-                    context["heartattack_form"] = self.heartattack_form_class(self.request.GET)
-                if "stroke_form" not in context:
-                    context["stroke_form"] = self.stroke_form_class(self.request.GET)
-                if "tophi_form" not in context:
-                    context["tophi_form"] = self.tophi_form_class(self.request.GET)
-        else:
+
+        def get_blank_forms():
             if "CKD_form" not in context:
                 context["CKD_form"] = self.CKD_form_class(self.request.GET)
             if "erosions_form" not in context:
@@ -196,6 +122,57 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                 context["stroke_form"] = self.stroke_form_class(self.request.GET)
             if "tophi_form" not in context:
                 context["tophi_form"] = self.tophi_form_class(self.request.GET)
+
+        # Add ULTAid OnetoOne related model objects from the MedicalProfile for the logged in User
+        try:
+            self.ult = self.kwargs.get("ult")
+        except:
+            self.ult = None
+        if self.ult:
+            if isinstance(self.ult, int):
+                context["ult"] = ULT.objects.get(pk=self.ult)
+            else:
+                context["ult"] = ULT.objects.get(slug=self.ult)
+        if self.request.user.is_authenticated:
+            if self.user:
+                # Check if User has ULT, pass to ULTAid view/context for JQuery evaluation to update form fields
+                try:
+                    self.ult = self.user.ult
+                except:
+                    self.ult = None
+                if self.ult:
+                    context["user_ult"] = ULT.objects.get(user=self.user).calculator()
+                # Fetch related model instances via User object
+                if "CKD_form" not in context:
+                    context["CKD_form"] = self.CKD_form_class(instance=self.medicalprofile.CKD)
+                if "erosions_form" not in context:
+                    context["erosions_form"] = self.erosions_form_class(instance=self.medicalprofile.erosions)
+                if "XOI_interactions_form" not in context:
+                    context["XOI_interactions_form"] = self.XOI_interactions_form_class(
+                        instance=self.medicalprofile.XOI_interactions
+                    )
+                if "organ_transplant_form" not in context:
+                    context["organ_transplant_form"] = self.organ_transplant_form_class(
+                        instance=self.medicalprofile.organ_transplant
+                    )
+                if "allopurinol_hypersensitivity_form" not in context:
+                    context["allopurinol_hypersensitivity_form"] = self.allopurinol_hypersensitivity_form_class(
+                        instance=self.medicalprofile.allopurinol_hypersensitivity
+                    )
+                if "febuxostat_hypersensitivity_form" not in context:
+                    context["febuxostat_hypersensitivity_form"] = self.febuxostat_hypersensitivity_form_class(
+                        instance=self.medicalprofile.febuxostat_hypersensitivity
+                    )
+                if "heartattack_form" not in context:
+                    context["heartattack_form"] = self.heartattack_form_class(instance=self.medicalprofile.heartattack)
+                if "stroke_form" not in context:
+                    context["stroke_form"] = self.stroke_form_class(instance=self.medicalprofile.stroke)
+                if "tophi_form" not in context:
+                    context["tophi_form"] = self.tophi_form_class(instance=self.medicalprofile.tophi)
+            else:
+                get_blank_forms()
+        else:
+            get_blank_forms()
         return context
 
     def get_form_kwargs(self):
@@ -249,46 +226,36 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
 
         if form.is_valid():
             ULTAid_data = form.save(commit=False)
-            # Set User and PPxaid to None to declare in scope
-            self.user = None
+            # Set PPxaid to None to declare in scope
             self.ppxaid = None
             # Check if user is authenticated and pull OnetoOne related model data from MedicalProfile if so
             if request.user.is_authenticated:
-                # If User is logged in, see if there is username kwarg
-                try:
-                    self.username = self.kwargs.get("username")
-                except:
-                    self.username = None
-                # If there is a username, fetch associated User and related MedicalProfile objects
-                # Overwrite forms defined above with User instances
-                if self.username:
-                    self.user = User.objects.get(username=self.username)
-                    ULTAid_data.user = self.user
+                if self.medicalprofile:
                     # See if User has PPxAid
                     try:
                         self.ppxaid = self.user.ppxaid
                     except PPxAid.DoesNotExist:
                         self.ppxaid = None
                     # Assign User to ULTAid form to avoid repeating the query in form_valid()
-                    CKD_form = self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD)
-                    erosions_form = self.erosions_form_class(request.POST, instance=self.user.medicalprofile.erosions)
+                    CKD_form = self.CKD_form_class(request.POST, instance=self.medicalprofile.CKD)
+                    erosions_form = self.erosions_form_class(request.POST, instance=self.medicalprofile.erosions)
                     XOI_interactions_form = self.XOI_interactions_form_class(
-                        request.POST, instance=self.user.medicalprofile.XOI_interactions
+                        request.POST, instance=self.medicalprofile.XOI_interactions
                     )
                     organ_transplant_form = self.organ_transplant_form_class(
-                        request.POST, instance=self.user.medicalprofile.organ_transplant
+                        request.POST, instance=self.medicalprofile.organ_transplant
                     )
                     allopurinol_hypersensitivity_form = self.allopurinol_hypersensitivity_form_class(
-                        request.POST, instance=self.user.medicalprofile.allopurinol_hypersensitivity
+                        request.POST, instance=self.medicalprofile.allopurinol_hypersensitivity
                     )
                     febuxostat_hypersensitivity_form = self.febuxostat_hypersensitivity_form_class(
-                        request.POST, instance=self.user.medicalprofile.febuxostat_hypersensitivity
+                        request.POST, instance=self.medicalprofile.febuxostat_hypersensitivity
                     )
                     heartattack_form = self.heartattack_form_class(
-                        request.POST, instance=self.user.medicalprofile.heartattack
+                        request.POST, instance=self.medicalprofile.heartattack
                     )
-                    stroke_form = self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke)
-                    tophi_form = self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi)
+                    stroke_form = self.stroke_form_class(request.POST, instance=self.medicalprofile.stroke)
+                    tophi_form = self.tophi_form_class(request.POST, instance=self.medicalprofile.tophi)
             if CKD_form.is_valid():
                 CKD_data = CKD_form.save(commit=False)
                 CKD_data.last_modified = "ULTAid"
@@ -335,7 +302,8 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
             ULTAid_data.stroke = stroke_data
             ULTAid_data.tophi = tophi_data
             ULTAid_data.save()
-            # Check if User has already created a PPxAid for some reason and, if so, assign it to the newly created/saved ULTAid to that attribute on the PPxAid
+            # Check if User has already created a PPxAid for some reason
+            # If so, assign it to the newly created/saved ULTAid to that attribute on the PPxAid
             if self.ppxaid:
                 self.ppxaid.ultaid = ULTAid_data
                 self.ppxaid.save()
@@ -343,42 +311,54 @@ class ULTAidCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         else:
             if request.user.is_authenticated:
                 # If User is logged in, see if there is username kwarg
-                try:
-                    self.username = self.kwargs.get("username")
-                except:
-                    self.username = None
-                # If there is a username, fetch associated User and related MedicalProfile objects
-                # Overwrite forms defined above with User instances
-                if self.username:
-                    self.user = User.objects.get(username=self.username)
-                else:
-                    self.user = self.request.user
-                return self.render_to_response(
-                    self.get_context_data(
-                        form=form,
-                        CKD_form=self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD),
-                        erosions_form=self.erosions_form_class(
-                            request.POST, instance=self.user.medicalprofile.erosions
-                        ),
-                        XOI_interactions_form=self.XOI_interactions_form_class(
-                            request.POST, instance=self.user.medicalprofile.XOI_interactions
-                        ),
-                        organ_transplant_form=self.organ_transplant_form_class(
-                            request.POST, instance=self.user.medicalprofile.organ_transplant
-                        ),
-                        allopurinol_hypersensitivity_form=self.allopurinol_hypersensitivity_form_class(
-                            request.POST, instance=self.user.medicalprofile.allopurinol_hypersensitivity
-                        ),
-                        febuxostat_hypersensitivity_form=self.febuxostat_hypersensitivity_form_class(
-                            request.POST, instance=self.user.medicalprofile.febuxostat_hypersensitivity
-                        ),
-                        heartattack_form=self.heartattack_form_class(
-                            request.POST, instance=self.user.medicalprofile.heartattack
-                        ),
-                        stroke_form=self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke),
-                        tophi_form=self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi),
+                if self.medicalprofile:
+                    return self.render_to_response(
+                        self.get_context_data(
+                            form=form,
+                            CKD_form=self.CKD_form_class(request.POST, instance=self.medicalprofile.CKD),
+                            erosions_form=self.erosions_form_class(request.POST, instance=self.medicalprofile.erosions),
+                            XOI_interactions_form=self.XOI_interactions_form_class(
+                                request.POST, instance=self.medicalprofile.XOI_interactions
+                            ),
+                            organ_transplant_form=self.organ_transplant_form_class(
+                                request.POST, instance=self.medicalprofile.organ_transplant
+                            ),
+                            allopurinol_hypersensitivity_form=self.allopurinol_hypersensitivity_form_class(
+                                request.POST, instance=self.medicalprofile.allopurinol_hypersensitivity
+                            ),
+                            febuxostat_hypersensitivity_form=self.febuxostat_hypersensitivity_form_class(
+                                request.POST, instance=self.medicalprofile.febuxostat_hypersensitivity
+                            ),
+                            heartattack_form=self.heartattack_form_class(
+                                request.POST, instance=self.medicalprofile.heartattack
+                            ),
+                            stroke_form=self.stroke_form_class(request.POST, instance=self.medicalprofile.stroke),
+                            tophi_form=self.tophi_form_class(request.POST, instance=self.medicalprofile.tophi),
+                        )
                     )
-                )
+                else:
+                    return self.render_to_response(
+                        self.get_context_data(
+                            form=form,
+                            CKD_form=self.CKD_form_class(request.POST, instance=CKD()),
+                            erosions_form=self.erosions_form_class(request.POST, instance=Erosions()),
+                            XOI_interactions_form=self.XOI_interactions_form_class(
+                                request.POST, instance=XOIInteractions()
+                            ),
+                            organ_transplant_form=self.organ_transplant_form_class(
+                                request.POST, instance=OrganTransplant()
+                            ),
+                            allopurinol_hypersensitivity_form=self.allopurinol_hypersensitivity_form_class(
+                                request.POST, instance=AllopurinolHypersensitivity()
+                            ),
+                            febuxostat_hypersensitivity_form=self.febuxostat_hypersensitivity_form_class(
+                                request.POST, instance=FebuxostatHypersensitivity()
+                            ),
+                            heartattack_form=self.heartattack_form_class(request.POST, instance=HeartAttack()),
+                            stroke_form=self.stroke_form_class(request.POST, instance=Stroke()),
+                            tophi_form=self.tophi_form_class(request.POST, instance=Tophi()),
+                        )
+                    )
             else:
                 return self.render_to_response(
                     self.get_context_data(
@@ -425,8 +405,6 @@ class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin
 
     def get_context_data(self, **kwargs):
         context = super(ULTAidUpdate, self).get_context_data(**kwargs)
-        # Get User based off object slug in URL
-        self.user = User.objects.get(username=self.kwargs.get("slug"))
         # Check if User has ULT, pass to ULTAid view/context for JQuery evaluation to update form fields
         try:
             self.ult = self.user.ult
@@ -437,80 +415,70 @@ class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin
         # Adds appropriate OnetoOne related History/MedicalProfile model forms to context
         if self.request.POST:
             if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(self.request.POST, instance=self.user.medicalprofile.CKD)
+                context["CKD_form"] = self.CKD_form_class(self.request.POST, instance=self.object.ckd)
             if "erosions_form" not in context:
-                context["erosions_form"] = self.erosions_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.erosions
-                )
+                context["erosions_form"] = self.erosions_form_class(self.request.POST, instance=self.object.erosions)
             if "XOI_interactions_form" not in context:
                 context["XOI_interactions_form"] = self.XOI_interactions_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.XOI_interactions
+                    self.request.POST, instance=self.object.XOI_interactions
                 )
             if "organ_transplant_form" not in context:
                 context["organ_transplant_form"] = self.organ_transplant_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.organ_transplant
+                    self.request.POST, instance=self.object.organ_transplant
                 )
             if "allopurinol_hypersensitivity_form" not in context:
                 context["allopurinol_hypersensitivity_form"] = self.allopurinol_hypersensitivity_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.allopurinol_hypersensitivity
+                    self.request.POST, instance=self.object.allopurinol_hypersensitivity
                 )
             if "febuxostat_hypersensitivity_form" not in context:
                 context["febuxostat_hypersensitivity_form"] = self.febuxostat_hypersensitivity_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.febuxostat_hypersensitivity
+                    self.request.POST, instance=self.object.febuxostat_hypersensitivity
                 )
             if "heartattack_form" not in context:
                 context["heartattack_form"] = self.heartattack_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.heartattack
+                    self.request.POST, instance=self.object.heartattack
                 )
             if "stroke_form" not in context:
-                context["stroke_form"] = self.stroke_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.stroke
-                )
+                context["stroke_form"] = self.stroke_form_class(self.request.POST, instance=self.object.stroke)
             if "tophi_form" not in context:
-                context["tophi_form"] = self.tophi_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.tophi
-                )
-            return context
+                context["tophi_form"] = self.tophi_form_class(self.request.POST, instance=self.object.tophi)
         else:
             if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
+                context["CKD_form"] = self.CKD_form_class(instance=self.object.ckd)
             if "erosions_form" not in context:
-                context["erosions_form"] = self.erosions_form_class(instance=self.user.medicalprofile.erosions)
+                context["erosions_form"] = self.erosions_form_class(instance=self.object.erosions)
             if "XOI_interactions_form" not in context:
                 context["XOI_interactions_form"] = self.XOI_interactions_form_class(
-                    instance=self.user.medicalprofile.XOI_interactions
+                    instance=self.object.XOI_interactions
                 )
             if "organ_transplant_form" not in context:
                 context["organ_transplant_form"] = self.organ_transplant_form_class(
-                    instance=self.user.medicalprofile.organ_transplant
+                    instance=self.object.organ_transplant
                 )
             if "allopurinol_hypersensitivity_form" not in context:
                 context["allopurinol_hypersensitivity_form"] = self.allopurinol_hypersensitivity_form_class(
-                    instance=self.user.medicalprofile.allopurinol_hypersensitivity
+                    instance=self.object.allopurinol_hypersensitivity
                 )
             if "febuxostat_hypersensitivity_form" not in context:
                 context["febuxostat_hypersensitivity_form"] = self.febuxostat_hypersensitivity_form_class(
-                    instance=self.user.medicalprofile.febuxostat_hypersensitivity
+                    instance=self.object.febuxostat_hypersensitivity
                 )
             if "heartattack_form" not in context:
-                context["heartattack_form"] = self.heartattack_form_class(instance=self.user.medicalprofile.heartattack)
+                context["heartattack_form"] = self.heartattack_form_class(instance=self.object.heartattack)
             if "stroke_form" not in context:
-                context["stroke_form"] = self.stroke_form_class(instance=self.user.medicalprofile.stroke)
+                context["stroke_form"] = self.stroke_form_class(instance=self.object.stroke)
             if "tophi_form" not in context:
-                context["tophi_form"] = self.tophi_form_class(instance=self.user.medicalprofile.tophi)
-            return context
+                context["tophi_form"] = self.tophi_form_class(instance=self.object.tophi)
+        return context
 
     def get_success_url(self):
         # Check if there is a slug (username) kwarg and redirect to DetailView using that
-        print(self.kwargs.get("slug"))
         if self.kwargs.get("slug"):
             return reverse("ultaid:user-detail", kwargs={"slug": self.kwargs["slug"]})
         # Otherwise return to DetailView based on PK
         else:
             return reverse(
                 "ultaid:detail",
-                # Need comma at end of kwargs for some picky Django reason
-                # https://stackoverflow.com/questions/52575418/reverse-with-prefix-argument-after-must-be-an-iterable-not-int/52575419
                 kwargs={
                     "pk": self.object.pk,
                 },
@@ -518,27 +486,22 @@ class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin
 
     def post(self, request, **kwargs):
         # Uses UpdateView to get the ULTAid instance requested and put it in a form
-        form = self.form_class(request.POST, instance=self.get_object())
-        # Fetch object's User from the form instance
-        self.user = form.instance.user
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
         # Fetch related models to instantiate related model forms
-        CKD_form = self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD)
-        erosions_form = self.erosions_form_class(request.POST, instance=self.user.medicalprofile.erosions)
-        XOI_interactions_form = self.XOI_interactions_form_class(
-            request.POST, instance=self.user.medicalprofile.XOI_interactions
-        )
-        organ_transplant_form = self.organ_transplant_form_class(
-            request.POST, instance=self.user.medicalprofile.organ_transplant
-        )
+        CKD_form = self.CKD_form_class(request.POST, instance=self.object.ckd)
+        erosions_form = self.erosions_form_class(request.POST, instance=self.object.erosions)
+        XOI_interactions_form = self.XOI_interactions_form_class(request.POST, instance=self.object.XOI_interactions)
+        organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=self.object.organ_transplant)
         allopurinol_hypersensitivity_form = self.allopurinol_hypersensitivity_form_class(
-            request.POST, instance=self.user.medicalprofile.allopurinol_hypersensitivity
+            request.POST, instance=self.object.allopurinol_hypersensitivity
         )
         febuxostat_hypersensitivity_form = self.febuxostat_hypersensitivity_form_class(
-            request.POST, instance=self.user.medicalprofile.febuxostat_hypersensitivity
+            request.POST, instance=self.object.febuxostat_hypersensitivity
         )
-        heartattack_form = self.heartattack_form_class(request.POST, instance=self.user.medicalprofile.heartattack)
-        stroke_form = self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke)
-        tophi_form = self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi)
+        heartattack_form = self.heartattack_form_class(request.POST, instance=self.object.heartattack)
+        stroke_form = self.stroke_form_class(request.POST, instance=self.object.stroke)
+        tophi_form = self.tophi_form_class(request.POST, instance=self.object.tophi)
 
         if form.is_valid():
             # Uses related OnetoOne field forms to populate ULTAid fields, changes last_modified to ULTAid, and saves all data
@@ -601,24 +564,22 @@ class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
-                    CKD_form=self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD),
-                    erosions_form=self.erosions_form_class(request.POST, instance=self.user.medicalprofile.erosions),
+                    CKD_form=self.CKD_form_class(request.POST, instance=self.object.ckd),
+                    erosions_form=self.erosions_form_class(request.POST, instance=self.object.erosions),
                     XOI_interactions_form=self.XOI_interactions_form_class(
-                        request.POST, instance=self.user.medicalprofile.XOI_interactions
+                        request.POST, instance=self.object.XOI_interactions
                     ),
                     organ_transplant_form=self.organ_transplant_form_class(
-                        request.POST, instance=self.user.medicalprofile.organ_transplant
+                        request.POST, instance=self.object.organ_transplant
                     ),
                     allopurinol_hypersensitivity_form=self.allopurinol_hypersensitivity_form_class(
-                        request.POST, instance=self.user.medicalprofile.allopurinol_hypersensitivity
+                        request.POST, instance=self.object.allopurinol_hypersensitivity
                     ),
                     febuxostat_hypersensitivity_form=self.febuxostat_hypersensitivity_form_class(
-                        request.POST, instance=self.user.medicalprofile.febuxostat_hypersensitivity
+                        request.POST, instance=self.object.febuxostat_hypersensitivity
                     ),
-                    heartattack_form=self.heartattack_form_class(
-                        request.POST, instance=self.user.medicalprofile.heartattack
-                    ),
-                    stroke_form=self.stroke_form_class(request.POST, instance=self.user.medicalprofile.stroke),
-                    tophi_form=self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi),
+                    heartattack_form=self.heartattack_form_class(request.POST, instance=self.object.heartattack),
+                    stroke_form=self.stroke_form_class(request.POST, instance=self.object.stroke),
+                    tophi_form=self.tophi_form_class(request.POST, instance=self.object.tophi),
                 )
             )

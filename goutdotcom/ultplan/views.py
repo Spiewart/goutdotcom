@@ -12,6 +12,7 @@ from ..lab.models import LabCheck
 from ..ppxaid.models import PPxAid
 from ..treatment.models import Colchicine, Prednisone
 from ..ultaid.models import ULTAid
+from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
 from .models import ULTPlan
 
 User = get_user_model()
@@ -19,11 +20,11 @@ User = get_user_model()
 # Create your views here.
 
 
-class ULTPlanBluePrint(LoginRequiredMixin, TemplateView):
+class ULTPlanBluePrint(LoginRequiredMixin, PatientProviderMixin, TemplateView):
     template_name = "ultplan/blueprint.html"
 
 
-class ULTPlanCreate(LoginRequiredMixin, View):
+class ULTPlanCreate(LoginRequiredMixin, PatientProviderCreateMixin, View):
     """View to pull data from User's PPxAid and ULTAid and create a ULTPlan without a form or any further User input.
     returns: ULTPlan instance"""
 
@@ -128,18 +129,18 @@ class ULTPlanCreate(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse("ultaid:create", kwargs={"username": self.username}))
 
 
-class ULTPlanDelete(LoginRequiredMixin, DeleteView):
+class ULTPlanDelete(LoginRequiredMixin, PatientProviderMixin, DeleteView):
     model = ULTPlan
 
     def get_success_url(self):
         return reverse("users:detail", kwargs={"username": self.request.user.username})
 
 
-class ULTPlanDetail(LoginRequiredMixin, DetailView):
+class ULTPlanDetail(LoginRequiredMixin, PatientProviderMixin, DetailView):
     model = ULTPlan
 
 
-class ULTPlanUpdate(LoginRequiredMixin, View):
+class ULTPlanUpdate(LoginRequiredMixin, PatientProviderMixin, View):
     """View to change a User's ULTPlan based on abnormal labs or reported medication side effects.
     returns: ULTPlan instance"""
 

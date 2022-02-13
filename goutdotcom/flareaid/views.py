@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -73,6 +74,24 @@ class FlareAidCreate(PatientProviderCreateMixin, ProfileMixin, UserMixin, Create
                 form.instance.user = self.user
             form.instance.creator = self.request.user
         return super().form_valid(form)
+
+    ## NEED TO OVERWRITE GET TO CHECK IF FLARE AND FLAREAID HAVE SAME OWNER
+    def get(self, request, *args, **kwargs):
+        # Overwritten to see if there is a Flare
+        # If so, Flare User needs to be the same as the object being created User
+        self.flare_index = self.kwargs.get("flare", None)
+        self.flare = None
+        # Get flare pk from kwargs if it exists
+        if self.flare_index:
+            self.flare = get_object_or_404(Flare, pk=self.flare_index)
+        # Check for User and Flare Objects, compare Users
+        if self.user and self.flare:
+            if self.flare.user:
+                if self.flare.user != self.user:
+                    raise PermissionDenied
+            if not self.flare.user:
+                raise PermissionDenied
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(FlareAidCreate, self).get_context_data(**kwargs)
@@ -378,42 +397,30 @@ class FlareAidUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
                     self.request.POST, instance=self.object.anticoagulation
                 )
             if "bleed_form" not in context:
-                context["bleed_form"] = self.bleed_form_class(
-                    self.request.POST, instance=self.object.bleed
-                )
+                context["bleed_form"] = self.bleed_form_class(self.request.POST, instance=self.object.bleed)
             if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(
-                    self.request.POST, instance=self.object.CKD
-                )
+                context["CKD_form"] = self.CKD_form_class(self.request.POST, instance=self.object.CKD)
             if "colchicine_interactions_form" not in context:
                 context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
                     self.request.POST, instance=self.object.colchicine_interactions
                 )
             if "diabetes_form" not in context:
-                context["diabetes_form"] = self.diabetes_form_class(
-                    self.request.POST, instance=self.object.diabetes
-                )
+                context["diabetes_form"] = self.diabetes_form_class(self.request.POST, instance=self.object.diabetes)
             if "heartattack_form" not in context:
                 context["heartattack_form"] = self.heartattack_form_class(
                     self.request.POST, instance=self.object.heartattack
                 )
             if "IBD_form" not in context:
-                context["IBD_form"] = self.IBD_form_class(
-                    self.request.POST, instance=self.object.IBD
-                )
+                context["IBD_form"] = self.IBD_form_class(self.request.POST, instance=self.object.IBD)
             if "osteoporosis_form" not in context:
                 context["osteoporosis_form"] = self.osteoporosis_form_class(
                     self.request.POST, instance=self.object.osteoporosis
                 )
             if "stroke_form" not in context:
-                context["stroke_form"] = self.stroke_form_class(
-                    self.request.POST, instance=self.object.stroke
-                )
+                context["stroke_form"] = self.stroke_form_class(self.request.POST, instance=self.object.stroke)
         else:
             if "anticoagulation_form" not in context:
-                context["anticoagulation_form"] = self.anticoagulation_form_class(
-                    instance=self.object.anticoagulation
-                )
+                context["anticoagulation_form"] = self.anticoagulation_form_class(instance=self.object.anticoagulation)
             if "bleed_form" not in context:
                 context["bleed_form"] = self.bleed_form_class(instance=self.object.bleed)
             if "CKD_form" not in context:
@@ -425,15 +432,11 @@ class FlareAidUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
             if "diabetes_form" not in context:
                 context["diabetes_form"] = self.diabetes_form_class(instance=self.object.diabetes)
             if "heartattack_form" not in context:
-                context["heartattack_form"] = self.heartattack_form_class(
-                    instance=self.object.heartattack
-                )
+                context["heartattack_form"] = self.heartattack_form_class(instance=self.object.heartattack)
             if "IBD_form" not in context:
                 context["IBD_form"] = self.IBD_form_class(instance=self.object.IBD)
             if "osteoporosis_form" not in context:
-                context["osteoporosis_form"] = self.osteoporosis_form_class(
-                    instance=self.object.osteoporosis
-                )
+                context["osteoporosis_form"] = self.osteoporosis_form_class(instance=self.object.osteoporosis)
             if "stroke_form" not in context:
                 context["stroke_form"] = self.stroke_form_class(instance=self.object.stroke)
         return context
@@ -461,9 +464,7 @@ class FlareAidUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         # Uses UpdateView to get the FlareAid instance requested and put it in a form
         form = self.form_class(request.POST, instance=self.get_object())
-        anticoagulation_form = self.anticoagulation_form_class(
-            request.POST, instance=self.object.anticoagulation
-        )
+        anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=self.object.anticoagulation)
         bleed_form = self.bleed_form_class(request.POST, instance=self.object.bleed)
         CKD_form = self.CKD_form_class(request.POST, instance=self.object.CKD)
         colchicine_interactions_form = self.colchicine_interactions_form_class(
@@ -472,9 +473,7 @@ class FlareAidUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
         diabetes_form = self.diabetes_form_class(request.POST, instance=self.object.diabetes)
         heartattack_form = self.heartattack_form_class(request.POST, instance=self.object.heartattack)
         IBD_form = self.IBD_form_class(request.POST, instance=self.object.IBD)
-        osteoporosis_form = self.osteoporosis_form_class(
-            request.POST, instance=self.object.osteoporosis
-        )
+        osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=self.object.osteoporosis)
         stroke_form = self.stroke_form_class(request.POST, instance=self.object.stroke)
 
         if form.is_valid():
@@ -538,13 +537,9 @@ class FlareAidUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
                         request.POST, instance=self.object.colchicine_interactions
                     ),
                     diabetes_form=self.diabetes_form_class(request.POST, instance=self.object.diabetes),
-                    heartattack_form=self.heartattack_form_class(
-                        request.POST, instance=self.object.heartattack
-                    ),
+                    heartattack_form=self.heartattack_form_class(request.POST, instance=self.object.heartattack),
                     IBD_form=self.IBD_form_class(request.POST, instance=self.object.IBD),
-                    osteoporosis_form=self.osteoporosis_form_class(
-                        request.POST, instance=self.object.osteoporosis
-                    ),
+                    osteoporosis_form=self.osteoporosis_form_class(request.POST, instance=self.object.osteoporosis),
                     stroke_form=self.stroke_form_class(request.POST, instance=self.object.stroke),
                 )
             )

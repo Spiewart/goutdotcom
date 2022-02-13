@@ -15,14 +15,19 @@ from ..history.forms import (
     UrateKidneyStonesForm,
 )
 from ..history.models import CKD, Erosions, Hyperuricemia, Tophi, UrateKidneyStones
-from ..utils.mixins import PatientProviderCreateMixin, PatientProviderMixin
+from ..utils.mixins import (
+    PatientProviderCreateMixin,
+    PatientProviderMixin,
+    ProfileMixin,
+    UserMixin,
+)
 from .forms import ULTForm
 from .models import ULT
 
 User = get_user_model()
 
 
-class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
+class ULTCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin, UserMixin, CreateView):
     """ULT CreateView.
     Intended to be responsive to whether or not the User is a Patient or Provider
     Redirects to UpdateView if ULT exists for the intended User
@@ -41,46 +46,8 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ULTCreate, self).get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            # If User is logged in, see if there is username kwarg
-            try:
-                self.username = self.kwargs.get("username")
-            except:
-                self.username = None
-            # If there is a username, fetch associated User and related MedicalProfile objects
-            # Add forms with User's related model instances
-            if self.username:
-                # Fetch related model instances via User object
-                self.user = User.objects.get(username=self.username)
-                if "CKD_form" not in context:
-                    context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD)
-                if "erosions_form" not in context:
-                    context["erosions_form"] = self.erosions_form_class(instance=self.user.medicalprofile.erosions)
-                if "hyperuricemia_form" not in context:
-                    context["hyperuricemia_form"] = self.hyperuricemia_form_class(
-                        instance=self.user.medicalprofile.hyperuricemia
-                    )
-                if "tophi_form" not in context:
-                    context["tophi_form"] = self.tophi_form_class(instance=self.user.medicalprofile.tophi)
-                if "urate_kidney_stones_form" not in context:
-                    context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(
-                        instance=self.user.medicalprofile.urate_kidney_stones
-                    )
-                return context
-            # Else render forms as new model instances
-            else:
-                if "CKD_form" not in context:
-                    context["CKD_form"] = self.CKD_form_class(self.request.GET)
-                if "erosions_form" not in context:
-                    context["erosions_form"] = self.erosions_form_class(self.request.GET)
-                if "hyperuricemia_form" not in context:
-                    context["hyperuricemia_form"] = self.hyperuricemia_form_class(self.request.GET)
-                if "tophi_form" not in context:
-                    context["tophi_form"] = self.tophi_form_class(self.request.GET)
-                if "urate_kidney_stones_form" not in context:
-                    context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(self.request.GET)
-                return context
-        else:
+
+        def get_blank_forms():
             if "CKD_form" not in context:
                 context["CKD_form"] = self.CKD_form_class(self.request.GET)
             if "erosions_form" not in context:
@@ -91,7 +58,29 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
                 context["tophi_form"] = self.tophi_form_class(self.request.GET)
             if "urate_kidney_stones_form" not in context:
                 context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(self.request.GET)
-            return context
+
+        if self.request.user.is_authenticated:
+            # Check if there is a User/MedicalProfile via User/ProfileMixin
+            if self.medicalprofile:
+                if "CKD_form" not in context:
+                    context["CKD_form"] = self.CKD_form_class(instance=self.medicalprofile.CKD)
+                if "erosions_form" not in context:
+                    context["erosions_form"] = self.erosions_form_class(instance=self.medicalprofile.erosions)
+                if "hyperuricemia_form" not in context:
+                    context["hyperuricemia_form"] = self.hyperuricemia_form_class(
+                        instance=self.medicalprofile.hyperuricemia
+                    )
+                if "tophi_form" not in context:
+                    context["tophi_form"] = self.tophi_form_class(instance=self.medicalprofile.tophi)
+                if "urate_kidney_stones_form" not in context:
+                    context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(
+                        instance=self.medicalprofile.urate_kidney_stones
+                    )
+            else:
+                get_blank_forms()
+        else:
+            get_blank_forms()
+        return context
 
     def get_success_url(self):
         # Check if there is a username kwarg and redirect to DetailView using that
@@ -101,8 +90,6 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         else:
             return reverse(
                 "ult:detail",
-                # Need comma at end of kwargs for some picky Django reason
-                # https://stackoverflow.com/questions/52575418/reverse-with-prefix-argument-after-must-be-an-iterable-not-int/52575419
                 kwargs={
                     "pk": self.object.pk,
                 },
@@ -112,6 +99,8 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         # Add message to confirm successful ULT creation
         messages.success(self.request, "ULT created!")
         if self.request.user.is_authenticated:
+            if self.user:
+                form.instance.user = self.user
             form.instance.creator = self.request.user
         return super().form_valid(form)
 
@@ -121,39 +110,15 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         if self.request.user.is_authenticated:
             # Check if User is a Patient
             user_ULT = None
-            if request.user.role == "PATIENT":
-                # If so, try to fetch ULT and assign to user_ULT
+            if self.user:
                 try:
-                    user_ULT = self.model.objects.get(user=request.user)
-                # Else set to None
+                    user_ULT = self.model.objects.get(user=self.user)
                 except ObjectDoesNotExist:
                     user_ULT = None
-            # Check if User is a Provider
-            elif request.user.role == "PROVIDER":
-                # Check if there is a username in kwargs
-                try:
-                    self.username = self.kwargs.get("username")
-                # Assign to None otherwise
-                except ObjectDoesNotExist:
-                    self.username = None
-                # If there is a username in kwargs, fetch the User its associated with
-                if self.username:
-                    self.user = User.objects.get(username=self.username)
-                    # Check if there is a ULT for that User
-                    try:
-                        user_ULT = self.model.objects.get(user=self.user)
-                    # Assign to None otherwise
-                    except self.model.DoesNotExist:
-                        user_ULT = None
             # If a ULT already exists for the intended User, redirect to UpdateView
             if user_ULT:
                 return redirect("ult:user-update", slug=user_ULT.slug)
-            # Otherwise return super().get()
-            else:
-                return super().get(request, *args, **kwargs)
-        # If User is not logged in, return super().get()
-        else:
-            return super().get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         # Post is overwritten for multiform view
@@ -166,27 +131,18 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
 
         if form.is_valid():
             ult_data = form.save(commit=False)
-            # Check if User is logged in and pull MedicalProfile OnetoOne fields and set them to the form instance
+            # Check if User is logged in
+            # User/ProfileMixins provide MedicalProfile fields for form
             if self.request.user.is_authenticated:
-                # If User is logged in, see if there is username kwarg
-                try:
-                    self.username = self.kwargs.get("username")
-                except:
-                    self.username = None
-                # If there is a username, fetch associated User and related MedicalProfile objects
-                # Overwrite forms defined above with User instances
-                if self.username:
-                    self.user = User.objects.get(username=self.username)
-                    # Assign User to ULT form to avoid repeating the query in form_valid()
-                    ult_data.user = self.user
-                    CKD_form = self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD)
-                    erosions_form = self.erosions_form_class(request.POST, instance=self.user.medicalprofile.erosions)
+                if self.medicalprofile:
+                    CKD_form = self.CKD_form_class(request.POST, instance=self.medicalprofile.CKD)
+                    erosions_form = self.erosions_form_class(request.POST, instance=self.medicalprofile.erosions)
                     hyperuricemia_form = self.hyperuricemia_form_class(
-                        request.POST, instance=self.user.medicalprofile.hyperuricemia
+                        request.POST, instance=self.medicalprofile.hyperuricemia
                     )
-                    tophi_form = self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi)
+                    tophi_form = self.tophi_form_class(request.POST, instance=self.medicalprofile.tophi)
                     urate_kidney_stones_form = self.urate_kidney_stones_form_class(
-                        request.POST, instance=self.user.medicalprofile.urate_kidney_stones
+                        request.POST, instance=self.medicalprofile.urate_kidney_stones
                     )
             # Process related models/forms and set last_modified to "ULT"
             if CKD_form.is_valid():
@@ -218,27 +174,32 @@ class ULTCreate(PatientProviderCreateMixin, SuccessMessageMixin, CreateView):
         else:
             # If form is not valid, check if User is logged in
             if request.user.is_authenticated:
-                # Check if username kwarg was supplied
-                try:
-                    self.username = self.kwargs.get("username")
-                except:
-                    self.username = None
-                # If so, fetch related model instances and rerender form
-                if self.username:
-                    self.user = User.objects.get(username=self.username)
+                if self.medicalprofile:
                     return self.render_to_response(
                         self.get_context_data(
                             form=form,
-                            CKD_form=self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD),
-                            erosions_form=self.erosions_form_class(
-                                request.POST, instance=self.user.medicalprofile.erosions
-                            ),
+                            CKD_form=self.CKD_form_class(request.POST, instance=self.medicalprofile.CKD),
+                            erosions_form=self.erosions_form_class(request.POST, instance=self.medicalprofile.erosions),
                             hyperuricemia_form=self.hyperuricemia_form_class(
-                                request.POST, instance=self.user.medicalprofile.hyperuricemia
+                                request.POST, instance=self.medicalprofile.hyperuricemia
                             ),
-                            tophi_form=self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi),
+                            tophi_form=self.tophi_form_class(request.POST, instance=self.medicalprofile.tophi),
                             urate_kidney_stones_form=self.urate_kidney_stones_form_class(
-                                request.POST, instance=self.user.medicalprofile.urate_kidney_stones
+                                request.POST, instance=self.medicalprofile.urate_kidney_stones
+                            ),
+                        )
+                    )
+                else:
+                    # Otherwise rerender form with new related model instances
+                    return self.render_to_response(
+                        self.get_context_data(
+                            form=form,
+                            CKD_form=self.CKD_form_class(request.POST, instance=CKD()),
+                            erosions_form=self.erosions_form_class(request.POST, instance=Erosions()),
+                            hyperuricemia_form=self.hyperuricemia_form_class(request.POST, instance=Hyperuricemia()),
+                            tophi_form=self.tophi_form_class(request.POST, instance=Tophi()),
+                            urate_kidney_stones_form=self.urate_kidney_stones_form_class(
+                                request.POST, instance=UrateKidneyStones()
                             ),
                         )
                     )
@@ -262,7 +223,7 @@ class ULTDetail(PatientProviderMixin, DetailView):
     model = ULT
 
 
-class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
+class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, ProfileMixin, UserMixin, UpdateView):
     """ULT UpdateView.
     Intended to be responsive to whether or not the User is a Patient or Provider
 
@@ -280,55 +241,48 @@ class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ULTUpdate, self).get_context_data(**kwargs)
-        # Fetch username from slug kwarg
-        self.username = self.kwargs.get("slug")
-        # Fetch user from username
-        self.user = User.objects.get(username=self.username)
         # Add FlareAid OnetoOne related model objects from the MedicalProfile for fetched User
         if self.request.POST:
             if "CKD_form" not in context:
                 context["CKD_form"] = self.CKD_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.CKD, prefix="CKD_form"
+                    self.request.POST, instance=self.object.CKD, prefix="CKD_form"
                 )
             if "erosions_form" not in context:
                 context["erosions_form"] = self.erosions_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.erosions, prefix="erosions_form"
+                    self.request.POST, instance=self.object.erosions, prefix="erosions_form"
                 )
             if "hyperuricemia_form" not in context:
                 context["hyperuricemia_form"] = self.hyperuricemia_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.hyperuricemia, prefix="hyperuricemia_form"
+                    self.request.POST, instance=self.object.hyperuricemia, prefix="hyperuricemia_form"
                 )
             if "tophi_form" not in context:
                 context["tophi_form"] = self.tophi_form_class(
-                    self.request.POST, instance=self.user.medicalprofile.tophi, prefix="tophi_form"
+                    self.request.POST, instance=self.object.tophi, prefix="tophi_form"
                 )
             if "urate_kidney_stones_form" not in context:
                 context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(
                     self.request.POST,
-                    instance=self.user.medicalprofile.urate_kidney_stones,
+                    instance=self.object.stones,
                     prefix="urate_kidney_stones_form",
                 )
-            return context
         else:
             if "CKD_form" not in context:
-                context["CKD_form"] = self.CKD_form_class(instance=self.user.medicalprofile.CKD, prefix="CKD_form")
+                context["CKD_form"] = self.CKD_form_class(instance=self.object.ckd, prefix="CKD_form")
             if "erosions_form" not in context:
                 context["erosions_form"] = self.erosions_form_class(
-                    instance=self.user.medicalprofile.erosions, prefix="erosions_form"
+                    instance=self.object.erosions, prefix="erosions_form"
                 )
             if "hyperuricemia_form" not in context:
                 context["hyperuricemia_form"] = self.hyperuricemia_form_class(
-                    instance=self.user.medicalprofile.hyperuricemia, prefix="hyperuricemia_form"
+                    instance=self.object.hyperuricemia, prefix="hyperuricemia_form"
                 )
             if "tophi_form" not in context:
-                context["tophi_form"] = self.tophi_form_class(
-                    instance=self.user.medicalprofile.tophi, prefix="tophi_form"
-                )
+                context["tophi_form"] = self.tophi_form_class(instance=self.object.tophi, prefix="tophi_form")
             if "urate_kidney_stones_form" not in context:
                 context["urate_kidney_stones_form"] = self.urate_kidney_stones_form_class(
-                    instance=self.user.medicalprofile.urate_kidney_stones, prefix="urate_kidney_stones_form"
+                    instance=self.object.stones, prefix="urate_kidney_stones_form"
                 )
-            return context
+        return context
 
     def get_success_url(self):
         # Check if there is a slug kwarg and redirect to DetailView using that
@@ -338,8 +292,6 @@ class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
         else:
             return reverse(
                 "ult:detail",
-                # Need comma at end of kwargs for some picky Django reason
-                # https://stackoverflow.com/questions/52575418/reverse-with-prefix-argument-after-must-be-an-iterable-not-int/52575419
                 kwargs={
                     "pk": self.object.pk,
                 },
@@ -351,17 +303,18 @@ class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
         return super().form_valid(form)
 
     def post(self, request, **kwargs):
+        self.object = self.get_object()
         # Post overwritten to process multiple forms
-        form = self.form_class(request.POST, instance=self.get_object())
+        form = self.form_class(request.POST, instance=self.object)
         # Fetch related models from existing ULT object
-        CKD_form = self.CKD_form_class(request.POST, instance=form.instance.ckd, prefix="CKD_form")
-        erosions_form = self.erosions_form_class(request.POST, instance=form.instance.erosions, prefix="erosions_form")
+        CKD_form = self.CKD_form_class(request.POST, instance=self.object.ckd, prefix="CKD_form")
+        erosions_form = self.erosions_form_class(request.POST, instance=self.object.erosions, prefix="erosions_form")
         hyperuricemia_form = self.hyperuricemia_form_class(
-            request.POST, instance=form.instance.hyperuricemia, prefix="hyperuricemia_form"
+            request.POST, instance=self.object.hyperuricemia, prefix="hyperuricemia_form"
         )
-        tophi_form = self.tophi_form_class(request.POST, instance=form.instance.tophi, prefix="tophi_form")
+        tophi_form = self.tophi_form_class(request.POST, instance=self.object.tophi, prefix="tophi_form")
         urate_kidney_stones_form = self.urate_kidney_stones_form_class(
-            request.POST, instance=form.instance.stones, prefix="urate_kidney_stones_form"
+            request.POST, instance=self.object.stones, prefix="urate_kidney_stones_form"
         )
         if form.is_valid():
             # Check if form and related model forms are valid to process
@@ -369,7 +322,6 @@ class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
             if CKD_form.is_valid():
                 CKD_data = CKD_form.save(commit=False)
                 CKD_data.last_modified = "ULT"
-                CKD_data.pk = CKD_form.instance.pk
                 CKD_data.save()
             if erosions_form.is_valid():
                 erosions_data = erosions_form.save(commit=False)
@@ -398,14 +350,12 @@ class ULTUpdate(LoginRequiredMixin, PatientProviderMixin, UpdateView):
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
-                    CKD_form=self.CKD_form_class(request.POST, instance=self.user.medicalprofile.CKD),
-                    erosions_form=self.erosions_form_class(request.POST, instance=self.user.medicalprofile.erosions),
-                    hyperuricemia_form=self.hyperuricemia_form_class(
-                        request.POST, instance=self.user.medicalprofile.hyperuricemia
-                    ),
-                    tophi_form=self.tophi_form_class(request.POST, instance=self.user.medicalprofile.tophi),
+                    CKD_form=self.CKD_form_class(request.POST, instance=self.object.CKD),
+                    erosions_form=self.erosions_form_class(request.POST, instance=self.object.erosions),
+                    hyperuricemia_form=self.hyperuricemia_form_class(request.POST, instance=self.object.hyperuricemia),
+                    tophi_form=self.tophi_form_class(request.POST, instance=self.object.tophi),
                     urate_kidney_stones_form=self.urate_kidney_stones_form_class(
-                        request.POST, instance=self.user.medicalprofile.urate_kidney_stones
+                        request.POST, instance=self.object.stones
                     ),
                 )
             )

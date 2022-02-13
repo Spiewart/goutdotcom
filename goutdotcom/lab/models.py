@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db import models, transaction
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
@@ -13,9 +14,18 @@ from ..profiles.models import PatientProfile
 
 
 class Lab(TimeStampedModel):
+    def class_name(self):
+        return self.__class__.__name__
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=(class_name() + "_creator"),
     )
     ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.SET_NULL, null=True, blank=True, default=None)
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
@@ -30,6 +40,7 @@ class Lab(TimeStampedModel):
         choices=BOOL_CHOICES, help_text="Is this the baseline for this User?", verbose_name="Baseline", default=False
     )
     history = HistoricalRecords(inherit=True)
+    slug = models.SlugField(max_length=200, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -213,7 +224,15 @@ class ALT(Lab):
 
     # Overwriting save() method to check if baseline is set to True, marks all others as False if so
     # Makes baseline unique for the model class for the User
+    # Also creates slug if not present yet
     def save(self, *args, **kwargs):
+        super(ALT, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
             return super(ALT, self).save(*args, **kwargs)
         with transaction.atomic():
@@ -795,6 +814,17 @@ class LabCheck(TimeStampedModel):
         default=None,
     )
     history = HistoricalRecords()
+    slug = models.SlugField(max_length=200, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super(LabCheck, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
+                super(LabCheck, self).save(*args, **kwargs)
 
     @property
     def delinquent(self):
