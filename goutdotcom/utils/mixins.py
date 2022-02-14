@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.views.generic.base import ContextMixin, View
 
@@ -137,6 +138,45 @@ class PatientProviderCreateMixin:
                 return super().get(request, *args, **kwargs)
 
 
+class PatientProviderListMixin:
+    """Mixin that checks whether a User is a Provider or a Patient and restricts access to ListViews.
+    Limits providers to lists of objects belonging to patients for whom he/she is the provider (field).
+    Limits patients their own lists.
+    """
+
+    def get(self, request, *args, **kwargs):
+        # Check if requesting User is a Provider
+        if self.request.user.is_authenticated:
+            if self.request.user.role == "PROVIDER":
+                # Check if the User with the username provided in kwargs is a patient of Provider
+                if self.kwargs.get("username"):
+                    if not self.user:
+                        self.user = get_object_or_404(User, username=self.kwargs.get("username"))
+                    if not self.patientprofile:
+                        self.patientprofile = self.user.patientprofile
+                    if self.patientprofile.provider == self.request.user:
+                        return super().get(request, *args, **kwargs)
+                else:
+                    return PermissionDenied
+            # Check if requesting User is a Patient
+            elif self.request.user.role == "PATIENT":
+                # Check if there is a username kwarg provided
+                if self.kwargs.get("username"):
+                    # Check if User's username is the same as that in the kwarg
+                    if self.kwargs.get("username") == self.request.user.username:
+                        # Return super().get() if so
+                        return super().get(request, *args, **kwargs)
+                    # Else raise 404
+                    else:
+                        raise PermissionDenied
+            else:
+                # Else raise 404
+                raise PermissionDenied
+        # If User is not logged in, restrict access to any username-based CreateViews
+        else:
+            raise PermissionDenied
+
+
 class UserMixin(ContextMixin, View):
     """Mixin that checks for a username kwarg and tries to fetch a User with it.
     Adds the User to object instance to be called as a property.
@@ -164,6 +204,29 @@ class UserMixin(ContextMixin, View):
 
     def get_context_data(self, **kwargs):
         context = super(UserMixin, self).get_context_data(**kwargs)
+        context["user"] = self.user
+        return context
+
+
+class UserSlugMixin(ContextMixin, View):
+    """Mixin that finds an object's User without a username kwarg.
+    For UpdateViews (LabCheck).
+    Adds the User to object instance to be called as a property.
+    Avoids multiple queries to DB.
+    Adds User object to context.
+
+    Returns:
+        [User or None]: [Returns a User object or None]
+    """
+
+    @cached_property
+    def user(self):
+        self.object = self.get_object()
+        self.user = get_object_or_404(User, username=self.object.user.username)
+        return self.user
+
+    def get_context_data(self, **kwargs):
+        context = super(UserSlugMixin, self).get_context_data(**kwargs)
         context["user"] = self.user
         return context
 

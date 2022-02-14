@@ -48,7 +48,7 @@ class ULTPlanCreate(LoginRequiredMixin, PatientProviderCreateMixin, View):
         except ULTPlan.DoesNotExist:
             self.ultplan = None
         if self.ultplan:
-            return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": self.user.ultplan.pk}))
+            return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"slug": self.ultplan.slug}))
         # Checks if view ppxaid and ultaid are not None
         if self.ppxaid and self.ultaid:
             # Get ULT model from User's ULTAid decision_aid() 'drug' dict field
@@ -113,20 +113,26 @@ class ULTPlanCreate(LoginRequiredMixin, PatientProviderCreateMixin, View):
             # Create initial LabCheck object for baseline labs
             LabCheck.objects.create(
                 user=self.user,
+                creator=self.request.user,
                 ultplan=ultplan,
                 due=datetime.today().date(),
             )
 
             # Return redirect to ultplan:detail
             messages.success(request, "ULTPlan created.")
-            return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"pk": ultplan.pk}))
+            return HttpResponseRedirect(reverse("ultplan:detail", kwargs={"slug": ultplan.slug}))
         # These last 2 elif and else statements will only be called if a user types in the ultplan:create url rather than following the button-links displayed on their ULTAid detail page
         # If View ultaid exists but ppxaid does not, redirect to ppxaid:ultaid-create with kwargs user.ultaid.pk
         elif self.ultaid:
-            return HttpResponseRedirect(reverse("ppxaid:ultaid-create", kwargs={"ultaid": self.user.ultaid.pk}))
+            return HttpResponseRedirect(
+                reverse(
+                    "ppxaid:user-ultaid-create",
+                    kwargs={"ultaid": self.user.ultaid.slug, "username": self.user.username},
+                )
+            )
         # If neither ultaid nor ppxaid exists for view, redirect to ultaid:create to start the process
         else:
-            return HttpResponseRedirect(reverse("ultaid:create", kwargs={"username": self.username}))
+            return HttpResponseRedirect(reverse("ultaid:user-create", kwargs={"username": self.username}))
 
 
 class ULTPlanDelete(LoginRequiredMixin, PatientProviderMixin, DeleteView):

@@ -122,9 +122,11 @@ class ULTAid(TimeStampedModel):
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        # If ULTAid has a User, it should have a slug
         if self.user:
-            if not self.id:
-                # If no id, it is a newly created object and needs slug set
+            # Check if there's a slug
+            if not self.slug:
+                # If no slug, it is a newly created object and needs slug set
                 self.slug = slugify(self.user.username)
         super(ULTAid, self).save(*args, **kwargs)
 

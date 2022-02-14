@@ -1,10 +1,9 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from decimal import *
 
 from django.conf import settings
 from django.db import models, transaction
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
@@ -20,12 +19,6 @@ class Lab(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-    )
-    creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name=(class_name() + "_creator"),
     )
     ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.SET_NULL, null=True, blank=True, default=None)
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
@@ -199,6 +192,12 @@ class Urate(Lab):
         null=True,
         blank=True,
     )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("urate_creator"),
+    )
     value = models.DecimalField(
         max_digits=3, decimal_places=1, help_text="Uric acid is typically reported in micrograms per deciliter (mg/dL)"
     )
@@ -211,11 +210,29 @@ class Urate(Lab):
         max_digits=3, decimal_places=1, default=7.2, help_text="Upper limit of normal values for urate"
     )
 
+    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
+    # Makes baseline unique for the model class for the User
+    # Also creates slug if not present yet
+    def save(self, *args, **kwargs):
+        super(Urate, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
+
 
 class ALT(Lab):
     LOWER_LIMIT = 7
     UPPER_LIMIT = 55
 
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("alt_creator"),
+    )
     value = models.IntegerField(help_text="ALT (SGPT) is typically reported in units per liter (U/L)")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "ALT"
@@ -244,6 +261,12 @@ class AST(Lab):
     LOWER_LIMIT = 10
     UPPER_LIMIT = 40
 
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("ast_creator"),
+    )
     value = models.IntegerField(help_text="AST (SGOT) is typically reported in units per liter (U/L)")
     units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
     name = "AST"
@@ -252,7 +275,15 @@ class AST(Lab):
 
     # Overwriting save() method to check if baseline is set to True, marks all others as False if so
     # Makes baseline unique for the model class for the User
+    # Also creates slug if not present yet
     def save(self, *args, **kwargs):
+        super(AST, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
             return super(AST, self).save(*args, **kwargs)
         with transaction.atomic():
@@ -264,6 +295,12 @@ class Platelet(Lab):
     LOWER_LIMIT = 150
     UPPER_LIMIT = 450
 
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("platelet_creator"),
+    )
     value = models.IntegerField(
         help_text="PLT (platelets) is typically reported in platelets per microliter (PLT/microL)"
     )
@@ -274,7 +311,15 @@ class Platelet(Lab):
 
     # Overwriting save() method to check if baseline is set to True, marks all others as False if so
     # Makes baseline unique for the model class for the User
+    # Also creates slug if not present yet
     def save(self, *args, **kwargs):
+        super(Platelet, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
             return super(Platelet, self).save(*args, **kwargs)
         with transaction.atomic():
@@ -408,6 +453,12 @@ class WBC(Lab):
     LOWER_LIMIT = Decimal(4.5)
     UPPER_LIMIT = Decimal(11.0)
 
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("wbc_creator"),
+    )
     value = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -424,7 +475,15 @@ class WBC(Lab):
 
     # Overwriting save() method to check if baseline is set to True, marks all others as False if so
     # Makes baseline unique for the model class for the User
+    # Also creates slug if not present yet
     def save(self, *args, **kwargs):
+        super(WBC, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
             return super(WBC, self).save(*args, **kwargs)
         with transaction.atomic():
@@ -489,6 +548,12 @@ class Hemoglobin(Lab):
     LOWER_LIMIT = Decimal(13.5)
     UPPER_LIMIT = Decimal(17.5)
 
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("hemoglobin_creator"),
+    )
     value = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -504,7 +569,15 @@ class Hemoglobin(Lab):
     )
     # Overwriting save() method to check if baseline is set to True, marks all others as False if so
     # Makes baseline unique for the model class for the User
+    # Also creates slug if not present yet
     def save(self, *args, **kwargs):
+        super(Hemoglobin, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
             return super(Hemoglobin, self).save(*args, **kwargs)
         with transaction.atomic():
@@ -523,6 +596,12 @@ class Creatinine(Lab):
     LOWER_LIMIT = Decimal(0.74)
     UPPER_LIMIT = Decimal(1.35)
 
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("creatinine_creator"),
+    )
     value = models.DecimalField(
         max_digits=4, decimal_places=2, help_text="Creatinine is typically reported as milligrams per deciliter (mg/dL)"
     )
@@ -536,7 +615,15 @@ class Creatinine(Lab):
     )
     # Overwriting save() method to check if baseline is set to True, marks all others as False if so
     # Makes baseline unique for the model class for the User
+    # Also creates slug if not present yet
     def save(self, *args, **kwargs):
+        super(Creatinine, self).save(*args, **kwargs)
+        # Check if there is a user field
+        if self.user:
+            # If there is, check if a slug field has been set
+            if not self.slug:
+                # If no slug but has a user, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
             return super(Creatinine, self).save(*args, **kwargs)
         with transaction.atomic():
@@ -789,6 +876,12 @@ class LabCheck(TimeStampedModel):
     """Model to coordinate labs for monitoring ULTPlan titration."""
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("labcheck_creator"),
+    )
     # Need to use alternative nomenclature for referencing ULTPlan model to avoid circular imports
     ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.CASCADE)
     # Related model LabCheck in the event a LabCheck with abnormal labs needs F/U Labs
@@ -814,17 +907,17 @@ class LabCheck(TimeStampedModel):
         default=None,
     )
     history = HistoricalRecords()
-    slug = models.SlugField(max_length=200, null=True, blank=True)
+    slug = models.SlugField(max_length=200, null=True)
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            # Check if there is a user field
+            if self.user:
+                # If there's a user, add slug field
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((LabCheck.objects.filter(user=self.user).count() + 1))
+                )
         super(LabCheck, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
-                self.slug = slugify(self.user.username) + "-" + str(self.id)
-                super(LabCheck, self).save(*args, **kwargs)
 
     @property
     def delinquent(self):
@@ -879,4 +972,4 @@ class LabCheck(TimeStampedModel):
             return f"{str(self.user).capitalize()}'s lab check due {self.due}"
 
     def get_absolute_url(self):
-        return reverse("ultplan:detail", kwargs={"pk": self.ultplan.pk})
+        return reverse("ultplan:detail", kwargs={"slug": self.ultplan.slug})

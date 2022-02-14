@@ -12,7 +12,7 @@
 {% endblock header %}
 {% block form %}
 {% if form.instance.pk %}
-  <form method="post" action="{% url 'lab:labcheck-update' pk=object.pk %}">
+  <form method="post" action="{% url 'lab:labcheck-update' slug=object.slug %}">
     {% csrf_token %}
     {% crispy form %}
     {% crispy alt_form %}

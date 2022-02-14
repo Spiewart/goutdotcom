@@ -17,6 +17,7 @@ urlpatterns = [
     path("ult/", ULTView.as_view(), name="ult"),
     path("<treatment>/", view=TreatmentList.as_view(), name="list"),
     path("<treatment>/<int:pk>/", view=TreatmentDetail.as_view(), name="detail"),
+    path("<treatment>/<slug:slug>/", view=TreatmentDetail.as_view(), name="user-detail"),
     path("create/<treatment>/", view=TreatmentCreate.as_view(), name="create"),
     path("create/flareaid/<int:pk>/<treatment>/", view=FlareAidTreatmentCreate.as_view(), name="flareaid-create"),
     path("create/ppx/<treatment>/", view=ProphylaxisCreate.as_view(), name="prophylaxis-create"),

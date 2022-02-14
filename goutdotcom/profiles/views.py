@@ -28,32 +28,8 @@ from ..history.forms import (
     TophiForm,
     UrateKidneyStonesForm,
 )
-from ..history.models import (
-    CHF,
-    CKD,
-    IBD,
-    Alcohol,
-    Angina,
-    Anticoagulation,
-    Bleed,
-    ColchicineInteractions,
-    Diabetes,
-    Erosions,
-    Fructose,
-    Gout,
-    HeartAttack,
-    Hypertension,
-    Hyperuricemia,
-    OrganTransplant,
-    Osteoporosis,
-    Shellfish,
-    Stroke,
-    Tophi,
-    UrateKidneyStones,
-)
 from ..utils.mixins import PatientProviderMixin
 from ..vitals.forms import HeightForm, WeightForm
-from ..vitals.models import Height, Weight
 from .forms import (
     FamilyProfileForm,
     MedicalProfileForm,

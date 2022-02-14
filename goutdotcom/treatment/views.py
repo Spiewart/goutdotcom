@@ -266,7 +266,7 @@ class FlareAidTreatmentCreate(LoginRequiredMixin, View):
         self.treatment = self.kwargs["treatment"]
         self.model = apps.get_model("treatment", model_name=self.treatment)
         self.flareaid = FlareAid.objects.get(pk=self.kwargs["pk"])
-        self.model(user=request.user, flareaid=self.flareaid).save()
+        self.model(user=self.flareaid.user, creator=self.request.user, flareaid=self.flareaid).save()
         return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": self.kwargs["pk"]}))
 
 
@@ -362,7 +362,10 @@ class TreatmentCreate(LoginRequiredMixin, CreateView):
 class TreatmentDetail(LoginRequiredMixin, DetailView):
     def get_object(self):
         self.model = apps.get_model("treatment", model_name=self.kwargs["treatment"])
-        treatment = get_object_or_404(self.model, pk=self.kwargs["pk"], user=self.request.user)
+        if self.kwargs.get("pk"):
+            treatment = get_object_or_404(self.model, pk=self.kwargs["pk"])
+        else:
+            treatment = get_object_or_404(self.model, slug=self.kwargs["slug"])
         return treatment
 
     def get_template_names(self):

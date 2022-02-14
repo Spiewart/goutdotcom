@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
@@ -39,6 +40,7 @@ class Treatment(TimeStampedModel):
     date_started = models.DateField(null=True, blank=True)
     date_ended = models.DateField(null=True, blank=True, default=None)
     history = HistoricalRecords(inherit=True)
+    slug = models.SlugField(max_length=200, null=True)
 
     class Meta:
         abstract = True
@@ -121,6 +123,19 @@ class Allopurinol(ULTTreatment):
     )
     de_sensitized = models.BooleanField(null=True, blank=True, help_text="Have you been de-sensitized to allopurinol?")
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="allopurinol_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.user:
+            if not self.id:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username)
+        super(Allopurinol, self).save(*args, **kwargs)
 
 
 class Febuxostat(ULTTreatment):
@@ -138,6 +153,19 @@ class Febuxostat(ULTTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ULT)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="febuxostat_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.user:
+            if not self.id:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username)
+        super(Febuxostat, self).save(*args, **kwargs)
 
 
 class Probenecid(ULTTreatment):
@@ -155,6 +183,19 @@ class Probenecid(ULTTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=URATEEXCRETAGOGUE)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="probenecid_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.user:
+            if not self.id:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = slugify(self.user.username)
+        super(Probenecid, self).save(*args, **kwargs)
 
 
 class Colchicine(FlareTreatment):
@@ -177,6 +218,21 @@ class Colchicine(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=ANTIINFLAMMATORY)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="colchicine_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Colchicine.objects.filter(user=self.user).count() + 1))
+                )
+        super(Colchicine, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.dose and self.dose2 and self.dose3:
@@ -200,6 +256,21 @@ class Ibuprofen(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="ibuprofen_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Ibuprofen.objects.filter(user=self.user).count() + 1))
+                )
+        super(Ibuprofen, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.dose == 200:
@@ -227,6 +298,21 @@ class Naproxen(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="naproxen_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Naproxen.objects.filter(user=self.user).count() + 1))
+                )
+        super(Naproxen, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.dose == 220 or self.dose == 250:
@@ -253,6 +339,21 @@ class Meloxicam(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="meloxicam_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Meloxicam.objects.filter(user=self.user).count() + 1))
+                )
+        super(Meloxicam, self).save(*args, **kwargs)
 
 
 class Celecoxib(FlareTreatment):
@@ -268,6 +369,21 @@ class Celecoxib(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="celecoxib_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Celecoxib.objects.filter(user=self.user).count() + 1))
+                )
+        super(Celecoxib, self).save(*args, **kwargs)
 
 
 class Indomethacin(FlareTreatment):
@@ -283,6 +399,21 @@ class Indomethacin(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=NSAID)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="indomethacin_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Indomethacin.objects.filter(user=self.user).count() + 1))
+                )
+        super(Indomethacin, self).save(*args, **kwargs)
 
 
 class Prednisone(FlareTreatment):
@@ -306,6 +437,21 @@ class Prednisone(FlareTreatment):
         help_text="Have you had any side effects?",
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=SYSSTEROID)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="prednisone_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Prednisone.objects.filter(user=self.user).count() + 1))
+                )
+        super(Prednisone, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.dose and self.dose2:
@@ -337,6 +483,23 @@ class Methylprednisolone(FlareTreatment):
         blank=True,
         null=True,
     )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="methylprednisolone_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username)
+                    + "-"
+                    + str((Methylprednisolone.objects.filter(user=self.user).count() + 1))
+                )
+        super(Methylprednisolone, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.as_injection == True:
@@ -364,6 +527,21 @@ class Tinctureoftime(FlareTreatment):
         max_length=400, null=True, blank=True, help_text="Have you had any side effects? Please list"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=TINCTUREOFTIME)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="tinctureoftime_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Tinctureoftime.objects.filter(user=self.user).count() + 1))
+                )
+        super(Tinctureoftime, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{"Tincture of time for: " + str(self.duration) + " days"}'
@@ -387,6 +565,21 @@ class Othertreat(FlareTreatment):
         max_length=400, blank=True, null=True, help_text="Have you had any side effects? Please list"
     )
     drug_class = models.CharField(max_length=50, choices=DRUG_CLASS_CHOICES, default=OTHER)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="othertreat_creator",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if self.user:
+                # If no id, it is a newly created object and needs slug set
+                self.slug = (
+                    slugify(self.user.username) + "-" + str((Othertreat.objects.filter(user=self.user).count() + 1))
+                )
+        super(Othertreat, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name

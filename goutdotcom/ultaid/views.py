@@ -207,6 +207,19 @@ class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin
         object = self.model
         return object
 
+    def get_success_url(self):
+        # Check if there is a slug kwarg and redirect to DetailView using that
+        if self.kwargs.get("username"):
+            return reverse("ultaid:user-detail", kwargs={"slug": self.object.slug})
+        # Otherwise return to DetailView based on PK
+        else:
+            return reverse(
+                "ult:detail",
+                kwargs={
+                    "pk": self.object.pk,
+                },
+            )
+
     def post(self, request, **kwargs):
         form = self.form_class(request.POST, instance=ULTAid())
         self.object = self.get_object()

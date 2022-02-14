@@ -4,7 +4,7 @@
 
 {% block content %}
 <main class="container-fluid content-container">
-  <a class="btn btn-primary btn-lg" href="{% url 'ultplan:delete' pk=object.pk %}" role="button"
+  <a class="btn btn-primary btn-lg" href="{% url 'ultplan:delete' slug=object.slug %}" role="button"
     style="float: right;">Delete</a>
   {% include 'lab/_ultplan_lab_create_button.html' %}
 <h1>{{ object }}</h1>
@@ -21,10 +21,10 @@
   <div class="col">
     {% if object.last_labcheck %}
       {% if object.labcheck_due == True %}
-      <a class="btn btn-primary btn-sm" href="{% url 'lab:labcheck-update' pk=object.last_labcheck.pk %}" role="button"
+      <a class="btn btn-primary btn-sm" href="{% url 'lab:labcheck-update' slug=object.last_labcheck.slug %}" role="button"
         style="float: right;">Log Labs</a>
       {% endif %}
-      <a class="btn btn-primary btn-sm" href="{% url 'lab:list' lab='labcheck' %}"
+      <a class="btn btn-primary btn-sm" href="{% url 'lab:list' username=object.user.username lab='labcheck' %}"
         role="button" style="float: right;">Lab List</a>
       <h2>
         Lab Monitoring

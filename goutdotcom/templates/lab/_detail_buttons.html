@@ -15,7 +15,7 @@
           href="{% url 'lab:single-ultplan-create' object_list|list_to_name request.user.ultplan.pk %}">New
 </a></li>
     {% endif %}
-      <li><a class="dropdown-item" href="{% url 'lab:list' object|to_class_name %}">List
+      <li><a class="dropdown-item" href="{% url 'lab:list' username=object.user.username lab=object|to_class_name %}">List
 </a></li>
     </ul>
   </div>
