@@ -11,7 +11,7 @@
 
 {% block form %}
   {% if form.instance.pk %}
-    <form class="form-horizontal gdc-default" method="post" action="{% url 'treatment:update' treatment object.pk %}">
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'treatment:update' treatment object.slug %}">
       {% csrf_token %}
       {{ form|crispy }}
       <div class="control-group">
@@ -23,7 +23,7 @@
       </div>
     </form>
   {% else %}
-    <form class="form-horizontal gdc-default" method="post" action="{% url 'treatment:create' treatment %}">
+    <form class="form-horizontal gdc-default" method="post" action="{% url 'treatment:create' username=user.username treatment=treatment %}">
       {% csrf_token %}
       {{ form|crispy }}
       <div class="control-group">

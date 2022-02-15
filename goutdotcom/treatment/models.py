@@ -52,7 +52,7 @@ class Treatment(TimeStampedModel):
             return f'{str(self.generic_name) + " (dose not recorded)"}'
 
     def get_absolute_url(self):
-        return reverse("treatment:detail", kwargs={"pk": self.pk, "treatment": self.generic_name})
+        return reverse("treatment:detail", kwargs={"slug": self.slug, "treatment": self.generic_name})
 
     def __unicode__(self):
         return self.generic_name

@@ -20,15 +20,15 @@
                   <li><a class="dropdown-item" href="{% url 'treatment:about' object|to_class_name %}">About</a></li>
                   {% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
                   {% else %}
-                  <li><a class="dropdown-item" href="{% url 'treatment:list' object|to_class_name %}">List</a></li>
+                  <li><a class="dropdown-item" href="{% url 'treatment:list' username=user treatment=object|to_class_name %}">List</a></li>
                   {% endif %}
                   {% if object.generic_name == 'allopurinol' or object.generic_name == 'febuxostat' or object.generic_name == 'probenecid'%}
                   {% else %}
-                  <li><a class="dropdown-item" href="{% url 'treatment:create' object|to_class_name %}">New:
+                  <li><a class="dropdown-item" href="{% url 'treatment:create' username=user treatment=object|to_class_name %}">New:
                       {{ object|to_class_name }}</a></li>
                   {% endif %}
                   <li><a class="dropdown-item"
-                      href="{% url 'treatment:update' object|to_class_name object.pk %}">Update</a></li>
+                      href="{% url 'treatment:update' object|to_class_name object.slug %}">Update</a></li>
                 </ul>
               </div>
             </div>

@@ -19,6 +19,15 @@ from goutdotcom.treatment.choices import COLCHICINE
 
 from ..flareaid.models import FlareAid
 from ..ppxaid.models import PPxAid
+from ..utils.mixins import (
+    PatientProviderCreateMixin,
+    PatientProviderListMixin,
+    PatientProviderMixin,
+    ProfileMixin,
+    TreatmentModelMixin,
+    UserMixin,
+    UserSlugMixin,
+)
 from .forms import *
 from .models import (
     Allopurinol,
@@ -140,7 +149,7 @@ class IndexView(LoginRequiredMixin, ListView):
         return queryset.filter(user=self.request.user)
 
 
-class FlareView(LoginRequiredMixin, ListView):
+class FlareView(LoginRequiredMixin, PatientProviderListMixin, UserMixin, ListView):
     template_name = "treatment/flare.html"
     model = Colchicine
 
@@ -148,23 +157,23 @@ class FlareView(LoginRequiredMixin, ListView):
         context = super(FlareView, self).get_context_data(**kwargs)
         context.update(
             {
-                "colchicine_list": Colchicine.objects.filter(user=self.request.user, as_prophylaxis=False),
-                "ibuprofen_list": Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=False),
-                "celecoxib_list": Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=False),
-                "meloxicam_list": Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=False),
-                "naproxen_list": Naproxen.objects.filter(user=self.request.user, as_prophylaxis=False),
-                "prednisone_list": Prednisone.objects.filter(user=self.request.user, as_prophylaxis=False),
-                "methylprednisolone_list": Methylprednisolone.objects.filter(user=self.request.user, as_injection=True),
+                "colchicine_list": Colchicine.objects.filter(user=self.user, as_prophylaxis=False),
+                "ibuprofen_list": Ibuprofen.objects.filter(user=self.user, as_prophylaxis=False),
+                "celecoxib_list": Celecoxib.objects.filter(user=self.user, as_prophylaxis=False),
+                "meloxicam_list": Meloxicam.objects.filter(user=self.user, as_prophylaxis=False),
+                "naproxen_list": Naproxen.objects.filter(user=self.user, as_prophylaxis=False),
+                "prednisone_list": Prednisone.objects.filter(user=self.user, as_prophylaxis=False),
+                "methylprednisolone_list": Methylprednisolone.objects.filter(user=self.user, as_injection=True),
             }
         )
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user)
+        return queryset.filter(user=self.user)
 
 
-class ProphylaxisView(LoginRequiredMixin, ListView):
+class ProphylaxisView(LoginRequiredMixin, PatientProviderListMixin, UserMixin, ListView):
     """For creating prophylactic therapy medication objects. The model field as_prophylaxis is switched to True with form.is_valid(). I had to create a new view rather than inherit from TreatmentCreate because of form.is_valid() super inheritance. It also let me rewrite some of the form fields rendered, such as prn."""
 
     template_name = "treatment/prophylaxis.html"
@@ -175,12 +184,12 @@ class ProphylaxisView(LoginRequiredMixin, ListView):
         context.update(
             {
                 "lists": {
-                    "colchicine_ppx_list": Colchicine.objects.filter(user=self.request.user, as_prophylaxis=True),
-                    "ibuprofen_ppx_list": Ibuprofen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                    "celecoxib_ppx_list": Celecoxib.objects.filter(user=self.request.user, as_prophylaxis=True),
-                    "meloxicam_ppx_list": Meloxicam.objects.filter(user=self.request.user, as_prophylaxis=True),
-                    "naproxen_ppx_list": Naproxen.objects.filter(user=self.request.user, as_prophylaxis=True),
-                    "prednisone_ppx_list": Prednisone.objects.filter(user=self.request.user, as_prophylaxis=True),
+                    "colchicine_ppx_list": Colchicine.objects.filter(user=self.user, as_prophylaxis=True),
+                    "ibuprofen_ppx_list": Ibuprofen.objects.filter(user=self.user, as_prophylaxis=True),
+                    "celecoxib_ppx_list": Celecoxib.objects.filter(user=self.user, as_prophylaxis=True),
+                    "meloxicam_ppx_list": Meloxicam.objects.filter(user=self.user, as_prophylaxis=True),
+                    "naproxen_ppx_list": Naproxen.objects.filter(user=self.user, as_prophylaxis=True),
+                    "prednisone_ppx_list": Prednisone.objects.filter(user=self.user, as_prophylaxis=True),
                 },
             }
         )
@@ -188,10 +197,10 @@ class ProphylaxisView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user)
+        return queryset.filter(user=self.user)
 
 
-class ULTView(LoginRequiredMixin, ListView):
+class ULTView(LoginRequiredMixin, PatientProviderListMixin, UserMixin, ListView):
     template_name = "treatment/ult.html"
     model = Allopurinol
 
@@ -200,9 +209,9 @@ class ULTView(LoginRequiredMixin, ListView):
         context.update(
             {
                 "lists": {
-                    "allopurinol_list": Allopurinol.objects.filter(user=self.request.user),
-                    "febuxostat_list": Febuxostat.objects.filter(user=self.request.user),
-                    "probenecid_list": Probenecid.objects.filter(user=self.request.user),
+                    "allopurinol_list": Allopurinol.objects.filter(user=self.user),
+                    "febuxostat_list": Febuxostat.objects.filter(user=self.user),
+                    "probenecid_list": Probenecid.objects.filter(user=self.user),
                 },
             }
         )
@@ -210,45 +219,27 @@ class ULTView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user)
+        return queryset.filter(user=self.user)
 
 
-class ProphylaxisCreate(LoginRequiredMixin, CreateView):
+class ProphylaxisCreate(LoginRequiredMixin, PatientProviderCreateMixin, UserMixin, TreatmentModelMixin, CreateView):
     fields = ["dose", "freq", "side_effects"]
 
     def get_form_class(self):
-        self.treatment = self.kwargs["treatment"]
-        if self.fields is not None and self.form_class:
-            raise ImproperlyConfigured("Specifying both 'fields' and 'form_class' is not permitted.")
-        if self.form_class:
-            return self.form_class
-        else:
-            if self.treatment is not None:
-                # Fetch model from URL 'lab' parameter
-                model = apps.get_model("treatment", model_name=self.treatment)
-                if model in prn_models:
-                    self.fields.append("date_started")
-                    self.fields.append("date_ended")
-            elif getattr(self, "object", None) is not None:
-                model = self.object.__class__
-            else:
-                model = self.get_queryset().model
-            if self.fields is None:
-                raise ImproperlyConfigured(
-                    "Using ModelFormMixin (base class of %s) without "
-                    "the 'fields' attribute is prohibited." % self.__class__.__name__
-                )
-            return modelform_factory(model, fields=self.fields)
+        if self.model in prn_models:
+            self.fields.append("date_started")
+            self.fields.append("date_ended")
+        return modelform_factory(self.model, fields=self.fields)
 
     def get_template_names(self):
         template = "treatment/prophylaxis_form.html"
         return template
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance.user = self.user
+        form.instance.creator = self.request.user
         form.instance.as_prophylaxis = True
         form.instance.prn = False
-        print(form.instance.as_prophylaxis)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -261,95 +252,70 @@ class ProphylaxisCreate(LoginRequiredMixin, CreateView):
         return context
 
 
-class FlareAidTreatmentCreate(LoginRequiredMixin, View):
+class FlareAidTreatmentCreate(LoginRequiredMixin, PatientProviderCreateMixin, UserMixin, TreatmentModelMixin, View):
     def post(self, request, *args, **kwargs):
-        self.treatment = self.kwargs["treatment"]
-        self.model = apps.get_model("treatment", model_name=self.treatment)
-        self.flareaid = FlareAid.objects.get(pk=self.kwargs["pk"])
-        self.model(user=self.flareaid.user, creator=self.request.user, flareaid=self.flareaid).save()
-        return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"pk": self.kwargs["pk"]}))
+        self.flareaid = FlareAid.objects.get(slug=self.kwargs["slug"])
+        self.model(user=self.user, creator=self.request.user, flareaid=self.flareaid).save()
+        return HttpResponseRedirect(reverse("flareaid:detail", kwargs={"slug": self.kwargs["slug"]}))
 
 
-class PPxAidTreatmentCreate(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        self.treatment = self.kwargs["treatment"]
-        self.dose = self.kwargs["dose"]
-        self.freq = self.kwargs["freq"]
-        self.model = apps.get_model("treatment", model_name=self.treatment)
-        self.ppxaid = PPxAid.objects.get(pk=self.kwargs["pk"])
-        if self.model == Colchicine:
-            self.model(
-                user=request.user,
-                ppxaid=self.ppxaid,
-                dose=self.dose,
-                freq=self.freq,
-                dose2=None,
-                dose3=None,
-            ).save()
-        else:
-            self.model(user=request.user, ppxaid=self.ppxaid, dose=self.dose, freq=self.freq).save()
-        return HttpResponseRedirect(reverse("ppxaid:detail", kwargs={"pk": self.kwargs["pk"]}))
+class TreatmentCreate(
+    LoginRequiredMixin, PatientProviderCreateMixin, ProfileMixin, UserMixin, TreatmentModelMixin, CreateView
+):
+    """Generic Treatment CreateView.
+    URL parameters:
+    treatment specifying which Treatment to create
+    username to attach a User object to the Treatment object
 
+    Returns:
+        redirect: DetailView for newly created Treatment
+    """
 
-class TreatmentCreate(LoginRequiredMixin, CreateView):
     fields = ["dose", "freq", "side_effects"]
 
     def get(self, request, *args, **kwargs):
+        # Model fetched from TreatmentModelMixin cached_property
         self.object = None
-        self.treatment = self.kwargs["treatment"]
-        self.model = apps.get_model("treatment", model_name=self.treatment)
+        # Check if Treatment model is one that a User can only have a single instance of
         if self.model in non_prn_models:
+            # If so, redirect User to UpdateView if they already have an instance of that treatment
+            # Mainly meant for ULT treatments
             try:
-                user_treatment = self.model.objects.get(user=self.request.user)
+                user_treatment = self.model.objects.get(user=self.user)
             except self.model.DoesNotExist:
                 user_treatment = None
             if user_treatment:
                 return redirect(
                     "treatment:update",
                     treatment=self.kwargs["treatment"],
-                    pk=self.model.objects.get(user=self.request.user).pk,
+                    slug=self.model.objects.get(user=self.user).slug,
                 )
-            else:
-                return super().get(request, *args, **kwargs)
-        else:
-            return super().get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
-    def get_form_class(self):
-        self.treatment = self.kwargs["treatment"]
-        if self.fields is not None and self.form_class:
-            raise ImproperlyConfigured("Specifying both 'fields' and 'form_class' is not permitted.")
-        if self.form_class:
-            return self.form_class
-        else:
-            if self.treatment is not None:
-                # Fetch model from URL 'lab' parameter
-                model = apps.get_model("treatment", model_name=self.treatment)
-                if model in prn_models:
-                    self.fields.append("prn")
-                if model in allopurinol_model:
-                    self.fields.append("de_sensitized")
-                if model in injection_models:
-                    self.fields.append("as_injection")
-            elif getattr(self, "object", None) is not None:
-                model = self.object.__class__
-            else:
-                model = self.get_queryset().model
-            if self.fields is None:
-                raise ImproperlyConfigured(
-                    "Using ModelFormMixin (base class of %s) without "
-                    "the 'fields' attribute is prohibited." % self.__class__.__name__
-                )
-            return modelform_factory(model, fields=self.fields)
+    def get_form_class(self, *args, **kwargs):
+        # Add fields to form based on what Treatment model is
+        # Model fetched from TreatmentModelMixin cached_property
+        if self.model in prn_models:
+            self.fields.append("prn")
+        if self.model in allopurinol_model:
+            self.fields.append("de_sensitized")
+        if self.model in injection_models:
+            self.fields.append("as_injection")
+        return modelform_factory(self.model, fields=self.fields)
 
     def get_template_names(self):
         template = "treatment/treatment_form.html"
         return template
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        # Assign model user from UserMixin
+        form.instance.user = self.user
+        # Assign creator to logged in User
+        form.instance.creator = self.request.user
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
+        # WHY REWRITE THIS?
         context = super(TreatmentCreate, self).get_context_data(**kwargs)
         context.update(
             {
@@ -359,7 +325,7 @@ class TreatmentCreate(LoginRequiredMixin, CreateView):
         return context
 
 
-class TreatmentDetail(LoginRequiredMixin, DetailView):
+class TreatmentDetail(LoginRequiredMixin, PatientProviderMixin, UserSlugMixin, DetailView):
     def get_object(self):
         self.model = apps.get_model("treatment", model_name=self.kwargs["treatment"])
         if self.kwargs.get("pk"):
@@ -373,28 +339,28 @@ class TreatmentDetail(LoginRequiredMixin, DetailView):
         return template
 
 
-class TreatmentList(LoginRequiredMixin, ListView):
+class TreatmentList(
+    LoginRequiredMixin, PatientProviderListMixin, ProfileMixin, UserMixin, TreatmentModelMixin, ListView
+):
     paginate_by = 5
 
     def get_queryset(self):
-        self.model = apps.get_model("treatment", model_name=self.kwargs["treatment"])
         if self.queryset is None:
             if self.model:
-                return self.model._default_manager.filter(user=self.request.user).order_by("-created")
+                return self.model._default_manager.filter(user=self.user).order_by("-created")
             else:
                 raise ImproperlyConfigured(
                     "%(cls)s is missing a QuerySet. Define "
                     "%(cls)s.model, %(cls)s.queryset, or override "
                     "%(cls)s.get_queryset()." % {"cls": self.__class__.__name__}
                 )
-        return self.queryset.filter(user=self.request.user).order_by("-created")
+        return self.queryset.filter(user=self.user).order_by("-created")
 
     def get_template_names(self):
         template = "treatment/treatment_list.html"
         return template
 
     def get_context_data(self, **kwargs):
-        self.model = apps.get_model("treatment", model_name=self.kwargs["treatment"])
         context = super(TreatmentList, self).get_context_data(**kwargs)
         context.update(
             {
@@ -404,7 +370,9 @@ class TreatmentList(LoginRequiredMixin, ListView):
         return context
 
 
-class TreatmentUpdate(LoginRequiredMixin, UpdateView):
+class TreatmentUpdate(
+    LoginRequiredMixin, PatientProviderMixin, ProfileMixin, UserMixin, TreatmentModelMixin, UpdateView
+):
     fields = [
         "dose",
         "freq",
@@ -416,91 +384,41 @@ class TreatmentUpdate(LoginRequiredMixin, UpdateView):
         "as_injection",
     ]
 
-    def get(self, request, *args, **kwargs):
-        self.treatment = self.kwargs["treatment"]
-        return super().get(request, *args, **kwargs)
-
     def get_form_class(self):
-        self.treatment = self.kwargs["treatment"]
-        if self.fields is not None and self.form_class:
-            raise ImproperlyConfigured("Specifying both 'fields' and 'form_class' is not permitted.")
         if self.form_class:
-            model = apps.get_model("treatment", model_name=self.treatment)
-            if model not in prn_models:
+            if self.model not in prn_models:
                 if "prn" in self.fields:
                     self.fields.remove("prn")
                 if "date_started" in self.fields:
                     self.fields.remove("date_started")
                 if "date_ended" in self.fields:
                     self.fields.remove("date_ended")
-            if model not in allopurinol_model:
+            if self.model not in allopurinol_model:
                 if "de_sensitized" in self.fields:
                     self.fields.remove("de_sensitized")
-            if model not in injection_models:
+            if self.model not in injection_models:
                 if "as_injection" in self.fields:
                     self.fields.remove("as_injection")
             return self.form_class
         else:
-            if self.treatment is not None:
-                # Fetch model from URL 'treatment' parameter
-                model = apps.get_model("treatment", model_name=self.treatment)
-                if model not in prn_models:
-                    if "prn" in self.fields:
-                        self.fields.remove("prn")
-                    if "date_started" in self.fields:
-                        self.fields.remove("date_started")
-                    if "date_ended" in self.fields:
-                        self.fields.remove("date_ended")
-                if model not in allopurinol_model:
-                    if "de_sensitized" in self.fields:
-                        self.fields.remove("de_sensitized")
-                if model not in injection_models:
-                    if "as_injection" in self.fields:
-                        self.fields.remove("as_injection")
-            elif getattr(self, "object", None) is not None:
-                model = self.object.__class__
-                if model not in prn_models:
-                    if "prn" in self.fields:
-                        self.fields.remove("prn")
-                    if "date_started" in self.fields:
-                        self.fields.remove("date_started")
-                    if "date_ended" in self.fields:
-                        self.fields.remove("date_ended")
-                if model not in allopurinol_model:
-                    if "de_sensitized" in self.fields:
-                        self.fields.remove("de_sensitized")
-                if model not in injection_models:
-                    if "as_injection" in self.fields:
-                        self.fields.remove("as_injection")
-            else:
-                model = self.get_queryset().model
-                if model not in prn_models:
-                    if "prn" in self.fields:
-                        self.fields.remove("prn")
-                    if "date_started" in self.fields:
-                        self.fields.remove("date_started")
-                    if "date_ended" in self.fields:
-                        self.fields.remove("date_ended")
-                if model not in allopurinol_model:
-                    if "de_sensitized" in self.fields:
-                        self.fields.remove("de_sensitized")
-                if model not in injection_models:
-                    if "as_injection" in self.fields:
-                        self.fields.remove("as_injection")
-            if self.fields is None:
-                raise ImproperlyConfigured(
-                    "Using ModelFormMixin (base class of %s) without "
-                    "the 'fields' attribute is prohibited." % self.__class__.__name__
-                )
-            return modelform_factory(model, fields=self.fields)
+            if self.model not in prn_models:
+                if "prn" in self.fields:
+                    self.fields.remove("prn")
+                if "date_started" in self.fields:
+                    self.fields.remove("date_started")
+                if "date_ended" in self.fields:
+                    self.fields.remove("date_ended")
+            if self.model not in allopurinol_model:
+                if "de_sensitized" in self.fields:
+                    self.fields.remove("de_sensitized")
+            if self.model not in injection_models:
+                if "as_injection" in self.fields:
+                    self.fields.remove("as_injection")
+            return modelform_factory(self.model, fields=self.fields)
 
     def get_template_names(self):
         template = "treatment/treatment_form.html"
         return template
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(TreatmentUpdate, self).get_context_data(**kwargs)
@@ -512,11 +430,10 @@ class TreatmentUpdate(LoginRequiredMixin, UpdateView):
         return context
 
     def get_object(self, queryset=None):
-        pk = self.kwargs["pk"]
-        model = apps.get_model("treatment", model_name=self.kwargs["treatment"])
+        slug = self.kwargs["slug"]
         try:
-            queryset = model.objects.filter(user=self.request.user, pk=pk)
-        except ObjectDoesNotExist:
+            queryset = self.model.objects.filter(slug=slug)
+        except self.model.DoesNotExist:
             raise Http404("No object found matching this query.")
         obj = super(TreatmentUpdate, self).get_object(queryset=queryset)
         return obj

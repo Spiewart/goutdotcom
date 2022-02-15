@@ -10,7 +10,7 @@
         <h1 class="content-heading">{{ object_list|list_to_name }}s
           {% block buttons %}
           <a class="btn btn-primary btn-lg" href="{% url 'treatment:about' treatment %}" role="button" style="float: right;">About</a>
-          <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' treatment %}" role="button" style="float: right;">New</a>
+          <a class="btn btn-primary btn-lg" href="{% url 'treatment:create' user treatment %}" role="button" style="float: right;">New</a>
           {% endblock buttons %}
         </h1>
       {% endblock treatment_title %}
