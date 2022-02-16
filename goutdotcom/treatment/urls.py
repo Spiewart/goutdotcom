@@ -11,7 +11,7 @@ urlpatterns = [
     path("about/prophylaxis/", view=AboutProphylaxis.as_view(), name="about-prophylaxis"),
     path("about/ult/", view=AboutULT.as_view(), name="about-ult"),
     path("about/<treatment>", view=TreatmentAbout.as_view(), name="about"),
-    path("", view=IndexView.as_view(), name="index"),
+    path("<slug:username>/", view=IndexView.as_view(), name="index"),
     path("<slug:username>/flare/", FlareView.as_view(), name="flare"),
     path("<slug:username>/prophylaxis/", ProphylaxisView.as_view(), name="prophylaxis"),
     path("<slug:username>/ult/", ULTView.as_view(), name="ult"),

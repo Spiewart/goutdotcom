@@ -20,7 +20,11 @@ class FlareAidForm(forms.ModelForm):
         # pop() flare from kwargs to set form self.flare to the Flare model instance passed to the FlareAidCreate view
         self.flare = kwargs.pop("flare", None)
         self.no_user = kwargs.pop("no_user", False)
+        self.angina = kwargs.pop("angina", None)
+        self.CHF = kwargs.pop("chf", None)
         self.heartattack = kwargs.pop("heartattack", None)
+        self.hypertension = kwargs.pop("hypertension", None)
+        self.PVD = kwargs.pop("pvd", None)
         self.stroke = kwargs.pop("stroke", None)
         super(FlareAidForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -114,13 +118,27 @@ class FlareAidForm(forms.ModelForm):
             if self.flare.monoarticular == True or self.flare.monoarticular == False:
                 self.fields["monoarticular"].widget = HiddenInput()
                 self.helper.layout[0].pop(3)
-                if self.no_user == True:
-                    self.helper.layout[0][3].pop(6)
-                    self.helper.layout[0][3].pop(8)
-        if self.heartattack:
-            self.fields["perfect_health"].initial = False
-        if self.stroke:
-            self.fields["perfect_health"].initial = False
-        if self.heartattack or self.stroke:
             if self.no_user == True:
-                self.fields["perfect_health"].widget = HiddenInput()
+                self.helper.layout[0][3].pop(6)
+                self.helper.layout[0][3].pop(8)
+                if (
+                    self.angina.value == True
+                    or self.CHF.value == True
+                    or self.heartattack.value == True
+                    or self.hypertension.value == True
+                    or self.PVD.value == True
+                    or self.stroke.value == True
+                ):
+                    self.fields["perfect_health"].initial = False
+                    self.fields["perfect_health"].widget = HiddenInput()
+            else:
+                if (
+                    self.angina.value == True
+                    or self.CHF.value == True
+                    or self.heartattack.value == True
+                    or self.hypertension.value == True
+                    or self.PVD.value == True
+                    or self.stroke.value == True
+                ):
+                    self.fields["perfect_health"].initial = False
+                    self.fields["perfect_health"].widget = HiddenInput()

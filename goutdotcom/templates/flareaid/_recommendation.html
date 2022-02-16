@@ -12,9 +12,9 @@
       </h4>
     {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "ibuprofen" or object.decision_aid|get_key:'drug2'|get_key:'drug' == "naproxen" %}
       {% if object.naproxen %}
-        <h4><a href="{% url 'treatment:user-detail' 'naproxen' object.naproxen.slug %}">Treatment</a>: {{ object.naproxen }}</h4>
+        <h4><a href="{% url 'treatment:detail' 'naproxen' object.naproxen.slug %}">Treatment</a>: {{ object.naproxen }}</h4>
       {% elif object.ibuprofen %}
-        <h4><a href="{% url 'treatment:user-detail' 'ibuprofen' object.ibuprofen.slug %}">Treatment</a>: {{ object.ibuprofen }}</h4>
+        <h4><a href="{% url 'treatment:detail' 'ibuprofen' object.ibuprofen.slug %}">Treatment</a>: {{ object.ibuprofen }}</h4>
       {% else %}
           <h4 class="or">
             <a href="{% url 'treatment:about' object.decision_aid|get_key:'drug2'|get_key:'drug' %}">
@@ -22,14 +22,16 @@
             </a>
           </h4>
           {% if request.user.is_authenticated %}
-          <li class="or">
-            <form method="post"
-              action="{% url 'treatment:flareaid-create' pk=object.pk treatment=object.decision_aid|get_key:'drug2'|get_key:'drug' %}">
-              {% csrf_token %}
-              <button class="btn btn-primary btn-sm" role="button" id="treatment-create" type="submit"
-                value="treatment">Create</button>
-            </form>
-          </li>
+            {% if object.slug %}
+            <li class="or">
+              <form method="post"
+                action="{% url 'treatment:flareaid-create' username=object.user.username slug=object.slug treatment=object.decision_aid|get_key:'drug2'|get_key:'drug' %}">
+                {% csrf_token %}
+                <button class="btn btn-primary btn-sm" role="button" id="treatment-create" type="submit"
+                  value="treatment">Create</button>
+              </form>
+            </li>
+            {% endif %}
           {% endif %}
           <li class="or">
             {{ object|get_drug_string:'drug2' }}
@@ -45,14 +47,16 @@
               </a>
             </h4>
             {% if request.user.is_authenticated %}
-            <li class="or">
-              <form method="post"
-                action="{% url 'treatment:flareaid-create' pk=object.pk treatment=object.decision_aid|get_key:'drug1'|get_key:'drug' %}">
-                {% csrf_token %}
-                <button class="btn btn-primary btn-sm" role="button" id="treatment-create" type="submit"
-                  value="treatment">Create</button>
-              </form>
-            </li>
+              {% if object.slug %}
+              <li class="or">
+                <form method="post"
+                  action="{% url 'treatment:flareaid-create' username=object.user.username slug=object.slug treatment=object.decision_aid|get_key:'drug1'|get_key:'drug' %}">
+                  {% csrf_token %}
+                  <button class="btn btn-primary btn-sm" role="button" id="treatment-create" type="submit"
+                    value="treatment">Create</button>
+                </form>
+              </li>
+              {% endif %}
             {% endif %}
             <li class="or">
               {{ object.decision_string }}
@@ -61,7 +65,7 @@
     {% elif object.decision_aid|get_key:'drug1'|get_key:'drug' == "colchicine" %}
       <h4>
       {% if object.colchicine %}
-      <a href="{% url 'treatment:user-detail' 'colchicine' object.colchicine.slug %}">Treatment</a>: {{ object.colchicine }}
+      <a href="{% url 'treatment:detail' 'colchicine' object.colchicine.slug %}">Treatment</a>: {{ object.colchicine }}
       {% else %}
       Treatment: {{ object.decision_string }}
       {% endif %}

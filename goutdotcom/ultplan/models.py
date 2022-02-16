@@ -67,6 +67,7 @@ class ULTPlan(TimeStampedModel):
             self.slug = (slugify(self.user.username))
         super(ULTPlan, self).save(*args, **kwargs)
 
+    @property
     def last_labcheck(self):
         """Function that fetches the last LabCheck for the ULTPlan
 
@@ -82,6 +83,7 @@ class ULTPlan(TimeStampedModel):
         else:
             return None
 
+    @property
     def last_completed_labcheck(self):
         """Function that fetches the last completed LabCheck for the ULTPlan
 

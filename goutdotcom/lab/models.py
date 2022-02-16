@@ -649,27 +649,20 @@ class Creatinine(Lab):
     def race_modifier(self):
         if self.user.patientprofile.race == "black":
             return Decimal(1.159)
-        elif (
-            self.user.patientprofile.race == "white"
-            or self.user.patientprofile.race == "asian"
-            or self.user.patientprofile.race == "native american"
-            or self.user.patientprofile.race == "hispanic"
-        ):
-            return Decimal(1.00)
         else:
-            return False
+            return Decimal(1.00)
 
     def sex_modifier(self):
         if self.user.patientprofile.gender == "male":
             return Decimal(1.018)
-        elif self.user.patientprofile.gender == "female" or self.user.patientprofile.gender == "non-binary":
+        elif self.user.patientprofile.gender == "female":
             return Decimal(1.00)
         else:
             return False
 
     def eGFR_calculator(self):
         if self.user_has_profile() == True:
-            if self.user.patientprofile.gender == "non-binary":
+            if self.user.patientprofile.age == None:
                 return None
             else:
                 kappa = self.sex_vars_kappa()
@@ -682,15 +675,11 @@ class Creatinine(Lab):
                             Decimal(141)
                             * min(self.value / kappa, Decimal(1.00)) ** alpha
                             * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209)
-                            * Decimal(0.993) ** self.user.patientprofile.get_age()
+                            * Decimal(0.993) ** self.user.patientprofile.age
                             * self.race_modifier()
                             * self.sex_modifier()
                         )
                         return round_decimal(eGFR, 2)
-                    else:
-                        return None
-                else:
-                    return None
         return None
 
     def stage_calculator(self):
@@ -847,8 +836,9 @@ class Creatinine(Lab):
                 if self.user.medicalprofile.CKD.value == False:
                     self.user.medicalprofile.CKD.value == True
                     # Calculate CKD stage if eGFR can be calculated
-                    if self.user.medicalprofile.CKD.eGFR_calculator():
-                        self.user.medicalprofile.CKD.stage = self.user.medicalprofile.CKD.stage_calculator()
+                    if self.eGFR_calculator():
+                        if self.stage_calculator():
+                            self.user.medicalprofile.CKD.stage = self.stage_calculator()
                     self.user.medicalprofile.CKD.save()
             # Check if first LabCheck creatinine was abnormal
             elif labchecks[len(labchecks) - 1].creatinine.abnormal_checker() == None:

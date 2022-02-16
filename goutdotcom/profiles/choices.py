@@ -1,5 +1,5 @@
 BOOL_CHOICES = ((True, "Yes"), (False, "No"))
-sexes = (("male", "male"), ("female", "female"), ("non-binary", "non-binary"))
+sexes = (("male", "male"), ("female", "female"))
 races = (
     ("white", "white"),
     ("black", "black"),

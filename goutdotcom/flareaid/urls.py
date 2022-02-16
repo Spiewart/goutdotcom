@@ -11,6 +11,6 @@ urlpatterns = [
     path("<slug:slug>/", view=FlareAidDetail.as_view(), name="user-detail"),
     path("<slug:username>/create/", view=FlareAidCreate.as_view(), name="user-create"),
     path("create/flare/<int:flare>/", view=FlareAidCreate.as_view(), name="flare-create"),
-    path("<slug:username>/create/flare/<int:flare>/", view=FlareAidCreate.as_view(), name="user-flare-create"),
+    path("<slug:username>/create/flare/<slug:flare>/", view=FlareAidCreate.as_view(), name="user-flare-create"),
     path("list/<slug:username>/", view=FlareAidList.as_view(), name="list"),
 ]

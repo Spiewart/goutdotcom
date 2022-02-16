@@ -17,17 +17,19 @@ class TreatmentModelMixin(ContextMixin, View):
     Avoids multiple queries.
 
     Returns:
-        [model or None]: [Returns a model class or None]
+        [model or 404]: [Returns a model class or 404]
     """
 
     @cached_property
     def model(self):
         self.treatment = None
         self.model = None
+        # Check for treatment kwarg, mark None if not
         try:
             self.treatment = self.kwargs.get("treatment", None)
         except ObjectDoesNotExist:
             self.treatment = None
+        # Find treatment via kwarg, 404 if treatment isn't a treatment
         if self.treatment:
             try:
                 self.model = apps.get_model("treatment", model_name=self.treatment)
@@ -35,6 +37,7 @@ class TreatmentModelMixin(ContextMixin, View):
                 raise Http404("That's not a valid treatment to create")
         if self.model:
             return self.model
+        # 404 if no model returned
         else:
             raise Http404("Treatment not found")
 
@@ -127,7 +130,7 @@ class PatientProviderCreateMixin:
     """Mixin that checks whether a User is a Provider or a Patient and restricts access to CreateViews.
     Limits providers to creating objects belonging to patients for whom he/she is the provider (field).
     Limits patients to creating their own objects.
-    USED WITH USERMIXIN, PROFILEMIXIN
+    ***REQUIRES UserMixin and ProfileMixin***
     """
 
     def get(self, request, *args, **kwargs):
@@ -135,19 +138,23 @@ class PatientProviderCreateMixin:
         if self.request.user.is_authenticated:
             if self.request.user.role == "PROVIDER":
                 # Check if the User with the username provided in kwargs is a patient of Provider
-                if self.patientprofile.provider == self.request.user:
-                    return super().get(request, *args, **kwargs)
-                else:
-                    return super().get(request, *args, **kwargs)
+                if self.patientprofile:
+                    if self.patientprofile.provider == self.request.user:
+                        return super().get(request, *args, **kwargs)
+                    else:
+                        raise PermissionDenied
+                return super().get(request, *args, **kwargs)
             # Check if requesting User is a Patient
             elif self.request.user.role == "PATIENT":
                 # Check if there is a username kwarg provided
-                if self.user == self.request.user:
-                    # Return super().get() if so
-                    return super().get(request, *args, **kwargs)
-                # Else raise 404
-                else:
-                    return super().get(request, *args, **kwargs)
+                if self.user:
+                    if self.user == self.request.user:
+                        # Return super().get() if so
+                        return super().get(request, *args, **kwargs)
+                    # Else raise 404
+                    else:
+                        raise PermissionDenied
+                return super().get(request, *args, **kwargs)
             else:
                 # Else raise 404
                 raise PermissionDenied
@@ -155,14 +162,14 @@ class PatientProviderCreateMixin:
         else:
             if self.kwargs.get("username"):
                 raise PermissionDenied
-            else:
-                return super().get(request, *args, **kwargs)
+            return super().get(request, *args, **kwargs)
 
 
 class PatientProviderListMixin:
     """Mixin that checks whether a User is a Provider or a Patient and restricts access to ListViews.
     Limits providers to lists of objects belonging to patients for whom he/she is the provider (field).
     Limits patients their own lists.
+    ***REQUIRES UserMixin and ProfileMixin***
     """
 
     def get(self, request, *args, **kwargs):

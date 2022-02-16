@@ -19,6 +19,18 @@
             {% if request.user.role == "PATIENT" %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Calcs
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{% url 'flare:create' %}">Flare</a>
+                  <a class="dropdown-item" href="{% url 'flareaid:create' %}">FlareAid</a>
+                  <a class="dropdown-item" href="{% url 'ult:create' %}">ULT</a>
+                  <a class="dropdown-item" href="{% url 'ultaid:create' %}">ULTAid</a>
+                  <a class="dropdown-item" href="{% url 'ppxaid:create' %}">PPxAid</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Flares
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -63,12 +75,12 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   {% if request.user.ultplan %}
-                  <a class="dropdown-item" href="{% url 'ultplan:detail' request.user.ultplan.pk %}">ULTPlan</a>
+                  <a class="dropdown-item" href="{% url 'ultplan:detail' request.user.ultplan.slug %}">ULTPlan</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'lab:index' %}">Labs</a>
                   {% endif %}
-                  <a class="dropdown-item" href="{% url 'treatment:index' %}">Treatments</a>
-                  <a class="dropdown-item" href="{% url 'users:detail' request.user.username  %}">{% trans "Profile" %}</a>
+                  <a class="dropdown-item" href="{% url 'treatment:index' request.user.username %}">Treatments</a>
+                  <a class="dropdown-item" href="{% url 'users:detail' request.user.username %}">{% trans "Profile" %}</a>
                 </div>
               </li>
               {% elif request.user.role == "PROVIDER" %}

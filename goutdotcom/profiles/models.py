@@ -120,7 +120,7 @@ class PatientProfile(TimeStampedModel):
             age = datetime.today().year - self.date_of_birth.year
             return age
         else:
-            return "No date of birth recorded"
+            return None
 
     @property
     def BMI(self):
