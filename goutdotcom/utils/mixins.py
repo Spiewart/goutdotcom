@@ -137,12 +137,15 @@ class PatientProviderCreateMixin:
         # Check if requesting User is a Provider
         if self.request.user.is_authenticated:
             if self.request.user.role == "PROVIDER":
-                # Check if the User with the username provided in kwargs is a patient of Provider
+                # Check if there is User with a PatientProfile
                 if self.patientprofile:
+                    # Check if the User with the username provided in kwargs is a patient of Provider
                     if self.patientprofile.provider == self.request.user:
                         return super().get(request, *args, **kwargs)
+                    # Else raise 404
                     else:
                         raise PermissionDenied
+                # If no Patient, the CreateView is for an anonymous object
                 return super().get(request, *args, **kwargs)
             # Check if requesting User is a Patient
             elif self.request.user.role == "PATIENT":
@@ -154,6 +157,7 @@ class PatientProviderCreateMixin:
                     # Else raise 404
                     else:
                         raise PermissionDenied
+                # If no User
                 return super().get(request, *args, **kwargs)
             else:
                 # Else raise 404

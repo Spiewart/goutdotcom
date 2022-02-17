@@ -37,12 +37,13 @@ from ..utils.mixins import (
     UserMixin,
 )
 from .forms import ULTAidForm
+from .mixins import ULTMixin
 from .models import ULTAid
 
 User = get_user_model()
 
 
-class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin, UserMixin, CreateView):
+class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin, ULTMixin, UserMixin, CreateView):
     model = ULTAid
     form_class = ULTAidForm
     CKD_form_class = CKDForm
@@ -59,17 +60,11 @@ class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin
 
     def form_valid(self, form):
         # Check if POST has 'ult' kwarg and assign ULTAid ult OnetoOne related object based on pk='ult'
-        if self.kwargs.get("ult"):
-            self.ult = self.kwargs.get("ult")
-            form.instance.ult = None
-            if isinstance(self.ult, int):
-                form.instance.ult = ULT.objects.get(pk=self.kwargs.get("ult"))
-            else:
-                form.instance.ult = ULT.objects.get(slug=self.kwargs.get("ult"))
-            form.instance.erosions = form.instance.ult.erosions
-            form.instance.tophi = form.instance.ult.tophi
+        if self.ult:
+            form.instance.erosions = self.ult.erosions
+            form.instance.tophi = self.ult.tophi
             # Check if ULT calculator() result was indicated or conditional and set ULTAid need field true if so, False if not
-            if form.instance.ult.calculator() == "Indicated" or form.instance.ult.calculator() == "Conditional":
+            if self.ult.calculator() == "Indicated" or self.ult.calculator() == "Conditional":
                 form.instance.need = True
             else:
                 form.instance.need = False
@@ -86,10 +81,9 @@ class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin
     def get(self, request, *args, **kwargs):
         # Checks if user is logged in, if they have already created a ULTAid, and redirects to UpdateView if so
         if self.request.user.is_authenticated:
-            if self.kwargs.get("username"):
-                self.username = self.kwargs.get("username")
+            if self.user:
                 try:
-                    self.ultaid = ULTAid.objects.get(slug=self.username)
+                    self.ultaid = ULTAid.objects.get(slug=self.user.username)
                 except ObjectDoesNotExist:
                     self.ultaid = None
                 if self.ultaid:
@@ -123,25 +117,15 @@ class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin
             if "tophi_form" not in context:
                 context["tophi_form"] = self.tophi_form_class(self.request.GET)
 
-        # Add ULTAid OnetoOne related model objects from the MedicalProfile for the logged in User
-        try:
-            self.ult = self.kwargs.get("ult")
-        except:
-            self.ult = None
-        if self.ult:
-            if isinstance(self.ult, int):
-                context["ult"] = ULT.objects.get(pk=self.ult)
-            else:
-                context["ult"] = ULT.objects.get(slug=self.ult)
         if self.request.user.is_authenticated:
             if self.user:
                 # Check if User has ULT, pass to ULTAid view/context for JQuery evaluation to update form fields
                 try:
-                    self.ult = self.user.ult
+                    self.user_ult = self.user.ult
                 except:
-                    self.ult = None
-                if self.ult:
-                    context["user_ult"] = ULT.objects.get(user=self.user).calculator()
+                    self.user_ult = None
+                if self.user_ult:
+                    context["user_ult"] = self.user.ult.calculator()
                 # Fetch related model instances via User object
                 if "CKD_form" not in context:
                     context["CKD_form"] = self.CKD_form_class(instance=self.medicalprofile.CKD)
@@ -175,31 +159,22 @@ class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin
             get_blank_forms()
         return context
 
-    def get_form_kwargs(self):
+    def get_form_kwargs(self, **kwargs):
         """Ovewrites get_form_kwargs() to look for 'ult' kwarg in GET request
         Uses 'ult' to query database for associated ULT for use in ULTAidForm
         returns: [dict: dict containing 'ult' kwarg for form]"""
         # Assign self.flare from GET request kwargs before calling super() which will overwrite kwargs
-        self.ult = self.kwargs.get("ult", None)
         self.no_user = False
         if self.request.user.is_authenticated == False:
             self.no_user = True
         kwargs = super(ULTAidCreate, self).get_form_kwargs()
         # Check if ult kwarg came from ULTDetail view or otherwise
         if self.ult:
-            # Check if ULT is a pk or a slug
-            # Fetch ULT based on pk or slug
-            if isinstance(self.ult, int):
-                ult_pk = self.ult
-                ult = ULT.objects.get(pk=ult_pk)
-            elif isinstance(self.ult, str):
-                ult_slug = self.ult
-                ult = ULT.objects.get(slug=ult_slug)
-            kwargs["ult"] = ult
+            kwargs["ult"] = self.ult
             kwargs["no_user"] = self.no_user
             # If User is anonymous / not logged in and FlareAid has a Flare, pass ckd from ULT to ULTAid to avoid duplication of user input
             if self.request.user.is_authenticated == False:
-                kwargs["ckd"] = ult.ckd
+                kwargs["ckd"] = self.ult.ckd
         return kwargs
 
     # This unfortunately needs to get rewritten and the object assigned at the start of POST once you mess with enough CBV code. Not sure what exactly triggers it.
@@ -209,12 +184,12 @@ class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin
 
     def get_success_url(self):
         # Check if there is a slug kwarg and redirect to DetailView using that
-        if self.kwargs.get("username"):
+        if self.user:
             return reverse("ultaid:user-detail", kwargs={"slug": self.object.slug})
         # Otherwise return to DetailView based on PK
         else:
             return reverse(
-                "ult:detail",
+                "ultaid:detail",
                 kwargs={
                     "pk": self.object.pk,
                 },
@@ -401,7 +376,7 @@ class ULTAidDetail(PatientProviderMixin, DetailView):
     model = ULTAid
 
 
-class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin, UpdateView):
+class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin, ULTMixin, UpdateView):
     model = ULTAid
     form_class = ULTAidForm
     CKD_form_class = CKDForm
@@ -419,10 +394,6 @@ class ULTAidUpdate(LoginRequiredMixin, PatientProviderMixin, SuccessMessageMixin
     def get_context_data(self, **kwargs):
         context = super(ULTAidUpdate, self).get_context_data(**kwargs)
         # Check if User has ULT, pass to ULTAid view/context for JQuery evaluation to update form fields
-        try:
-            self.ult = self.user.ult
-        except:
-            self.ult = None
         if self.ult:
             context["user_ult"] = ULT.objects.get(user=self.user).calculator()
         # Adds appropriate OnetoOne related History/MedicalProfile model forms to context

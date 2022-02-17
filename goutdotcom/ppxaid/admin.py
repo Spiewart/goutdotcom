@@ -6,6 +6,7 @@ from .models import *
 class PPxAidAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
+        "ultaid",
         "user",
         "created",
         "pk",
