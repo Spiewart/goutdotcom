@@ -10,13 +10,14 @@ from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
-from goutdotcom.history.models import (
+from ..history.models import (
     CHF,
     CKD,
     IBD,
     PVD,
     Alcohol,
     AllopurinolHypersensitivity,
+    Anemia,
     Angina,
     Anticoagulation,
     Bleed,
@@ -29,17 +30,24 @@ from goutdotcom.history.models import (
     HeartAttack,
     Hypertension,
     Hyperuricemia,
+    Leukocytosis,
+    Leukopenia,
     OrganTransplant,
     Osteoporosis,
+    Polycythemia,
     Shellfish,
     Stroke,
+    Thrombocytopenia,
+    Thrombocytosis,
     Tophi,
+    Transaminitis,
     UrateKidneyStones,
     XOIInteractions,
 )
-from goutdotcom.profiles.choices import races, sexes
-from goutdotcom.users.models import models
-from goutdotcom.vitals.models import Height, Weight
+
+from ..users.models import models
+from ..vitals.models import Height, Weight
+from .choices import races, sexes
 
 
 # Create your models here.
@@ -242,6 +250,27 @@ class MedicalProfile(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    slug = models.SlugField(max_length=200)
+    history = HistoricalRecords()
+    # Related History models (1to1)
+    allopurinol_hypersensitivity = models.OneToOneField(
+        AllopurinolHypersensitivity,
+        on_delete=models.CASCADE,
+        help_text="Have you ever had an adverse reaction to allopurinol?",
+        verbose_name="Allopurinol Hypersensitivity",
+        null=True,
+        blank=True,
+    )
+    anemia = models.OneToOneField(
+        Anemia,
+        on_delete=models.CASCADE,
+        help_text=mark_safe(
+            "Do you have chronic <a href='https://www.hematology.org/education/patients/anemia' target='_blank'>anemia</a> (low hemoglobin)?"
+        ),
+        verbose_name="Chronic Anemia (low hemoglobin)",
+        null=True,
+        blank=True,
+    )
     angina = models.OneToOneField(
         Angina,
         on_delete=models.CASCADE,
@@ -252,13 +281,29 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
-    allopurinol_hypersensitivity = models.OneToOneField(
-        AllopurinolHypersensitivity,
+    anticoagulation = models.OneToOneField(
+        Anticoagulation,
         on_delete=models.CASCADE,
-        help_text="Have you ever had an adverse reaction to allopurinol?",
-        verbose_name="Allopurinol Hypersensitivity",
+        help_text="Are you on anticoagulation?",
         null=True,
         blank=True,
+    )
+    bleed = models.OneToOneField(
+        Bleed,
+        on_delete=models.CASCADE,
+        help_text="Have you had a major bleeding event?",
+        null=True,
+        blank=True,
+    )
+    colchicine_interactions = models.OneToOneField(
+        ColchicineInteractions,
+        on_delete=models.CASCADE,
+        help_text="Are you on a medication that interacts with colchicine, such as simvastatin, clarithromycin, or diltiazem?",
+        null=True,
+        blank=True,
+    )
+    CHF = models.OneToOneField(
+        CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True
     )
     CKD = models.OneToOneField(
         CKD,
@@ -268,11 +313,24 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
+    diabetes = models.OneToOneField(
+        Diabetes, on_delete=models.CASCADE, help_text="Do you have diabetes?", null=True, blank=True
+    )
+    erosions = models.OneToOneField(
+        Erosions, on_delete=models.CASCADE, help_text="Do you have gouty erosions?", null=True, blank=True
+    )
     febuxostat_hypersensitivity = models.OneToOneField(
         FebuxostatHypersensitivity,
         on_delete=models.CASCADE,
         help_text="Have you ever had an adverse reaction to febuxostat?",
         verbose_name="Febuxostat Hypersensitivity",
+        null=True,
+        blank=True,
+    )
+    heartattack = models.OneToOneField(
+        HeartAttack,
+        on_delete=models.CASCADE,
+        help_text="Have you had a heart attack?",
         null=True,
         blank=True,
     )
@@ -297,14 +355,37 @@ class MedicalProfile(TimeStampedModel):
         null=True,
         blank=True,
     )
-    CHF = models.OneToOneField(
-        CHF, on_delete=models.CASCADE, help_text="Do you have congestive heart failure (CHF)?", null=True, blank=True
+    leukocytosis = models.OneToOneField(
+        Leukocytosis,
+        on_delete=models.CASCADE,
+        help_text="Do you have <a href='https://www.ncbi.nlm.nih.gov/books/NBK560882/#:~:text=Leukocytosis%20is%20the%20broad%20term,identified%20by%20their%20reference%20ranges.' target='_blank'>leukocytosis</a> (elevated WBCs)?",
+        null=True,
+        blank=True,
     )
-    diabetes = models.OneToOneField(
-        Diabetes, on_delete=models.CASCADE, help_text="Do you have diabetes?", null=True, blank=True
+    leukopenia = models.OneToOneField(
+        Leukopenia,
+        on_delete=models.CASCADE,
+        help_text="Do you have <a href='https://en.wikipedia.org/wiki/Leukopenia' target='_blank'>leukopenia</a> (low WBCs)?",
+        null=True,
+        blank=True,
     )
-    erosions = models.OneToOneField(
-        Erosions, on_delete=models.CASCADE, help_text="Do you have gouty erosions?", null=True, blank=True
+    polycythemia = models.OneToOneField(
+        Polycythemia,
+        on_delete=models.CASCADE,
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Polycythemia' target='_blank'>polycythemia</a> (high hemoglobin)?"
+        ),
+        null=True,
+        blank=True,
+    )
+    PVD = models.OneToOneField(
+        PVD,
+        on_delete=models.CASCADE,
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Peripheral_artery_disease' target='_blank'>peripheral vascular disease</a>?"
+        ),
+        null=True,
+        blank=True,
     )
     organ_transplant = models.OneToOneField(
         OrganTransplant, on_delete=models.CASCADE, help_text="Have you had an organ transplant?", null=True, blank=True
@@ -312,48 +393,47 @@ class MedicalProfile(TimeStampedModel):
     osteoporosis = models.OneToOneField(
         Osteoporosis, on_delete=models.CASCADE, help_text="Do you have osteoporosis?", null=True, blank=True
     )
-    urate_kidney_stones = models.OneToOneField(
-        UrateKidneyStones,
+    stroke = models.OneToOneField(
+        Stroke,
         on_delete=models.CASCADE,
-        help_text="Have you had urate kidney stones?",
+        help_text="Have you had a stroke?",
+        null=True,
+        blank=True,
+    )
+    thrombocytopenia = models.OneToOneField(
+        Thrombocytopenia,
+        on_delete=models.CASCADE,
+        help_text=mark_safe(
+            "Do you have <a href='https://www.nhlbi.nih.gov/health-topics/thrombocytopenia' target='_blank'>thrombocytopenia</a> (low platelets)?"
+        ),
+        null=True,
+        blank=True,
+    )
+    thrombocytosis = models.OneToOneField(
+        Thrombocytosis,
+        on_delete=models.CASCADE,
+        help_text=mark_safe(
+            "Do you have <a href='https://www.nhlbi.nih.gov/health-topics/thrombocythemia-and-thrombocytosis' target='_blank'>thrombocytosis</a> (high platelets)?"
+        ),
         null=True,
         blank=True,
     )
     tophi = models.OneToOneField(
         Tophi, on_delete=models.CASCADE, help_text="Do you have gouty tophi?", null=True, blank=True
     )
-    anticoagulation = models.OneToOneField(
-        Anticoagulation,
+    transaminitis = models.OneToOneField(
+        Transaminitis,
         on_delete=models.CASCADE,
-        help_text="Are you on anticoagulation?",
+        help_text=mark_safe(
+            "Do you have <a href='https://en.wikipedia.org/wiki/Elevated_transaminases' target='_blank'>transaminitis</a> (elevated liver function tests)?"
+        ),
         null=True,
         blank=True,
     )
-    bleed = models.OneToOneField(
-        Bleed,
+    urate_kidney_stones = models.OneToOneField(
+        UrateKidneyStones,
         on_delete=models.CASCADE,
-        help_text="Have you had a major bleeding event?",
-        null=True,
-        blank=True,
-    )
-    colchicine_interactions = models.OneToOneField(
-        ColchicineInteractions,
-        on_delete=models.CASCADE,
-        help_text="Are you on a medication that interacts with colchicine, such as simvastatin, clarithromycin, or diltiazem?",
-        null=True,
-        blank=True,
-    )
-    heartattack = models.OneToOneField(
-        HeartAttack,
-        on_delete=models.CASCADE,
-        help_text="Have you had a heart attack?",
-        null=True,
-        blank=True,
-    )
-    stroke = models.OneToOneField(
-        Stroke,
-        on_delete=models.CASCADE,
-        help_text="Have you had a stroke?",
+        help_text="Have you had urate kidney stones?",
         null=True,
         blank=True,
     )
@@ -365,17 +445,6 @@ class MedicalProfile(TimeStampedModel):
         blank=True,
     )
 
-    PVD = models.OneToOneField(
-        PVD,
-        on_delete=models.CASCADE,
-        help_text=mark_safe(
-            "Do you have <a href='https://en.wikipedia.org/wiki/Peripheral_artery_disease' target='_blank'>peripheral vascular disease</a>?"
-        ),
-        null=True,
-        blank=True,
-    )
-    slug = models.SlugField(max_length=200)
-    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -397,6 +466,7 @@ class MedicalProfile(TimeStampedModel):
                 medicalprofile.save()
             else:
                 medicalprofile = MedicalProfile.objects.create(user=instance)
+                medicalprofile.anemia = Anemia.objects.create(user=instance)
                 medicalprofile.angina = Angina.objects.create(user=instance)
                 medicalprofile.allopurinol_hypersensitivity = AllopurinolHypersensitivity.objects.create(user=instance)
                 medicalprofile.anticoagulation = Anticoagulation.objects.create(user=instance)
@@ -411,11 +481,17 @@ class MedicalProfile(TimeStampedModel):
                 medicalprofile.hyperuricemia = Hyperuricemia.objects.create(user=instance)
                 medicalprofile.heartattack = HeartAttack.objects.create(user=instance)
                 medicalprofile.IBD = IBD.objects.create(user=instance)
+                medicalprofile.leukocytosis = Leukocytosis.objects.create(user=instance)
+                medicalprofile.leukopenia = Leukopenia.objects.create(user=instance)
                 medicalprofile.organ_transplant = OrganTransplant.objects.create(user=instance)
                 medicalprofile.osteoporosis = Osteoporosis.objects.create(user=instance)
+                medicalprofile.polycythemia = Polycythemia.objects.create(user=instance)
                 medicalprofile.stroke = Stroke.objects.create(user=instance)
                 medicalprofile.urate_kidney_stones = UrateKidneyStones.objects.create(user=instance)
                 medicalprofile.tophi = Tophi.objects.create(user=instance)
+                medicalprofile.thrombocytopenia = Thrombocytopenia.objects.create(user=instance)
+                medicalprofile.thrombocytosis = Thrombocytosis.objects.create(user=instance)
+                medicalprofile.transaminitis = Transaminitis.objects.create(user=instance)
                 medicalprofile.XOI_interactions = XOIInteractions.objects.create(user=instance)
                 medicalprofile.save()
 

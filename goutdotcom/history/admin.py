@@ -1,45 +1,23 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import *
 
-
-# Register your models here.
-class AnginaAdmin(admin.ModelAdmin):
+class AlcoholHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
-        "last_modified",
+        "number",
+        "wine",
+        "beer",
+        "liquor",
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-
-class AllopurinolHypersensitivityAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "rash",
-        "transaminitis",
-        "cytopenia",
-        "last_modified",
-        "created",
-        "pk",
-    )
-
-
-class CKDAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "stage",
-        "dialysis",
-        "last_modified",
-        "created",
-        "pk",
-    )
-
-
-class FebuxostatHypersensitivityAdmin(admin.ModelAdmin):
+class AllopurinolHypersensitivityHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
@@ -50,46 +28,22 @@ class FebuxostatHypersensitivityAdmin(admin.ModelAdmin):
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-
-class HypertensionAdmin(admin.ModelAdmin):
+class AnemiaHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
-        "medication",
+        "baseline",
+        "last_modified",
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-
-class HyperuricemiaAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "created",
-        "pk",
-    )
-
-
-class IBDAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "created",
-        "pk",
-    )
-
-
-class OsteoporosisAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "created",
-        "pk",
-    )
-
-
-class PVDAdmin(admin.ModelAdmin):
+class AnginaHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
@@ -97,92 +51,10 @@ class PVDAdmin(admin.ModelAdmin):
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-
-class CHFAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "systolic",
-        "created",
-        "pk",
-    )
-
-
-class DiabetesAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "type",
-        "insulin",
-        "created",
-        "pk",
-    )
-
-
-class ErosionsAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "created",
-        "pk",
-    )
-
-
-class OrganTransplantAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "organ",
-        "created",
-        "pk",
-    )
-
-
-class TophiAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "created",
-        "pk",
-    )
-
-
-class UrateKidneyStonesAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "created",
-        "pk",
-    )
-
-
-class DiureticsAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "date",
-        "hydrochlorothiazide",
-        "furosemide",
-        "bumetanide",
-        "torsemide",
-        "metolazone",
-        "created",
-        "pk",
-    )
-
-
-class CyclosporineAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "date",
-        "created",
-        "pk",
-    )
-
-
-class AnticoagulationAdmin(admin.ModelAdmin):
+class AnticoagulationHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
@@ -195,54 +67,10 @@ class AnticoagulationAdmin(admin.ModelAdmin):
         "pk",
     )
 
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-class XOIInteractionsAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "six_mp",
-        "azathioprine",
-        "created",
-        "pk",
-    )
-
-
-class ColchicineInteractionsAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "clarithromycin",
-        "simvastatin",
-        "created",
-        "pk",
-    )
-
-
-class StrokeAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "number",
-        "date",
-        "created",
-        "pk",
-    )
-
-
-class HeartAttackAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "value",
-        "number",
-        "date",
-        "stent",
-        "cabg",
-        "created",
-        "pk",
-    )
-
-
-class BleedAdmin(admin.ModelAdmin):
+class BleedHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
@@ -255,39 +83,120 @@ class BleedAdmin(admin.ModelAdmin):
         "pk",
     )
 
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-class AlcoholAdmin(admin.ModelAdmin):
+class CHFHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
-        "number",
-        "wine",
-        "beer",
-        "liquor",
+        "systolic",
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
+class CKDHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "baseline",
+        "stage",
+        "dialysis",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-class FructoseAdmin(admin.ModelAdmin):
+class ColchicineInteractionsHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "clarithromycin",
+        "simvastatin",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class CyclosporineHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "date",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class DiabetesHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "type",
+        "insulin",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class DiureticsHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "date",
+        "hydrochlorothiazide",
+        "furosemide",
+        "bumetanide",
+        "torsemide",
+        "metolazone",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class ErosionsHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
+class FebuxostatHypersensitivityHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "rash",
+        "transaminitis",
+        "cytopenia",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-class ShellfishAdmin(admin.ModelAdmin):
+class FructoseHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
-
-class GoutAdmin(admin.ModelAdmin):
+class GoutHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
@@ -295,32 +204,245 @@ class GoutAdmin(admin.ModelAdmin):
         "created",
         "pk",
     )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class HeartAttackHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "number",
+        "date",
+        "stent",
+        "cabg",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class HypertensionHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "medication",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class HyperuricemiaHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class IBDHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class LeukocytosisHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "baseline",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class LeukopeniaHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "baseline",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class OrganTransplantHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "organ",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class OsteoporosisHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class PolycythemiaHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "baseline",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class PVDHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class ShellfishHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class StrokeHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "number",
+        "date",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class ThrombocytopeniaHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "baseline",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class ThrombocytosisHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "baseline",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 
-admin.site.register(Angina, AnginaAdmin)
-admin.site.register(AllopurinolHypersensitivity, AllopurinolHypersensitivityAdmin)
-admin.site.register(CKD, CKDAdmin)
-admin.site.register(Hypertension, HypertensionAdmin)
-admin.site.register(Hyperuricemia, HyperuricemiaAdmin)
-admin.site.register(CHF, CHFAdmin)
-admin.site.register(Diabetes, DiabetesAdmin)
-admin.site.register(Erosions, ErosionsAdmin)
-admin.site.register(FebuxostatHypersensitivity, FebuxostatHypersensitivityAdmin)
-admin.site.register(Fructose, FructoseAdmin)
-admin.site.register(IBD, IBDAdmin)
-admin.site.register(OrganTransplant, OrganTransplantAdmin)
-admin.site.register(Osteoporosis, OsteoporosisAdmin)
-admin.site.register(UrateKidneyStones, UrateKidneyStonesAdmin)
-admin.site.register(Diuretics, DiureticsAdmin)
-admin.site.register(Cyclosporine, CyclosporineAdmin)
-admin.site.register(Anticoagulation, AnticoagulationAdmin)
-admin.site.register(XOIInteractions, XOIInteractionsAdmin)
-admin.site.register(ColchicineInteractions, ColchicineInteractionsAdmin)
-admin.site.register(Shellfish, ShellfishAdmin)
-admin.site.register(Stroke, StrokeAdmin)
-admin.site.register(Tophi, TophiAdmin)
-admin.site.register(HeartAttack, HeartAttackAdmin)
-admin.site.register(PVD, PVDAdmin)
-admin.site.register(Bleed, BleedAdmin)
-admin.site.register(Alcohol, AlcoholAdmin)
-admin.site.register(Gout, GoutAdmin)
+class TophiHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class TransaminitisHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "baseline_alt",
+        "baseline_ast",
+        "last_modified",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class UrateKidneyStonesHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class XOIInteractionsHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "six_mp",
+        "azathioprine",
+        "created",
+        "pk",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+admin.site.register(Anemia, AnemiaHistoryAdmin)
+admin.site.register(Angina, AnginaHistoryAdmin)
+admin.site.register(AllopurinolHypersensitivity, AllopurinolHypersensitivityHistoryAdmin)
+admin.site.register(CKD, CKDHistoryAdmin)
+admin.site.register(Hypertension, HypertensionHistoryAdmin)
+admin.site.register(Hyperuricemia, HyperuricemiaHistoryAdmin)
+admin.site.register(CHF, CHFHistoryAdmin)
+admin.site.register(Diabetes, DiabetesHistoryAdmin)
+admin.site.register(Erosions, ErosionsHistoryAdmin)
+admin.site.register(FebuxostatHypersensitivity, FebuxostatHypersensitivityHistoryAdmin)
+admin.site.register(Fructose, FructoseHistoryAdmin)
+admin.site.register(IBD, IBDHistoryAdmin)
+admin.site.register(Leukocytosis, LeukocytosisHistoryAdmin)
+admin.site.register(Leukopenia, LeukopeniaHistoryAdmin)
+admin.site.register(OrganTransplant, OrganTransplantHistoryAdmin)
+admin.site.register(Osteoporosis, OsteoporosisHistoryAdmin)
+admin.site.register(UrateKidneyStones, UrateKidneyStonesHistoryAdmin)
+admin.site.register(Diuretics, DiureticsHistoryAdmin)
+admin.site.register(Cyclosporine, CyclosporineHistoryAdmin)
+admin.site.register(Anticoagulation, AnticoagulationHistoryAdmin)
+admin.site.register(XOIInteractions, XOIInteractionsHistoryAdmin)
+admin.site.register(ColchicineInteractions, ColchicineInteractionsHistoryAdmin)
+admin.site.register(Shellfish, ShellfishHistoryAdmin)
+admin.site.register(Stroke, StrokeHistoryAdmin)
+admin.site.register(Tophi, TophiHistoryAdmin)
+admin.site.register(Thrombocytosis, ThrombocytosisHistoryAdmin)
+admin.site.register(Thrombocytopenia, ThrombocytopeniaHistoryAdmin)
+admin.site.register(IBD, IBDHistoryAdmin)
+admin.site.register(HeartAttack, HeartAttackHistoryAdmin)
+admin.site.register(Polycythemia, PolycythemiaHistoryAdmin)
+admin.site.register(PVD, PVDHistoryAdmin)
+admin.site.register(Bleed, BleedHistoryAdmin)
+admin.site.register(Alcohol, AlcoholHistoryAdmin)
+admin.site.register(Gout, GoutHistoryAdmin)
