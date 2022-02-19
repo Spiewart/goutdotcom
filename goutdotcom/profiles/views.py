@@ -7,6 +7,7 @@ from django.views.generic import UpdateView
 
 from ..history.forms import (
     AlcoholForm,
+    AnemiaForm,
     AnginaForm,
     AnticoagulationSimpleForm,
     BleedSimpleForm,
@@ -21,11 +22,17 @@ from ..history.forms import (
     HypertensionForm,
     HyperuricemiaForm,
     IBDForm,
+    LeukocytosisForm,
+    LeukopeniaForm,
     OrganTransplantForm,
     OsteoporosisForm,
+    PolycythemiaForm,
     ShellfishForm,
     StrokeSimpleForm,
+    ThrombocytopeniaForm,
+    ThrombocytosisForm,
     TophiForm,
+    TransaminitisForm,
     UrateKidneyStonesForm,
 )
 from ..utils.mixins import PatientProviderMixin
@@ -106,6 +113,7 @@ class FamilyProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRe
 class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRedirectMixin, UpdateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
+    anemia_form_class = AnemiaForm
     angina_form_class = AnginaForm
     anticoagulation_form_class = AnticoagulationSimpleForm
     bleed_form_class = BleedSimpleForm
@@ -118,16 +126,23 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
     hypertension_form_class = HypertensionForm
     hyperuricemia_form_class = HyperuricemiaForm
     IBD_form_class = IBDForm
+    leukocytosis_form_class = LeukocytosisForm
+    leukopenia_form_class = LeukopeniaForm
     organ_transplant_form_class = OrganTransplantForm
     osteoporosis_form_class = OsteoporosisForm
+    polycythemia_form_class = PolycythemiaForm
     stroke_form_class = StrokeSimpleForm
-    urate_kidney_stone_form_class = UrateKidneyStonesForm
+    thrombocytopenia_form_class = ThrombocytopeniaForm
+    thrombocytosis_form_class = ThrombocytosisForm
     tophi_form_class = TophiForm
+    transaminitis_form_class = TransaminitisForm
+    urate_kidney_stone_form_class = UrateKidneyStonesForm
 
     def get_context_data(self, **kwargs):
         context = super(MedicalProfileUpdate, self).get_context_data(**kwargs)
         # Adds related model forms to context for rendering
         if self.request.POST:
+            context["anemia_form"] = AnemiaForm(self.request.POST, instance=self.object.anemia)
             context["angina_form"] = AnginaForm(self.request.POST, instance=self.object.angina)
             context["anticoagulation_form"] = AnticoagulationSimpleForm(
                 self.request.POST, instance=self.object.anticoagulation
@@ -144,16 +159,25 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             context["hypertension_form"] = HypertensionForm(self.request.POST, instance=self.object.hypertension)
             context["hyperuricemia_form"] = HyperuricemiaForm(self.request.POST, instance=self.object.hyperuricemia)
             context["IBD_form"] = IBDForm(self.request.POST, instance=self.object.IBD)
+            context["leukocytosis_form"] = LeukocytosisForm(self.request.POST, instance=self.object.leukocytosis)
+            context["leukopenia_form"] = LeukopeniaForm(self.request.POST, instance=self.object.leukopenia)
             context["organ_transplant_form"] = OrganTransplantForm(
                 self.request.POST, instance=self.object.organ_transplant
             )
             context["osteoporosis_form"] = OsteoporosisForm(self.request.POST, instance=self.object.osteoporosis)
+            context["polycythemia_form"] = PolycythemiaForm(self.request.POST, instance=self.object.polycythemia)
             context["stroke_form"] = StrokeSimpleForm(self.request.POST, instance=self.object.stroke)
             context["urate_kidney_stones_form"] = UrateKidneyStonesForm(
                 self.request.POST, instance=self.object.urate_kidney_stones
             )
             context["tophi_form"] = TophiForm(self.request.POST, instance=self.object.tophi)
+            context["thrombocytosis_form"] = ThrombocytosisForm(self.request.POST, instance=self.object.thrombocytosis)
+            context["thrombocytopenia_form"] = ThrombocytopeniaForm(
+                self.request.POST, instance=self.object.thrombocytopenia
+            )
+            context["transaminitis_form"] = TransaminitisForm(self.request.POST, instance=self.object.transaminitis)
         else:
+            context["anemia_form"] = self.anemia_form_class(instance=self.object.anemia)
             context["angina_form"] = self.angina_form_class(instance=self.object.angina)
             context["anticoagulation_form"] = self.anticoagulation_form_class(instance=self.object.anticoagulation)
             context["bleed_form"] = self.bleed_form_class(instance=self.object.bleed)
@@ -168,13 +192,19 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             context["hypertension_form"] = self.hypertension_form_class(instance=self.object.hypertension)
             context["hyperuricemia_form"] = self.hyperuricemia_form_class(instance=self.object.hyperuricemia)
             context["IBD_form"] = self.IBD_form_class(instance=self.object.IBD)
+            context["leukocytosis_form"] = self.leukocytosis_form_class(instance=self.object.leukocytosis)
+            context["leukopenia_form"] = self.leukopenia_form_class(instance=self.object.leukopenia)
             context["organ_transplant_form"] = self.organ_transplant_form_class(instance=self.object.organ_transplant)
             context["osteoporosis_form"] = self.osteoporosis_form_class(instance=self.object.osteoporosis)
+            context["polycythemia_form"] = self.polycythemia_form_class(instance=self.object.polycythemia)
             context["stroke_form"] = self.stroke_form_class(instance=self.object.stroke)
+            context["tophi_form"] = self.tophi_form_class(instance=self.object.tophi)
+            context["thrombocytopenia_form"] = self.thrombocytopenia_form_class(instance=self.object.thrombocytopenia)
+            context["thrombocytosis_form"] = self.thrombocytosis_form_class(instance=self.object.thrombocytosis)
+            context["transaminitis_form"] = self.transaminitis_form_class(instance=self.object.transaminitis)
             context["urate_kidney_stones_form"] = self.urate_kidney_stone_form_class(
                 instance=self.object.urate_kidney_stones
             )
-            context["tophi_form"] = self.tophi_form_class(instance=self.object.tophi)
         return context
 
     def get_object(self, queryset=None):
@@ -192,6 +222,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         # Fetches instance of MedicalProfile model and associated OnetoOne related models for UpdateView
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=self.object)
+        anemia_form = self.anemia_form_class(request.POST, instance=self.object.anemia)
         angina_form = self.angina_form_class(request.POST, instance=self.object.angina)
         anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=self.object.anticoagulation)
         bleed_form = self.bleed_form_class(request.POST, instance=self.object.bleed)
@@ -206,16 +237,23 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         hypertension_form = self.hypertension_form_class(request.POST, instance=self.object.hypertension)
         hyperuricemia_form = self.hyperuricemia_form_class(request.POST, instance=self.object.hyperuricemia)
         IBD_form = self.IBD_form_class(request.POST, instance=self.object.IBD)
+        leukocytosis_form = self.leukocytosis_form_class(request.POST, instance=self.object.leukocytosis)
+        leukopenia_form = self.leukopenia_form_class(request.POST, instance=self.object.leukopenia)
         organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=self.object.organ_transplant)
         osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=self.object.osteoporosis)
+        polycythemia_form = self.polycythemia_form_class(request.POST, instance=self.object.polycythemia)
         stroke_form = self.stroke_form_class(request.POST, instance=self.object.stroke)
+        thrombocytosis_form = self.thrombocytopenia_form_class(request.POST, instance=self.object.thrombocytosis)
+        thrombocytopenia_form = self.thrombocytopenia_form_class(request.POST, instance=self.object.thrombocytopenia)
+        tophi_form = self.tophi_form_class(request.POST, instance=self.object.tophi)
+        transaminitis_form = self.transaminitis_form_class(request.POST, instance=self.object.transaminitis)
         urate_kidney_stones_form = self.urate_kidney_stone_form_class(
             request.POST, instance=self.object.urate_kidney_stones
         )
-        tophi_form = self.tophi_form_class(request.POST, instance=self.object.tophi)
 
         if (
             form.is_valid()
+            and anemia_form.is_valid()
             and angina_form.is_valid()
             and anticoagulation_form.is_valid()
             and bleed_form.is_valid()
@@ -228,15 +266,26 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             and hypertension_form.is_valid()
             and hyperuricemia_form.is_valid()
             and IBD_form.is_valid()
+            and leukocytosis_form.is_valid()
+            and leukopenia_form.is_valid()
             and organ_transplant_form.is_valid()
             and osteoporosis_form.is_valid()
+            and polycythemia_form.is_valid()
             and stroke_form.is_valid()
-            and urate_kidney_stones_form.is_valid()
+            and thrombocytosis_form.is_valid()
+            and thrombocytopenia_form.is_valid()
+            and transaminitis_form.is_valid()
             and tophi_form.is_valid()
+            and urate_kidney_stones_form.is_valid()
         ):
             # Check if forms are valid
             # Check if related models are changed in form.changed_data, if so process them, assign last_modified to MedicalProfile, save to MedicalProfile
             medical_profile_data = form.save(commit=False)
+            if "value" in anemia_form.changed_data:
+                anemia_data = anemia_form.save(commit=False)
+                anemia_data.last_modified = "MedicalProfile"
+                anemia_data.save()
+                medical_profile_data.anemia = anemia_data
             if "value" in angina_form.changed_data:
                 angina_data = angina_form.save(commit=False)
                 angina_data.last_modified = "MedicalProfile"
@@ -297,6 +346,16 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
                 IBD_data.last_modified = "MedicalProfile"
                 IBD_data.save()
                 medical_profile_data.IBD = IBD_data
+            if "value" in leukocytosis_form.changed_data:
+                leukocytosis_data = leukocytosis_form.save(commit=False)
+                leukocytosis_data.last_modified = "MedicalProfile"
+                leukocytosis_data.save()
+                medical_profile_data.leukocytosis = leukocytosis_data
+            if "value" in leukopenia_form.changed_data:
+                leukopenia_data = leukopenia_form.save(commit=False)
+                leukopenia_data.last_modified = "MedicalProfile"
+                leukopenia_data.save()
+                medical_profile_data.leukopenia = leukopenia_data
             if "value" in organ_transplant_form.changed_data:
                 organ_transplant_data = organ_transplant_form.save(commit=False)
                 organ_transplant_data.last_modified = "MedicalProfile"
@@ -312,21 +371,37 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
                 stroke_data.last_modified = "MedicalProfile"
                 stroke_data.save()
                 medical_profile_data.stroke = stroke_data
-            if "value" in urate_kidney_stones_form.changed_data:
-                urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
-                urate_kidney_stones_data.last_modified = "MedicalProfile"
-                urate_kidney_stones_data.save()
-                medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
+            if "value" in thrombocytopenia_form.changed_data:
+                thrombocytopenia_data = thrombocytopenia_form.save(commit=False)
+                thrombocytopenia_data.last_modified = "MedicalProfile"
+                thrombocytopenia_data.save()
+                medical_profile_data.thrombocytopenia = thrombocytopenia_data
+            if "value" in thrombocytosis_form.changed_data:
+                thrombocytosis_data = thrombocytosis_form.save(commit=False)
+                thrombocytosis_data.last_modified = "MedicalProfile"
+                thrombocytosis_data.save()
+                medical_profile_data.thrombocytosis = thrombocytosis_data
             if "value" in tophi_form.changed_data:
                 tophi_data = tophi_form.save(commit=False)
                 tophi_data.last_modified = "MedicalProfile"
                 tophi_data.save()
                 medical_profile_data.tophi = tophi_data
+            if "value" in transaminitis_form.changed_data:
+                transaminitis_data = transaminitis_form.save(commit=False)
+                transaminitis_data.last_modified = "MedicalProfile"
+                transaminitis_data.save()
+                medical_profile_data.transaminitis = transaminitis_data
+            if "value" in urate_kidney_stones_form.changed_data:
+                urate_kidney_stones_data = urate_kidney_stones_form.save(commit=False)
+                urate_kidney_stones_data.last_modified = "MedicalProfile"
+                urate_kidney_stones_data.save()
+                medical_profile_data.urate_kidney_stones = urate_kidney_stones_data
             return self.form_valid(form)
         else:
             return self.render_to_response(
                 self.get_context_data(
                     form=form,
+                    anemia_form=anemia_form,
                     angina_form=angina_form,
                     anticoagulation_form=anticoagulation_form,
                     bleed_form=bleed_form,
@@ -339,11 +414,17 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
                     hypertension_form=hypertension_form,
                     hyperuricemia_form=hypertension_form,
                     IBD_form=IBD_form,
+                    leukocytosis_form=leukocytosis_form,
+                    leukopenia_form=leukopenia_form,
                     organ_transplant_form=organ_transplant_form,
                     osteoporosis_form=osteoporosis_form,
+                    polycythemia_form=polycythemia_form,
                     stroke_form=stroke_form,
-                    urate_kidney_stones_form=urate_kidney_stones_form,
                     tophi_form=tophi_form,
+                    thrombocytosis_form=thrombocytosis_form,
+                    thrombocytopenia_form=thrombocytopenia_form,
+                    transaminitis_form=transaminitis_form,
+                    urate_kidney_stones_form=urate_kidney_stones_form,
                 )
             )
 

@@ -27,13 +27,18 @@
         "hyperuricemia",
         "inflammasome",
         "ingout",
+        "leukocytosis",
+        "leukopenia",
         "medicalprofile",
         "Meloxicam",
         "naproxen",
         "patientprofile",
         "quicklinks",
         "sideeffects",
+        "thrombocytopenia",
+        "thrombocytosis",
         "tophi",
+        "transaminitis",
         "urate"
     ],
     "[django-html]": {
