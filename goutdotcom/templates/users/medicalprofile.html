@@ -9,6 +9,30 @@
     <hr size="6" color="white">
     <div class="row">
       <div class="col">
+        {% if object.medicalprofile.anemia.value == True %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingCKD">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseCKD" aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseCKD">
+              {{ object.medicalprofile.anemia }}
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseCKD" class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-headingCKD">
+            <div class="accordion-body">
+              <ul>
+                {% if object.medicalprofile.anemia.baseline %}
+                <li>Baseline hemoglobin: {{ object.medicalprofile.anemia.baseline }}</li>
+                {% endif %}
+                <li>{{ object.medicalprofile.anemia.last_modified }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="col">
         <div class="accordion" id="accordionPanelsStayOpenExample">
           {% if object.medicalprofile.anticoagulation.value == True %}
             <div class="accordion-item">
@@ -49,6 +73,8 @@
               </div>
             </div>
           {% endif %}
+          </div>
+          <div class="col">
           {% if object.medicalprofile.CKD.value == True %}
             <div class="accordion-item">
               <h2 class="accordion-header" id="panelsStayOpen-headingCKD">
@@ -73,6 +99,8 @@
               </div>
             </div>
           {% endif %}
+          </div>
+          <div class="col">
           {% if object.medicalprofile.heartattack.value == True %}
             <div class="accordion-item">
               <h2 class="accordion-header" id="panelsStayOpen-headingHeartAttack">
@@ -92,6 +120,7 @@
               </div>
             </div>
           {% endif %}
+          </div>
           {% if object.medicalprofile.hypertension.value == True %}
             <div class="accordion-item">
               <h2 class="accordion-header" id="panelsStayOpen-headingHypertension">

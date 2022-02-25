@@ -27,6 +27,7 @@ class FamilyProfileHistoryAdmin(SimpleHistoryAdmin):
 class MedicalProfileHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
+        "anemia",
         "angina",
         "anticoagulation",
         "bleed",
@@ -38,11 +39,14 @@ class MedicalProfileHistoryAdmin(SimpleHistoryAdmin):
         "hypertension",
         "hyperuricemia",
         "IBD",
+        "leukocytosis",
+        "leukopenia",
         "organ_transplant",
         "osteoporosis",
         "stroke",
         "urate_kidney_stones",
         "tophi",
+        "transaminitis",
     )
     history_list_display = ["status"]
     search_fields = ["user__username"]

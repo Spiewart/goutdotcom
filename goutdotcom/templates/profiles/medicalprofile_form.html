@@ -1,12 +1,8 @@
-{% extends "base_form.html" %} {% load crispy_forms_tags %}
+{% extends "base_form.html" %}
+{% load crispy_forms_tags %}
 {% block title %}{{user.username|capfirst }}'s Medical Profile Update{% endblock title %}
 {% block header %}
-<h1 class="content-heading">{{ user.username|capfirst }}'s Medical Profile</h1>
-{% if form.instance.pk %}
-<h2>Update your medical conditions</h2>
-{% else %}
-<h2>Do you have any of the following medical conditions?</h2>
-{% endif %}
+<h1 class="content-heading">Update {{ user.username|capfirst }}'s Medical History</h1>
 <hr size="6" color="white" />
 {% endblock header %}
 {% block form %}
@@ -14,8 +10,19 @@
 <form class="form-horizontal" method="post" action="{% url 'profiles:update-medical' object.user.username %}" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form|crispy }}
-  {{ anemia_form|crispy }}
-  <hr size="6" color="white" />
+  <div class="row">
+    <div class="col">
+      {{ anemia_form|crispy }}
+      {{ hemoglobin_anemia_form|crispy }}
+      <hr size="6" color="white" />
+    </div>
+    <div class="col">
+      {{ leukocytosis_form|crispy }}
+      {{ wbc_leukocytosis_form|crispy }}
+      <hr size="6" color="white" />
+    </div>
+  </div>
+
   {{ angina_form|crispy }}
   <hr size="6" color="white" />
   {{ anticoagulation_form|crispy }}
@@ -29,14 +36,15 @@
   {{ colchicine_interactions_form|crispy }}
   <hr size="6" color="white" />
   {{ CKD_form|crispy }}
+  {{ creatinine_form|crispy }}
   <hr size="6" color="white" />
   {{ hypertension_form|crispy }}
   <hr size="6" color="white" />
   {{ hyperuricemia_form|crispy }}
   <hr size="6" color="white" />
-  {{ leukocytosis_form|crispy }}
-  <hr size="6" color="white" />
+
   {{ leukopenia_form|crispy }}
+  {{ wbc_leukopenia_form|crispy }}
   <hr size="6" color="white" />
   {{ stroke_form|crispy }}
   <hr size="6" color="white" id="stroke_bar" />
@@ -53,16 +61,21 @@
   {{ organ_transplant_form|crispy }}
   <hr size="6" color="white" />
   {{ polycythemia_form|crispy }}
+  {{ hemoglobin_polycythemia_form|crispy }}
   <hr size="6" color="white" />
   {{ urate_kidney_stones_form|crispy }}
   <hr size="6" color="white" />
   {{ tophi_form|crispy }}
   <hr size="6" color="white" />
   {{ thrombocytopenia_form|crispy }}
+  {{ platelet_thrombocytopenia_form|crispy }}
   <hr size="6" color="white" />
   {{ thrombocytosis_form|crispy }}
+  {{ platelet_thrombocytosis_form|crispy }}
   <hr size="6" color="white" />
   {{ transaminitis_form|crispy }}
+  {{ alt_form|crispy }}
+  {{ ast_form|crispy }}
   <hr size="6" color="white" />
   <div class="control-group">
     <div class="controls">

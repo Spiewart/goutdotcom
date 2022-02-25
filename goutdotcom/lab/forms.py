@@ -139,6 +139,8 @@ class PlateletForm(forms.ModelForm):
 
 
 class WBCForm(forms.ModelForm):
+    prefix = "wbc"
+
     class Meta:
         model = WBC
         fields = (
@@ -160,6 +162,25 @@ class WBCForm(forms.ModelForm):
             ),
         )
 
+class WBCProfileForm(WBCForm):
+    class Meta:
+        model = WBC
+        fields = (
+            "value",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(WBCForm, self).__init__(*args, **kwargs)
+        self.fields["value"].required = False
+        self.fields["value"].label = False
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                "WBC",
+                "value",
+            ),
+        )
 
 class UrateForm(forms.ModelForm):
     class Meta:

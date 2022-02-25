@@ -64,6 +64,7 @@ class AlcoholForm(forms.ModelForm):
             Fieldset("Alcohol", "value", "number", "wine", "beer", "liquor", id="alcohol_for_profile"),
         )
 
+
 class AllopurinolHypersensitivityForm(forms.ModelForm):
     prefix = "AllopruinolHypersensitivity"
 
@@ -109,13 +110,13 @@ class AllopurinolHypersensitivitySimpleForm(AllopurinolHypersensitivityForm):
             Fieldset("", "value", id="gout_for_profile"),
         )
 
+
 class AnemiaForm(forms.ModelForm):
+    prefix = "anemia"
+
     class Meta:
         model = Anemia
-        fields = (
-            "value",
-            "baseline",
-        )
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(AnemiaForm, self).__init__(*args, **kwargs)
@@ -132,10 +133,10 @@ class AnemiaForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
-                    {% crispy hemoglobin_form %}
+                    {% crispy hemoglobin_anemia_form %}
                     """
                 ),
-                id="angina_for_profile",
+                id="anemia_for_profile",
             ),
         )
 
@@ -216,6 +217,7 @@ class AnticoagulationSimpleForm(AnticoagulationForm):
             ),
         )
 
+
 class BleedForm(forms.ModelForm):
     prefix = "bleed"
 
@@ -265,6 +267,7 @@ class BleedForm(forms.ModelForm):
                 id="bleed_for_profile",
             ),
         )
+
 
 class BleedSimpleForm(BleedForm):
     class Meta:
@@ -375,6 +378,12 @@ class CKDForm(CKDSimpleForm):
                 "value",
                 InlineCheckboxes("stage"),
                 "dialysis",
+                HTML(
+                    """
+                    {% load crispy_forms_tags %}
+                    {% crispy creatinine_form %}
+                    """
+                ),
                 id="CKD_for_profile",
             ),
         )
@@ -425,6 +434,7 @@ class ColchicineInteractionsSimpleForm(ColchicineInteractionsForm):
                 id="colchicine_interactions_for_profile",
             ),
         )
+
 
 class DiabetesForm(forms.ModelForm):
     prefix = "diabetes"
@@ -478,6 +488,7 @@ class ErosionsForm(forms.ModelForm):
             Fieldset("", "value", id="erosions_for_profile"),
         )
 
+
 class FebuxostatHypersensitivityForm(forms.ModelForm):
     prefix = "FebuxostatHypersensitivity"
 
@@ -523,6 +534,7 @@ class FebuxostatHypersensitivitySimpleForm(FebuxostatHypersensitivityForm):
             Fieldset("", "value", id="febuxostathypersensitivity_for_profile"),
         )
 
+
 class FructoseForm(forms.ModelForm):
     prefix = "fructose"
 
@@ -554,6 +566,7 @@ class GoutForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset("Gout", "value", id="gout_for_profile"),
         )
+
 
 class HeartAttackForm(forms.ModelForm):
     prefix = "heartattack"
@@ -616,6 +629,7 @@ class HeartAttackSimpleForm(HeartAttackForm):
             ),
         )
 
+
 class HypertensionForm(forms.ModelForm):
     prefix = "hypertension"
 
@@ -652,7 +666,6 @@ class HypertensionSimpleForm(HypertensionForm):
         self.helper.layout = Layout(
             Fieldset("", "value", id="hypertension_for_profile"),
         )
-
 
 
 class HyperuricemiaForm(forms.ModelForm):
@@ -701,6 +714,8 @@ class IBDSimpleForm(IBDForm):
 
 
 class LeukocytosisForm(forms.ModelForm):
+    prefix = "leukocytosis"
+
     class Meta:
         model = Leukocytosis
         fields = ("value",)
@@ -720,14 +735,17 @@ class LeukocytosisForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
-                    {% crispy wbc_form %}
+                    {% crispy wbc_leukocytosis_form %}
                     """
                 ),
                 id="leukocytosis_for_profile",
             ),
         )
 
+
 class LeukopeniaForm(forms.ModelForm):
+    prefix = "leukopenia"
+
     class Meta:
         model = Leukopenia
         fields = ("value",)
@@ -747,12 +765,13 @@ class LeukopeniaForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
-                    {% crispy wbc_form %}
+                    {% crispy wbc_leukopenia_form %}
                     """
                 ),
                 id="leukopenia_for_profile",
             ),
         )
+
 
 class OrganTransplantForm(forms.ModelForm):
     prefix = "organ_transplant"
@@ -773,6 +792,7 @@ class OrganTransplantForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset("", "value", InlineCheckboxes("organ"), id="organ_transplant_for_profile"),
         )
+
 
 class OsteoporosisForm(forms.ModelForm):
     prefix = "Osteoporosis"
@@ -801,13 +821,13 @@ class OsteoporosisSimpleForm(OsteoporosisForm):
             Fieldset("", "value", id="osteoporosis_for_profile"),
         )
 
+
 class PolycythemiaForm(forms.ModelForm):
+    prefix = "polycythemia"
+
     class Meta:
         model = Polycythemia
-        fields = (
-            "value",
-            "baseline",
-        )
+        fields = ("value",)
 
     def __init__(self, *args, **kwargs):
         super(PolycythemiaForm, self).__init__(*args, **kwargs)
@@ -824,7 +844,7 @@ class PolycythemiaForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
-                    {% crispy hemoglobin_form %}
+                    {% crispy hemoglobin_polycythemia_form %}
                     """
                 ),
                 id="polycythemia_for_profile",
@@ -865,6 +885,7 @@ class ShellfishForm(forms.ModelForm):
             Fieldset("Shellfish", "value", id="shellfish_for_profile"),
         )
 
+
 class StrokeForm(forms.ModelForm):
     prefix = "stroke"
 
@@ -903,6 +924,7 @@ class StrokeSimpleForm(StrokeForm):
             Fieldset("", "value", id="stroke_for_contraindications"),
         )
 
+
 class TophiForm(forms.ModelForm):
     prefix = "tophi"
 
@@ -921,6 +943,8 @@ class TophiForm(forms.ModelForm):
 
 
 class ThrombocytopeniaForm(forms.ModelForm):
+    prefix = "thrombocytopenia"
+
     class Meta:
         model = Thrombocytopenia
         fields = ("value",)
@@ -940,7 +964,7 @@ class ThrombocytopeniaForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
-                    {% crispy platelet_form %}
+                    {% crispy platelet_thrombocytopenia_form %}
                     """
                 ),
                 id="thrombocytopenia_for_profile",
@@ -949,6 +973,8 @@ class ThrombocytopeniaForm(forms.ModelForm):
 
 
 class ThrombocytosisForm(forms.ModelForm):
+    prefix = "thrombocytosis"
+
     class Meta:
         model = Thrombocytosis
         fields = ("value",)
@@ -968,7 +994,7 @@ class ThrombocytosisForm(forms.ModelForm):
                 HTML(
                     """
                     {% load crispy_forms_tags %}
-                    {% crispy platelet_form %}
+                    {% crispy platelet_thrombocytosis_form %}
                     """
                 ),
                 id="thrombocytosis_for_profile",
@@ -977,12 +1003,14 @@ class ThrombocytosisForm(forms.ModelForm):
 
 
 class TransaminitisForm(forms.ModelForm):
+    prefix = "transaminitis"
+
     class Meta:
         model = Transaminitis
         fields = ("value",)
 
     def __init__(self, *args, **kwargs):
-        super(AnemiaForm, self).__init__(*args, **kwargs)
+        super(TransaminitisForm, self).__init__(*args, **kwargs)
         self.fields["value"].widget = forms.CheckboxInput()
 
         self.helper = FormHelper(self)
@@ -1021,6 +1049,7 @@ class UrateKidneyStonesForm(forms.ModelForm):
             Fieldset("", "value", id="urate_kidney_stones_for_profile"),
         )
 
+
 class XOIInteractionsSimpleForm(forms.ModelForm):
     class Meta:
         model = XOIInteractions
@@ -1038,9 +1067,3 @@ class XOIInteractionsSimpleForm(forms.ModelForm):
 
 
 ### Family History Forms ###
-
-
-
-
-
-

@@ -9,7 +9,6 @@ from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 from simple_history.models import HistoricalRecords
 
-from ..lab.models import ALT, AST, WBC, Creatinine, Hemoglobin, Platelet
 from .choices import (
     BOOL_CHOICES,
     CHF_BOOL_CHOICES,
@@ -46,6 +45,7 @@ class History(TimeStampedModel):
     def __unicode__(self):
         return self.name
 
+
 class FamilyHistory(History):
     name = "family history"
     value = BooleanField(
@@ -62,9 +62,11 @@ class FamilyHistory(History):
     class Meta:
         abstract = True
 
+
 class MedicalHistory(History):
     class Meta:
         abstract = True
+
 
 class MedicationHistory(History):
     class Meta:
@@ -72,9 +74,11 @@ class MedicationHistory(History):
 
     date = models.DateField(help_text="When did you start this medication?", null=True, blank=True)
 
+
 class SocialHistory(History):
     class Meta:
         abstract = True
+
 
 class VascularHistory(MedicalHistory):
     class Meta:
@@ -82,6 +86,7 @@ class VascularHistory(MedicalHistory):
 
     number = models.IntegerField(help_text="How many have you had?", default=1, null=True, blank=True)
     date = models.DateField(help_text="When was it? The most recent if multiple.", null=True, blank=True)
+
 
 class Alcohol(SocialHistory):
     name = "alcohol"
@@ -123,7 +128,6 @@ class Alcohol(SocialHistory):
     name = "alcohol"
 
 
-
 class Shellfish(SocialHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
@@ -134,6 +138,7 @@ class Shellfish(SocialHistory):
         verbose_name="shellfish",
     )
     name = "shellfish"
+
 
 class AllopurinolHypersensitivity(MedicalHistory):
     name = "Allopurinol Hypersensitivity"
@@ -170,6 +175,7 @@ class AllopurinolHypersensitivity(MedicalHistory):
         default=False,
     )
 
+
 class Anemia(MedicalHistory):
     """Model for history of chronic anemia. True or False."""
 
@@ -184,7 +190,8 @@ class Anemia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField(Hemoglobin, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.Hemoglobin", on_delete=models.SET_NULL, null=True, blank=True)
+
 
 class Angina(MedicalHistory):
     """Model for history of cardiac chest pain. True or False."""
@@ -201,6 +208,7 @@ class Angina(MedicalHistory):
         null=True,
         blank=True,
     )
+
 
 class Anticoagulation(MedicationHistory):
     value = BooleanField(
@@ -257,6 +265,7 @@ class Anticoagulation(MedicationHistory):
     )
     name = "anticoagulation"
 
+
 class Bleed(VascularHistory):
     name = "bleed"
     value = BooleanField(
@@ -305,6 +314,7 @@ class Bleed(VascularHistory):
         default=False,
     )
 
+
 class CHF(MedicalHistory):
     systolic = BooleanField(
         choices=CHF_BOOL_CHOICES,
@@ -326,6 +336,7 @@ class CHF(MedicalHistory):
         blank=True,
         default=False,
     )
+
 
 class CKD(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
@@ -367,7 +378,7 @@ class CKD(MedicalHistory):
         blank=True,
         default=False,
     )
-    baseline = models.OneToOneField(Creatinine, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.Creatinine", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class ColchicineInteractions(MedicationHistory):
@@ -396,8 +407,10 @@ class ColchicineInteractions(MedicationHistory):
         default=False,
     )
 
+
 class Cyclosporine(MedicationHistory):
     name = "cyclosporine"
+
 
 class Diabetes(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
@@ -435,6 +448,7 @@ class Diabetes(MedicalHistory):
         blank=True,
         default=False,
     )
+
 
 class Diuretics(MedicationHistory):
     hydrochlorothiazide = BooleanField(
@@ -475,8 +489,6 @@ class Diuretics(MedicationHistory):
     name = "diuretics"
 
 
-
-
 class Erosions(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     name = "erosions"
@@ -488,7 +500,6 @@ class Erosions(MedicalHistory):
         blank=True,
         default=False,
     )
-
 
 
 class FebuxostatHypersensitivity(MedicalHistory):
@@ -527,7 +538,6 @@ class FebuxostatHypersensitivity(MedicalHistory):
     )
 
 
-
 class Fructose(SocialHistory):
     value = BooleanField(
         choices=BOOL_CHOICES,
@@ -539,6 +549,7 @@ class Fructose(SocialHistory):
     )
     name = "fructose"
 
+
 class Gout(FamilyHistory):
     name = "gout"
     value = BooleanField(
@@ -548,6 +559,7 @@ class Gout(FamilyHistory):
         blank=True,
         default=False,
     )
+
 
 class HeartAttack(VascularHistory):
     name = "heart attack"
@@ -595,6 +607,7 @@ class HeartAttack(VascularHistory):
     )
     name = "MI"
 
+
 class Hypertension(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     medication = BooleanField(
@@ -617,6 +630,7 @@ class Hypertension(MedicalHistory):
         null=True,
         blank=True,
     )
+
 
 class Hyperuricemia(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
@@ -645,6 +659,7 @@ class IBD(MedicalHistory):
         default=False,
     )
 
+
 class Leukocytosis(MedicalHistory):
     """Model for history of leukocytosis. True or False."""
 
@@ -659,7 +674,8 @@ class Leukocytosis(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField(WBC, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.WBC", on_delete=models.SET_NULL, null=True, blank=True)
+
 
 class Leukopenia(MedicalHistory):
     """Model for history of leukopenia. True or False."""
@@ -675,7 +691,8 @@ class Leukopenia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField(WBC, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.WBC", on_delete=models.SET_NULL, null=True, blank=True)
+
 
 class OrganTransplant(MedicalHistory):
     organ = MultiSelectField(
@@ -695,6 +712,7 @@ class OrganTransplant(MedicalHistory):
         default=False,
     )
 
+
 class Osteoporosis(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     name = "osteoporosis"
@@ -708,6 +726,7 @@ class Osteoporosis(MedicalHistory):
         blank=True,
         default=False,
     )
+
 
 class Polycythemia(MedicalHistory):
     """Model for history of polycythemia. True or False."""
@@ -723,7 +742,7 @@ class Polycythemia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField(Hemoglobin, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.Hemoglobin", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class PVD(MedicalHistory):
@@ -739,6 +758,7 @@ class PVD(MedicalHistory):
         blank=True,
     )
 
+
 class Stroke(VascularHistory):
     name = "stroke"
     value = BooleanField(
@@ -751,6 +771,7 @@ class Stroke(VascularHistory):
         blank=True,
         default=False,
     )
+
 
 class Thrombocytopenia(MedicalHistory):
     """Model for history of thrombocytopenia. True or False."""
@@ -766,7 +787,8 @@ class Thrombocytopenia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField(Platelet, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.Platelet", on_delete=models.SET_NULL, null=True, blank=True)
+
 
 class Thrombocytosis(MedicalHistory):
     """Model for history of thrombocytosis. True or False."""
@@ -782,7 +804,8 @@ class Thrombocytosis(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField(Platelet, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.Platelet", on_delete=models.SET_NULL, null=True, blank=True)
+
 
 class Tophi(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
@@ -795,6 +818,7 @@ class Tophi(MedicalHistory):
         blank=True,
         default=False,
     )
+
 
 class Transaminitis(MedicalHistory):
     """Model for history of transaminitis. True or False."""
@@ -810,8 +834,9 @@ class Transaminitis(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline_alt = models.OneToOneField(ALT, on_delete=models.SET_NULL, null=True, blank=True)
-    baseline_ast = models.OneToOneField(AST, on_delete=models.SET_NULL, null=True, blank=True)
+    baseline_alt = models.OneToOneField("lab.ALT", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline_ast = models.OneToOneField("lab.AST", on_delete=models.SET_NULL, null=True, blank=True)
+
 
 class UrateKidneyStones(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
@@ -826,6 +851,7 @@ class UrateKidneyStones(MedicalHistory):
         blank=True,
         default=False,
     )
+
 
 class XOIInteractions(MedicationHistory):
     value = BooleanField(
@@ -852,5 +878,3 @@ class XOIInteractions(MedicationHistory):
         default=False,
     )
     name = "XOI interactions"
-
-

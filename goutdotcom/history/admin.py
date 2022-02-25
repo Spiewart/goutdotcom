@@ -3,6 +3,7 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from .models import *
 
+
 class AlcoholHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
@@ -439,7 +440,7 @@ admin.site.register(Stroke, StrokeHistoryAdmin)
 admin.site.register(Tophi, TophiHistoryAdmin)
 admin.site.register(Thrombocytosis, ThrombocytosisHistoryAdmin)
 admin.site.register(Thrombocytopenia, ThrombocytopeniaHistoryAdmin)
-admin.site.register(IBD, IBDHistoryAdmin)
+admin.site.register(Transaminitis, TransaminitisHistoryAdmin)
 admin.site.register(HeartAttack, HeartAttackHistoryAdmin)
 admin.site.register(Polycythemia, PolycythemiaHistoryAdmin)
 admin.site.register(PVD, PVDHistoryAdmin)
