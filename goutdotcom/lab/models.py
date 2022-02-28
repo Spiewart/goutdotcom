@@ -722,6 +722,27 @@ class Creatinine(Lab):
             Decimal: returns a Decimal Creatinine value
             else returns None
         """
+        # Check if Creatinine's User has CKD
+        if self.lab_abnormal_high():
+            if self.user.CKD:
+                # If User has CKD and CKD has a baseline, return that baseline
+                if self.user.CKD.baseline:
+                    return self.user.CKD.baseline
+            else:
+                self.creatinines = Creatinine.objects.filter(user=self.user)
+                for creatinine in self.creatinines:
+                    if creatinine.baseline == True:
+                        if self.creatinine.baseline.lab_abnormal_high() == True:
+                            self.user.CKD.value == True
+                            self.user.CKD.baseline = self.creatinine.baseline
+                        return creatinine
+                if len(self.creatinines) == 1:
+                    if not self.creatinines[0].baseline:
+                        self.creatinines[0].baseline = True
+                        self.user.CKD.value = True
+                        self.user.CKD.baseline = self.creatinines[0]
+                    return self.creatinines[0]
+
         # Check if Creatinine has a User with a ULTPlan and that the Creatinine has a ULTPlan and it is the User's
         if self.user and self.user.ultplan and self.ultplan:
             if self.user.ultplan == self.ultplan:

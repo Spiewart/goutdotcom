@@ -1,0 +1,27 @@
+  {% if object.transaminitis.value == True %}
+  <div class="col">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingtransaminitis">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapsetransaminitis" aria-expanded="false"
+          aria-controls="panelsStayOpen-collapsetransaminitis">
+          {{ object.CKD }}
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapsetransaminitis" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingtransaminitis">
+        <div class="accordion-body">
+          <ul>
+            {% if object.transaminitis.baseline_alt %}
+            <li>Baseline ALT: {{ object.transaminitis.baseline_alt }}</li>
+            {% endif %}
+            {% if object.transaminitis.baseline_ast %}
+            <li>Baseline AST: {{ object.transaminitis.baseline_ast }}</li>
+            {% endif %}
+            <li>{{ object.transaminitis.last_modified }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}

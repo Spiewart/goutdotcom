@@ -1,0 +1,91 @@
+{% if object.medicalprofile.heartattack.value == True %}
+  <div class="col">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingHeartAttack">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseHeartAttack" aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseHeartAttack">
+          Heart Attack
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseHeartAttack" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingHeartAttack">
+        <div class="accordion-body">
+          <ul>
+            <li>{{ object.medicalprofile.heartattack.last_modified }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% if object.hypertension.value == True %}
+  <div class="col">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingHypertension">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseHypertension" aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseHypertension">
+          Hypertension
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseHypertension" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingHypertension">
+        <div class="accordion-body">
+          <ul>
+            {% if object.hypertension.medication %}
+            <li>Treated with medications</li>
+            {% endif %}
+            <li>{{ object.hypertension.last_modified }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% if object.angina.value == True %}
+  <div class="col">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingangina">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseangina" aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseangina">
+          Angina
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseangina" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingangina">
+        <div class="accordion-body">
+          <ul>
+            {% if object.angina.medication %}
+            <li>Treated with medications</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% if object.PVD.value == True %}
+  <div class="col">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingPVD">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapsePVD" aria-expanded="false"
+          aria-controls="panelsStayOpen-collapsePVD">
+          PVD
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapsePVD" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingPVD">
+        <div class="accordion-body">
+          <ul>
+            {% if object.PVD.last_modified %}
+            <li>Last modified: {{ object.PVD.last_modified }}</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

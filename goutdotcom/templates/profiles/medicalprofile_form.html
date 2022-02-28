@@ -1,5 +1,7 @@
 {% extends "base_form.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
+
 {% block title %}{{user.username|capfirst }}'s Medical Profile Update{% endblock title %}
 {% block header %}
 <h1 class="content-heading">Update {{ user.username|capfirst }}'s Medical History</h1>
@@ -11,18 +13,55 @@
   {% csrf_token %}
   {{ form|crispy }}
   <div class="row">
-    <div class="col">
+    <div class="col" id="anemia_col">
       {{ anemia_form|crispy }}
       {{ hemoglobin_anemia_form|crispy }}
-      <hr size="6" color="white" />
     </div>
-    <div class="col">
-      {{ leukocytosis_form|crispy }}
-      {{ wbc_leukocytosis_form|crispy }}
-      <hr size="6" color="white" />
+    <div class="col" id="polycythemia_col">
+      {{ polycythemia_form|crispy }}
+      {{ hemoglobin_polycythemia_form|crispy }}
     </div>
   </div>
-
+  <hr size="6" color="white" />
+  <div class="row">
+    <div class="col" id="leukocytosis_col">
+      {{ leukocytosis_form|crispy }}
+      {{ wbc_leukocytosis_form|crispy }}
+    </div>
+    <div class="col" id="leukopenia_col">
+    {{ leukopenia_form|crispy }}
+    {{ wbc_leukopenia_form|crispy }}
+    </div>
+  </div>
+  <hr size="6" color="white" />
+  <div class="row">
+    <div class="col" id="thrombocytopenia_col">
+      {{ thrombocytopenia_form|crispy }}
+      {{ platelet_thrombocytopenia_form|crispy }}
+    </div>
+    <div class="col" id="thrombocytosis_col">
+      {{ thrombocytosis_form|crispy }}
+      {{ platelet_thrombocytosis_form|crispy }}
+    </div>
+  </div>
+  <hr size="6" color="white" />
+  <div class="row">
+    <div class="col">
+      {{ transaminitis_form|crispy }}
+      <div class="row">
+        <div class="col">
+        {{ alt_form|crispy }}
+        </div>
+        <div class="col">
+        {{ ast_form|crispy }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr size="6" color="white" />
+  {{ CKD_form|crispy }}
+  {{ creatinine_form|crispy }}
+  <hr size="6" color="white" />
   {{ angina_form|crispy }}
   <hr size="6" color="white" />
   {{ anticoagulation_form|crispy }}
@@ -35,16 +74,9 @@
   <hr size="6" color="white" />
   {{ colchicine_interactions_form|crispy }}
   <hr size="6" color="white" />
-  {{ CKD_form|crispy }}
-  {{ creatinine_form|crispy }}
-  <hr size="6" color="white" />
   {{ hypertension_form|crispy }}
   <hr size="6" color="white" />
   {{ hyperuricemia_form|crispy }}
-  <hr size="6" color="white" />
-
-  {{ leukopenia_form|crispy }}
-  {{ wbc_leukopenia_form|crispy }}
   <hr size="6" color="white" />
   {{ stroke_form|crispy }}
   <hr size="6" color="white" id="stroke_bar" />
@@ -60,22 +92,9 @@
   <hr size="6" color="white" />
   {{ organ_transplant_form|crispy }}
   <hr size="6" color="white" />
-  {{ polycythemia_form|crispy }}
-  {{ hemoglobin_polycythemia_form|crispy }}
-  <hr size="6" color="white" />
   {{ urate_kidney_stones_form|crispy }}
   <hr size="6" color="white" />
   {{ tophi_form|crispy }}
-  <hr size="6" color="white" />
-  {{ thrombocytopenia_form|crispy }}
-  {{ platelet_thrombocytopenia_form|crispy }}
-  <hr size="6" color="white" />
-  {{ thrombocytosis_form|crispy }}
-  {{ platelet_thrombocytosis_form|crispy }}
-  <hr size="6" color="white" />
-  {{ transaminitis_form|crispy }}
-  {{ alt_form|crispy }}
-  {{ ast_form|crispy }}
   <hr size="6" color="white" />
   <div class="control-group">
     <div class="controls">
@@ -90,7 +109,28 @@
 <script>
   // functions to load when the page loads
   $(document).ready(function () {
-    medical_profile_ckd();
+    CKD_checker();
+  });
+  $(document).ready(function () {
+  leukocytosis_checker();
+  });
+  $(document).ready(function () {
+  leukopenia_checker();
+  });
+  $(document).ready(function () {
+  thrombocytosis_checker();
+  });
+  $(document).ready(function () {
+  thrombocytopenia_checker();
+  });
+  $(document).ready(function () {
+  anemia_checker();
+  });
+  $(document).ready(function () {
+  polycythemia_checker();
+  });
+  $(document).ready(function () {
+  transaminitis_checker();
   });
   $(document).ready(function () {
     medical_profile_hypertension();
@@ -107,8 +147,43 @@
   // functions to run when form field is changed
   $(document).ready(function () {
     // toggles CKD subfields when CKD is changed
-    $("#id_CKD-value").change(medical_profile_ckd);
-    medical_profile_ckd.call($("#id_CKD-value").get(0));
+    $("#id_CKD-value").change(CKD_checker);
+    CKD_checker.call($("#id_CKD-value").get(0));
+  });
+  $(document).ready(function () {
+  // toggles WBC subfield when leukocytosis is changed
+  $("#id_leukocytosis-value").change(leukocytosis_checker);
+  leukocytosis_checker.call($("#id_leukocytosis-value").get(0));
+  });
+  $(document).ready(function () {
+  // toggles WBC subfield when leukopenia is changed
+  $("#id_leukopenia-value").change(leukopenia_checker);
+  leukopenia_checker.call($("#id_leukopenia-value").get(0));
+  });
+  $(document).ready(function () {
+  // toggles platelet subfield when thrombocytosis is changed
+  $("#id_thrombocytosis-value").change(thrombocytosis_checker);
+  thrombocytosis_checker.call($("#id_thrombocytosis-value").get(0));
+  });
+  $(document).ready(function () {
+  // toggles platelet subfield when thrombocytopenia is changed
+  $("#id_thrombocytopenia-value").change(thrombocytopenia_checker);
+  thrombocytopenia_checker.call($("#id_thrombocytopenia-value").get(0));
+  });
+  $(document).ready(function () {
+  // toggles hemoglobin subfield and polycythemia field when anemia is changed
+  $("#id_anemia-value").change(anemia_checker);
+  anemia_checker.call($("#id_anemia-value").get(0));
+  });
+  $(document).ready(function () {
+  // toggles hemoglobin subfield and anemia field when polycythemia is changed
+  $("#id_polycythemia-value").change(polycythemia_checker);
+  polycythemia_checker.call($("#id_polycythemia-value").get(0));
+  });
+  $(document).ready(function () {
+  // toggles hemoglobin subfield and anemia field when polycythemia is changed
+  $("#id_transaminitis-value").change(transaminitis_checker);
+  transaminitis_checker.call($("#id_transaminitis-value").get(0));
   });
   $(document).ready(function () {
     // toggles Hypertension subfields when Hypertension is changed

@@ -1,0 +1,114 @@
+{% if object.diabetes.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingDiabetes">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseDiabetes" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseDiabetes">
+        Diabetes {% if object.diabetes.type %}, type {{ object.diabetes.type }}
+        {% endif %}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseDiabetes" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingDiabetes">
+      <div class="accordion-body">
+        <ul>
+          <li>Most providers try to avoid use of steroids in patients with diabetes because they can cause blood
+            sugars to go up (hyeprglycemia).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.osteoporosis.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOsteoporosis">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseOsteoporosis" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseOsteoporosis">
+        Osteoporosis
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOsteoporosis" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingOsteoporosis">
+      <div class="accordion-body">
+        <ul>
+          <li>Osteoporosis is a relative contraindication to steroids.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.IBD.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingIBD">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseIBD" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseIBD">
+        IBD
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseIBD" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingIBD">
+      <div class="accordion-body">
+        <ul>
+          <li>IBD is a relative contraindication to NSAIDs.</li>
+          <li>Some patients with IBD are also on 6-MP or azathioprine, which precludes the use of ULT.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.organ_transplant.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOrganTransplant">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseOrganTransplant" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseOrganTransplant">
+        Organ Transplant
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOrganTransplant" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingOrganTransplant">
+      <div class="accordion-body">
+        {% if object.organ_transplant.organ %}
+        <ul>
+          <li>{{ object.organ_transplant.organ }}</li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.CHF.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingCHF">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseCHF" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseCHF">
+        CHF (congestive heart failure)
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseCHF" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingCHF">
+      <div class="accordion-body">
+        <ul>
+          {% if object.CHF.systolic %}
+          <li>Systolic (reduced EF / ejection fraction)</li>
+          {% else %}
+          <li>Diastolic (normal EF / ejection fraction)</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

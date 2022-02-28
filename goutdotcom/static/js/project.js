@@ -4,24 +4,131 @@
 
 /* Profiles app JS */
 /* MedicalProfile model JS */
-// function that searches for each MedicalProfile related 1to1 CKD model and hides, empties subfields if the value is empty //
-// NEEDS TO BE REWRITTEN TO REFLECT CHECKBOX WIDGET //
-function medical_profile_ckd() {
-  if ($('#id_CKD-value').val() == '') {
-      $('#div_id_CKD-stage').hide();
-      $('#id_CKD-stage').val('');
-      $('#div_id_CKD-dialysis').hide();
-      $('#id_CKD-dialysis').val('');
-  }
-  else if ($('#id_CKD-value').val() == 'False') {
-      $('#div_id_CKD-stage').hide();
-      $('#id_CKD-stage').val('');
-      $('#div_id_CKD-dialysis').hide();
-      $('#id_CKD-dialysis').val('');
+// function that checks whether or not leukocytosis is checked and hides/shows WBC, leukopenia fields as appropriate
+function leukocytosis_checker() {
+// function that checks whether leukocytosis is checked or not, shows wbc, leukopenia fields or hides/empties them
+  if ($('#id_leukocytosis-value').is(":checked")) {
+      $('#div_id_wbc_leukocytosis-value').show();
+      $('#div_id_leukopenia-value').hide();
+      $('#id_leukopenia-value').prop("checked", false);
+      $('#div_id_wbc_leukopenia-value').hide();
+      $('#id_wbc_leukopenia-value').val('');
+      $('#leukopenia_col').hide();
   }
   else {
-      $('#div_id_CKD-stage').show();
-      $('#div_id_CKD-dialysis').show();
+    $('#div_id_wbc_leukocytosis-value').hide();
+    $('#id_wbc_leukocytosis-value').val('');
+    $('#div_id_leukopenia-value').show();
+    $('#leukopenia_col').show();
+  }
+}
+
+// function that checks whether or not leukopenia is checked and hides/shows WBC, leukocytosis fields as appropriate
+function leukopenia_checker() {
+// function that checks whether leukopenia is checked or not, shows wbc, leukocytosis fields or hides/empties them
+  if ($('#id_leukopenia-value').is(":checked")) {
+      $('#div_id_wbc_leukopenia-value').show();
+      $('#div_id_leukocytosis-value').hide();
+      $('#id_leukocytosis-value').prop("checked", false);
+      $('#div_id_wbc_leukocytosis-value').hide();
+      $('#id_wbc_leukocytosis-value').val('');
+      $('#leukocytosis_col').hide();
+  }
+  else {
+    $('#div_id_wbc_leukopenia-value').hide();
+    $('#id_wbc_leukopenia-value').val('');
+    $('#div_id_leukocytosis-value').show();
+    $('#leukocytosis_col').show();
+  }
+}
+
+// function that checks whether or not thrombocytosis is checked and hides/shows platelet, thrombocytopenia fields as appropriate
+function thrombocytosis_checker() {
+// function that checks whether thrombocytosis is checked or not, shows platelet, thrombocytosis fields or hides/empties them
+  if ($('#id_thrombocytosis-value').is(":checked")) {
+      $('#div_id_platelet_thrombocytosis-value').show();
+      $('#div_id_thrombocytopenia-value').hide();
+      $('#id_thrombocytopenia-value').prop("checked", false);
+      $('#div_id_platelet_thrombocytopenia-value').hide();
+      $('#id_platelet_thrombocytopenia-value').val('');
+      $('#thrombocytopenia_col').hide();
+  }
+  else {
+    $('#div_id_platelet_thrombocytosis-value').hide();
+    $('#id_platelet_thrombocytosis-value').val('');
+    $('#div_id_thrombocytopenia-value').show();
+    $('#thrombocytopenia_col').show();
+  }
+}
+
+// function that checks whether or not thrombocytopenia is checked and hides/shows platelet, thrombocytosis fields as appropriate
+function thrombocytopenia_checker() {
+// function that checks whether thrombocytopenia is checked or not, shows platelet, thrombocytosis fields or hides/empties them
+  if ($('#id_thrombocytopenia-value').is(":checked")) {
+      $('#div_id_platelet_thrombocytopenia-value').show();
+      $('#div_id_thrombocytosis-value').hide();
+      $('#id_thrombocytosis-value').prop("checked", false);
+      $('#div_id_platelet_thrombocytosis-value').hide();
+      $('#id_platelet_thrombocytosis-value').val('');
+      $('#thrombocytosis_col').hide();
+  }
+  else {
+    $('#div_id_platelet_thrombocytopenia-value').hide();
+    $('#id_platelet_thrombocytopenia-value').val('');
+    $('#div_id_thrombocytosis-value').show();
+    $('#thrombocytosis_col').show();
+  }
+}
+
+// function that checks whether or not anemia is checked and hides/shows hemoglobin, polycythemia fields as appropriate
+function anemia_checker() {
+// function that checks whether anemia is checked or not, shows hemoglobin, polycythemia fields or hides/empties them
+  if ($('#id_anemia-value').is(":checked")) {
+      $('#div_id_hemoglobin_anemia-value').show();
+      $('#div_id_polycythemia-value').hide();
+      $('#id_polycythemia-value').prop("checked", false);
+      $('#div_id_hemoglobin_polycythemia-value').hide();
+      $('#id_hemoglobin_polycythemia-value').val('');
+      $('#polycythemia_col').hide();
+  }
+  else {
+    $('#div_id_hemoglobin_anemia-value').hide();
+    $('#id_hemoglobin_anemia-value').val('');
+    $('#div_id_polycythemia-value').show();
+    $('#polycythemia_col').show();
+  }
+}
+
+// function that checks whether or not polycythemia is checked and hides/shows hemoglobin, anemia fields as appropriate
+function polycythemia_checker() {
+// function that checks whether polycythemia is checked or not, shows hemoglobin, anemia fields or hides/empties them
+  if ($('#id_polycythemia-value').is(":checked")) {
+      $('#div_id_hemoglobin_polycythemia-value').show();
+      $('#div_id_anemia-value').hide();
+      $('#id_anemia-value').prop("checked", false);
+      $('#div_id_hemoglobin_anemia-value').hide();
+      $('#id_hemoglobin_anemia-value').val('');
+      $('#anemia_col').hide();
+  }
+  else {
+    $('#div_id_hemoglobin_polycythemia-value').hide();
+    $('#id_hemoglobin_polycythemia-value').val('');
+    $('#div_id_anemia-value').show();
+    $('#anemia_col').show();
+  }
+}
+
+// function that checks whether or not transaminitis is checked and hides/shows AST/ALT fields as appropriate
+function transaminitis_checker() {
+  if ($('#id_transaminitis-value').is(":checked")) {
+      $('#div_id_alt_transaminitis-value').show();
+      $('#div_id_ast_transaminitis-value').show();
+  }
+  else {
+    $('#div_id_alt_transaminitis-value').hide();
+    $('#id_alt_transaminitis-value').val('');
+    $('#div_id_ast_transaminitis-value').hide();
+    $('#id_ast_transaminitis-value').val('');
   }
 }
 
@@ -351,6 +458,7 @@ function CKD_checker() {
   if ($('#id_CKD-value').is(":checked")) {
       $('#div_id_CKD-dialysis').show();
       $('#div_id_CKD-stage').show();
+      $('#div_id_creatinine_CKD-value').show();
   }
   else {
     $('#div_id_CKD-dialysis').hide();
@@ -361,6 +469,8 @@ function CKD_checker() {
     $('#id_CKD-stage_3').prop("checked", false);
     $('#id_CKD-stage_4').prop("checked", false);
     $('#id_CKD-stage_5').prop("checked", false);
+    $('#div_id_creatinine_CKD-value').hide();
+    $('#id_creatinine_CKD-value').val('');
   }
 }
 

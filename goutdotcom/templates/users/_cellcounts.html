@@ -1,0 +1,167 @@
+{% if object.anemia.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headinganemia">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseanemia" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseanemia">
+        {{ object.anemia }}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseanemia" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headinganemia">
+      <div class="accordion-body">
+        <ul>
+          {% if object.anemia.baseline %}
+          <li>Baseline hemoglobin: {{ object.anemia.baseline }}</li>
+          {% endif %}
+          <li>{{ object.anemia.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.polycythemia.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingpolycythemia">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapsepolycythemia" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapsepolycythemia">
+        {{ object.polycythemia }}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapsepolycythemia" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingpolycythemia">
+      <div class="accordion-body">
+        <ul>
+          {% if object.polycythemia.baseline %}
+          <li>Baseline hemoglobin: {{ object.polycythemia.baseline }}</li>
+          {% endif %}
+          <li>{{ object.polycythemia.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.CKD.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingCKD">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseCKD" aria-expanded="false" aria-controls="panelsStayOpen-collapseCKD">
+        {{ object.CKD }}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseCKD" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingCKD">
+      <div class="accordion-body">
+        <ul>
+          {% if object.CKD.baseline %}
+          <li>Baseline hemoglobin: {{ object.CKD.baseline }}</li>
+          {% endif %}
+          <li>{{ object.CKD.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.thrombocytopenia.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingthrombocytopenia">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapsethrombocytopenia" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapsethrombocytopenia">
+        {{ object.thrombocytopenia }}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapsethrombocytopenia" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingthrombocytopenia">
+      <div class="accordion-body">
+        <ul>
+          {% if object.thrombocytopenia.baseline %}
+          <li>Baseline platelets: {{ object.thrombocytopenia.baseline }}</li>
+          {% endif %}
+          <li>{{ object.thrombocytopenia.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.thrombocytosis.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingthrombocytosis">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapsethrombocytosis" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapsethrombocytosis">
+        {{ object.thrombocytosis }}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapsethrombocytosis" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingthrombocytosis">
+      <div class="accordion-body">
+        <ul>
+          {% if object.thrombocytosis.baseline %}
+          <li>Baseline platelets: {{ object.thrombocytosis.baseline }}</li>
+          {% endif %}
+          <li>{{ object.thrombocytosis.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.leukopenia.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingleukopenia">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseleukopenia" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseleukopenia">
+        {{ object.leukopenia }}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseleukopenia" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingleukopenia">
+      <div class="accordion-body">
+        <ul>
+          {% if object.leukopenia.baseline %}
+          <li>Baseline WBC: {{ object.leukopenia.baseline }}</li>
+          {% endif %}
+          <li>{{ object.leukopenia.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.leukocytosis.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingleukocytosis">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseleukocytosis" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseleukocytosis">
+        {{ object.leukocytosis }}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseleukocytosis" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingleukocytosis">
+      <div class="accordion-body">
+        <ul>
+          {% if object.leukocytosis.baseline %}
+          <li>Baseline WBC: {{ object.leukocytosis.baseline }}</li>
+          {% endif %}
+          <li>{{ object.leukocytosis.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

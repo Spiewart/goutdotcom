@@ -1,0 +1,27 @@
+{% if object.ckd.value == True %}
+  <div class="col">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingCKD">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseCKD" aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseCKD">
+          {{ object.ckd }}
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseCKD" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingCKD">
+        <div class="accordion-body">
+          <ul>
+            {% if object.ckd.stage %}
+            <li>Stage {{ object.ckd.stage }}</li>
+            {% endif %}
+            {% if object.ckd.dialysis %}
+            <li>{{ object.ckd.dialysis }}</li>
+            {% endif %}
+            <li>{{ object.ckd.last_modified }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

@@ -376,14 +376,8 @@ class CKDForm(CKDSimpleForm):
             Fieldset(
                 "",
                 "value",
-                InlineCheckboxes("stage"),
                 "dialysis",
-                HTML(
-                    """
-                    {% load crispy_forms_tags %}
-                    {% crispy creatinine_form %}
-                    """
-                ),
+                InlineCheckboxes("stage"),
                 id="CKD_for_profile",
             ),
         )
@@ -1021,13 +1015,6 @@ class TransaminitisForm(forms.ModelForm):
             Fieldset(
                 "",
                 "value",
-                HTML(
-                    """
-                    {% load crispy_forms_tags %}
-                    {% crispy alt_form %}
-                    {% crispy ast_form %}
-                    """
-                ),
                 id="transaminitis_for_profile",
             ),
         )

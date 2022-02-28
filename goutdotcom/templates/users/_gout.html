@@ -1,0 +1,86 @@
+{% if object.erosions.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingErosions">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseErosions" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseErosions">
+        Erosions
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseErosions" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingErosions">
+      <div class="accordion-body">
+        <ul>
+          <li>Erosions are permanent damage to the bones and joints caused by gout.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.hyperuricemia.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingHyperuricemia">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseHyperuricemia" aria-expanded="true"
+        aria-controls="panelsStayOpen-collapseHyperuricemia">
+        Hyperuricemia
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseHyperuricemia" class="accordion-collapse collapse show"
+      aria-labelledby="panelsStayOpen-headingHyperuricemia">
+      <div class="accordion-body">
+        <ul>
+          <li>Hyperuricemia is associated with incident and recurrent gout.</li>
+          <li>{{ object.hyperuricemia.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.tophi.value == True %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingTophi">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseTophi" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseTophi">
+        Tophi
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseTophi" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingTophi">
+      <div class="accordion-body">
+        <ul>
+          <li>Gouty tophi are no good...</li>
+          <li>{{ object.tophi.last_modified }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if object.urate_kidney_stones.value %}
+<div class="col">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingUrateKidneyStones">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseUrateKidneyStones" aria-expanded="false"
+        aria-controls="panelsStayOpen-collapseUrateKidneyStones">
+        Urate Kidney Stones
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseUrateKidneyStones" class="accordion-collapse collapse"
+      aria-labelledby="panelsStayOpen-headingUrateKidneyStones">
+      <div class="accordion-body">
+        <ul>
+          <li>Uric acid kidney stones can be eliminated by gout therapies.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
