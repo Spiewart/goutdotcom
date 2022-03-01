@@ -77,8 +77,8 @@ class HemoglobinFactory(DjangoModelFactory):
 
 class CreatinineFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
+    baseline = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
 
     class Meta:
         model = Creatinine

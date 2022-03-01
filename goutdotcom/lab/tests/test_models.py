@@ -1,19 +1,33 @@
-from goutdotcom.profiles.models import PatientProfile
-from goutdotcom.profiles.tests.factories import FamilyProfileFactory, PatientProfileFactory, SocialProfileFactory
-from goutdotcom.users.tests.factories import UserFactory
-from goutdotcom.lab.models import round_decimal
-import pytest
-
+from datetime import datetime, timedelta
 from decimal import *
 
-from .factories import UrateFactory, ASTFactory, ALTFactory, PlateletFactory, WBCFactory, HemoglobinFactory, CreatinineFactory
+import pytest
+
+from ...lab.models import round_decimal
+from ...profiles.tests.factories import (
+    FamilyProfileFactory,
+    PatientProfileFactory,
+    SocialProfileFactory,
+)
+from ...users.tests.factories import UserFactory
+from .factories import (
+    ALTFactory,
+    ASTFactory,
+    CreatinineFactory,
+    HemoglobinFactory,
+    PlateletFactory,
+    UrateFactory,
+    WBCFactory,
+)
 
 pytestmark = pytest.mark.django_db
+
 
 class TestRoundDecimal:
     def test_value_return(self):
         value = Decimal(0.59343)
-        assert(value.quantize(Decimal(10) ** -2) == Decimal('0.59'))
+        assert value.quantize(Decimal(10) ** -2) == Decimal("0.59")
+
 
 class TestUrateMethods:
     def test__str__(self):
@@ -22,7 +36,7 @@ class TestUrateMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         urate = UrateFactory(user=user)
-        assert(urate.__str__() == str(urate.value))
+        assert urate.__str__() == str(urate.value)
 
     def test__unicode__(self):
         user = UserFactory()
@@ -30,7 +44,7 @@ class TestUrateMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         urate = UrateFactory(user=user)
-        assert(urate.__unicode__() == str(urate.name))
+        assert urate.__unicode__() == str(urate.name)
 
     def test_get_absolute_url(self):
         user = UserFactory()
@@ -40,6 +54,7 @@ class TestUrateMethods:
         urate = UrateFactory(user=user)
         assert urate.get_absolute_url() == f"/lab/urate/{urate.pk}/"
 
+
 class TestALTMethods:
     def test__str__(self):
         user = UserFactory()
@@ -47,7 +62,7 @@ class TestALTMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         ALT = ALTFactory(user=user)
-        assert(ALT.__str__() == str(ALT.value))
+        assert ALT.__str__() == str(ALT.value)
 
     def test__unicode__(self):
         user = UserFactory()
@@ -55,7 +70,7 @@ class TestALTMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         ALT = ALTFactory(user=user)
-        assert(ALT.__unicode__() == str(ALT.name))
+        assert ALT.__unicode__() == str(ALT.name)
 
     def test_get_absolute_url(self):
         user = UserFactory()
@@ -65,6 +80,7 @@ class TestALTMethods:
         ALT = ALTFactory(user=user)
         assert ALT.get_absolute_url() == f"/lab/ALT/{ALT.pk}/"
 
+
 class TestASTMethods:
     def test__str__(self):
         user = UserFactory()
@@ -72,7 +88,7 @@ class TestASTMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         AST = ASTFactory(user=user)
-        assert(AST.__str__() == str(AST.value))
+        assert AST.__str__() == str(AST.value)
 
     def test__unicode__(self):
         user = UserFactory()
@@ -80,7 +96,7 @@ class TestASTMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         AST = ASTFactory(user=user)
-        assert(AST.__unicode__() == str(AST.name))
+        assert AST.__unicode__() == str(AST.name)
 
     def test_get_absolute_url(self):
         user = UserFactory()
@@ -98,7 +114,7 @@ class TestPlateletMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         platelet = PlateletFactory(user=user)
-        assert(platelet.__str__() == str(platelet.value))
+        assert platelet.__str__() == str(platelet.value)
 
     def test__unicode__(self):
         user = UserFactory()
@@ -106,7 +122,7 @@ class TestPlateletMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         platelet = PlateletFactory(user=user)
-        assert(platelet.__unicode__() == str(platelet.name))
+        assert platelet.__unicode__() == str(platelet.name)
 
     def test_get_absolute_url(self):
         user = UserFactory()
@@ -124,7 +140,7 @@ class TestWBCMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         WBC = WBCFactory(user=user)
-        assert(WBC.__str__() == str(WBC.value))
+        assert WBC.__str__() == str(WBC.value)
 
     def test__unicode__(self):
         user = UserFactory()
@@ -132,7 +148,7 @@ class TestWBCMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         WBC = WBCFactory(user=user)
-        assert(WBC.__unicode__() == str(WBC.name))
+        assert WBC.__unicode__() == str(WBC.name)
 
     def test_get_absolute_url(self):
         user = UserFactory()
@@ -150,7 +166,7 @@ class TestHemoglobinMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         hemoglobin = HemoglobinFactory(user=user)
-        assert(hemoglobin.__str__() == str(hemoglobin.value))
+        assert hemoglobin.__str__() == str(hemoglobin.value)
 
     def test__unicode__(self):
         user = UserFactory()
@@ -158,7 +174,7 @@ class TestHemoglobinMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         hemoglobin = HemoglobinFactory(user=user)
-        assert(hemoglobin.__unicode__() == str(hemoglobin.name))
+        assert hemoglobin.__unicode__() == str(hemoglobin.name)
 
     def test_get_absolute_url(self):
         user = UserFactory()
@@ -176,7 +192,7 @@ class TestCreatinineMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         creatinine = CreatinineFactory(user=user)
-        assert(creatinine.__str__() == str(creatinine.value))
+        assert creatinine.__str__() == "creatinine" + str(creatinine.value) + "mg/dL (milligrams per deciliter)"
 
     def test__unicode__(self):
         user = UserFactory()
@@ -184,7 +200,7 @@ class TestCreatinineMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         creatinine = CreatinineFactory(user=user)
-        assert(creatinine.__unicode__() == str(creatinine.name))
+        assert creatinine.__unicode__() == str(creatinine.name)
 
     def test_get_absolute_url(self):
         user = UserFactory()
@@ -192,7 +208,7 @@ class TestCreatinineMethods:
         familyprofile = FamilyProfileFactory(user=user)
         socialprofile = SocialProfileFactory(user=user)
         creatinine = CreatinineFactory(user=user)
-        assert creatinine.get_absolute_url() == f"/lab/creatinine/{creatinine.pk}/"
+        assert creatinine.get_absolute_url() == f"/lab/{user.username}/creatinine/{creatinine.slug}/"
 
     def test_sex_vars_kappa(self):
         user = UserFactory()
@@ -201,9 +217,9 @@ class TestCreatinineMethods:
         socialprofile = SocialProfileFactory(user=user)
         creatinine = CreatinineFactory(user=user)
 
-        if profile.gender == 'male':
+        if profile.gender == "male":
             assert creatinine.sex_vars_kappa() == Decimal(0.9)
-        elif profile.gender == 'female':
+        elif profile.gender == "female":
             assert creatinine.sex_vars_kappa() == Decimal(0.7)
         else:
             assert creatinine.eGFR_calculator().sex_vars_kappa() == False
@@ -215,9 +231,9 @@ class TestCreatinineMethods:
         socialprofile = SocialProfileFactory(user=user)
         creatinine = CreatinineFactory(user=user)
 
-        if profile.gender == 'male':
+        if profile.gender == "male":
             assert creatinine.sex_vars_alpha() == Decimal(-0.411)
-        elif profile.gender == 'female':
+        elif profile.gender == "female":
             assert creatinine.sex_vars_alpha() == Decimal(-0.329)
         else:
             assert creatinine.eGFR_calculator().sex_vars_kappa() == False
@@ -229,9 +245,14 @@ class TestCreatinineMethods:
         socialprofile = SocialProfileFactory(user=user)
         creatinine = CreatinineFactory(user=user)
 
-        if profile.race == 'black':
+        if profile.race == "black":
             assert creatinine.race_modifier() == Decimal(1.159)
-        elif profile.race == 'white' or profile.race == 'asian' or profile.race == 'native american' or profile.race == 'hispanic':
+        elif (
+            profile.race == "white"
+            or profile.race == "asian"
+            or profile.race == "native american"
+            or profile.race == "hispanic"
+        ):
             assert creatinine.race_modifier() == Decimal(1.00)
         else:
             assert creatinine.eGFR_calculator() == False
@@ -243,9 +264,9 @@ class TestCreatinineMethods:
         socialprofile = SocialProfileFactory(user=user)
         creatinine = CreatinineFactory(user=user)
 
-        if profile.gender == 'male':
+        if profile.gender == "male":
             assert creatinine.sex_modifier() == Decimal(1.018)
-        elif profile.gender == 'female' or profile.gender == 'non-binary':
+        elif profile.gender == "female" or profile.gender == "non-binary":
             assert creatinine.sex_modifier() == Decimal(1.00)
         else:
             assert creatinine.eGFR_calculator() == False
@@ -261,24 +282,64 @@ class TestCreatinineMethods:
         alpha = 0
         race = 0
         sex = 0
-        age = profile.get_age()
+        age = profile.age
 
-        if profile.gender == 'male':
+        if profile.gender == "male":
             sex = Decimal(1.018)
             kappa = Decimal(0.9)
             alpha = Decimal(-0.411)
-        elif profile.gender == 'female':
+        elif profile.gender == "female":
             sex = Decimal(1.00)
             kappa = Decimal(0.7)
             alpha = Decimal(-0.329)
         else:
             return "Something went wrong with eGFR calculation"
-        if profile.race == 'black':
+        if profile.race == "black":
             race = Decimal(1.159)
-        elif profile.race == 'white' or profile.race == 'asian' or profile.race == 'native american' or profile.race == 'hispanic':
+        elif (
+            profile.race == "white"
+            or profile.race == "asian"
+            or profile.race == "native american"
+            or profile.race == "hispanic"
+        ):
             race = Decimal(1.00)
         else:
             return "Something went wrong with eGFR calculation"
-        eGFR = Decimal(141) * min(creatinine.value / kappa, Decimal(1.00)) ** alpha * max(creatinine.value / kappa, Decimal(1.00)
-                                                                                          ) ** Decimal(-1.209) * Decimal(0.993) ** age * race * sex
+        eGFR = (
+            Decimal(141)
+            * min(creatinine.value / kappa, Decimal(1.00)) ** alpha
+            * max(creatinine.value / kappa, Decimal(1.00)) ** Decimal(-1.209)
+            * Decimal(0.993) ** age
+            * race
+            * sex
+        )
         assert creatinine.eGFR_calculator() == round_decimal(eGFR, 2)
+
+    def test_baseline(self):
+        """
+        Test checking the function of baseline() method
+        """
+        self.user = UserFactory()
+        self.profile = PatientProfileFactory(user=self.user)
+        self.familyprofile = FamilyProfileFactory(user=self.user)
+        self.socialprofile = SocialProfileFactory(user=self.user)
+        self.creatinine1 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.6),
+            date_drawn=datetime.today() - timedelta(days=365),
+            baseline=False,
+        )
+        assert self.creatinine1.set_baseline() == None
+        self.creatinine2 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.6),
+            date_drawn=datetime.today() - timedelta(days=323),
+            baseline=False,
+        )
+        assert self.creatinine2.set_baseline() == None
+        self.creatinine3 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(1.5),
+            date_drawn=datetime.today() - timedelta(days=323),
+            baseline=False,
+        )

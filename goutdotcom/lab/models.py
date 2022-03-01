@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from decimal import *
+from statistics import median_low
 
 from django.conf import settings
 from django.db import models, transaction
@@ -42,7 +43,7 @@ class Lab(TimeStampedModel):
         return f"{self.name} {self.value} {self.units}"
 
     def get_absolute_url(self):
-        return reverse("lab:detail", kwargs={"pk": self.pk, "lab": self.name})
+        return reverse("lab:user-detail", kwargs={"username": self.user.username, "pk": self.pk, "lab": self.name})
 
     def __unicode__(self):
         return self.name
@@ -251,10 +252,10 @@ class ALT(Lab):
                 # If no slug but has a user, it is a newly created object and needs slug set
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
-            return super(ALT, self).save(*args, **kwargs)
+            return super(ALT, self).save()
         with transaction.atomic():
             ALT.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(ALT, self).save(*args, **kwargs)
+            return super(ALT, self).save()
 
 
 class AST(Lab):
@@ -285,10 +286,10 @@ class AST(Lab):
                 # If no slug but has a user, it is a newly created object and needs slug set
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
-            return super(AST, self).save(*args, **kwargs)
+            return super(AST, self).save()
         with transaction.atomic():
             AST.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(AST, self).save(*args, **kwargs)
+            return super(AST, self).save()
 
 
 class Platelet(Lab):
@@ -321,10 +322,10 @@ class Platelet(Lab):
                 # If no slug but has a user, it is a newly created object and needs slug set
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
-            return super(Platelet, self).save(*args, **kwargs)
+            return super(Platelet, self).save()
         with transaction.atomic():
             Platelet.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(Platelet, self).save(*args, **kwargs)
+            return super(Platelet, self).save()
 
     def get_baseline(self):
         """Method that fetches the User's baseline Platelet value.
@@ -485,10 +486,10 @@ class WBC(Lab):
                 # If no slug but has a user, it is a newly created object and needs slug set
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
-            return super(WBC, self).save(*args, **kwargs)
+            return super(WBC, self).save()
         with transaction.atomic():
             WBC.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(WBC, self).save(*args, **kwargs)
+            return super(WBC, self).save()
 
     def get_baseline(self):
         """Method that fetches the User's baseline WBC value.
@@ -579,10 +580,10 @@ class Hemoglobin(Lab):
                 # If no slug but has a user, it is a newly created object and needs slug set
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
-            return super(Hemoglobin, self).save(*args, **kwargs)
+            return super(Hemoglobin, self).save()
         with transaction.atomic():
             Hemoglobin.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(Hemoglobin, self).save(*args, **kwargs)
+            return super(Hemoglobin, self).save()
 
 
 def round_decimal(value, places):
@@ -617,6 +618,9 @@ class Creatinine(Lab):
     # Makes baseline unique for the model class for the User
     # Also creates slug if not present yet
     def save(self, *args, **kwargs):
+        if not self.id:
+            if not self.date_drawn:
+                self.date_drawn = datetime.today().date()
         super(Creatinine, self).save(*args, **kwargs)
         # Check if there is a user field
         if self.user:
@@ -625,10 +629,10 @@ class Creatinine(Lab):
                 # If no slug but has a user, it is a newly created object and needs slug set
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
         if not self.baseline:
-            return super(Creatinine, self).save(*args, **kwargs)
+            return super(Creatinine, self).save()
         with transaction.atomic():
             Creatinine.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(Creatinine, self).save(*args, **kwargs)
+            return super(Creatinine, self).save()
 
     def sex_vars_kappa(self):
         if self.user.patientprofile.gender == "male":
@@ -714,91 +718,117 @@ class Creatinine(Lab):
         else:
             return False
 
-    def find_baseline(self, labchecks=None):
-        """Function that takes a Creatinine and finds the baseline Creatinine value for that Creatinine's User.
-        Checks if User exists and has a ULTPlan and if Creatinine instance ULTPlan is also that User's ULTPlan.
-        Takes optional labchecks argument to avoid hitting the database if it has already been done (for instance as part of a ULTPLan method)
-        returns:
-            Decimal: returns a Decimal Creatinine value
-            else returns None
+    def set_baseline(self):
         """
-        # Check if Creatinine's User has CKD
+        Function that finds a User's baseline Creatinine value
+        If it doesn't exist, checks if it should and calculates/sets it
+        Returns Creatinine object or None
+        """
+        # Check if the lab is abnormal
         if self.lab_abnormal_high():
+            #### MUST CHECK IF THIS IS A NEW ABNORMAL ####
+            # Check if Creatinine's User has CKD
             if self.user.CKD:
                 # If User has CKD and CKD has a baseline, return that baseline
                 if self.user.CKD.baseline:
                     return self.user.CKD.baseline
+            # If User doesn't have CKD
             else:
+                # Assemble a list of all User's Creatinines
                 self.creatinines = Creatinine.objects.filter(user=self.user)
+                # If the User has only 1 Creatinine
+                if len(self.creatinines) == 1:
+                    # Check if the one Creatinine is abnormal
+                    if self.creatinines[0].lab_abnormal_high():
+                        # If it is and isn't set as the baseline, set it at baseline
+                        # Set User as having CKD with baseline value = Creatinine
+                        if not self.creatinines[0].baseline:
+                            self.creatinines[0].baseline = True
+                            self.user.CKD.value = True
+                            self.user.CKD.baseline = self.creatinines[0]
+                        # Return baseline Creatinine (only)
+                        return self.creatinines[0]
+                    # Otherwise return None for baseline
+                    return None
+                # If more than 1 Creatinine, iterate over list of User's Creatinines
+                # Track list of last year's Creatinine's to calculate baseline
+                self.last_year_creatinines = []
                 for creatinine in self.creatinines:
+                    # If there is one set as baseline
                     if creatinine.baseline == True:
+                        # Check if it is high, if so
                         if self.creatinine.baseline.lab_abnormal_high() == True:
+                            # Set User as having CKD with baseline = the creatinine set as baseline
                             self.user.CKD.value == True
                             self.user.CKD.baseline = self.creatinine.baseline
+                        # Return that baseline Creatinine
                         return creatinine
-                if len(self.creatinines) == 1:
-                    if not self.creatinines[0].baseline:
-                        self.creatinines[0].baseline = True
-                        self.user.CKD.value = True
-                        self.user.CKD.baseline = self.creatinines[0]
-                    return self.creatinines[0]
-
-        # Check if Creatinine has a User with a ULTPlan and that the Creatinine has a ULTPlan and it is the User's
-        if self.user and self.user.ultplan and self.ultplan:
-            if self.user.ultplan == self.ultplan:
-                # Check if labchecks optional argument supplied, set to self.labchecks if so
-                if labchecks:
-                    self.labchecks = labchecks
-                # If not, query for LabChecks associated with ULTPlan
-                else:
-                    self.labchecks = self.ultplan.labcheck_set.filter(completed=True).order_by("-completed_date")
-                # If there is only 1 LabCheck and thus 1 Creatinine, set that to baseline
-                if len(self.labchecks) == 1:
-                    return self.labchecks[0].creatinine.value
-                # If there is more than 1 LabCheck, check if the initial LabCheck Creatinine was normal
-                # If so, set that to the baseline
-                ### NEED TO INCLUDE SOME LOGIC TO SEE HOW FAR BACK IN TIME THIS WAS
-                elif self.labchecks[len(labchecks) - 1].creatinine.abnormal_checker() == None:
-                    # Check if initial LabCheck was over a year prior
-                    if self.labchecks[len(labchecks) - 1].completed_date <= datetime.today().date() - timedelta(
-                        days=365
-                    ):
-                        # If so, assemble a list of last year's Creatinines
-                        last_year_creatinines = []
-                        for labcheck in self.labchecks:
-                            if self.labcheck.completed_date <= (datetime.today().date() - timedelta(days=365)):
-                                last_year_creatinines.append(labcheck.creatinine.value)
-                        # If there is more than 1 Creatinine drawn in the last year, return the minimum value that year to set baseline
-                        if len(last_year_creatinines) > 1:
-                            return min(last_year_creatinines)
-                        # Otherwise return the initial normal value
-                        else:
-                            return self.labchecks[len(labchecks) - 1].creatinine.value
+                    # If Creatinine is not set as baseline, check if it was drawn in last year
                     else:
-                        return self.labchecks[len(labchecks) - 1].creatinine.value
-                # If first LabCheck was abnormal, pick the lowest Creatinine value from all the observations and set that to baseline
-                ### AGAIN NEED TO INCLUDE LOGIC TO SEE HOW FAR BACK IN TIME THIS GOES
-                elif self.labchecks[len(labchecks) - 1].creatinine.abnormal_checker():
-                    # Check if initial LabCheck was over a year prior
-                    if self.labchecks[len(labchecks) - 1].completed_date <= (
-                        datetime.today().date() - timedelta(days=365)
-                    ):
-                        # If so, assemble a list of last year's Creatinines
-                        last_year_creatinines = []
-                        for labcheck in self.labchecks:
-                            if self.labcheck.completed_date <= (datetime.today().date() - timedelta(days=365)):
-                                last_year_creatinines.append(labcheck.creatinine.value)
-                        # If there is at least 1 Creatinine drawn in the last year, return the minimum value that year to set baseline
-                        if last_year_creatinines:
-                            return min(last_year_creatinines)
-                        # Otherwise, return initial value
-                        ### NEED TO DIAL BACK ANOTHER YEAR, PERHAPS RECURSIVELY, TO RETURN VALUE
-                        else:
-                            return self.labchecks[len(labchecks) - 1].creatinine.value
-            else:
-                return None
+                        # If so, add to last_year_creatinines
+                        if creatinine.date_drawn <= (datetime.today().date() - timedelta(days=365)):
+                            self.last_year_creatinines.append(creatinine)
+                # If there was only one Creatinine in last year
+                if len(self.last_year_creatinines) == 1:
+                    # Check if only Creatinine in last year was abnormal
+                    if self.last_year_creatinines[0].lab_abnormal_high():
+                        # If it's not set as the baseline, set it at baseline
+                        # Set User as having CKD with baseline value = Creatinine
+                        if not self.last_year_creatinines[0].baseline:
+                            self.creatinines[0].baseline = True
+                            self.user.CKD.value = True
+                            self.user.CKD.baseline = self.creatinines[0]
+                        # Return baseline Creatinine (only)
+                        return self.creatinines[0]
+                    # If the only Creatinine in last year was normal, return None
+                    return None
+                # If there aren't any Creatinines in the last year
+                elif len(self.last_year_creatinines) == 0:
+                    # Check if the last Creatinine was abnormal
+                    if self.creatinines.last().lab_abnormal_high():
+                        self.creatinines.last().baseline = True
+                        self.user.CKD.value = True
+                        self.user.CKD.baseline = self.creatinines.last()
+                        return self.creatinines.last()
+                # If more than 1 Creatinine in last year
+                else:
+                    # Check if any were normal, return None if so
+                    for creatinine in range(len(self.last_year_creatinines)):
+                        if self.last_year_creatinines[creatinine].lab_abnormal_high() == False:
+                            return None
+                    # Else, find the median over the last year
+                    else:
+                        # Set median to baseline
+                        # Set User.CKD to True, set CKD.baseline to median
+                        # Return new baseline
+                        self.median = median_low(creatinine.value for creatinine in self.last_year_creatinines)
+                        self.baseline = next(
+                            (
+                                creatinine
+                                for creatinine in self.last_year_creatinines
+                                if creatinine.value == self.median
+                            ),
+                            None,
+                        )
+                        self.baseline.baseline = True
+                        self.user.CKD.value = True
+                        self.user.CKD.baseline = self.baseline
+                        return self.user.CKD.baseline
+        # If Creatinine is not abnormal, return None for baseline
+        # Process Creatinine as normal
         else:
             return None
+
+    def get_baseline(self):
+        """
+        Method returns a User's baseline Creatinine value
+        Else returns None.
+        """
+        try:
+            self.baseline = Platelet.objects.filter(user=self.user).get(baseline=True).value
+        except:
+            self.baseline = None
+        return self.baseline
 
     def var_x_baseline_high(self, var, baseline):
         """Function that takes a percentage and calculates whether a Lab value is that percentage of a baseline Lab value specified by the function.
