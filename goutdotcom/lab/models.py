@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from decimal import *
-from statistics import median_low
+from statistics import mean, median_low
 
 from django.conf import settings
 from django.db import models, transaction
@@ -30,6 +30,7 @@ class Lab(TimeStampedModel):
     abnormal_flag = models.BooleanField(
         choices=BOOL_CHOICES, help_text="Is this lab abnormal?", verbose_name="Abnormal Flag", default=False
     )
+    abnormal_followup = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, default=None)
     baseline = models.BooleanField(
         choices=BOOL_CHOICES, help_text="Is this the baseline for this User?", verbose_name="Baseline", default=False
     )
@@ -43,18 +44,10 @@ class Lab(TimeStampedModel):
         return f"{self.name} {self.value} {self.units}"
 
     def get_absolute_url(self):
-        return reverse("lab:user-detail", kwargs={"username": self.user.username, "pk": self.pk, "lab": self.name})
+        return reverse("lab:detail", kwargs={"lab": self.name, "slug": self.slug})
 
     def __unicode__(self):
         return self.name
-
-    def user_has_profile(self):
-        has_profile = False
-        try:
-            has_profile = self.user.patientprofile is not None
-        except PatientProfile.DoesNotExist:
-            pass
-        return has_profile
 
     def lab_abnormal_low(self):
         """
@@ -64,6 +57,7 @@ class Lab(TimeStampedModel):
             bool: returns True if Lab.value is less than the lower limit of normal, False if not.
         """
         if self.value < self.reference_lower:
+            self.abnormal_flag = True
             return True
         else:
             return False
@@ -76,6 +70,7 @@ class Lab(TimeStampedModel):
             bool: returns True if Lab.value is greater than the upper limit of normal, False if not.
         """
         if self.value > self.reference_upper:
+            self.abnormal_flag = True
             return True
         else:
             return False
@@ -134,33 +129,6 @@ class Lab(TimeStampedModel):
             else:
                 return False
 
-    def var_x_baseline_high(self, var, baseline):
-        """Function evaluated if a lab value is greater than var % of its baseline
-
-        Args:
-            var (Float): Float percentage for calculating where the current Lab value is relative to baseline
-            baseline (Lab.value): Lab value argument for comparing the current Lab value to.
-        Returns:
-            bool: True if Lab.value is > var * baseline, False if not
-        """
-        if self.value > (baseline * var):
-            return True
-        else:
-            return False
-
-    def var_x_baseline_low(self, var, baseline):
-        """Function evaluated if a lab value is less than var % of its baseline
-        Args:
-            var (Float): Float percentage for calculating where the current Lab value is relative to baseline
-            baseline (Lab.value): Lab value argument for comparing the current Lab value to.
-        Returns:
-            bool: True if Lab.value is < var * baseline, False if not
-        """
-        if self.value < (baseline * var):
-            return True
-        else:
-            return False
-
     def abnormal_checker(self):
         """
         Function that checks whether or not a Lab.value is abnormal.
@@ -174,11 +142,9 @@ class Lab(TimeStampedModel):
         # Check if lab is lower than reference range
         if self.lab_abnormal_low() == True:
             abnormalities["highorlow"] = "L"
-            self.abnormal_flag = True
             return abnormalities
         elif self.lab_abnormal_high() == True:
             abnormalities["highorlow"] = "H"
-            self.abnormal_flag = True
             if self.three_x_high() == True:
                 abnormalities["threex"] = True
             return abnormalities
@@ -332,6 +298,10 @@ class Platelet(Lab):
         Returns baseline Platelet value if so.
         Else returns None.
         """
+        if self.user.thrombocytopenia.baseline:
+            return self.user.thrombocytopenia.baseline
+        if self.user.thrombcytosis.baseline:
+            return self.user.thrombocytosis.baseline
         try:
             self.baseline = Platelet.objects.filter(user=self.user).get(baseline=True).value
         except:
@@ -665,26 +635,24 @@ class Creatinine(Lab):
             return False
 
     def eGFR_calculator(self):
-        if self.user_has_profile() == True:
-            if self.user.patientprofile.age == None:
-                return None
-            else:
-                kappa = self.sex_vars_kappa()
-                alpha = self.sex_vars_alpha()
-                if self.race_modifier() != False:
-                    if self.sex_modifier() != False:
-                        self.race_modifier()
-                        self.sex_modifier()
-                        eGFR = (
-                            Decimal(141)
-                            * min(self.value / kappa, Decimal(1.00)) ** alpha
-                            * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209)
-                            * Decimal(0.993) ** self.user.patientprofile.age
-                            * self.race_modifier()
-                            * self.sex_modifier()
-                        )
-                        return round_decimal(eGFR, 2)
-        return None
+        if self.user.patientprofile.age == None:
+            return None
+        else:
+            kappa = self.sex_vars_kappa()
+            alpha = self.sex_vars_alpha()
+            if self.race_modifier() != False:
+                if self.sex_modifier() != False:
+                    self.race_modifier()
+                    self.sex_modifier()
+                    eGFR = (
+                        Decimal(141)
+                        * min(self.value / kappa, Decimal(1.00)) ** alpha
+                        * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209)
+                        * Decimal(0.993) ** self.user.patientprofile.age
+                        * self.race_modifier()
+                        * self.sex_modifier()
+                    )
+                    return round_decimal(eGFR, 2)
 
     def stage_calculator(self):
         """Method that takes calculated eGFR and returns CKD stage
@@ -706,132 +674,176 @@ class Creatinine(Lab):
         else:
             return None
 
+    @classmethod
+    def get_baseline(cls, user):
+        """
+        Function that gets a Patient's baseline Creatinine
+        Returns: Creatinine or None
+        """
+        if user.ckd.baseline:
+            # If so, return it
+            return user.ckd.baseline
+        # Else assemble list of all User's Creatinines
+        creatinines = Creatinine.objects.filter(user=user)
+        for creatinine in creatinines:
+            # If there is one set as baseline
+            if creatinine.baseline == True:
+                if user.ckd.value != True:
+                    # Set User as having CKD with baseline = the creatinine set as baseline
+                    user.ckd.value == True
+                    user.ckd.baseline = creatinine
+                    # Check if CKD stage can be calculated/added
+                    if creatinine.eGFR_calculator():
+                        if creatinine.stage_calculator():
+                            user.ckd.stage = creatinine.stage_calculator()
+                    user.ckd.save()
+                # Return that baseline Creatinine
+                return creatinine
+        # Else return None
+        return None
+
+    @classmethod
+    def set_baseline(cls, user):
+        """
+        Class method that sets a User's CKD baseline creatinine
+
+        Args: user = User object
+
+        Returns:
+            Nothing or None, modifies related data
+        """
+        # Assemble list of Creatinines for User
+        creatinines = Creatinine.objects.filter(user=user)
+        # Set baseline variable for scope
+        baseline = None
+        # If no creatinines, return None
+        if len(creatinines) == 0:
+            return None
+        # If 1 creatinine, that must be the baseline
+        if len(creatinines) == 1:
+            baseline = creatinines[0]
+        else:
+            # Else assemble list of creatinines from t-365 > t-7 days
+            # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3338282/
+            creatinines = creatinines.filter(
+                date_drawn__range=[
+                    (datetime.today().date() - timedelta(days=365)),
+                    datetime.today().date() - timedelta(days=7),
+                ]
+            )
+            # If there are no creatinines over last year, look back 2 years
+            if len(creatinines) == 0:
+                creatinines = creatinines.filter(
+                    date_drawn__range=[
+                        (datetime.today().date() - timedelta(days=730)),
+                        datetime.today().date() - timedelta(days=7),
+                    ]
+                )
+            # If no creatinines over last 2 years, return None
+            if len(creatinines) == 0:
+                return None
+            # Find mean over last year(s)
+            mean_creatinine = mean(creatinine.value for creatinine in creatinines)
+            # Define function to find difference between mean and any given creatinine value
+            absolute_difference_function = lambda creatinine: abs(creatinine.value - mean_creatinine)
+            # Set baseline to the creatinine that is least different from mean
+            baseline = min(creatinines, key=absolute_difference_function)
+        baseline.baseline = True
+        baseline.save()
+        if user.ckd.value != True:
+            user.ckd.value = True
+            if baseline.eGFR_calculator():
+                if baseline.stage_calculator():
+                    user.ckd.stage = baseline.stage_calculator()
+        user.ckd.baseline = baseline
+        user.ckd.save()
+
+    # DETERMINE IF USER HAS CKD CLASS METHOD
+    @classmethod
+    def diagnose_ckd(cls, user):
+        """
+        Class method that will determine if a user has CKD
+        Checks for persistently abnormal renal function (eGFR) for 90 days or longer
+        Any eGFR > 60 will result in a False return
+
+        Args: user
+        ***REQUIRES USER TO HAVE RACE, SEX, and AGE TO CALCULATE eGFR***
+        Returns: Boolean, but modifies user.ckd first
+        If True: will set user.ckd to True, assign user.ckd.baseline, set user.ckd.stage
+                 will also set user.ckd.baseline.baseline to True
+        If False: will set user.ckd to False, remove user.ckd.baseline/stage
+                  will also set.user.ckd.baseline.baseline to False
+        """
+        # https://www.kidney-international.org/article/S0085-2538(15)50698-4/fulltext
+        # Check if user has CKD already
+        if user.ckd.value == True:
+            return True
+        # Assemble chronolocical list of creatinines, blank list of eGFRs
+        creatinines = Creatinine.objects.filter(user=user).order_by("-date_drawn")
+        # Declare list of eGFRs for scope
+        eGFRs = []
+        # Assemble eGFR/Creatinine list via eGFR_calculator() on each creatinine
+        for creatinine in creatinines:
+            eGFR = creatinine.eGFR_calculator()
+            eGFRs.append([eGFR, creatinine])
+        # Iterate over eGFR/Creatinine list
+        for eGFR_index in range(len(eGFRs)):
+            eGFR = eGFRs[eGFR_index][0]
+            creatinine = eGFRs[0][1]
+            # If any eGFR is > 60, there is no CKD, process User data accordingly
+            if eGFR > 60:
+                if user.ckd.value == True:
+                    user.ckd.value = False
+                    user.ckd.stage = None
+                if user.ckd.baseline:
+                    user.ckd.baseline.baseline = False
+                    user.ckd.baseline.save()
+                    user.ckd.baseline = None
+                else:
+                    baseline = eGFRs[eGFR_index][1].get_baseline(user=user)
+                    if baseline:
+                        baseline.baseline = False
+                        baseline.save()
+                user.ckd.save()
+                return False
+            # If eGFR is < 60
+            else:
+                # Check if list index is not the last item in the list
+                # Check if subsequent eGFR is abnormal
+                if eGFR_index < (len(eGFRs) - 1):
+                    next_eGFR = eGFRs[eGFR_index + 1][0]
+                    next_creatinine = eGFRs[eGFR_index + 1][1]
+                    # If not, User does not have CKD, process Profile accordingly
+                    if next_eGFR > 60:
+                        if user.ckd.value == True:
+                            user.ckd.value = False
+                            user.ckd.stage = None
+                        if user.ckd.baseline:
+                            user.ckd.baseline.baseline = False
+                            user.ckd.baseline.save()
+                            user.ckd.baseline = None
+                        else:
+                            baseline = eGFRs[eGFR_index][1].get_baseline(user=user)
+                            if baseline:
+                                baseline.baseline = False
+                                baseline.save()
+                        user.ckd.save()
+                        return False
+                    # If eGFR is again < 60
+                    # Check if the current index's creatine.date_drawn is 90 days or more from the initial
+                    else:
+                        if creatinine.date_drawn - next_creatinine.date_drawn > timedelta(days=90):
+                            # If all creatinines abnormal and 90 days or more apart, set_baseline
+                            user.ckd.baseline = eGFRs[eGFR_index][1].set_baseline(user=user)
+                            return True
+                else:
+                    return False
+
     def var_x_high(self, var):
         """
-        Function that checks whether a lab value which is greater than the upper limit of normal is greater than input var times the upper limit of normal.
-        Has to be overwritten for Creatinine to avoid multiplying float x decimal.
-        Returns:
-            bool: returns true if Lab.value is greater than var times the upper limit of normal
-        """
-        if self.value > (Decimal(var) * self.reference_upper):
-            return True
-        else:
-            return False
-
-    def set_baseline(self):
-        """
-        Function that finds a User's baseline Creatinine value
-        If it doesn't exist, checks if it should and calculates/sets it
-        Returns Creatinine object or None
-        """
-        # Check if the lab is abnormal
-        if self.lab_abnormal_high():
-            #### MUST CHECK IF THIS IS A NEW ABNORMAL ####
-            # Check if Creatinine's User has CKD
-            if self.user.CKD:
-                # If User has CKD and CKD has a baseline, return that baseline
-                if self.user.CKD.baseline:
-                    return self.user.CKD.baseline
-            # If User doesn't have CKD
-            else:
-                # Assemble a list of all User's Creatinines
-                self.creatinines = Creatinine.objects.filter(user=self.user)
-                # If the User has only 1 Creatinine
-                if len(self.creatinines) == 1:
-                    # Check if the one Creatinine is abnormal
-                    if self.creatinines[0].lab_abnormal_high():
-                        # If it is and isn't set as the baseline, set it at baseline
-                        # Set User as having CKD with baseline value = Creatinine
-                        if not self.creatinines[0].baseline:
-                            self.creatinines[0].baseline = True
-                            self.user.CKD.value = True
-                            self.user.CKD.baseline = self.creatinines[0]
-                        # Return baseline Creatinine (only)
-                        return self.creatinines[0]
-                    # Otherwise return None for baseline
-                    return None
-                # If more than 1 Creatinine, iterate over list of User's Creatinines
-                # Track list of last year's Creatinine's to calculate baseline
-                self.last_year_creatinines = []
-                for creatinine in self.creatinines:
-                    # If there is one set as baseline
-                    if creatinine.baseline == True:
-                        # Check if it is high, if so
-                        if self.creatinine.baseline.lab_abnormal_high() == True:
-                            # Set User as having CKD with baseline = the creatinine set as baseline
-                            self.user.CKD.value == True
-                            self.user.CKD.baseline = self.creatinine.baseline
-                        # Return that baseline Creatinine
-                        return creatinine
-                    # If Creatinine is not set as baseline, check if it was drawn in last year
-                    else:
-                        # If so, add to last_year_creatinines
-                        if creatinine.date_drawn <= (datetime.today().date() - timedelta(days=365)):
-                            self.last_year_creatinines.append(creatinine)
-                # If there was only one Creatinine in last year
-                if len(self.last_year_creatinines) == 1:
-                    # Check if only Creatinine in last year was abnormal
-                    if self.last_year_creatinines[0].lab_abnormal_high():
-                        # If it's not set as the baseline, set it at baseline
-                        # Set User as having CKD with baseline value = Creatinine
-                        if not self.last_year_creatinines[0].baseline:
-                            self.creatinines[0].baseline = True
-                            self.user.CKD.value = True
-                            self.user.CKD.baseline = self.creatinines[0]
-                        # Return baseline Creatinine (only)
-                        return self.creatinines[0]
-                    # If the only Creatinine in last year was normal, return None
-                    return None
-                # If there aren't any Creatinines in the last year
-                elif len(self.last_year_creatinines) == 0:
-                    # Check if the last Creatinine was abnormal
-                    if self.creatinines.last().lab_abnormal_high():
-                        self.creatinines.last().baseline = True
-                        self.user.CKD.value = True
-                        self.user.CKD.baseline = self.creatinines.last()
-                        return self.creatinines.last()
-                # If more than 1 Creatinine in last year
-                else:
-                    # Check if any were normal, return None if so
-                    for creatinine in range(len(self.last_year_creatinines)):
-                        if self.last_year_creatinines[creatinine].lab_abnormal_high() == False:
-                            return None
-                    # Else, find the median over the last year
-                    else:
-                        # Set median to baseline
-                        # Set User.CKD to True, set CKD.baseline to median
-                        # Return new baseline
-                        self.median = median_low(creatinine.value for creatinine in self.last_year_creatinines)
-                        self.baseline = next(
-                            (
-                                creatinine
-                                for creatinine in self.last_year_creatinines
-                                if creatinine.value == self.median
-                            ),
-                            None,
-                        )
-                        self.baseline.baseline = True
-                        self.user.CKD.value = True
-                        self.user.CKD.baseline = self.baseline
-                        return self.user.CKD.baseline
-        # If Creatinine is not abnormal, return None for baseline
-        # Process Creatinine as normal
-        else:
-            return None
-
-    def get_baseline(self):
-        """
-        Method returns a User's baseline Creatinine value
-        Else returns None.
-        """
-        try:
-            self.baseline = Platelet.objects.filter(user=self.user).get(baseline=True).value
-        except:
-            self.baseline = None
-        return self.baseline
-
-    def var_x_baseline_high(self, var, baseline):
-        """Function that takes a percentage and calculates whether a Lab value is that percentage of a baseline Lab value specified by the function.
+        Method that calculates if a lab value is higher by a %=var.
+        Takes optional baseline argument.
+        Otherwise uses reference_upper for calculation.
         Has to be overwritten for Creatinine to avoid multiplying float x decimal.
 
         Args:
@@ -840,76 +852,62 @@ class Creatinine(Lab):
         Returns:
             bool: True if Lab.value is var * baseline, False if not
         """
-        if self.value > (Decimal(var) * baseline):
-            return True
+        baseline = self.get_baseline()
+
+        if baseline:
+            if self.value > (Decimal(var) * baseline):
+                return True
+            else:
+                return False
         else:
-            return False
+            if self.value > (Decimal(var) * self.reference_upper):
+                return True
+            else:
+                return False
 
-    def abnormal_high(self, labcheck, labchecks):
-        """Function that processes a high creatinine.
-        Takes a LabCheck and list of LabChecks as argument, the latter to avoid hitting the database multiple times with several different labs.
-
-        Args:
-            labcheck ([LabCheck]): [LabCheck the Creatinine is related to.]
-            labchecks ([List]): [List of LabChecks provided by the function processing the abnormal Creatinine.]
+    def abnormal_high(self):
+        """
+        Function that processes a high creatinine.
+        First attempts to find a baseline Creatinine.
+        Then checks if this object is a follow up an abnormal Creatinine.
+        Returns "urgent" for emergent rise in Cr (ARF).
+        Will stop ULTPlan.
+        Returns "nonurgent" for close follow-up
 
         Returns:
             string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
         """
-        # Check if labcheck is a follow up on an abnormal_labcheck
-        # If so, process differently
-        if labcheck.abnormal_labcheck:
-            # Check if first LabCheck creatinine was abnormal
-            if labchecks[len(labchecks) - 1].creatinine.abnormal_checker() == None:
-                # If LabCheck Creatinine is > 2 times the upper limit of normal, schedule urgent LabCheck
-                # Discontinue ULT and PPx, pause ULTPlan
-                if labcheck.creatinine.var_x_baseline_high(2, self.find_baseline(labchecks=labchecks)):
+
+        # Try to fetch baseline Creatinine
+        self.baseline = self.get_baseline()
+
+        # Check if Creatinine is a follow up on an abnormal
+        if self.abnormal_followup:
+            # Check if User has baseline Creatinine (=CKD)
+            if self.baseline:
+                if self.var_x_high(1.5, baseline=self.baseline):
                     return "urgent"
-                # If LabCheck Creatinine is < 1.5 times the upper limit of normal, schedule urgent LabCheck.
-                # Continue ULT, PPx, ULTPlan
-                elif labcheck.creatinine.var_x_baseline_high(1.5, self.find_baseline(labchecks=labchecks)):
+                elif self.var_x_high(1.25, baseline=self.baseline):
                     return "nonurgent"
-            # If first LabCheck Creatinine was abnormal, fluctuations will be larger so have more stringent criteria for follow up labs and ULTPlan modification
-            elif labchecks[len(labchecks) - 1].creatinine.abnormal_checker():
-                # If LabCheck Creatinine is > 1.5 times the upper limit of normal, schedule urgent LabCheck.
-                # Discontinue ULT and PPx, pause ULTPlan
-                if labcheck.creatinine.var_x_baseline_high(1.5, self.find_baseline(labchecks=labchecks)):
+            # If no baseline Creatinine
+            else:
+                if self.var_x_high(2.0):
                     return "urgent"
-                # If LabCheck Creatinine is < 1.25 times the upper limit of normal, schedule urgent LabCheck
-                # But continue medications, don't pause ULTPlan
-                elif labcheck.creatinine.var_x_baseline_high(1.25, self.find_baseline(labchecks=labchecks)):
+                elif self.var_x_high(1.5):
                     return "nonurgent"
+        # If Creatinine isn't a follow up on an abnormal
         else:
-            # Check if there is only one completed LabCheck
-            # If so, check if User MedicalProfile has CKD == True, if not, calculate stage and mark == True
-            if len(labchecks) == 1:
-                # If this is the User's first LabCheck, mark CKD on MedicalProfile to True because creatinine is abnormal.
-                if self.user.medicalprofile.CKD.value == False:
-                    self.user.medicalprofile.CKD.value == True
-                    # Calculate CKD stage if eGFR can be calculated
-                    if self.eGFR_calculator():
-                        if self.stage_calculator():
-                            self.user.medicalprofile.CKD.stage = self.stage_calculator()
-                    self.user.medicalprofile.CKD.save()
-            # Check if first LabCheck creatinine was abnormal
-            elif labchecks[len(labchecks) - 1].creatinine.abnormal_checker() == None:
-                # If LabCheck Creatinine is > 2 times the upper limit of normal, schedule urgent LabCheck
-                # Discontinue ULT and PPx, pause ULTPlan
-                if labcheck.creatinine.var_x_baseline_high(2, self.find_baseline(labchecks=labchecks)):
+            # Check if User has baseline Creatinine
+            if self.baseline:
+                if self.var_x_high(1.5, baseline=self.baseline):
                     return "urgent"
-                # If LabCheck Creatinine is < 1.5 times the upper limit of normal, schedule urgent LabCheck.
-                # Continue ULT, PPx, ULTPlan
-                elif labcheck.creatinine.var_x_baseline_high(1.5, self.find_baseline(labchecks=labchecks)):
+                elif self.var_x_high(1.25, baseline=self.baseline):
                     return "nonurgent"
-            # If first LabCheck Creatinine was abnormal, fluctuations will be larger so have more stringent criteria for follow up labs and ULTPlan modification
-            elif labchecks[len(labchecks) - 1].creatinine.abnormal_checker():
-                # If LabCheck Creatinine is > 1.5 times the upper limit of normal, schedule urgent LabCheck.
-                # Discontinue ULT and PPx, pause ULTPlan
-                if labcheck.creatinine.var_x_baseline_high(1.5, self.find_baseline(labchecks=labchecks)):
+            # If no baseline Creatinine
+            else:
+                if self.var_x_high(2.0):
                     return "urgent"
-                # If LabCheck Creatinine is < 1.25 times the upper limit of normal, schedule urgent LabCheck
-                # But continue medications, don't pause ULTPlan
-                elif labcheck.creatinine.var_x_baseline_high(1.25, self.find_baseline(labchecks=labchecks)):
+                elif self.var_x_high(1.5):
                     return "nonurgent"
 
 

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.db import models
@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
+
 
 from ..lab.models import (
     ALT,
@@ -321,9 +322,12 @@ class ULTPlan(TimeStampedModel):
         """
 
         def six_months_at_goal(labcheck_list, goal_urate, r):
-            """Recursive function that takes a list of completed LabChecks, ordered by their completed_date, and a goal_urate as arguments.
+            """
+            Recursive function.
+            Args: list of completed LabChecks ordered by completed_date; goal_urate.
             Returns True if there is a 6 or greater month period where the current and all other preceding Urates were < goal_urate.
-            Must contain at least Urate values at least 6 months apart."""
+            Must contain Urate values at least 6 months apart.
+            """
             # If index + r is greater than the length of the list, the recursion has run beyond the end of the list and has not found a 6 month period where > 1 Urates were < goal_urate, thus returns False
             if r > len(labcheck_list):
                 return False
@@ -412,7 +416,8 @@ class ULTPlan(TimeStampedModel):
         return True
 
     def continue_treatment(self, labcheck=None):
-        """Method that creates an urgent LabCheck based off an abnormal lab.
+        """
+        Method that creates an urgent LabCheck based off an abnormal lab.
         Takes optional LabCheck argument to associate with abnormal_labcheck.
         Does not pause ULTPlan.
         Does not make ULT and PPx inactive.
@@ -593,7 +598,7 @@ class ULTPlan(TimeStampedModel):
                 # Check if Creatinine abnormality is high
                 if self.creatinine["highorlow"] == "H":
                     # set followup to creatinine's abnormal_high() method, sets lab urgency based on result
-                    followup = labcheck.creatinine.abnormal_high(labcheck, self.labchecks)
+                    followup = labcheck.creatinine.abnormal_high()
                     if followup == "urgent":
                         self.urgent_lab = True
                     elif followup == "nonurgent":
@@ -650,4 +655,4 @@ class ULTPlan(TimeStampedModel):
         return f"{str(self.user)}'s ULTPlan"
 
     def get_absolute_url(self):
-        return reverse("ultplan:detail", kwargs={"pk": self.pk})
+        return reverse("ultplan:detail", kwargs={"slug": self.slug})
