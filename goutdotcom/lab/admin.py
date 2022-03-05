@@ -3,8 +3,6 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from .models import *
 
-# Register your models here.
-
 
 class UrateHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
@@ -29,6 +27,14 @@ class ALTHistoryAdmin(SimpleHistoryAdmin):
     history_list_display = ["status"]
     search_fields = ["user__username"]
 
+class BaselineALTHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 class ASTHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
@@ -40,6 +46,55 @@ class ASTHistoryAdmin(SimpleHistoryAdmin):
     history_list_display = ["status"]
     search_fields = ["user__username"]
 
+class BaselineASTHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class CreatinineHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "eGFR_calculator",
+        "date_drawn",
+        "created",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class BaselineCreatinineHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "eGFR_calculator",
+        "created",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+
+class HemoglobinHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "date_drawn",
+        "created",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
+
+class BaselineHemoglobinHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 class LabCheckHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
@@ -73,6 +128,14 @@ class PlateletHistoryAdmin(SimpleHistoryAdmin):
     history_list_display = ["status"]
     search_fields = ["user__username"]
 
+class BaselinePlateletHistoryAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "user",
+        "value",
+        "created",
+    )
+    history_list_display = ["status"]
+    search_fields = ["user__username"]
 
 class WBCHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
@@ -84,35 +147,31 @@ class WBCHistoryAdmin(SimpleHistoryAdmin):
     history_list_display = ["status"]
     search_fields = ["user__username"]
 
-
-class HemoglobinHistoryAdmin(SimpleHistoryAdmin):
+class BaselineWBCHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
-        "date_drawn",
         "created",
     )
     history_list_display = ["status"]
     search_fields = ["user__username"]
 
 
-class CreatinineHistoryAdmin(SimpleHistoryAdmin):
-    list_display = (
-        "user",
-        "value",
-        "eGFR_calculator",
-        "date_drawn",
-        "created",
-    )
-    history_list_display = ["status"]
-    search_fields = ["user__username"]
 
 
 admin.site.register(Urate, UrateHistoryAdmin)
 admin.site.register(ALT, ALTHistoryAdmin)
+admin.site.register(BaselineALT, BaselineALTHistoryAdmin)
 admin.site.register(AST, ASTHistoryAdmin)
+admin.site.register(BaselineAST, BaselineASTHistoryAdmin)
+admin.site.register(Creatinine, CreatinineHistoryAdmin)
+admin.site.register(BaselineCreatinine, BaselineCreatinineHistoryAdmin)
+admin.site.register(Hemoglobin, HemoglobinHistoryAdmin)
+admin.site.register(BaselineHemoglobin, BaselineHemoglobinHistoryAdmin)
 admin.site.register(LabCheck, LabCheckHistoryAdmin)
 admin.site.register(Platelet, PlateletHistoryAdmin)
+admin.site.register(BaselinePlatelet, BaselinePlateletHistoryAdmin)
 admin.site.register(WBC, WBCHistoryAdmin)
-admin.site.register(Hemoglobin, HemoglobinHistoryAdmin)
-admin.site.register(Creatinine, CreatinineHistoryAdmin)
+admin.site.register(BaselineWBC, BaselineWBCHistoryAdmin)
+
+

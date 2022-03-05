@@ -20,19 +20,8 @@ class Lab(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.SET_NULL, null=True, blank=True, default=None)
-    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True)
-    name = "lab"
     date_drawn = models.DateField(help_text="What day was this lab drawn?", default=None, null=True, blank=True)
-    reference_lower = models.IntegerField(default=100, help_text="Lower limit of normal values for Lab")
-    reference_upper = models.IntegerField(default=200, help_text="Upper limit of normal values for Lab")
-    abnormal_flag = models.BooleanField(
-        choices=BOOL_CHOICES, help_text="Is this lab abnormal?", verbose_name="Abnormal Flag", default=False
-    )
     abnormal_followup = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, default=None)
-    baseline = models.BooleanField(
-        choices=BOOL_CHOICES, help_text="Is this the baseline for this User?", verbose_name="Baseline", default=False
-    )
     history = HistoricalRecords(inherit=True)
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
@@ -57,7 +46,6 @@ class Lab(TimeStampedModel):
             bool: returns True if Lab.value is less than the lower limit of normal, False if not.
         """
         if self.value < self.reference_lower:
-            self.abnormal_flag = True
             return True
         else:
             return False
@@ -71,11 +59,11 @@ class Lab(TimeStampedModel):
             bool: returns True if Lab.value is greater than the upper limit of normal, False if not.
         """
         if self.value > self.reference_upper:
-            self.abnormal_flag = True
             return True
         else:
             return False
 
+    @property
     def three_x_high(self):
         """
         Function that checks whether a lab value which is greater than the upper limit of normal is greater than 3 times the upper limit of normal.
@@ -88,48 +76,7 @@ class Lab(TimeStampedModel):
         else:
             return False
 
-    def var_x_high(self, var, baseline=None):
-        """
-        Function that checks whether a Lab value is high.
-        Takes optional argument baseline.
-        Var argument is a percentage (110%, 120%, etc.) to base the comparson by.
-
-        Returns:
-            bool: returns true if Lab.value is greater than var times the upper limit of normal or baseline if supplied.
-        """
-        # Check if baseline argument provided, use that for comparison
-        if self.baseline:
-            if self.value > (var * baseline):
-                return True
-            else:
-                return False
-        # Else use reference_upper for comparison
-        else:
-            if self.value > (var * self.reference_upper):
-                return True
-            else:
-                return False
-
-    def var_x_low(self, var, baseline=None):
-        """
-        Function that checks whether a Lab value is low.
-        Takes optional argument baseline.
-        Var argument is a percentage (90%, 80%, etc.) to base the comparson by.
-
-        Returns:
-            bool: returns true if Lab.value is lower than var times the lower limit of normal
-        """
-        if self.baseline:
-            if self.value < (var * baseline):
-                return True
-            else:
-                return False
-        else:
-            if self.value < (var * self.reference_lower):
-                return True
-            else:
-                return False
-
+    @property
     def abnormal(self):
         """
         Function that checks whether or not a Lab.value is abnormal.
@@ -138,19 +85,14 @@ class Lab(TimeStampedModel):
         Returns:
             dictionary or None: Returns a dictionary with descriptors of the Lab.value abnormality if present, otherwise returns None
         """
-        abnormalities = {"highorlow": None, "threex": False}
-
         # Check if lab is lower than reference range
         if self.low:
-            abnormalities["highorlow"] = "L"
-            return abnormalities
+            return "L"
         elif self.high:
-            abnormalities["highorlow"] = "H"
-            if self.three_x_high() == True:
-                abnormalities["threex"] = True
-            return abnormalities
-        else:
-            return False
+            if self.three_x_high:
+                return "!H!"
+            else:
+                return "H"
 
 
 class Urate(Lab):
@@ -178,16 +120,14 @@ class Urate(Lab):
         max_digits=3, decimal_places=1, default=7.2, help_text="Upper limit of normal values for urate"
     )
 
-    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
-    # Makes baseline unique for the model class for the User
-    # Also creates slug if not present yet
+    # Creates slug if not present
     def save(self, *args, **kwargs):
         super(Urate, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
 
 
@@ -207,22 +147,38 @@ class ALT(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for ALT")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for ALT")
 
-    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
-    # Makes baseline unique for the model class for the User
-    # Also creates slug if not present yet
+    # Creates slug if not present
     def save(self, *args, **kwargs):
         super(ALT, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
-        if not self.baseline:
-            return super(ALT, self).save()
-        with transaction.atomic():
-            ALT.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(ALT, self).save()
+
+
+class BaselineALT(ALT):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    value = models.IntegerField(
+        help_text="ALT (SGPT) is typically reported in units per liter (U/L)", null=True, blank=True
+    )
+    name = "baseline_ALT"
+    date_drawn = None
+    abnormal_followup = None
+
+    # Creates slug if not present
+    def save(self, *args, **kwargs):
+        super(BaselineALT, self).save(*args, **kwargs)
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
 
 
 class AST(Lab):
@@ -241,22 +197,38 @@ class AST(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for AST")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for AST")
 
-    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
-    # Makes baseline unique for the model class for the User
-    # Also creates slug if not present yet
+    # Creates slug if not present
     def save(self, *args, **kwargs):
         super(AST, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
-        if not self.baseline:
-            return super(AST, self).save()
-        with transaction.atomic():
-            AST.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(AST, self).save()
+
+
+class BaselineAST(AST):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    value = models.IntegerField(
+        help_text="AST (SGOT) is typically reported in units per liter (U/L)", null=True, blank=True
+    )
+    name = "baseline_AST"
+    date_drawn = None
+    abnormal_followup = None
+
+    # Creates slug if not present
+    def save(self, *args, **kwargs):
+        super(BaselineAST, self).save(*args, **kwargs)
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
 
 
 class Platelet(Lab):
@@ -277,22 +249,15 @@ class Platelet(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for platelets")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for platelets")
 
-    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
-    # Makes baseline unique for the model class for the User
-    # Also creates slug if not present yet
+    # Creates slug if not present
     def save(self, *args, **kwargs):
         super(Platelet, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
-        if not self.baseline:
-            return super(Platelet, self).save()
-        with transaction.atomic():
-            Platelet.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(Platelet, self).save()
 
     def get_baseline(self):
         """Method that fetches the User's baseline Platelet value.
@@ -421,6 +386,31 @@ class Platelet(Lab):
                     return "nonurgent"
 
 
+class BaselinePlatelet(Platelet):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    value = models.IntegerField(
+        help_text="PLT (platelets) is typically reported in platelets per microliter (PLT/microL)",
+        null=True,
+        blank=True,
+    )
+    name = "baseline_platelet"
+    date_drawn = None
+    abnormal_followup = None
+
+    # Creates slug if not present
+    def save(self, *args, **kwargs):
+        super(BaselinePlatelet, self).save(*args, **kwargs)
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
+
+
 class WBC(Lab):
     LOWER_LIMIT = Decimal(4.5)
     UPPER_LIMIT = Decimal(11.0)
@@ -445,22 +435,15 @@ class WBC(Lab):
         max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for WBC"
     )
 
-    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
-    # Makes baseline unique for the model class for the User
-    # Also creates slug if not present yet
+    # Creates slug if not present
     def save(self, *args, **kwargs):
         super(WBC, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
-                self.slug = slugify(self.user.username) + "-" + str(self.id)
-        if not self.baseline:
-            return super(WBC, self).save()
-        with transaction.atomic():
-            WBC.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(WBC, self).save()
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
 
     def get_baseline(self):
         """Method that fetches the User's baseline WBC value.
@@ -516,6 +499,33 @@ class WBC(Lab):
                     return None
 
 
+class BaselineWBC(WBC):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    value = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        help_text="WBC (white blood cells) is typically reported as cells per cubic millimeter (cells/mm^3)",
+        null=True,
+        blank=True,
+    )
+    name = "baseline_WBC"
+    date_drawn = None
+    abnormal_followup = None
+
+    # Creates slug if not present
+    def save(self, *args, **kwargs):
+        super(BaselineWBC, self).save(*args, **kwargs)
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
+
+
 class Hemoglobin(Lab):
     LOWER_LIMIT = Decimal(13.5)
     UPPER_LIMIT = Decimal(17.5)
@@ -539,22 +549,15 @@ class Hemoglobin(Lab):
     reference_upper = models.DecimalField(
         max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for hemoglobin"
     )
-    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
-    # Makes baseline unique for the model class for the User
-    # Also creates slug if not present yet
+    # Creates slug if not present
     def save(self, *args, **kwargs):
         super(Hemoglobin, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
-                self.slug = slugify(self.user.username) + "-" + str(self.id)
-        if not self.baseline:
-            return super(Hemoglobin, self).save()
-        with transaction.atomic():
-            Hemoglobin.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(Hemoglobin, self).save()
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
 
 
 def round_decimal(value, places):
@@ -562,6 +565,32 @@ def round_decimal(value, places):
         # see https://docs.python.org/2/library/decimal.html#decimal.Decimal.quantize for options
         return value.quantize(Decimal(10) ** -places)
     return value
+
+
+class BaselineHemoglobin(Hemoglobin):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    value = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        help_text="HGB (hemoglobin) is typically reporeted in grams per deciliter (g/dL)",
+        null=True,
+        blank=True,
+    )
+    name = "baseline_hemoglobin"
+    date_drawn = None
+    abnormal_followup = None
+    # Creates slug if not present
+    def save(self, *args, **kwargs):
+        super(BaselineHemoglobin, self).save(*args, **kwargs)
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
 
 
 class Creatinine(Lab):
@@ -676,37 +705,10 @@ class Creatinine(Lab):
             return None
 
     @classmethod
-    def get_baseline(cls, user):
-        """
-        Function that gets a Patient's baseline Creatinine
-        Returns: Creatinine or None
-        """
-        if user.ckd.baseline:
-            # If so, return it
-            return user.ckd.baseline
-        # Else assemble list of all User's Creatinines
-        creatinines = Creatinine.objects.filter(user=user)
-        for creatinine in creatinines:
-            # If there is one set as baseline
-            if creatinine.baseline == True:
-                if user.ckd.value != True:
-                    # Set User as having CKD with baseline = the creatinine set as baseline
-                    user.ckd.value == True
-                    user.ckd.baseline = creatinine
-                    # Check if CKD stage can be calculated/added
-                    if creatinine.eGFR_calculator():
-                        if creatinine.stage_calculator():
-                            user.ckd.stage = creatinine.stage_calculator()
-                    user.ckd.save()
-                # Return that baseline Creatinine
-                return creatinine
-        # Else return None
-        return None
-
-    @classmethod
     def set_baseline(cls, user):
         """
-        Class method that sets a User's CKD baseline creatinine
+        Class method that sets a User's BaselineCreatinine
+        Also modifies User's CKD to reflect BaselineCreatinine
 
         Args: user = User object
 
@@ -715,14 +717,13 @@ class Creatinine(Lab):
         """
         # Assemble list of Creatinines for User
         creatinines = Creatinine.objects.filter(user=user)
-        # Set baseline variable for scope
-        baseline = None
         # If no creatinines, return None
         if len(creatinines) == 0:
             return None
         # If 1 creatinine, that must be the baseline
         if len(creatinines) == 1:
-            baseline = creatinines[0]
+            user.baselinecreatinine.value = creatinines[0].value
+            user.baselinecreatinine.save()
         else:
             # Else assemble list of creatinines from t-365 > t-7 days
             # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3338282/
@@ -745,19 +746,14 @@ class Creatinine(Lab):
                 return None
             # Find mean over last year(s)
             mean_creatinine = mean(creatinine.value for creatinine in creatinines)
-            # Define function to find difference between mean and any given creatinine value
-            absolute_difference_function = lambda creatinine: abs(creatinine.value - mean_creatinine)
-            # Set baseline to the creatinine that is least different from mean
-            baseline = min(creatinines, key=absolute_difference_function)
-        baseline.baseline = True
-        baseline.save()
-        if user.ckd.value != True:
-            user.ckd.value = True
-            if baseline.eGFR_calculator():
-                if baseline.stage_calculator():
-                    user.ckd.stage = baseline.stage_calculator()
-        user.ckd.baseline = baseline
-        user.ckd.save()
+            user.baselinecreatinine.value = mean_creatinine.value
+            user.baselinecreatinine.save()
+            if user.ckd.value != True:
+                user.ckd.value = True
+                if user.baselinecreatinine.eGFR_calculator():
+                    if user.baselinecreatinine.stage_calculator():
+                        user.ckd.stage = user.baselinecreatinine.stage_calculator()
+            user.ckd.save()
 
     @classmethod
     def diagnose_ckd(cls, user):
@@ -795,16 +791,10 @@ class Creatinine(Lab):
                 if user.ckd.value == True:
                     user.ckd.value = False
                     user.ckd.stage = None
-                if user.ckd.baseline:
-                    user.ckd.baseline.baseline = False
-                    user.ckd.baseline.save()
-                    user.ckd.baseline = None
-                else:
-                    baseline = eGFRs[eGFR_index][1].get_baseline(user=user)
-                    if baseline:
-                        baseline.baseline = False
-                        baseline.save()
-                user.ckd.save()
+                    user.ckd.save()
+                if user.baselinecreatinine:
+                    user.baselinecreatinine.value = None
+                    user.baselinecreatinine.save()
                 return False
             # If eGFR is < 60
             else:
@@ -818,23 +808,17 @@ class Creatinine(Lab):
                         if user.ckd.value == True:
                             user.ckd.value = False
                             user.ckd.stage = None
-                        if user.ckd.baseline:
-                            user.ckd.baseline.baseline = False
-                            user.ckd.baseline.save()
-                            user.ckd.baseline = None
-                        else:
-                            baseline = eGFRs[eGFR_index][1].get_baseline(user=user)
-                            if baseline:
-                                baseline.baseline = False
-                                baseline.save()
-                        user.ckd.save()
+                            user.ckd.save()
+                        if user.baselinecreatinine:
+                            user.baselinecreatinine.value = None
+                            user.baselinecreatinine.save()
                         return False
                     # If eGFR is again < 60
                     # Check if the current index's creatine.date_drawn is 90 days or more from the initial
                     else:
                         if creatinine.date_drawn - next_creatinine.date_drawn > timedelta(days=90):
                             # If all creatinines abnormal and 90 days or more apart, set_baseline
-                            user.ckd.baseline = eGFRs[eGFR_index][1].set_baseline(user=user)
+                            user.baselinecreatinine.set_baseline(user=user)
                             return True
                 else:
                     return False
@@ -920,6 +904,32 @@ class Creatinine(Lab):
                     return "nonurgent"
 
 
+class BaselineCreatinine(Creatinine):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    value = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        help_text="Creatinine is typically reported as milligrams per deciliter (mg/dL)",
+        null=True,
+        blank=True,
+    )
+    name = "baseline_creatinine"
+    date_drawn = None
+    abnormal_followup = None
+    # Creates slug if not present
+    def save(self, *args, **kwargs):
+        super(BaselineCreatinine, self).save(*args, **kwargs)
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
+                self.slug = slugify(self.user.username)
+
+
 class LabCheck(TimeStampedModel):
     """Model to coordinate labs for monitoring ULTPlan titration."""
 
@@ -932,8 +942,6 @@ class LabCheck(TimeStampedModel):
     )
     # Need to use alternative nomenclature for referencing ULTPlan model to avoid circular imports
     ultplan = models.ForeignKey("ultplan.ULTPlan", on_delete=models.CASCADE)
-    # Related model LabCheck in the event a LabCheck with abnormal labs needs F/U Labs
-    abnormal_labcheck = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, default=None)
     # Related labs
     alt = models.OneToOneField(ALT, on_delete=models.CASCADE, null=True, blank=True, default=None)
     ast = models.OneToOneField(AST, on_delete=models.CASCADE, null=True, blank=True, default=None)

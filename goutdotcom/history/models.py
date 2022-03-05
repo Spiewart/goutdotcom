@@ -190,7 +190,7 @@ class Anemia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField("lab.Hemoglobin", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.BaselineHemoglobin", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class Angina(MedicalHistory):
@@ -674,7 +674,7 @@ class Leukocytosis(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField("lab.WBC", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.BaselineWBC", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class Leukopenia(MedicalHistory):
@@ -691,7 +691,7 @@ class Leukopenia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField("lab.WBC", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.BaselineWBC", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class OrganTransplant(MedicalHistory):
@@ -742,7 +742,7 @@ class Polycythemia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField("lab.Hemoglobin", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.BaselineHemoglobin", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class PVD(MedicalHistory):
@@ -787,7 +787,7 @@ class Thrombocytopenia(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField("lab.Platelet", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.BaselinePlatelet", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class Thrombocytosis(MedicalHistory):
@@ -804,7 +804,7 @@ class Thrombocytosis(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline = models.OneToOneField("lab.Platelet", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.BaselinePlatelet", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class Tophi(MedicalHistory):
@@ -834,8 +834,8 @@ class Transaminitis(MedicalHistory):
         null=True,
         blank=True,
     )
-    baseline_alt = models.OneToOneField("lab.ALT", on_delete=models.SET_NULL, null=True, blank=True)
-    baseline_ast = models.OneToOneField("lab.AST", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline_alt = models.OneToOneField("lab.BaselineALT", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline_ast = models.OneToOneField("lab.BaselineAST", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class UrateKidneyStones(MedicalHistory):

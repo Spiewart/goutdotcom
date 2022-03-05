@@ -2,7 +2,22 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, ButtonHolder, Field, Fieldset, Layout, Submit
 from django import forms
 
-from .models import ALT, AST, WBC, Creatinine, Hemoglobin, LabCheck, Platelet, Urate
+from .models import (
+    ALT,
+    AST,
+    WBC,
+    BaselineALT,
+    BaselineAST,
+    BaselineCreatinine,
+    BaselineHemoglobin,
+    BaselinePlatelet,
+    BaselineWBC,
+    Creatinine,
+    Hemoglobin,
+    LabCheck,
+    Platelet,
+    Urate,
+)
 
 
 class ALTForm(forms.ModelForm):
@@ -30,20 +45,21 @@ class ALTForm(forms.ModelForm):
         )
 
 
-class ALTProfileForm(ALTForm):
+class BaselineALTForm(forms.ModelForm):
+    prefix = "ALT"
+
     class Meta:
-        model = ALT
+        model = BaselineALT
         fields = ("value",)
 
     def __init__(self, *args, **kwargs):
-        super(ALTProfileForm, self).__init__(*args, **kwargs)
-        self.fields["value"].required = False
+        super(BaselineALTForm, self).__init__(*args, **kwargs)
         self.fields["value"].label = "ALT"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "",
+                "Baseline ALT",
                 "value",
             ),
         )
@@ -74,20 +90,21 @@ class ASTForm(forms.ModelForm):
         )
 
 
-class ASTProfileForm(ASTForm):
+class BaselineASTForm(forms.ModelForm):
+    prefix = "AST"
+
     class Meta:
-        model = AST
+        model = BaselineAST
         fields = ("value",)
 
     def __init__(self, *args, **kwargs):
-        super(ASTProfileForm, self).__init__(*args, **kwargs)
-        self.fields["value"].required = False
+        super(BaselineASTForm, self).__init__(*args, **kwargs)
         self.fields["value"].label = "AST"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "AST",
+                "Baseline AST",
                 "value",
             ),
         )
@@ -118,20 +135,21 @@ class CreatinineForm(forms.ModelForm):
         )
 
 
-class CreatinineProfileForm(CreatinineForm):
+class BaselineCreatinineForm(forms.ModelForm):
+    prefix = "creatinine"
+
     class Meta:
         model = Creatinine
         fields = ("value",)
 
     def __init__(self, *args, **kwargs):
-        super(CreatinineProfileForm, self).__init__(*args, **kwargs)
-        self.fields["value"].required = False
+        super(BaselineCreatinineForm, self).__init__(*args, **kwargs)
         self.fields["value"].label = "Creatinine"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "Creatinine",
+                "Baseline Creatinine",
                 "value",
             ),
         )
@@ -162,20 +180,22 @@ class HemoglobinForm(forms.ModelForm):
         )
 
 
-class HemoglobinProfileForm(HemoglobinForm):
+class BaselineHemoglobinForm(forms.ModelForm):
+    prefix = "hemoglobin"
+
     class Meta:
-        model = Hemoglobin
+        model = BaselineHemoglobin
         fields = ("value",)
 
     def __init__(self, *args, **kwargs):
-        super(HemoglobinProfileForm, self).__init__(*args, **kwargs)
-        self.fields["value"].required = False
-        self.fields["value"].label = "Hemoglobin"
+        super(BaselineHemoglobinForm, self).__init__(*args, **kwargs)
+        self.fields["value"].label = "Baseline Hemoglobin"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "Hemoglobin",
+                "Baseline Hemoglobin",
+                "value",
             ),
         )
 
@@ -223,20 +243,21 @@ class PlateletForm(forms.ModelForm):
         )
 
 
-class PlateletProfileForm(PlateletForm):
+class BaselinePlateletForm(forms.ModelForm):
+    prefix = "platelet"
+
     class Meta:
-        model = Platelet
+        model = BaselinePlatelet
         fields = ("value",)
 
     def __init__(self, *args, **kwargs):
-        super(PlateletProfileForm, self).__init__(*args, **kwargs)
-        self.fields["value"].required = False
+        super(BaselinePlateletForm, self).__init__(*args, **kwargs)
         self.fields["value"].label = "Platelets"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "Platelet",
+                "Baseline Platelet",
                 "value",
             ),
         )
@@ -267,20 +288,21 @@ class WBCForm(forms.ModelForm):
         )
 
 
-class WBCProfileForm(WBCForm):
+class BaselineWBCForm(forms.ModelForm):
+    prefix = "wbc"
+
     class Meta:
-        model = WBC
+        model = BaselineWBC
         fields = ("value",)
 
     def __init__(self, *args, **kwargs):
-        super(WBCProfileForm, self).__init__(*args, **kwargs)
-        self.fields["value"].required = False
+        super(BaselineWBCForm, self).__init__(*args, **kwargs)
         self.fields["value"].label = "WBC"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "WBC",
+                "Baseline WBC",
                 "value",
             ),
         )

@@ -36,12 +36,12 @@ from ..history.forms import (
     UrateKidneyStonesForm,
 )
 from ..lab.forms import (
-    ALTProfileForm,
-    ASTProfileForm,
-    CreatinineProfileForm,
-    HemoglobinProfileForm,
-    PlateletProfileForm,
-    WBCProfileForm,
+    BaselineALTForm,
+    BaselineASTForm,
+    BaselineCreatinineForm,
+    BaselineHemoglobinForm,
+    BaselinePlateletForm,
+    BaselineWBCForm,
 )
 from ..utils.mixins import PatientProviderMixin
 from ..vitals.forms import HeightForm, WeightForm
@@ -121,8 +121,8 @@ class FamilyProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRe
 class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailRedirectMixin, UpdateView):
     model = MedicalProfile
     form_class = MedicalProfileForm
-    alt_form_class = ALTProfileForm
-    ast_form_class = ASTProfileForm
+    alt_form_class = BaselineALTForm
+    ast_form_class = BaselineASTForm
     anemia_form_class = AnemiaForm
     angina_form_class = AnginaForm
     anticoagulation_form_class = AnticoagulationSimpleForm
@@ -130,11 +130,11 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
     CHF_form_class = CHFForm
     CKD_form_class = CKDForm
     colchicine_interactions_form_class = ColchicineInteractionsForm
-    creatinine_form_class = CreatinineProfileForm
+    creatinine_form_class = BaselineCreatinineForm
     diabetes_form_class = DiabetesSimpleForm
     erosions_form_class = ErosionsForm
     heartattack_form_class = HeartAttackSimpleForm
-    hemoglobin_form_class = HemoglobinProfileForm
+    hemoglobin_form_class = BaselineHemoglobinForm
     hypertension_form_class = HypertensionForm
     hyperuricemia_form_class = HyperuricemiaForm
     IBD_form_class = IBDForm
@@ -142,7 +142,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
     leukopenia_form_class = LeukopeniaForm
     organ_transplant_form_class = OrganTransplantForm
     osteoporosis_form_class = OsteoporosisForm
-    platelet_form_class = PlateletProfileForm
+    platelet_form_class = BaselinePlateletForm
     polycythemia_form_class = PolycythemiaForm
     stroke_form_class = StrokeSimpleForm
     thrombocytopenia_form_class = ThrombocytopeniaForm
@@ -150,7 +150,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
     tophi_form_class = TophiForm
     transaminitis_form_class = TransaminitisForm
     urate_kidney_stone_form_class = UrateKidneyStonesForm
-    wbc_form_class = WBCProfileForm
+    wbc_form_class = BaselineWBCForm
 
     def get_context_data(self, **kwargs):
         context = super(MedicalProfileUpdate, self).get_context_data(**kwargs)
