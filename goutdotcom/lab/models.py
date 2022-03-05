@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from decimal import *
-from statistics import mean, median_low
+from statistics import mean
 
 from django.conf import settings
 from django.db import models, transaction
@@ -10,7 +10,6 @@ from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
 from ..lab.choices import BOOL_CHOICES, CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
-from ..profiles.models import PatientProfile
 
 
 class Lab(TimeStampedModel):
@@ -49,7 +48,8 @@ class Lab(TimeStampedModel):
     def __unicode__(self):
         return self.name
 
-    def lab_abnormal_low(self):
+    @property
+    def low(self):
         """
         Function that checks whether a Lab.value is less than the lower limit of normal.
 
@@ -62,7 +62,8 @@ class Lab(TimeStampedModel):
         else:
             return False
 
-    def lab_abnormal_high(self):
+    @property
+    def high(self):
         """
         Function that checks whether a Lab.value is greater than the upper limit of normal.
 
@@ -129,7 +130,7 @@ class Lab(TimeStampedModel):
             else:
                 return False
 
-    def abnormal_checker(self):
+    def abnormal(self):
         """
         Function that checks whether or not a Lab.value is abnormal.
         If lab is abnormal, set abnormal_flag attribute to True.
@@ -140,16 +141,16 @@ class Lab(TimeStampedModel):
         abnormalities = {"highorlow": None, "threex": False}
 
         # Check if lab is lower than reference range
-        if self.lab_abnormal_low() == True:
+        if self.low:
             abnormalities["highorlow"] = "L"
             return abnormalities
-        elif self.lab_abnormal_high() == True:
+        elif self.high:
             abnormalities["highorlow"] = "H"
             if self.three_x_high() == True:
                 abnormalities["threex"] = True
             return abnormalities
         else:
-            return None
+            return False
 
 
 class Urate(Lab):
@@ -308,7 +309,7 @@ class Platelet(Lab):
             self.baseline = None
         return self.baseline
 
-    def abnormal_high(self, labcheck, labchecks):
+    def process_high(self, labcheck, labchecks):
         """Function that processes a high Platelet.
         Takes a LabCheck and list of LabChecks as argument, the latter to avoid hitting the database multiple times with several different labs.
 
@@ -472,7 +473,7 @@ class WBC(Lab):
             self.baseline = None
         return self.baseline
 
-    def abnormal_high(self, labcheck, labchecks):
+    def process_high(self, labcheck, labchecks):
         """Function that processes a high WBC.
         Takes a LabCheck and list of LabChecks as argument, the latter to avoid hitting the database multiple times with several different labs.
 
@@ -758,7 +759,6 @@ class Creatinine(Lab):
         user.ckd.baseline = baseline
         user.ckd.save()
 
-    # DETERMINE IF USER HAS CKD CLASS METHOD
     @classmethod
     def diagnose_ckd(cls, user):
         """
@@ -865,22 +865,25 @@ class Creatinine(Lab):
             else:
                 return False
 
-    def abnormal_high(self):
+    def process_high(self):
         """
         Function that processes a high creatinine.
-        First attempts to find a baseline Creatinine.
+        First sees if the User has CKD and a baseline Creatinine.
         Then checks if this object is a follow up an abnormal Creatinine.
         Returns "urgent" for emergent rise in Cr (ARF).
         Will stop ULTPlan.
         Returns "nonurgent" for close follow-up
-
+        If high Creatinine is an abnormal follow up but not "urgent":
+            Recalculates baseline in CKD, checks for CKD otherwise
         Returns:
             string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
         """
-
-        # Try to fetch baseline Creatinine
-        self.baseline = self.get_baseline()
-
+        # Declare baseline for scope
+        self.baseline = None
+        # See if the User meets the definition of CKD
+        if self.self.diagnose_ckd() == True:
+            # Try to fetch baseline
+            self.baseline = self.get_baseline()
         # Check if Creatinine is a follow up on an abnormal
         if self.abnormal_followup:
             # Check if User has baseline Creatinine (=CKD)
@@ -888,13 +891,19 @@ class Creatinine(Lab):
                 if self.var_x_high(1.5, baseline=self.baseline):
                     return "urgent"
                 elif self.var_x_high(1.25, baseline=self.baseline):
+                    self.set_baseline(user=self.user)
                     return "nonurgent"
+                else:
+                    self.set_baseline(user=self.user)
             # If no baseline Creatinine
             else:
-                if self.var_x_high(2.0):
+                if self.var_x_high(1.5):
                     return "urgent"
-                elif self.var_x_high(1.5):
+                elif self.var_x_high(1.25):
+                    self.diagnose_ckd(user=self.user)
                     return "nonurgent"
+                else:
+                    self.diagnose_ckd(user=self.user)
         # If Creatinine isn't a follow up on an abnormal
         else:
             # Check if User has baseline Creatinine
@@ -905,9 +914,9 @@ class Creatinine(Lab):
                     return "nonurgent"
             # If no baseline Creatinine
             else:
-                if self.var_x_high(2.0):
+                if self.var_x_high(1.5):
                     return "urgent"
-                elif self.var_x_high(1.5):
+                elif self.var_x_high(1.25):
                     return "nonurgent"
 
 

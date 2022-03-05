@@ -65,7 +65,7 @@ class ULTPlan(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.slug = (slugify(self.user.username))
+            self.slug = slugify(self.user.username)
         super(ULTPlan, self).save(*args, **kwargs)
 
     @property
@@ -597,8 +597,8 @@ class ULTPlan(TimeStampedModel):
             if self.creatinine:
                 # Check if Creatinine abnormality is high
                 if self.creatinine["highorlow"] == "H":
-                    # set followup to creatinine's abnormal_high() method, sets lab urgency based on result
-                    followup = labcheck.creatinine.abnormal_high()
+                    # set followup to creatinine's process_high() method, sets lab urgency based on result
+                    followup = labcheck.creatinine.process_high()
                     if followup == "urgent":
                         self.urgent_lab = True
                     elif followup == "nonurgent":
@@ -610,7 +610,7 @@ class ULTPlan(TimeStampedModel):
             if self.platelet:
                 # Check if platelet is high
                 if self.platelet["highorlow"] == "H":
-                    followup = labcheck.platelet.abnormal_high(labcheck, self.labchecks)
+                    followup = labcheck.platelet.process_high(labcheck, self.labchecks)
                     if followup == "urgent":
                         self.urgent_lab = True
                     elif followup == "nonurgent":

@@ -6,6 +6,8 @@ from django.test import Client, TestCase
 
 client = Client()
 
+from ...history.tests.factories import CKDFactory
+
 from ...lab.models import round_decimal
 from ...profiles.tests.factories import (
     FamilyProfileFactory,
@@ -152,7 +154,7 @@ class TestCreatinineMethods(TestCase):
             user=self.user, date_of_birth=(datetime.today().date() - timedelta(weeks=(52 * 70)))
         )
         self.familyprofile = FamilyProfileFactory(user=self.user)
-        self.medicalprofile = MedicalProfileFactory(user=self.user)
+        self.medicalprofile = MedicalProfileFactory(user=self.user, CKD=CKDFactory(user=self.user, value=False))
         self.socialprofile = SocialProfileFactory(user=self.user)
         self.client.force_login(self.user)
 
@@ -451,3 +453,88 @@ class TestCreatinineMethods(TestCase):
         self.user.ckd.refresh_from_db()
         assert self.creatinine2.baseline == True
         assert self.user.ckd.baseline == self.creatinine2
+
+    def test_diagnose_CKD_without_initial_CKD(self):
+        """
+        Test checking the function of set_baseline() method
+        Without CKD initially but developing
+        """
+        self.creatinine1 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.6),
+            date_drawn=datetime.today() - timedelta(days=700),
+            baseline=False,
+        )
+        assert self.creatinine1.diagnose_ckd(self.user) == False
+        assert self.creatinine1.get_baseline(self.user) == None
+        assert self.creatinine1.baseline == False
+        assert self.user.ckd.baseline == None
+        self.creatinine2 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.9),
+            date_drawn=datetime.today() - timedelta(days=550),
+            baseline=False,
+        )
+        assert self.creatinine2.diagnose_ckd(self.user) == False
+        assert self.creatinine2.get_baseline(self.user) == None
+        assert self.creatinine2.baseline == False
+        assert self.user.ckd.baseline == None
+        self.creatinine3 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(3.6),
+            date_drawn=datetime.today() - timedelta(days=400),
+            baseline=False,
+        )
+        assert self.creatinine3.diagnose_ckd(self.user) == False
+        assert self.creatinine3.get_baseline(self.user) == None
+        self.creatinine4 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(2.3),
+            date_drawn=datetime.today() - timedelta(days=370),
+            baseline=False,
+        )
+        assert self.creatinine4.diagnose_ckd(self.user) == False
+        assert self.creatinine4.get_baseline(self.user) == None
+        self.creatinine5 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(2.2),
+            date_drawn=datetime.today() - timedelta(days=350),
+            baseline=False,
+        )
+        assert self.creatinine5.diagnose_ckd(self.user) == False
+        assert self.creatinine5.get_baseline(self.user) == None
+        self.creatinine6 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(2.9),
+            date_drawn=datetime.today() - timedelta(days=305),
+            baseline=False,
+        )
+        assert self.creatinine6.diagnose_ckd(self.user) == True
+        # Need to refresh from DB when modifying object with class-based method
+        # https://stackoverflow.com/questions/39779228/django-not-updating-object-in-classmethod-very-strange
+        self.creatinine6.refresh_from_db()
+        self.user.ckd.refresh_from_db()
+        assert self.creatinine6.get_baseline(self.user) == self.creatinine5
+        assert self.creatinine6.baseline == False
+        assert self.creatinine5.baseline == False
+        assert self.user.ckd.baseline == self.creatinine5
+
+    def test_process_high_no_CKD(self):
+        """
+        Test checking the function of process_high() method
+        Without CKD initially
+        """
+        self.creatinine1 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.75),
+            date_drawn=datetime.today() - timedelta(days=700),
+            baseline=False,
+        )
+        assert self.creatinine1.abnormal() == False
+        self.creatinine2 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.9),
+            date_drawn=datetime.today() - timedelta(days=550),
+            baseline=False,
+        )
+        assert self.creatinine2.abnormal() == False
