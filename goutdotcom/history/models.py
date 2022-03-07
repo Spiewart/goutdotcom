@@ -378,7 +378,7 @@ class CKD(MedicalHistory):
         blank=True,
         default=False,
     )
-    baseline = models.OneToOneField("lab.Creatinine", on_delete=models.SET_NULL, null=True, blank=True)
+    baseline = models.OneToOneField("lab.BaselineCreatinine", on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class ColchicineInteractions(MedicationHistory):

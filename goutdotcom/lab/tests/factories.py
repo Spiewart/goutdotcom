@@ -23,7 +23,6 @@ pytestmark = pytest.mark.django_db
 
 class UrateFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
 
     class Meta:
@@ -32,7 +31,6 @@ class UrateFactory(DjangoModelFactory):
 
 class ALTFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     value = Faker("pyint", min_value=1, max_value=9999)
 
     class Meta:
@@ -41,7 +39,6 @@ class ALTFactory(DjangoModelFactory):
 
 class ASTFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     value = Faker("pyint", min_value=1, max_value=9999)
 
     class Meta:
@@ -50,7 +47,6 @@ class ASTFactory(DjangoModelFactory):
 
 class PlateletFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     value = Faker("pyint", min_value=1, max_value=1300)
 
     class Meta:
@@ -59,7 +55,6 @@ class PlateletFactory(DjangoModelFactory):
 
 class WBCFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=99)
 
     class Meta:
@@ -68,7 +63,6 @@ class WBCFactory(DjangoModelFactory):
 
 class HemoglobinFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    ultplan = factory.SubFactory(ULTPlanFactory, user=factory.SelfAttribute("..user"))
     value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=5, max_value=20)
 
     class Meta:
@@ -78,7 +72,6 @@ class HemoglobinFactory(DjangoModelFactory):
 class CreatinineFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     value = Faker("pydecimal", left_digits=2, right_digits=1, positive=True, min_value=1, max_value=30)
-    baseline = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
 
     class Meta:
         model = Creatinine

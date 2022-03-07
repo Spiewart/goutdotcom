@@ -147,8 +147,12 @@ class ALT(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for ALT")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for ALT")
 
+    # Creates date_drawn (=today) if not specified by form
     # Creates slug if not present
     def save(self, *args, **kwargs):
+        if not self.id:
+            if not self.date_drawn:
+                self.date_drawn = datetime.today().date()
         super(ALT, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -158,7 +162,19 @@ class ALT(Lab):
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
 
 
-class BaselineALT(ALT):
+class BaselineALT(Lab):
+    LOWER_LIMIT = 7
+    UPPER_LIMIT = 55
+
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("baselinealt_creator"),
+    )
+    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
+    reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for ALT")
+    reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for ALT")
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -197,8 +213,12 @@ class AST(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for AST")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for AST")
 
+    # Creates date_drawn (=today) if not specified by form
     # Creates slug if not present
     def save(self, *args, **kwargs):
+        if not self.id:
+            if not self.date_drawn:
+                self.date_drawn = datetime.today().date()
         super(AST, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -208,7 +228,19 @@ class AST(Lab):
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
 
 
-class BaselineAST(AST):
+class BaselineAST(Lab):
+    LOWER_LIMIT = 10
+    UPPER_LIMIT = 40
+
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("baselineast_creator"),
+    )
+    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=UL)
+    reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for AST")
+    reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for AST")
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -249,8 +281,12 @@ class Platelet(Lab):
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for platelets")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for platelets")
 
+    # Creates date_drawn (=today) if not specified by form
     # Creates slug if not present
     def save(self, *args, **kwargs):
+        if not self.id:
+            if not self.date_drawn:
+                self.date_drawn = datetime.today().date()
         super(Platelet, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -386,7 +422,19 @@ class Platelet(Lab):
                     return "nonurgent"
 
 
-class BaselinePlatelet(Platelet):
+class BaselinePlatelet(Lab):
+    LOWER_LIMIT = 150
+    UPPER_LIMIT = 450
+
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("baselineplatelet_creator"),
+    )
+    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=PLTMICROL)
+    reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for platelets")
+    reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for platelets")
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -435,8 +483,12 @@ class WBC(Lab):
         max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for WBC"
     )
 
+    # Creates date_drawn (=today) if not specified by form
     # Creates slug if not present
     def save(self, *args, **kwargs):
+        if not self.id:
+            if not self.date_drawn:
+                self.date_drawn = datetime.today().date()
         super(WBC, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -499,7 +551,23 @@ class WBC(Lab):
                     return None
 
 
-class BaselineWBC(WBC):
+class BaselineWBC(Lab):
+    LOWER_LIMIT = Decimal(4.5)
+    UPPER_LIMIT = Decimal(11.0)
+
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("baselinewbc_creator"),
+    )
+    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=CELLSMM3)
+    reference_lower = models.DecimalField(
+        max_digits=3, decimal_places=1, default=LOWER_LIMIT, help_text="Lower limit of normal values for WBC"
+    )
+    reference_upper = models.DecimalField(
+        max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for WBC"
+    )
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -549,8 +617,13 @@ class Hemoglobin(Lab):
     reference_upper = models.DecimalField(
         max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for hemoglobin"
     )
+
+    # Creates date_drawn (=today) if not specified by form
     # Creates slug if not present
     def save(self, *args, **kwargs):
+        if not self.id:
+            if not self.date_drawn:
+                self.date_drawn = datetime.today().date()
         super(Hemoglobin, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -567,7 +640,23 @@ def round_decimal(value, places):
     return value
 
 
-class BaselineHemoglobin(Hemoglobin):
+class BaselineHemoglobin(Lab):
+    LOWER_LIMIT = Decimal(13.5)
+    UPPER_LIMIT = Decimal(17.5)
+
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("baselinehemoglobin_creator"),
+    )
+    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=GDL)
+    reference_lower = models.DecimalField(
+        max_digits=3, decimal_places=1, default=LOWER_LIMIT, help_text="Lower limit of normal values for hemoglobin"
+    )
+    reference_upper = models.DecimalField(
+        max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for hemoglobin"
+    )
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -614,25 +703,20 @@ class Creatinine(Lab):
     reference_upper = models.DecimalField(
         max_digits=4, decimal_places=2, default=UPPER_LIMIT, help_text="Upper limit of normal values for creatinine"
     )
-    # Overwriting save() method to check if baseline is set to True, marks all others as False if so
-    # Makes baseline unique for the model class for the User
-    # Also creates slug if not present yet
+
+    # Creates a date_drawn (=today) if not specified by form
+    # Creates slug if not present
     def save(self, *args, **kwargs):
         if not self.id:
             if not self.date_drawn:
                 self.date_drawn = datetime.today().date()
         super(Creatinine, self).save(*args, **kwargs)
-        # Check if there is a user field
-        if self.user:
-            # If there is, check if a slug field has been set
-            if not self.slug:
-                # If no slug but has a user, it is a newly created object and needs slug set
+        # Check if there isn't a slug
+        if not self.slug:
+            # If there isn't, check if there's a user
+            if self.user:
+                # If so, create slug from user and pk
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
-        if not self.baseline:
-            return super(Creatinine, self).save()
-        with transaction.atomic():
-            Creatinine.objects.filter(user=self.user, baseline=True).update(baseline=False)
-            return super(Creatinine, self).save()
 
     def sex_vars_kappa(self):
         if self.user.patientprofile.gender == "male":
@@ -722,8 +806,21 @@ class Creatinine(Lab):
             return None
         # If 1 creatinine, that must be the baseline
         if len(creatinines) == 1:
-            user.baselinecreatinine.value = creatinines[0].value
-            user.baselinecreatinine.save()
+            try:
+                baseline = user.baselinecreatinine
+            except:
+                baseline = None
+            if baseline:
+                baseline.value = creatinines[0].value
+                baseline.save()
+            else:
+                baseline = BaselineCreatinine.objects.create(user=user, value=creatinines[0].value)
+                if user.ckd.value == False:
+                    user.ckd.value = True
+                user.ckd.baseline = baseline
+                user.ckd.save()
+                baseline.value = creatinines[0].value
+                baseline.save()
         else:
             # Else assemble list of creatinines from t-365 > t-7 days
             # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3338282/
@@ -746,13 +843,21 @@ class Creatinine(Lab):
                 return None
             # Find mean over last year(s)
             mean_creatinine = mean(creatinine.value for creatinine in creatinines)
-            user.baselinecreatinine.value = mean_creatinine.value
-            user.baselinecreatinine.save()
+            try:
+                baseline = user.baselinecreatinine
+            except:
+                baseline = None
+            if baseline:
+                baseline.value = mean_creatinine
+                baseline.save()
+            else:
+                baseline = BaselineCreatinine.objects.create(user=user, value=mean_creatinine)
+                user.ckd.baseline = baseline
             if user.ckd.value != True:
                 user.ckd.value = True
-                if user.baselinecreatinine.eGFR_calculator():
-                    if user.baselinecreatinine.stage_calculator():
-                        user.ckd.stage = user.baselinecreatinine.stage_calculator()
+                if baseline.eGFR_calculator():
+                    if baseline.stage_calculator():
+                        user.ckd.stage = baseline.stage_calculator()
             user.ckd.save()
 
     @classmethod
@@ -770,6 +875,20 @@ class Creatinine(Lab):
         If False: will set user.ckd to False, remove user.ckd.baseline/stage
                   will also set.user.ckd.baseline.baseline to False
         """
+
+        def remove_ckd():
+            if user.ckd.value == True:
+                user.ckd.value = False
+                user.ckd.stage = None
+                user.ckd.save()
+            try:
+                baseline = user.baselinecretinine
+            except:
+                baseline = None
+            if baseline:
+                baseline.value = None
+                baseline.save()
+
         # https://www.kidney-international.org/article/S0085-2538(15)50698-4/fulltext
         # Check if user has CKD already
         if user.ckd.value == True:
@@ -788,13 +907,7 @@ class Creatinine(Lab):
             creatinine = eGFRs[0][1]
             # If any eGFR is > 60, there is no CKD, process User data accordingly
             if eGFR > 60:
-                if user.ckd.value == True:
-                    user.ckd.value = False
-                    user.ckd.stage = None
-                    user.ckd.save()
-                if user.baselinecreatinine:
-                    user.baselinecreatinine.value = None
-                    user.baselinecreatinine.save()
+                remove_ckd()
                 return False
             # If eGFR is < 60
             else:
@@ -805,20 +918,14 @@ class Creatinine(Lab):
                     next_creatinine = eGFRs[eGFR_index + 1][1]
                     # If not, User does not have CKD, process Profile accordingly
                     if next_eGFR > 60:
-                        if user.ckd.value == True:
-                            user.ckd.value = False
-                            user.ckd.stage = None
-                            user.ckd.save()
-                        if user.baselinecreatinine:
-                            user.baselinecreatinine.value = None
-                            user.baselinecreatinine.save()
+                        remove_ckd()
                         return False
                     # If eGFR is again < 60
                     # Check if the current index's creatine.date_drawn is 90 days or more from the initial
                     else:
                         if creatinine.date_drawn - next_creatinine.date_drawn > timedelta(days=90):
                             # If all creatinines abnormal and 90 days or more apart, set_baseline
-                            user.baselinecreatinine.set_baseline(user=user)
+                            creatinine.set_baseline(user=user)
                             return True
                 else:
                     return False
@@ -904,7 +1011,23 @@ class Creatinine(Lab):
                     return "nonurgent"
 
 
-class BaselineCreatinine(Creatinine):
+class BaselineCreatinine(Lab):
+    LOWER_LIMIT = Decimal(0.74)
+    UPPER_LIMIT = Decimal(1.35)
+
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name=("baselinecreatinine_creator"),
+    )
+    units = models.CharField(max_length=100, choices=UNIT_CHOICES, null=True, blank=True, default=MGDL)
+    reference_lower = models.DecimalField(
+        max_digits=4, decimal_places=2, default=LOWER_LIMIT, help_text="Lower limit of normal values for creatinine"
+    )
+    reference_upper = models.DecimalField(
+        max_digits=4, decimal_places=2, default=UPPER_LIMIT, help_text="Upper limit of normal values for creatinine"
+    )
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -928,6 +1051,148 @@ class BaselineCreatinine(Creatinine):
             if self.user:
                 # If so, create slug from user and pk
                 self.slug = slugify(self.user.username)
+
+    def sex_vars_kappa(self):
+        if self.user.patientprofile.gender == "male":
+            return Decimal(0.9)
+        elif self.user.patientprofile.gender == "female":
+            return Decimal(0.7)
+        else:
+            return False
+
+    def sex_vars_alpha(self):
+        if self.user.patientprofile.gender == "male":
+            return Decimal(-0.411)
+        elif self.user.patientprofile.gender == "female":
+            return Decimal(-0.329)
+        else:
+            return False
+
+    def race_modifier(self):
+        if self.user.patientprofile.race == "black":
+            return Decimal(1.159)
+        else:
+            return Decimal(1.00)
+
+    def sex_modifier(self):
+        if self.user.patientprofile.gender == "male":
+            return Decimal(1.018)
+        elif self.user.patientprofile.gender == "female":
+            return Decimal(1.00)
+        else:
+            return False
+
+    def eGFR_calculator(self):
+        if self.user.patientprofile.age == None:
+            return None
+        else:
+            kappa = self.sex_vars_kappa()
+            alpha = self.sex_vars_alpha()
+            if self.race_modifier() != False:
+                if self.sex_modifier() != False:
+                    self.race_modifier()
+                    self.sex_modifier()
+                    eGFR = (
+                        Decimal(141)
+                        * min(self.value / kappa, Decimal(1.00)) ** alpha
+                        * max(self.value / kappa, Decimal(1.00)) ** Decimal(-1.209)
+                        * Decimal(0.993) ** self.user.patientprofile.age
+                        * self.race_modifier()
+                        * self.sex_modifier()
+                    )
+                    return round_decimal(eGFR, 2)
+
+    def stage_calculator(self):
+        """Method that takes calculated eGFR and returns CKD stage
+
+        Returns:
+            [integer or None]: [integer corresponding to the CKD stage otherwise None]
+        """
+        eGFR = self.eGFR_calculator()
+        if eGFR >= 90:
+            return 1
+        if 90 > eGFR >= 60:
+            return 2
+        if 60 > eGFR >= 30:
+            return 3
+        if 30 > eGFR >= 15:
+            return 4
+        if eGFR < 15:
+            return 5
+        else:
+            return None
+
+    @classmethod
+    def set_baseline(cls, user):
+        """
+        Class method that sets a User's BaselineCreatinine
+        Also modifies User's CKD to reflect BaselineCreatinine
+
+        Args: user = User object
+
+        Returns:
+            Nothing or None, modifies related data
+        """
+        # Assemble list of Creatinines for User
+        creatinines = Creatinine.objects.filter(user=user)
+        # If no creatinines, return None
+        if len(creatinines) == 0:
+            return None
+        # If 1 creatinine, that must be the baseline
+        if len(creatinines) == 1:
+            try:
+                baseline = user.baselinecreatinine
+            except:
+                baseline = None
+            if baseline:
+                baseline.value = creatinines[0].value
+                baseline.save()
+            else:
+                baseline = BaselineCreatinine.objects.create(user=user, value=creatinines[0].value)
+                if user.ckd.value == False:
+                    user.ckd.value = True
+                user.ckd.baseline = baseline
+                user.ckd.save()
+                baseline.value = creatinines[0].value
+                baseline.save()
+        else:
+            # Else assemble list of creatinines from t-365 > t-7 days
+            # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3338282/
+            creatinines = creatinines.filter(
+                date_drawn__range=[
+                    (datetime.today().date() - timedelta(days=365)),
+                    datetime.today().date() - timedelta(days=7),
+                ]
+            )
+            # If there are no creatinines over last year, look back 2 years
+            if len(creatinines) == 0:
+                creatinines = creatinines.filter(
+                    date_drawn__range=[
+                        (datetime.today().date() - timedelta(days=730)),
+                        datetime.today().date() - timedelta(days=7),
+                    ]
+                )
+            # If no creatinines over last 2 years, return None
+            if len(creatinines) == 0:
+                return None
+            # Find mean over last year(s)
+            mean_creatinine = mean(creatinine.value for creatinine in creatinines)
+            try:
+                baseline = user.baselinecreatinine
+            except:
+                baseline = None
+            if baseline:
+                baseline.value = mean_creatinine
+                baseline.save()
+            else:
+                baseline = BaselineCreatinine.objects.create(user=user, value=mean_creatinine)
+                user.ckd.baseline = baseline
+            if user.ckd.value != True:
+                user.ckd.value = True
+                if baseline.eGFR_calculator():
+                    if baseline.stage_calculator():
+                        user.ckd.stage = baseline.stage_calculator()
+            user.ckd.save()
 
 
 class LabCheck(TimeStampedModel):

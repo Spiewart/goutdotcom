@@ -9,7 +9,6 @@ class UrateHistoryAdmin(SimpleHistoryAdmin):
         "user",
         "value",
         "date_drawn",
-        "ultplan",
         "created",
         "pk",
     )
@@ -70,7 +69,6 @@ class BaselineCreatinineHistoryAdmin(SimpleHistoryAdmin):
     list_display = (
         "user",
         "value",
-        "eGFR_calculator",
         "created",
     )
     history_list_display = ["status"]
