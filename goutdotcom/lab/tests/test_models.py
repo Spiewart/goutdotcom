@@ -3,6 +3,7 @@ from decimal import *
 
 import pytest
 from django.test import Client, TestCase
+from django.utils import timezone
 from statistics import mean
 
 client = Client()
@@ -153,7 +154,7 @@ class TestCreatinineMethods(TestCase):
     def setUp(self):
         self.user = UserFactory(role="PATIENT")
         self.profile = PatientProfileFactory(
-            user=self.user, date_of_birth=(datetime.today().date() - timedelta(weeks=(52 * 70)))
+            user=self.user, date_of_birth=(timezone.now().date() - timedelta(weeks=(52 * 70)))
         )
         self.familyprofile = FamilyProfileFactory(user=self.user)
         self.medicalprofile = MedicalProfileFactory(user=self.user, CKD=CKDFactory(user=self.user, value=False))
@@ -260,17 +261,17 @@ class TestCreatinineMethods(TestCase):
         self.creatinine1 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.6),
-            date_drawn=datetime.today() - timedelta(days=365),
+            date_drawn=timezone.now() - timedelta(days=365),
         )
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.6),
-            date_drawn=datetime.today() - timedelta(days=323),
+            date_drawn=timezone.now() - timedelta(days=323),
         )
         self.creatinine3 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.5),
-            date_drawn=datetime.today() - timedelta(days=251),
+            date_drawn=timezone.now() - timedelta(days=251),
         )
         self.creatinine3.set_baseline()
         assert self.user.ckd.value == True
@@ -284,7 +285,7 @@ class TestCreatinineMethods(TestCase):
         self.creatinine1 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.6),
-            date_drawn=datetime.today() - timedelta(days=365),
+            date_drawn=timezone.now() - timedelta(days=365),
         )
         assert self.user.ckd.value == False
         self.creatinine1.set_baseline()
@@ -305,21 +306,21 @@ class TestCreatinineMethods(TestCase):
         self.creatinine1 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.6),
-            date_drawn=datetime.today() - timedelta(days=365),
+            date_drawn=timezone.now() - timedelta(days=364),
         )
         assert self.creatinine1.diagnose_ckd() == False
         assert self.user.ckd.value == False
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.8),
-            date_drawn=datetime.today() - timedelta(days=323),
+            date_drawn=timezone.now() - timedelta(days=323),
         )
         assert self.creatinine2.diagnose_ckd() == False
         assert self.user.ckd.value == False
         self.creatinine3 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.2),
-            date_drawn=datetime.today() - timedelta(days=240),
+            date_drawn=timezone.now() - timedelta(days=240),
         )
         assert self.creatinine3.diagnose_ckd() == True
         # Need to refresh from DB when modifying object with class-based method
@@ -346,7 +347,7 @@ class TestCreatinineMethods(TestCase):
         self.creatinine1 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.6),
-            date_drawn=datetime.today() - timedelta(days=365),
+            date_drawn=timezone.now() - timedelta(days=365),
         )
         assert self.creatinine1.diagnose_ckd() == True
         assert self.user.ckd.value == True
@@ -355,7 +356,7 @@ class TestCreatinineMethods(TestCase):
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.8),
-            date_drawn=datetime.today() - timedelta(days=323),
+            date_drawn=timezone.now() - timedelta(days=323),
         )
         assert self.creatinine2.diagnose_ckd() == True
         assert self.user.ckd.value == True
@@ -364,7 +365,7 @@ class TestCreatinineMethods(TestCase):
         self.creatinine3 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.2),
-            date_drawn=datetime.today() - timedelta(days=240),
+            date_drawn=timezone.now() - timedelta(days=240),
         )
         assert self.creatinine3.diagnose_ckd() == True
         # Need to refresh from DB when modifying object with class-based method
@@ -375,6 +376,22 @@ class TestCreatinineMethods(TestCase):
         assert self.user.ckd.baseline
         assert self.user.baselinecreatinine
         assert self.creatinine3.get_baseline().value == round(Decimal(1.9), 2)
+        # Create Creatinine in normal range to test remove_ckd()
+        self.creatinine4 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.75),
+            date_drawn=timezone.now() + timedelta(days=50),
+        )
+        print(self.user.baselinecreatinine.calculated)
+        print(self.user.baselinecreatinine.created)
+        print(self.user.baselinecreatinine.modified)
+        print(self.user.ckd.value)
+        assert self.creatinine4.date_drawn > self.user.baselinecreatinine.modified
+        assert self.creatinine4.diagnose_ckd() == False
+        self.user.ckd.refresh_from_db()
+        assert self.user.ckd.value == False
+        assert self.user.ckd.baseline == None
+        assert self.user.baselinecreatinine.DoesNotExist
 
     def test_diagnose_CKD_without_initial_CKD(self):
         """
@@ -384,42 +401,42 @@ class TestCreatinineMethods(TestCase):
         self.creatinine1 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.6),
-            date_drawn=datetime.today() - timedelta(days=700),
+            date_drawn=timezone.now() - timedelta(days=700),
         )
         assert self.creatinine1.diagnose_ckd() == False
         assert self.user.ckd.value == False
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.9),
-            date_drawn=datetime.today() - timedelta(days=550),
+            date_drawn=timezone.now() - timedelta(days=550),
         )
         assert self.creatinine2.diagnose_ckd() == False
         assert self.creatinine2.get_baseline() == None
         self.creatinine3 = CreatinineFactory(
             user=self.user,
             value=Decimal(3.6),
-            date_drawn=datetime.today() - timedelta(days=400),
+            date_drawn=timezone.now() - timedelta(days=400),
         )
         assert self.creatinine3.diagnose_ckd() == False
         assert self.creatinine3.get_baseline() == None
         self.creatinine4 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.3),
-            date_drawn=datetime.today() - timedelta(days=370),
+            date_drawn=timezone.now() - timedelta(days=370),
         )
         assert self.creatinine4.diagnose_ckd() == False
         assert self.creatinine4.get_baseline() == None
         self.creatinine5 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.2),
-            date_drawn=datetime.today() - timedelta(days=350),
+            date_drawn=timezone.now() - timedelta(days=350),
         )
         assert self.creatinine5.diagnose_ckd() == False
         assert self.creatinine5.get_baseline() == None
         self.creatinine6 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.9),
-            date_drawn=datetime.today() - timedelta(days=305),
+            date_drawn=timezone.now() - timedelta(days=305),
         )
         assert self.creatinine6.diagnose_ckd() == True
         # Need to refresh from DB when modifying object with class-based method
@@ -437,19 +454,19 @@ class TestCreatinineMethods(TestCase):
         self.creatinine1 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.75),
-            date_drawn=datetime.today() - timedelta(days=700),
+            date_drawn=timezone.now() - timedelta(days=700),
         )
         assert self.creatinine1.abnormal == None
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.9),
-            date_drawn=datetime.today() - timedelta(days=550),
+            date_drawn=timezone.now() - timedelta(days=550),
         )
         assert self.creatinine2.abnormal == None
         self.creatinine3 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.9),
-            date_drawn=datetime.today() - timedelta(days=400),
+            date_drawn=timezone.now() - timedelta(days=400),
         )
         assert self.creatinine3.abnormal == "H"
         assert self.creatinine3.var_x_high(1.5) == False

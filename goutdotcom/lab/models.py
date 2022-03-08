@@ -3,14 +3,18 @@ from decimal import *
 from statistics import mean
 
 from django.conf import settings
-from django.db import models, transaction
+from django.db import models
 from django.db.models.fields import BooleanField
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
+from pytz import UTC
 from simple_history.models import HistoricalRecords
 
 from ..lab.choices import BOOL_CHOICES, CELLSMM3, GDL, MGDL, PLTMICROL, UL, UNIT_CHOICES
+
+utc = UTC
 
 
 class Lab(TimeStampedModel):
@@ -21,7 +25,7 @@ class Lab(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    date_drawn = models.DateField(help_text="What day was this lab drawn?", default=None, null=True, blank=True)
+    date_drawn = models.DateTimeField(help_text="What day was this lab drawn?", default=None, null=True, blank=True)
     abnormal_followup = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, default=None)
     history = HistoricalRecords(inherit=True)
     slug = models.SlugField(max_length=200, null=True, blank=True)
@@ -158,7 +162,7 @@ class ALT(BaseALT):
     def save(self, *args, **kwargs):
         if not self.id:
             if not self.date_drawn:
-                self.date_drawn = datetime.today().date()
+                self.date_drawn = timezone.now()
         super(ALT, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -224,7 +228,7 @@ class AST(BaseAST):
     def save(self, *args, **kwargs):
         if not self.id:
             if not self.date_drawn:
-                self.date_drawn = datetime.today().date()
+                self.date_drawn = timezone.now()
         super(AST, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -418,7 +422,7 @@ class Platelet(BasePlatelet):
     def save(self, *args, **kwargs):
         if not self.id:
             if not self.date_drawn:
-                self.date_drawn = datetime.today().date()
+                self.date_drawn = timezone.now()
         super(Platelet, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -545,7 +549,7 @@ class WBC(BaseWBC):
     def save(self, *args, **kwargs):
         if not self.id:
             if not self.date_drawn:
-                self.date_drawn = datetime.today().date()
+                self.date_drawn = timezone.now()
         super(WBC, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -627,7 +631,7 @@ class Hemoglobin(BaseHemoglobin):
     def save(self, *args, **kwargs):
         if not self.id:
             if not self.date_drawn:
-                self.date_drawn = datetime.today().date()
+                self.date_drawn = timezone.now()
         super(Hemoglobin, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
@@ -812,8 +816,8 @@ class BaseCreatinine(Lab):
             # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3338282/
             creatinines = creatinines.filter(
                 date_drawn__range=[
-                    (datetime.today().date() - timedelta(days=365)),
-                    datetime.today().date() - timedelta(days=7),
+                    (timezone.now() - timedelta(days=365)),
+                    timezone.now() - timedelta(days=7),
                 ]
             )
             # If there are no creatinines over last year, look back 2 years
@@ -821,8 +825,8 @@ class BaseCreatinine(Lab):
                 creatinines = Creatinine.objects.filter(
                     user=self.user,
                     date_drawn__range=[
-                        (datetime.today().date() - timedelta(days=730)),
-                        datetime.today().date() - timedelta(days=7),
+                        (timezone.now() - timedelta(days=730)),
+                        timezone.now() - timedelta(days=7),
                     ],
                 ).order_by("-date_drawn")
             # If no creatinines over last 2 years, return None
@@ -866,15 +870,20 @@ class BaseCreatinine(Lab):
             """
             Method that removes CKD and associated BaselineCreatinine
             Checks if the User has a BaselineCreatinine that was modified or created before the Creatinine calling the method
-            Takes creatinine parameter, defaults to self but can be set in lists iteration
+            Takes creatinine parameter, defaults to self.
+            Creatinine can be set, such as when iterating over a list of Creatinines.
 
             Args:
-                creatinine:Defaults to self.
+                creatinine: Defaults to self.
 
             Returns:
                 Bool: False if CKD removed, True if not
                 Modified related models en route
             """
+            # Check if there is a baseline that's not calculated (=User defined)
+            # If so, check if the creatinine was drawn before the baseline was modified/created
+            # If so, the Creatinine is older than the User-defined baseline, so don't manipulate it
+            # If not, remove CKD, fields, and related BaselineCreatinine
             if baseline:
                 if baseline.calculated == False:
                     if baseline.modified:
@@ -883,8 +892,8 @@ class BaseCreatinine(Lab):
                                 self.user.ckd.value = False
                                 self.user.ckd.stage = None
                                 self.user.ckd.save()
-                                baseline.delete()
-                                return False
+                            baseline.delete()
+                            return False
                     elif baseline.created < creatinine.date_drawn:
                         if self.user.ckd.value == True:
                             self.user.ckd.value = False
@@ -892,8 +901,8 @@ class BaseCreatinine(Lab):
                             self.user.ckd.save()
                             baseline.delete()
                             return False
-                    else:
-                        return True
+                else:
+                    return True
             else:
                 if self.user.ckd.value == True:
                     self.user.ckd.value = False
@@ -1005,10 +1014,10 @@ class BaseCreatinine(Lab):
                 if self.var_x_high(1.5):
                     return "urgent"
                 elif self.var_x_high(1.25):
-                    self.diagnose_ckd(user=self.user)
+                    self.diagnose_ckd()
                     return "nonurgent"
                 else:
-                    self.diagnose_ckd(user=self.user)
+                    self.diagnose_ckd()
         # If Creatinine isn't a follow up on an abnormal
         else:
             # Check if User has baseline Creatinine
@@ -1032,7 +1041,7 @@ class Creatinine(BaseCreatinine):
     def save(self, *args, **kwargs):
         if not self.id:
             if not self.date_drawn:
-                self.date_drawn = datetime.today().date()
+                self.date_drawn = timezone.now()
         super(Creatinine, self).save(*args, **kwargs)
         # Check if there isn't a slug
         if not self.slug:
