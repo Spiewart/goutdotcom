@@ -3,12 +3,13 @@ from decimal import *
 
 import pytest
 from django.test import Client, TestCase
+from statistics import mean
 
 client = Client()
 
 from ...history.tests.factories import CKDFactory
 
-from ...lab.models import round_decimal
+from ...lab.models import *
 from ...profiles.tests.factories import (
     FamilyProfileFactory,
     MedicalProfileFactory,
@@ -19,6 +20,7 @@ from ...users.tests.factories import UserFactory
 from .factories import (
     ALTFactory,
     ASTFactory,
+    BaselineCreatinineFactory,
     CreatinineFactory,
     HemoglobinFactory,
     PlateletFactory,
@@ -270,7 +272,7 @@ class TestCreatinineMethods(TestCase):
             value=Decimal(1.5),
             date_drawn=datetime.today() - timedelta(days=251),
         )
-        self.creatinine3.set_baseline(self.user)
+        self.creatinine3.set_baseline()
         assert self.user.ckd.value == True
         assert self.user.ckd.baseline
         assert self.user.ckd.baseline.value
@@ -285,7 +287,7 @@ class TestCreatinineMethods(TestCase):
             date_drawn=datetime.today() - timedelta(days=365),
         )
         assert self.user.ckd.value == False
-        self.creatinine1.set_baseline(self.user)
+        self.creatinine1.set_baseline()
         assert self.user.ckd.value == True
         assert self.user.ckd.baseline
         assert self.user.baselinecreatinine.value
@@ -295,7 +297,7 @@ class TestCreatinineMethods(TestCase):
         assert self.user.ckd.value == True
         assert self.user.baselinecreatinine.value
 
-    def test_diagnose_CKD_with_CKD(self):
+    def test_diagnose_CKD_with_CKD_no_baseline(self):
         """
         Test checking the function of diagnose_ckd() method
         With CKD
@@ -305,29 +307,74 @@ class TestCreatinineMethods(TestCase):
             value=Decimal(1.6),
             date_drawn=datetime.today() - timedelta(days=365),
         )
-        assert self.creatinine1.diagnose_ckd(self.user) == False
+        assert self.creatinine1.diagnose_ckd() == False
         assert self.user.ckd.value == False
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.8),
             date_drawn=datetime.today() - timedelta(days=323),
         )
-        assert self.creatinine2.diagnose_ckd(self.user) == False
+        assert self.creatinine2.diagnose_ckd() == False
         assert self.user.ckd.value == False
         self.creatinine3 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.2),
             date_drawn=datetime.today() - timedelta(days=240),
         )
-        assert self.creatinine3.diagnose_ckd(self.user) == True
+        assert self.creatinine3.diagnose_ckd() == True
         # Need to refresh from DB when modifying object with class-based method
         # https://stackoverflow.com/questions/39779228/django-not-updating-object-in-classmethod-very-strange
         self.user.ckd.refresh_from_db()
-        self.user.baselincreatinine.refresh_from_db()
-        assert self.ckd.value == True
-        assert self.ckd.baseline
+        self.user.baselinecreatinine.refresh_from_db()
+        assert self.user.ckd.value == True
+        assert self.user.ckd.baseline
         assert self.user.baselinecreatinine
+        assert round(self.user.baselinecreatinine.value, 2) == round(mean([self.creatinine1.value, self.creatinine2.value, self.creatinine3.value]), 2)
 
+    def test_diagnose_CKD_with_CKD_with_initial_baseline(self):
+        """
+        Test checking the function of diagnose_ckd() method
+        With CKD and initial baseline
+        """
+        self.user.ckd.value = True
+        self.user.ckd.baseline = BaselineCreatinineFactory(user=self.user, value=Decimal(1.9))
+        self.user.ckd.stage = self.user.ckd.baseline.stage_calculator()
+        self.user.ckd.save()
+        assert self.user.ckd.value == True
+        assert self.user.baselinecreatinine.value == Decimal(1.9)
+        assert self.user.ckd.stage == 4
+        self.creatinine1 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(1.6),
+            date_drawn=datetime.today() - timedelta(days=365),
+        )
+        assert self.creatinine1.diagnose_ckd() == True
+        assert self.user.ckd.value == True
+        assert len(Creatinine.objects.filter(user=self.user)) == 1
+        assert self.creatinine1.get_baseline().value == round(Decimal(1.9), 2)
+        self.creatinine2 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(1.8),
+            date_drawn=datetime.today() - timedelta(days=323),
+        )
+        assert self.creatinine2.diagnose_ckd() == True
+        assert self.user.ckd.value == True
+        assert len(Creatinine.objects.filter(user=self.user)) == 2
+        assert self.creatinine2.get_baseline().value == round(Decimal(1.9), 2)
+        self.creatinine3 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(2.2),
+            date_drawn=datetime.today() - timedelta(days=240),
+        )
+        assert self.creatinine3.diagnose_ckd() == True
+        # Need to refresh from DB when modifying object with class-based method
+        # https://stackoverflow.com/questions/39779228/django-not-updating-object-in-classmethod-very-strange
+        self.user.ckd.refresh_from_db()
+        self.user.baselinecreatinine.refresh_from_db()
+        assert self.user.ckd.value == True
+        assert self.user.ckd.baseline
+        assert self.user.baselinecreatinine
+        assert self.creatinine3.get_baseline().value == round(Decimal(1.9), 2)
 
     def test_diagnose_CKD_without_initial_CKD(self):
         """
@@ -339,49 +386,48 @@ class TestCreatinineMethods(TestCase):
             value=Decimal(0.6),
             date_drawn=datetime.today() - timedelta(days=700),
         )
-        assert self.creatinine1.diagnose_ckd(self.user) == False
+        assert self.creatinine1.diagnose_ckd() == False
         assert self.user.ckd.value == False
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.9),
             date_drawn=datetime.today() - timedelta(days=550),
         )
-        assert self.creatinine2.diagnose_ckd(self.user) == False
-        assert self.creatinine2.get_baseline(self.user) == None
+        assert self.creatinine2.diagnose_ckd() == False
+        assert self.creatinine2.get_baseline() == None
         self.creatinine3 = CreatinineFactory(
             user=self.user,
             value=Decimal(3.6),
             date_drawn=datetime.today() - timedelta(days=400),
         )
-        assert self.creatinine3.diagnose_ckd(self.user) == False
-        assert self.creatinine3.get_baseline(self.user) == None
+        assert self.creatinine3.diagnose_ckd() == False
+        assert self.creatinine3.get_baseline() == None
         self.creatinine4 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.3),
             date_drawn=datetime.today() - timedelta(days=370),
         )
-        assert self.creatinine4.diagnose_ckd(self.user) == False
-        assert self.creatinine4.get_baseline(self.user) == None
+        assert self.creatinine4.diagnose_ckd() == False
+        assert self.creatinine4.get_baseline() == None
         self.creatinine5 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.2),
             date_drawn=datetime.today() - timedelta(days=350),
         )
-        assert self.creatinine5.diagnose_ckd(self.user) == False
-        assert self.creatinine5.get_baseline(self.user) == None
+        assert self.creatinine5.diagnose_ckd() == False
+        assert self.creatinine5.get_baseline() == None
         self.creatinine6 = CreatinineFactory(
             user=self.user,
             value=Decimal(2.9),
             date_drawn=datetime.today() - timedelta(days=305),
         )
-        assert self.creatinine6.diagnose_ckd(self.user) == True
+        assert self.creatinine6.diagnose_ckd() == True
         # Need to refresh from DB when modifying object with class-based method
         # https://stackoverflow.com/questions/39779228/django-not-updating-object-in-classmethod-very-strange
         self.creatinine6.refresh_from_db()
         self.user.ckd.refresh_from_db()
-        assert self.creatinine6.get_baseline(self.user) == self.creatinine5
+        assert self.creatinine6.get_baseline()
         assert self.user.baselinecreatinine.value
-        print(self.user.baselinecreatinine.value)
 
     def test_process_high_no_CKD(self):
         """
@@ -393,10 +439,19 @@ class TestCreatinineMethods(TestCase):
             value=Decimal(0.75),
             date_drawn=datetime.today() - timedelta(days=700),
         )
-        assert self.creatinine1.abnormal == False
+        assert self.creatinine1.abnormal == None
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.9),
             date_drawn=datetime.today() - timedelta(days=550),
         )
-        assert self.creatinine2.abnormal == False
+        assert self.creatinine2.abnormal == None
+        self.creatinine3 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(1.9),
+            date_drawn=datetime.today() - timedelta(days=400),
+        )
+        assert self.creatinine3.abnormal == "H"
+        assert self.creatinine3.var_x_high(1.5) == False
+        assert self.creatinine3.var_x_high(1.25) == True
+        assert self.creatinine3.process_high() == "nonurgent"

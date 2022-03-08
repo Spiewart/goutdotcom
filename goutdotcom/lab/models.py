@@ -4,6 +4,7 @@ from statistics import mean
 
 from django.conf import settings
 from django.db import models, transaction
+from django.db.models.fields import BooleanField
 from django.urls import reverse
 from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
@@ -179,6 +180,10 @@ class BaselineALT(BaseALT):
         on_delete=models.CASCADE,
     )
     name = "baseline_ALT"
+    calculated = BooleanField(
+        choices=BOOL_CHOICES,
+        default=False,
+    )
     date_drawn = None
     abnormal_followup = None
 
@@ -241,6 +246,10 @@ class BaselineAST(BaseAST):
         on_delete=models.CASCADE,
     )
     name = "baseline_AST"
+    calculated = BooleanField(
+        choices=BOOL_CHOICES,
+        default=False,
+    )
     date_drawn = None
     abnormal_followup = None
 
@@ -431,6 +440,10 @@ class BaselinePlatelet(BasePlatelet):
         on_delete=models.CASCADE,
     )
     name = "baseline_platelet"
+    calculated = BooleanField(
+        choices=BOOL_CHOICES,
+        default=False,
+    )
     date_drawn = None
     abnormal_followup = None
 
@@ -555,6 +568,10 @@ class BaselineWBC(BaseWBC):
         on_delete=models.CASCADE,
     )
     name = "baseline_WBC"
+    calculated = BooleanField(
+        choices=BOOL_CHOICES,
+        default=False,
+    )
     date_drawn = None
     abnormal_followup = None
 
@@ -632,6 +649,10 @@ class BaselineHemoglobin(BaseHemoglobin):
         on_delete=models.CASCADE,
     )
     name = "baseline_hemoglobin"
+    calculated = BooleanField(
+        choices=BOOL_CHOICES,
+        default=False,
+    )
     date_drawn = None
     abnormal_followup = None
     # Creates slug if not present
@@ -739,37 +760,51 @@ class BaseCreatinine(Lab):
         else:
             return None
 
-    @classmethod
-    def set_baseline(cls, user):
+    def get_baseline(self):
         """
-        Class method that sets a User's BaselineCreatinine
-        Also modifies User's CKD to reflect BaselineCreatinine
+        Method that gets a User's baseline
+        Returns: BaselineCreatinine or none
+        """
+        try:
+            baseline = BaselineCreatinine.objects.get(user=self.user)
+        except BaselineCreatinine.DoesNotExist:
+            baseline = None
+        return baseline
 
+    def set_baseline(self):
+        """
+        Method that sets a User's BaselineCreatinine
+        Also modifies User's CKD to reflect BaselineCreatinine
+        ***WILL NOT MODIFY A USER-SET BASELINE (baseline.calculated == False)***
         Args: user = User object
 
         Returns:
             Nothing or None, modifies related data
         """
         # Assemble list of Creatinines for User
-        creatinines = Creatinine.objects.filter(user=user)
+        creatinines = Creatinine.objects.filter(user=self.user).order_by("-date_drawn")
         # If no creatinines, return None
         if len(creatinines) == 0:
             return None
         # If 1 creatinine, that must be the baseline
         if len(creatinines) == 1:
-            try:
-                baseline = user.baselinecreatinine
-            except:
-                baseline = None
+            baseline = self.get_baseline()
             if baseline:
-                baseline.value = creatinines[0].value
-                baseline.save()
+                # Check if first and only creatinine is way off reported baseline
+                # Return None if so to avoid changing baseline, process accordingly
+                if baseline.calculated == False:
+                    return None
+                else:
+                    baseline.value = creatinines[0].value
+                    baseline.save()
             else:
-                baseline = BaselineCreatinine.objects.create(user=user, value=creatinines[0].value)
-                if user.ckd.value == False:
-                    user.ckd.value = True
-                user.ckd.baseline = baseline
-                user.ckd.save()
+                baseline = BaselineCreatinine.objects.create(
+                    user=self.user, value=creatinines[0].value, calculated=True
+                )
+                if self.user.ckd.value == False:
+                    self.user.ckd.value = True
+                self.user.ckd.baseline = baseline
+                self.user.ckd.save()
                 baseline.value = creatinines[0].value
                 baseline.save()
         else:
@@ -783,42 +818,41 @@ class BaseCreatinine(Lab):
             )
             # If there are no creatinines over last year, look back 2 years
             if len(creatinines) == 0:
-                creatinines = creatinines.filter(
+                creatinines = Creatinine.objects.filter(
+                    user=self.user,
                     date_drawn__range=[
                         (datetime.today().date() - timedelta(days=730)),
                         datetime.today().date() - timedelta(days=7),
-                    ]
-                )
+                    ],
+                ).order_by("-date_drawn")
             # If no creatinines over last 2 years, return None
             if len(creatinines) == 0:
                 return None
             # Find mean over last year(s)
             mean_creatinine = mean(creatinine.value for creatinine in creatinines)
-            try:
-                baseline = user.baselinecreatinine
-            except:
-                baseline = None
+            baseline = self.get_baseline()
             if baseline:
-                baseline.value = mean_creatinine
-                baseline.save()
+                if baseline.calculated == False:
+                    return None
+                else:
+                    baseline.value = mean_creatinine
+                    baseline.save()
             else:
-                baseline = BaselineCreatinine.objects.create(user=user, value=mean_creatinine)
-                user.ckd.baseline = baseline
-            if user.ckd.value != True:
-                user.ckd.value = True
+                baseline = BaselineCreatinine.objects.create(user=self.user, value=mean_creatinine, calculated=True)
+                self.user.ckd.baseline = baseline
+            if self.user.ckd.value != True:
+                self.user.ckd.value = True
                 if baseline.eGFR_calculator():
                     if baseline.stage_calculator():
-                        user.ckd.stage = baseline.stage_calculator()
-            user.ckd.save()
+                        self.user.ckd.stage = baseline.stage_calculator()
+            self.user.ckd.save()
 
-    @classmethod
-    def diagnose_ckd(cls, user):
+    def diagnose_ckd(self):
         """
-        Class method that will determine if a user has CKD
+        Method that will determine if a user has CKD
         Checks for persistently abnormal renal function (eGFR) for 90 days or longer
         Any eGFR > 60 will result in a False return
 
-        Args: user
         ***REQUIRES USER TO HAVE RACE, SEX, and AGE TO CALCULATE eGFR***
         Returns: Boolean, but modifies user.ckd first
         If True: will set user.ckd to True, assign user.ckd.baseline, set user.ckd.stage
@@ -826,26 +860,57 @@ class BaseCreatinine(Lab):
         If False: will set user.ckd to False, remove user.ckd.baseline/stage
                   will also set.user.ckd.baseline.baseline to False
         """
+        baseline = self.get_baseline()
 
-        def remove_ckd():
-            if user.ckd.value == True:
-                user.ckd.value = False
-                user.ckd.stage = None
-                user.ckd.save()
-            try:
-                baseline = user.baselinecretinine
-            except:
-                baseline = None
+        def remove_ckd(self, creatinine=self):
+            """
+            Method that removes CKD and associated BaselineCreatinine
+            Checks if the User has a BaselineCreatinine that was modified or created before the Creatinine calling the method
+            Takes creatinine parameter, defaults to self but can be set in lists iteration
+
+            Args:
+                creatinine:Defaults to self.
+
+            Returns:
+                Bool: False if CKD removed, True if not
+                Modified related models en route
+            """
             if baseline:
-                baseline.value = None
-                baseline.save()
+                if baseline.calculated == False:
+                    if baseline.modified:
+                        if baseline.modified < creatinine.date_drawn:
+                            if self.user.ckd.value == True:
+                                self.user.ckd.value = False
+                                self.user.ckd.stage = None
+                                self.user.ckd.save()
+                                baseline.delete()
+                                return False
+                    elif baseline.created < creatinine.date_drawn:
+                        if self.user.ckd.value == True:
+                            self.user.ckd.value = False
+                            self.user.ckd.stage = None
+                            self.user.ckd.save()
+                            baseline.delete()
+                            return False
+                    else:
+                        return True
+            else:
+                if self.user.ckd.value == True:
+                    self.user.ckd.value = False
+                    self.user.ckd.stage = None
+                    self.user.ckd.save()
+                return False
 
         # https://www.kidney-international.org/article/S0085-2538(15)50698-4/fulltext
         # Check if user has CKD already
-        if user.ckd.value == True:
-            return True
+        if self.user.ckd.value == True:
+            if self.eGFR_calculator() > 60:
+                remove_ckd(self)
+            else:
+                self.set_baseline()
+                return True
         # Assemble chronolocical list of creatinines, blank list of eGFRs
-        creatinines = Creatinine.objects.filter(user=user).order_by("-date_drawn")
+        creatinines = Creatinine.objects.filter(user=self.user).order_by("-date_drawn")
         # Declare list of eGFRs for scope
         eGFRs = []
         # Assemble eGFR/Creatinine list via eGFR_calculator() on each creatinine
@@ -858,8 +923,7 @@ class BaseCreatinine(Lab):
             creatinine = eGFRs[0][1]
             # If any eGFR is > 60, there is no CKD, process User data accordingly
             if eGFR > 60:
-                remove_ckd()
-                return False
+                return remove_ckd(self, creatinine=creatinine)
             # If eGFR is < 60
             else:
                 # Check if list index is not the last item in the list
@@ -869,14 +933,13 @@ class BaseCreatinine(Lab):
                     next_creatinine = eGFRs[eGFR_index + 1][1]
                     # If not, User does not have CKD, process Profile accordingly
                     if next_eGFR > 60:
-                        remove_ckd()
-                        return False
+                        return remove_ckd(self, creatinine=next_creatinine)
                     # If eGFR is again < 60
                     # Check if the current index's creatine.date_drawn is 90 days or more from the initial
                     else:
                         if creatinine.date_drawn - next_creatinine.date_drawn > timedelta(days=90):
                             # If all creatinines abnormal and 90 days or more apart, set_baseline
-                            creatinine.set_baseline(user=user)
+                            self.set_baseline()
                             return True
                 else:
                     return False
@@ -897,7 +960,7 @@ class BaseCreatinine(Lab):
         baseline = self.get_baseline()
 
         if baseline:
-            if self.value > (Decimal(var) * baseline):
+            if self.value > (Decimal(var) * baseline.value):
                 return True
             else:
                 return False
@@ -923,7 +986,7 @@ class BaseCreatinine(Lab):
         # Declare baseline for scope
         self.baseline = None
         # See if the User meets the definition of CKD
-        if self.self.diagnose_ckd() == True:
+        if self.diagnose_ckd() == True:
             # Try to fetch baseline
             self.baseline = self.get_baseline()
         # Check if Creatinine is a follow up on an abnormal
@@ -933,10 +996,10 @@ class BaseCreatinine(Lab):
                 if self.var_x_high(1.5, baseline=self.baseline):
                     return "urgent"
                 elif self.var_x_high(1.25, baseline=self.baseline):
-                    self.set_baseline(user=self.user)
+                    self.set_baseline()
                     return "nonurgent"
                 else:
-                    self.set_baseline(user=self.user)
+                    self.set_baseline()
             # If no baseline Creatinine
             else:
                 if self.var_x_high(1.5):
@@ -991,6 +1054,10 @@ class BaselineCreatinine(BaseCreatinine):
         related_name=("baselinecreatinine_creator"),
     )
     name = "baseline_creatinine"
+    calculated = BooleanField(
+        choices=BOOL_CHOICES,
+        default=False,
+    )
     date_drawn = None
     abnormal_followup = None
     # Creates slug if not present
