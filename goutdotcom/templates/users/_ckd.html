@@ -15,6 +15,9 @@
             {% if object.ckd.stage %}
             <li>Stage {{ object.ckd.stage }}</li>
             {% endif %}
+            {% if object.ckd.baseline %}
+            {{ object.ckd.baseline }}
+            {% endif %}
             {% if object.ckd.dialysis %}
             <li>{{ object.ckd.dialysis }}</li>
             {% endif %}

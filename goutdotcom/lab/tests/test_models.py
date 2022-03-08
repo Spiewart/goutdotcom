@@ -392,13 +392,11 @@ class TestCreatinineMethods(TestCase):
             user=self.user,
             value=Decimal(0.75),
             date_drawn=datetime.today() - timedelta(days=700),
-            baseline=False,
         )
-        assert self.creatinine1.abnormal() == False
+        assert self.creatinine1.abnormal == False
         self.creatinine2 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.9),
             date_drawn=datetime.today() - timedelta(days=550),
-            baseline=False,
         )
-        assert self.creatinine2.abnormal() == False
+        assert self.creatinine2.abnormal == False

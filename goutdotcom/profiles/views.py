@@ -43,6 +43,7 @@ from ..lab.forms import (
     BaselinePlateletForm,
     BaselineWBCForm,
 )
+from ..lab.models import BaselineCreatinine
 from ..utils.mixins import PatientProviderMixin
 from ..vitals.forms import HeightForm, WeightForm
 from .forms import (
@@ -156,23 +157,38 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         context = super(MedicalProfileUpdate, self).get_context_data(**kwargs)
         # Adds related model forms to context for rendering
         if self.request.POST:
-            context["alt_form"] = self.alt_form_class(
-                self.request.POST, instance=self.object.transaminitis.baseline_alt, prefix="alt_transaminitis"
-            )
+            if self.object.transaminitis.baseline_alt:
+                context["alt_form"] = self.alt_form_class(
+                    self.request.POST, instance=self.object.transaminitis.baseline_alt, prefix="alt_transaminitis"
+                )
+            else:
+                context["alt_form"] = self.alt_form_class(
+                    self.request.POST, instance=BaselineALT(), prefix="alt_transaminitis"
+                )
             context["anemia_form"] = self.anemia_form_class(self.request.POST, instance=self.object.anemia)
             context["angina_form"] = self.angina_form_class(self.request.POST, instance=self.object.angina)
             context["anticoagulation_form"] = self.anticoagulation_form_class(
                 self.request.POST, instance=self.object.anticoagulation
             )
-            context["ast_form"] = self.ast_form_class(
-                self.request.POST, instance=self.object.transaminitis.baseline_ast, prefix="ast_transaminitis"
-            )
+            if self.object.transaminitis.baseline_ast:
+                context["ast_form"] = self.ast_form_class(
+                    self.request.POST, instance=self.object.transaminitis.baseline_ast, prefix="ast_transaminitis"
+                )
+            else:
+                context["ast_form"] = self.ast_form_class(
+                    self.request.POST, instance=BaselineAST(), prefix="ast_transaminitis"
+                )
             context["bleed_form"] = self.bleed_form_class(self.request.POST, instance=self.object.bleed)
             context["CHF_form"] = self.CHF_form_class(self.request.POST, instance=self.object.CHF)
             context["CKD_form"] = self.CKD_form_class(self.request.POST, instance=self.object.CKD)
-            context["creatinine_form"] = self.creatinine_form_class(
-                self.request.POST, instance=self.object.CKD.baseline, prefix="creatinine_CKD"
-            )
+            if self.object.CKD.baseline:
+                context["creatinine_form"] = self.creatinine_form_class(
+                    self.request.POST, instance=self.object.CKD.baseline, prefix="creatinine_CKD"
+                )
+            else:
+                context["creatinine_form"] = self.creatinine_form_class(
+                    self.request.POST, instance=BaselineCreatinine(), prefix="creatinine_CKD"
+                )
             context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
                 self.request.POST, instance=self.object.colchicine_interactions
             )
@@ -181,12 +197,22 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             context["heartattack_form"] = self.heartattack_form_class(
                 self.request.POST, instance=self.object.heartattack
             )
-            context["hemoglobin_polycythemia_form"] = self.hemoglobin_form_class(
-                self.request.POST, instance=self.object.polycythemia.baseline, prefix="hemoglobin_polycythemia"
-            )
-            context["hemoglobin_anemia_form"] = self.hemoglobin_form_class(
-                self.request.POST, instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
-            )
+            if self.object.polycythemia.baseline:
+                context["hemoglobin_polycythemia_form"] = self.hemoglobin_form_class(
+                    self.request.POST, instance=self.object.polycythemia.baseline, prefix="hemoglobin_polycythemia"
+                )
+            else:
+                context["hemoglobin_polycythemia_form"] = self.hemoglobin_form_class(
+                    self.request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_polycythemia"
+                )
+            if self.object.anemia.baseline:
+                context["hemoglobin_anemia_form"] = self.hemoglobin_form_class(
+                    self.request.POST, instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
+                )
+            else:
+                context["hemoglobin_anemia_form"] = self.hemoglobin_form_class(
+                    self.request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_anemia"
+                )
             context["hypertension_form"] = self.hypertension_form_class(
                 self.request.POST, instance=self.object.hypertension
             )
@@ -204,12 +230,24 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             context["osteoporosis_form"] = self.osteoporosis_form_class(
                 self.request.POST, instance=self.object.osteoporosis
             )
-            context["platelet_thrombocytosis_form"] = self.platelet_form_class(
-                self.request.POST, instance=self.object.thrombocytosis.baseline, prefix="platelet_thrombocytosis"
-            )
-            context["platelet_thrombocytopenia_form"] = self.platelet_form_class(
-                self.request.POST, instance=self.object.thrombocytopenia.baseline, prefix="platelet_thrombocytopenia"
-            )
+            if self.object.thrombocytosis.baseline:
+                context["platelet_thrombocytosis_form"] = self.platelet_form_class(
+                    self.request.POST, instance=self.object.thrombocytosis.baseline, prefix="platelet_thrombocytosis"
+                )
+            else:
+                context["platelet_thrombocytosis_form"] = self.platelet_form_class(
+                    self.request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytosis"
+                )
+            if self.objecdt.thrombocytopenia.baseline:
+                context["platelet_thrombocytopenia_form"] = self.platelet_form_class(
+                    self.request.POST,
+                    instance=self.object.thrombocytopenia.baseline,
+                    prefix="platelet_thrombocytopenia",
+                )
+            else:
+                context["platelet_thrombocytopenia_form"] = self.platelet_form_class(
+                    self.request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytopenia"
+                )
             context["polycythemia_form"] = self.polycythemia_form_class(
                 self.request.POST, instance=self.object.polycythemia
             )
@@ -227,40 +265,71 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             context["transaminitis_form"] = self.transaminitis_form_class(
                 self.request.POST, instance=self.object.transaminitis
             )
-            context["wbc_leukocytosis_form"] = self.wbc_form_class(
-                self.request.POST, instance=self.object.leukocytosis.baseline, prefix="wbc_leukocytosis"
-            )
-            context["wbc_leukoepenia_form"] = self.wbc_form_class(
-                self.request.POST, instance=self.object.leukopenia.baseline, prefix="wbc_leukopenia"
-            )
+            if self.object.leukocytosis.baseline:
+                context["wbc_leukocytosis_form"] = self.wbc_form_class(
+                    self.request.POST, instance=self.object.leukocytosis.baseline, prefix="wbc_leukocytosis"
+                )
+            else:
+                context["wbc_leukocytosis_form"] = self.wbc_form_class(
+                    self.request.POST, instance=BaselineWBC(), prefix="wbc_leukocytosis"
+                )
+            if self.object.leukopenia.baseline:
+                context["wbc_leukoepenia_form"] = self.wbc_form_class(
+                    self.request.POST, instance=self.object.leukopenia.baseline, prefix="wbc_leukopenia"
+                )
+            else:
+                context["wbc_leukoepenia_form"] = self.wbc_form_class(
+                    self.request.POST, instance=BaselineWBC(), prefix="wbc_leukopenia"
+                )
         else:
-            context["alt_form"] = self.alt_form_class(
-                instance=self.object.transaminitis.baseline_alt, prefix="alt_transaminitis"
-            )
+            if self.object.transaminitis.baseline_alt:
+                context["alt_form"] = self.alt_form_class(
+                    instance=self.object.transaminitis.baseline_alt, prefix="alt_transaminitis"
+                )
+            else:
+                context["alt_form"] = self.alt_form_class(instance=BaselineALT(), prefix="alt_transaminitis")
             context["anemia_form"] = self.anemia_form_class(instance=self.object.anemia)
             context["angina_form"] = self.angina_form_class(instance=self.object.angina)
             context["anticoagulation_form"] = self.anticoagulation_form_class(instance=self.object.anticoagulation)
-            context["ast_form"] = self.ast_form_class(
-                instance=self.object.transaminitis.baseline_ast, prefix="ast_transaminitis"
-            )
+            if self.object.transaminitis.baseline_ast:
+                context["ast_form"] = self.ast_form_class(
+                    instance=self.object.transaminitis.baseline_ast, prefix="ast_transaminitis"
+                )
+            else:
+                context["ast_form"] = self.ast_form_class(instance=BaselineAST(), prefix="ast_transaminitis")
             context["bleed_form"] = self.bleed_form_class(instance=self.object.bleed)
             context["CKD_form"] = self.CKD_form_class(instance=self.object.CKD)
             context["CHF_form"] = self.CHF_form_class(instance=self.object.CHF)
             context["colchicine_interactions_form"] = self.colchicine_interactions_form_class(
                 instance=self.object.colchicine_interactions
             )
-            context["creatinine_form"] = self.creatinine_form_class(
-                instance=self.object.CKD.baseline, prefix="creatinine_CKD"
-            )
+            if self.object.CKD.baseline:
+                context["creatinine_form"] = self.creatinine_form_class(
+                    instance=self.object.CKD.baseline, prefix="creatinine_CKD"
+                )
+            else:
+                context["creatinine_form"] = self.creatinine_form_class(
+                    instance=BaselineCreatinine(), prefix="creatinine_CKD"
+                )
             context["diabetes_form"] = self.diabetes_form_class(instance=self.object.diabetes)
             context["erosions_form"] = self.erosions_form_class(instance=self.object.erosions)
             context["heartattack_form"] = self.heartattack_form_class(instance=self.object.heartattack)
-            context["hemoglobin_polycythemia_form"] = self.hemoglobin_form_class(
-                instance=self.object.polycythemia.baseline, prefix="hemoglobin_polycythemia"
-            )
-            context["hemoglobin_anemia_form"] = self.hemoglobin_form_class(
-                instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
-            )
+            if self.object.polycythemia.baseline:
+                context["hemoglobin_polycythemia_form"] = self.hemoglobin_form_class(
+                    instance=self.object.polycythemia.baseline, prefix="hemoglobin_polycythemia"
+                )
+            else:
+                context["hemoglobin_polycythemia_form"] = self.hemoglobin_form_class(
+                    instance=BaselineHemoglobin(), prefix="hemoglobin_polycythemia"
+                )
+            if self.object.anemie.baseline:
+                context["hemoglobin_anemia_form"] = self.hemoglobin_form_class(
+                    instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
+                )
+            else:
+                context["hemoglobin_anemia_form"] = self.hemoglobin_form_class(
+                    instance=BaselineHemoglobin(), prefix="hemoglobin_anemia"
+                )
             context["hypertension_form"] = self.hypertension_form_class(instance=self.object.hypertension)
             context["hyperuricemia_form"] = self.hyperuricemia_form_class(instance=self.object.hyperuricemia)
             context["IBD_form"] = self.IBD_form_class(instance=self.object.IBD)
@@ -268,12 +337,22 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             context["leukopenia_form"] = self.leukopenia_form_class(instance=self.object.leukopenia)
             context["organ_transplant_form"] = self.organ_transplant_form_class(instance=self.object.organ_transplant)
             context["osteoporosis_form"] = self.osteoporosis_form_class(instance=self.object.osteoporosis)
-            context["platelet_thrombocytosis_form"] = self.platelet_form_class(
-                instance=self.object.thrombocytosis.baseline, prefix="platelet_thrombocytosis"
-            )
-            context["platelet_thrombocytopenia_form"] = self.platelet_form_class(
-                instance=self.object.thrombocytopenia.baseline, prefix="platelet_thrombocytopenia"
-            )
+            if self.object.thrombocytosis.baseline:
+                context["platelet_thrombocytosis_form"] = self.platelet_form_class(
+                    instance=self.object.thrombocytosis.baseline, prefix="platelet_thrombocytosis"
+                )
+            else:
+                context["platelet_thrombocytosis_form"] = self.platelet_form_class(
+                    instance=BaselinePlatelet(), prefix="platelet_thrombocytosis"
+                )
+            if self.object.thrombocytopenia.baseline:
+                context["platelet_thrombocytopenia_form"] = self.platelet_form_class(
+                    instance=self.object.thrombocytopenia.baseline, prefix="platelet_thrombocytopenia"
+                )
+            else:
+                context["platelet_thrombocytopenia_form"] = self.platelet_form_class(
+                    instance=BaselinePlatelet(), prefix="platelet_thrombocytopenia"
+                )
             context["polycythemia_form"] = self.polycythemia_form_class(instance=self.object.polycythemia)
             context["stroke_form"] = self.stroke_form_class(instance=self.object.stroke)
             context["tophi_form"] = self.tophi_form_class(instance=self.object.tophi)
@@ -283,12 +362,20 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
             context["urate_kidney_stones_form"] = self.urate_kidney_stone_form_class(
                 instance=self.object.urate_kidney_stones
             )
-            context["wbc_leukocytosis_form"] = self.wbc_form_class(
-                instance=self.object.leukocytosis.baseline, prefix="wbc_leukocytosis"
-            )
-            context["wbc_leukopenia_form"] = self.wbc_form_class(
-                instance=self.object.leukopenia.baseline, prefix="wbc_leukopenia"
-            )
+            if self.object.leukocytosis.baseline:
+                context["wbc_leukocytosis_form"] = self.wbc_form_class(
+                    instance=self.object.leukocytosis.baseline, prefix="wbc_leukocytosis"
+                )
+            else:
+                context["wbc_leukocytosis_form"] = self.wbc_form_class(
+                    instance=BaselineWBC(), prefix="wbc_leukocytosis"
+                )
+            if self.object.leukopenia.baseline:
+                context["wbc_leukopenia_form"] = self.wbc_form_class(
+                    instance=self.object.leukopenia.baseline, prefix="wbc_leukopenia"
+                )
+            else:
+                context["wbc_leukopenia_form"] = self.wbc_form_class(instance=BaselineWBC(), prefix="wbc_leukopenia")
         return context
 
     def get_object(self, queryset=None):
@@ -306,33 +393,54 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         # Fetches instance of MedicalProfile model and associated OnetoOne related models for UpdateView
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=self.object)
-        alt_form = self.alt_form_class(
-            request.POST, instance=self.object.transaminitis.baseline_alt, prefix="alt_transaminitis"
-        )
+        if self.object.transaminitis.baseline_alt:
+            alt_form = self.alt_form_class(
+                request.POST, instance=self.object.transaminitis.baseline_alt, prefix="alt_transaminitis"
+            )
+        else:
+            alt_form = self.alt_form_class(request.POST, instance=BaselineALT(), prefix="alt_transaminitis")
         anemia_form = self.anemia_form_class(request.POST, instance=self.object.anemia)
         angina_form = self.angina_form_class(request.POST, instance=self.object.angina)
         anticoagulation_form = self.anticoagulation_form_class(request.POST, instance=self.object.anticoagulation)
-        ast_form = self.ast_form_class(
-            request.POST, instance=self.object.transaminitis.baseline_ast, prefix="ast_transaminitis"
-        )
+        if self.object.transaminitis.baseline_ast:
+            ast_form = self.ast_form_class(
+                request.POST, instance=self.object.transaminitis.baseline_ast, prefix="ast_transaminitis"
+            )
+        else:
+            ast_form = self.ast_form_class(request.POST, instance=BaselineAST(), prefix="ast_transaminitis")
         bleed_form = self.bleed_form_class(request.POST, instance=self.object.bleed)
         CKD_form = self.CKD_form_class(request.POST, instance=self.object.CKD)
         CHF_form = self.CHF_form_class(request.POST, instance=self.object.CHF)
         colchicine_interactions_form = self.colchicine_interactions_form_class(
             request.POST, instance=self.object.colchicine_interactions
         )
-        creatinine_form = self.creatinine_form_class(
-            request.POST, instance=self.object.CKD.baseline, prefix="creatinine_CKD"
-        )
+        if self.object.CKD.baseline:
+            creatinine_form = self.creatinine_form_class(
+                request.POST, instance=self.object.CKD.baseline, prefix="creatinine_CKD"
+            )
+        else:
+            creatinine_form = self.creatinine_form_class(
+                request.POST, instance=BaselineCreatinine(), prefix="creatinine_CKD"
+            )
         diabetes_form = self.diabetes_form_class(request.POST, instance=self.object.diabetes)
         erosions_form = self.erosions_form_class(request.POST, instance=self.object.erosions)
         heartattack_form = self.heartattack_form_class(request.POST, instance=self.object.heartattack)
-        hemoglobin_anemia_form = self.hemoglobin_form_class(
-            request.POST, instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
-        )
-        hemoglobin_polycythemia_form = self.hemoglobin_form_class(
-            request.POST, instance=self.object.polycythemia.baseline, prefix="hemoglobin_polycythemia"
-        )
+        if self.object.anemia.baseline:
+            hemoglobin_anemia_form = self.hemoglobin_form_class(
+                request.POST, instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
+            )
+        else:
+            hemoglobin_anemia_form = self.hemoglobin_form_class(
+                request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_anemia"
+            )
+        if self.object.polycythemia.baseline:
+            hemoglobin_polycythemia_form = self.hemoglobin_form_class(
+                request.POST, instance=self.object.polycythemia.baseline, prefix="hemoglobin_polycythemia"
+            )
+        else:
+            hemoglobin_polycythemia_form = self.hemoglobin_form_class(
+                request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_polycythemia"
+            )
         hypertension_form = self.hypertension_form_class(request.POST, instance=self.object.hypertension)
         hyperuricemia_form = self.hyperuricemia_form_class(request.POST, instance=self.object.hyperuricemia)
         IBD_form = self.IBD_form_class(request.POST, instance=self.object.IBD)
@@ -340,12 +448,22 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         leukopenia_form = self.leukopenia_form_class(request.POST, instance=self.object.leukopenia)
         organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=self.object.organ_transplant)
         osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=self.object.osteoporosis)
-        platelet_thrombocytosis_form = self.platelet_form_class(
-            request.POST, instance=self.object.thrombocytosis.baseline, prefix="platelet_thrombocytosis"
-        )
-        platelet_thrombocytopenia_form = self.platelet_form_class(
-            request.POST, instance=self.object.thrombocytopenia.baseline, prefix="platelet_thrombocytopenia"
-        )
+        if self.object.thrombocytosis.baseline:
+            platelet_thrombocytosis_form = self.platelet_form_class(
+                request.POST, instance=self.object.thrombocytosis.baseline, prefix="platelet_thrombocytosis"
+            )
+        else:
+            platelet_thrombocytosis_form = self.platelet_form_class(
+                request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytosis"
+            )
+        if self.object.thrombocytopenia.baseline:
+            platelet_thrombocytopenia_form = self.platelet_form_class(
+                request.POST, instance=self.object.thrombocytopenia.baseline, prefix="platelet_thrombocytopenia"
+            )
+        else:
+            platelet_thrombocytopenia_form = self.platelet_form_class(
+                request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytopenia"
+            )
         polycythemia_form = self.polycythemia_form_class(request.POST, instance=self.object.polycythemia)
         stroke_form = self.stroke_form_class(request.POST, instance=self.object.stroke)
         thrombocytosis_form = self.thrombocytosis_form_class(request.POST, instance=self.object.thrombocytosis)
@@ -355,12 +473,18 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         urate_kidney_stones_form = self.urate_kidney_stone_form_class(
             request.POST, instance=self.object.urate_kidney_stones
         )
-        wbc_leukocytosis_form = self.wbc_form_class(
-            request.POST, instance=self.object.leukocytosis.baseline, prefix="wbc_leukocytosis"
-        )
-        wbc_leukopenia_form = self.wbc_form_class(
-            request.POST, instance=self.object.leukopenia.baseline, prefix="wbc_leukopenia"
-        )
+        if self.object.leukocytosis.baseline:
+            wbc_leukocytosis_form = self.wbc_form_class(
+                request.POST, instance=self.object.leukocytosis.baseline, prefix="wbc_leukocytosis"
+            )
+        else:
+            wbc_leukocytosis_form = self.wbc_form_class(request.POST, instance=BaselineWBC(), prefix="wbc_leukocytosis")
+        if self.object.leukopenia.baseline:
+            wbc_leukopenia_form = self.wbc_form_class(
+                request.POST, instance=self.object.leukopenia.baseline, prefix="wbc_leukopenia"
+            )
+        else:
+            wbc_leukopenia_form = self.wbc_form_class(request.POST, instance=BaselineWBC(), prefix="wbc_leukopenia")
 
         if (
             form.is_valid()
