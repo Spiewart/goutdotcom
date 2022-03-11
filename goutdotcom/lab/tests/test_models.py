@@ -1,15 +1,14 @@
 from datetime import datetime, timedelta
 from decimal import *
+from statistics import mean
 
 import pytest
 from django.test import Client, TestCase
 from django.utils import timezone
-from statistics import mean
 
 client = Client()
 
 from ...history.tests.factories import CKDFactory
-
 from ...lab.models import *
 from ...profiles.tests.factories import (
     FamilyProfileFactory,
@@ -76,6 +75,58 @@ class TestALTMethods(TestCase):
     def test__unicode__(self):
         ALT = ALTFactory(user=self.user)
         assert ALT.__unicode__() == str(ALT.name)
+
+    def test_get_AST(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast1 = ASTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt1)
+        assert self.alt1.get_AST() == self.ast1
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast2 = ASTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt2)
+        assert self.alt2.get_AST() == self.ast2
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        assert self.alt3.get_AST() == None
+
+    def test_normal_lfts(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast1 = ASTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt1)
+        assert self.alt1.normal_lfts() == True
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast2 = ASTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt2)
+        assert self.alt2.normal_lfts() == False
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=32,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast3 = ASTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt3)
+        assert self.alt3.normal_lfts() == False
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=566,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast4 = ASTFactory(user=self.user, value=277, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt4)
+        assert self.alt4.normal_lfts() == False
 
 
 class TestASTMethods(TestCase):
@@ -253,7 +304,6 @@ class TestCreatinineMethods(TestCase):
         )
         assert self.creatinine.eGFR_calculator() == round_decimal(eGFR, 2)
 
-
     def test_set_baseline_no_CKD(self):
         """
         Test checking the function of set_baseline() method
@@ -301,7 +351,7 @@ class TestCreatinineMethods(TestCase):
     def test_diagnose_CKD_with_CKD_no_baseline(self):
         """
         Test checking the function of diagnose_ckd() method
-        With CKD
+        With CKD but no User-entered baseline
         """
         self.creatinine1 = CreatinineFactory(
             user=self.user,
@@ -329,13 +379,17 @@ class TestCreatinineMethods(TestCase):
         self.user.baselinecreatinine.refresh_from_db()
         assert self.user.ckd.value == True
         assert self.user.ckd.baseline
+        assert self.user.ckd.last_modified == "Behind the scenes"
         assert self.user.baselinecreatinine
-        assert round(self.user.baselinecreatinine.value, 2) == round(mean([self.creatinine1.value, self.creatinine2.value, self.creatinine3.value]), 2)
+        assert self.user.baselinecreatinine.calculated == True
+        assert round(self.user.baselinecreatinine.value, 2) == round(
+            mean([self.creatinine1.value, self.creatinine2.value, self.creatinine3.value]), 2
+        )
 
     def test_diagnose_CKD_with_CKD_with_initial_baseline(self):
         """
         Test checking the function of diagnose_ckd() method
-        With CKD and initial baseline
+        With CKD and User-entered initial baseline
         """
         self.user.ckd.value = True
         self.user.ckd.baseline = BaselineCreatinineFactory(user=self.user, value=Decimal(1.9))
@@ -343,7 +397,7 @@ class TestCreatinineMethods(TestCase):
         self.user.ckd.save()
         assert self.user.ckd.value == True
         assert self.user.baselinecreatinine.value == Decimal(1.9)
-        assert self.user.ckd.stage == 4
+        assert self.user.ckd.stage == 3 or self.user.ckd.stage == 4
         self.creatinine1 = CreatinineFactory(
             user=self.user,
             value=Decimal(1.6),
@@ -376,21 +430,34 @@ class TestCreatinineMethods(TestCase):
         assert self.user.ckd.baseline
         assert self.user.baselinecreatinine
         assert self.creatinine3.get_baseline().value == round(Decimal(1.9), 2)
-        # Create Creatinine in normal range to test remove_ckd()
+        # Create Creatinine in normal range dated BEFORE today
+        # User's BaselineCreatinine was created today
+        # To test remove_ckd(), shouldn't remove User's Baseline
         self.creatinine4 = CreatinineFactory(
+            user=self.user,
+            value=Decimal(0.75),
+            date_drawn=timezone.now() - timedelta(days=8),
+        )
+        assert self.creatinine4.date_drawn < self.user.baselinecreatinine.modified
+        assert self.creatinine4.diagnose_ckd() == True
+        self.user.ckd.refresh_from_db()
+        assert self.user.ckd.value == True
+        assert self.user.ckd.baseline
+        assert self.user.baselinecreatinine
+        # Create Creatinine in normal range dated AFTER today
+        # User's BaselineCreatinine was created today
+        # To test remove_ckd(), should remove User's Baseline
+        self.creatinine5 = CreatinineFactory(
             user=self.user,
             value=Decimal(0.75),
             date_drawn=timezone.now() + timedelta(days=50),
         )
-        print(self.user.baselinecreatinine.calculated)
-        print(self.user.baselinecreatinine.created)
-        print(self.user.baselinecreatinine.modified)
-        print(self.user.ckd.value)
-        assert self.creatinine4.date_drawn > self.user.baselinecreatinine.modified
-        assert self.creatinine4.diagnose_ckd() == False
+        assert self.creatinine5.date_drawn > self.user.baselinecreatinine.modified
+        assert self.creatinine5.diagnose_ckd() == False
         self.user.ckd.refresh_from_db()
         assert self.user.ckd.value == False
         assert self.user.ckd.baseline == None
+        assert self.user.ckd.last_modified == "Behind the scenes"
         assert self.user.baselinecreatinine.DoesNotExist
 
     def test_diagnose_CKD_without_initial_CKD(self):

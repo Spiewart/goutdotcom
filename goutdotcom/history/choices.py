@@ -42,7 +42,7 @@ ORGAN_CHOICES = (
     (FACE, "Face"),
 )
 
-CONTRAINDICATIONSPROFILE = "ContraindicationsProfile"
+BEHINDTHESCENES = "Behind the scenes"
 FLAREAID = "FlareAid"
 FLARE = "Flare"
 FAMILYPROFILE = "FamilyProfile"
@@ -52,7 +52,7 @@ ULT = "ULT"
 ULTAID = "ULTAid"
 
 LAST_MODIFIED_CHOICES = (
-    (CONTRAINDICATIONSPROFILE, "ContraindicationsProfile"),
+    (BEHINDTHESCENES, "Behind the scenes"),
     (FLAREAID, "FlareAid"),
     (FLARE, "Flare"),
     (FAMILYPROFILE, "FamilyProfile"),
