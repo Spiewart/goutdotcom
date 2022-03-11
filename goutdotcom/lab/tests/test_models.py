@@ -20,6 +20,8 @@ from ...users.tests.factories import UserFactory
 from .factories import (
     ALTFactory,
     ASTFactory,
+    BaselineALTFactory,
+    BaselineASTFactory,
     BaselineCreatinineFactory,
     CreatinineFactory,
     HemoglobinFactory,
@@ -125,8 +127,59 @@ class TestALTMethods(TestCase):
             value=566,
             date_drawn=timezone.now() - timedelta(days=365),
         )
-        self.ast4 = ASTFactory(user=self.user, value=277, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt4)
+        self.ast4 = ASTFactory(
+            user=self.user, value=277, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt4
+        )
         assert self.alt4.normal_lfts() == False
+        self.alt5 = ALTFactory(
+            user=self.user,
+            value=26,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        assert self.alt5.normal_lfts() == False
+
+    def test_get_baseline(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast1 = ASTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt1)
+        assert self.alt1.get_baseline() == None
+        self.baseline = BaselineALTFactory(
+            user=self.user,
+            value=37,
+        )
+        assert self.alt1.get_baseline() == self.baseline
+
+    def test_get_baseline_AST(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast1 = ASTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt1)
+        assert self.alt1.get_baseline() == None
+        self.baseline = BaselineALTFactory(
+            user=self.user,
+            value=37,
+        )
+        self.baselineAST = BaselineASTFactory(
+            user=self.user,
+            value=37,
+        )
+        assert self.alt1.get_baseline_AST() == self.baselineAST
+
+    def test_set_baseline_no_initial_baseline(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        assert self.alt1.get_baseline() == None
+        self.alt1.set_baseline()
+        assert self.alt1.get_baseline() == self.user.baselinealt
+        assert self.user.baselinealt.value == 78
 
 
 class TestASTMethods(TestCase):

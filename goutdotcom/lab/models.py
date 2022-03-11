@@ -879,22 +879,20 @@ class ALT(BaseALT):
         Method that gets a User's baseline ALT
         Returns: BaselineALT or none
         """
-        try:
-            baseline = BaselineALT.objects.get(user=self.user)
-        except BaselineALT.DoesNotExist:
-            baseline = None
-        return baseline
+        if hasattr(self.user, "baselinealt"):
+            return self.user.baselinealt
+        else:
+            return None
 
     def get_baseline_AST(self):
         """
         Method that gets a User's baseline AST
         Returns: BaselineAST or none
         """
-        try:
-            baseline = BaselineAST.objects.get(user=self.user)
-        except BaselineAST.DoesNotExist:
-            baseline = None
-        return baseline
+        if hasattr(self.user, "baselineast"):
+            return self.user.baselineast
+        else:
+            return None
 
     def set_baseline(self):
         """

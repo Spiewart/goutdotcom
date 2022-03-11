@@ -7,6 +7,7 @@ from factory.django import DjangoModelFactory
 from goutdotcom.history.tests.factories import (
     AlcoholFactory,
     AllopurinolHypersensitivityFactory,
+    AnemiaFactory,
     AnginaFactory,
     AnticoagulationFactory,
     BleedFactory,
@@ -22,12 +23,18 @@ from goutdotcom.history.tests.factories import (
     HypertensionFactory,
     HyperuricemiaFactory,
     IBDFactory,
+    LeukocytosisFactory,
+    LeukopeniaFactory,
     OrganTransplantFactory,
     OsteoporosisFactory,
+    PolycythemiaFactory,
     PVDFactory,
     ShellfishFactory,
     StrokeFactory,
+    ThrombocytopeniaFactory,
+    ThrombocytosisFactory,
     TophiFactory,
+    TransaminitisFactory,
     UrateKidneyStonesFactory,
     XOIInteractionsFactory,
 )
@@ -81,6 +88,7 @@ class MedicalProfileFactory(DjangoModelFactory):
         AllopurinolHypersensitivityFactory, user=factory.SelfAttribute("..user")
     )
     angina = factory.SubFactory(AnginaFactory, user=factory.SelfAttribute("..user"))
+    anemia = factory.SubFactory(AnemiaFactory, user=factory.SelfAttribute("..user"))
     CKD = factory.SubFactory(CKDFactory, user=factory.SelfAttribute("..user"))
     febuxostat_hypersensitivity = factory.SubFactory(
         FebuxostatHypersensitivityFactory, user=factory.SelfAttribute("..user")
@@ -99,7 +107,13 @@ class MedicalProfileFactory(DjangoModelFactory):
     bleed = factory.SubFactory(BleedFactory, user=factory.SelfAttribute("..user"))
     colchicine_interactions = factory.SubFactory(ColchicineInteractionsFactory, user=factory.SelfAttribute("..user"))
     heartattack = factory.SubFactory(HeartAttackFactory, user=factory.SelfAttribute("..user"))
+    leukocytosis = factory.SubFactory(LeukocytosisFactory, user=factory.SelfAttribute("..user"))
+    leukopenia = factory.SubFactory(LeukopeniaFactory, user=factory.SelfAttribute("..user"))
+    polycythemia = factory.SubFactory(PolycythemiaFactory, user=factory.SelfAttribute("..user"))
     stroke = factory.SubFactory(StrokeFactory, user=factory.SelfAttribute("..user"))
+    thrombocytopenia = factory.SubFactory(ThrombocytopeniaFactory, user=factory.SelfAttribute("..user"))
+    thrombocytosis = factory.SubFactory(ThrombocytosisFactory, user=factory.SelfAttribute("..user"))
+    transaminitis = factory.SubFactory(TransaminitisFactory, user=factory.SelfAttribute("..user"))
     XOI_interactions = factory.SubFactory(XOIInteractionsFactory, user=factory.SelfAttribute("..user"))
     PVD = factory.SubFactory(PVDFactory, user=factory.SelfAttribute("..user"))
 

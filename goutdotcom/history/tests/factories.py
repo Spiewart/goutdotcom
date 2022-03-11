@@ -36,6 +36,12 @@ class AllopurinolHypersensitivityFactory(DjangoModelFactory):
     class Meta:
         model = AllopurinolHypersensitivity
 
+class AnemiaFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Anemia
 
 class AnginaFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
@@ -215,6 +221,26 @@ class HeartAttackFactory(DjangoModelFactory):
     class Meta:
         model = HeartAttack
 
+class LeukocytosisFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Leukocytosis
+
+class LeukopeniaFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Leukopenia
+
+class PolycythemiaFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Polycythemia
 
 class StrokeFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
@@ -223,6 +249,26 @@ class StrokeFactory(DjangoModelFactory):
     class Meta:
         model = Stroke
 
+class ThrombocytosisFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Thrombocytosis
+
+class ThrombocytopeniaFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Thrombocytopenia
+
+class TransaminitisFactory(DjangoModelFactory):
+    value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
+    last_modified = factory.fuzzy.FuzzyChoice(LAST_MODIFIED_CHOICES, getter=lambda c: c[0])
+
+    class Meta:
+        model = Transaminitis
 
 class XOIInteractionsFactory(DjangoModelFactory):
     value = factory.fuzzy.FuzzyChoice(BOOL_CHOICES, getter=lambda c: c[0])
