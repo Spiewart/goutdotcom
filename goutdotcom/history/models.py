@@ -836,7 +836,7 @@ class Transaminitis(MedicalHistory):
     )
     baseline_alt = models.OneToOneField("lab.BaselineALT", on_delete=models.SET_NULL, null=True, blank=True)
     baseline_ast = models.OneToOneField("lab.BaselineAST", on_delete=models.SET_NULL, null=True, blank=True)
-
+    
 
 class UrateKidneyStones(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)

@@ -181,6 +181,113 @@ class TestALTMethods(TestCase):
         assert self.alt1.get_baseline() == self.user.baselinealt
         assert self.user.baselinealt.value == 78
 
+    def test_set_baseline_single_alt_initial_baseline_false(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now(),
+        )
+        self.user.baselinealt = BaselineALTFactory(
+            user=self.user,
+            value=98,
+        )
+        assert self.alt1.get_baseline() == self.user.baselinealt
+        self.alt1.set_baseline()
+        self.alt1.refresh_from_db()
+        assert self.alt1.get_baseline() == self.user.baselinealt
+        assert self.user.baselinealt.value == 98
+        assert self.user.transaminitis.value == True
+
+    def test_set_baseline_single_alt_initial_baseline_true(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.user.transaminitis.value = True
+        self.user.baselinealt = BaselineALTFactory(
+            user=self.user,
+            value=98,
+            calculated=True,
+        )
+        assert self.alt1.get_baseline() == self.user.baselinealt
+        self.alt1.set_baseline()
+        self.alt1.refresh_from_db()
+        assert self.alt1.get_baseline() == self.user.baselinealt
+        assert self.user.baselinealt.value == 78
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+
+    def test_set_baseline_multiple_alt_no_initial_baseline(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        self.alt1.set_baseline()
+        assert hasattr(self.user, "baselinealt") == False
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=530),
+        )
+        self.alt1.set_baseline()
+        assert self.user.baselinealt.value == 78
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=777,
+            date_drawn=timezone.now() - timedelta(days=300),
+        )
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=7777,
+            date_drawn=timezone.now() - timedelta(days=232),
+        )
+        self.alt1.set_baseline()
+        assert self.user.baselinealt.value == mean([777, 7777])
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+
+    def test_set_baseline_multiple_alt_with_initial_baseline_calculated_false(self):
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        self.alt1.set_baseline()
+        assert hasattr(self.user, "baselinealt") == False
+        self.alt1andahalf = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=722),
+        )
+        self.alt1andahalf.set_baseline()
+        assert hasattr(self.user, "baselinealt") == True
+        assert self.user.baselinealt.calculated == True
+        self.user.baselinealt.value = 95
+        self.user.baselinealt.calculated = False
+        self.user.baselinealt.save()
+        assert self.user.transaminitis.value == True
+        self.alt1.set_baseline()
+        assert self.user.baselinealt.value == 95
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=530),
+        )
+        self.alt1.set_baseline()
+        assert hasattr(self.user, "baselinealt") == True
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=777,
+            date_drawn=timezone.now() - timedelta(days=300),
+        )
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=7777,
+            date_drawn=timezone.now() - timedelta(days=232),
+        )
+        self.alt1.set_baseline()
+        assert hasattr(self.user, "baselinealt") == True
+
 
 class TestASTMethods(TestCase):
     def setUp(self):

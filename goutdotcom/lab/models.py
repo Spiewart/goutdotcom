@@ -799,6 +799,9 @@ class BaselineALT(BaseALT):
             if self.user:
                 # If so, create slug from user and pk
                 self.slug = slugify(self.user.username)
+        if self.user.transaminitis.value != True:
+            self.user.transaminitis.value = True
+            self.user.transaminitis.save()
 
 
 class BaselineAST(BaseAST):
@@ -829,6 +832,9 @@ class BaselineAST(BaseAST):
             if self.user:
                 # If so, create slug from user and pk
                 self.slug = slugify(self.user.username)
+        if self.user.transaminitis.value != True:
+            self.user.transaminitis.value = True
+            self.user.transaminitis.save()
 
 
 class ALT(BaseALT):
@@ -864,6 +870,9 @@ class ALT(BaseALT):
     def normal_lfts(self):
         """
         Helper function that checks if an ALT has a normal associated AST
+        Also checks if ALT is a follow up on an abnormal ALT
+        If ALT is normal and the original abnormal ALT has a normal associated AST, return True for normal LFTs
+        Because the origina abnormal ALT was likely spurious
         Returns:
             Boolean: True if both normal, False if not
         """
@@ -872,6 +881,12 @@ class ALT(BaseALT):
             if ast.high == False:
                 if self.high == False:
                     return True
+        if self.abnormal_followup:
+            if self.high == False:
+                ast = self.abnormal_followup.get_AST()
+                if self.ast:
+                    if self.ast.high == False:
+                        return True
         return False
 
     def get_baseline(self):
@@ -918,28 +933,42 @@ class ALT(BaseALT):
                     return None
                 # If not, set baseline to only ALT
                 else:
+                    # Check if only ALT is greater than two years old, return None if so
+                    if ALTs[0].date_drawn < timezone.now() - timedelta(days=730):
+                        return None
                     baseline.value = ALTs[0].value
                     baseline.save()
                     self.user.transaminitis.last_modified = "Behind the scenes"
                     self.user.transaminitis.save()
             else:
+                # Check if only ALT is greater than two years old, return None if so
+                if ALTs[0].date_drawn < timezone.now() - timedelta(days=730):
+                    return None
                 baseline = BaselineALT.objects.create(user=self.user, value=ALTs[0].value, calculated=True)
-                if self.user.transaminitis.value == False:
-                    self.user.transaminitis.value = True
+                baseline.value = ALTs[0].value
+                baseline.save()
                 self.user.transaminitis.baseline_alt = baseline
                 self.user.transaminitis.last_modified = "Behind the scenes"
                 self.user.transaminitis.save()
-                baseline.value = ALTs[0].value
-                baseline.save()
         else:
-            # Else assemble list of ALTs from t-365 > t-7 days
+            # Else assemble list of ALTs from t-180 > t-7 days
             # Based on method for establishing BaselineCreatinine
+            # Adjusted for 6 month definition of chronic hepatitis
             ALTs = ALTs.filter(
                 date_drawn__range=[
-                    (timezone.now() - timedelta(days=365)),
+                    (timezone.now() - timedelta(days=180)),
                     timezone.now() - timedelta(days=7),
                 ]
             )
+            # If there are no ALTs over last 6 months, look back 1 year
+            if len(ALTs) == 0:
+                ALTs = ALT.objects.filter(
+                    user=self.user,
+                    date_drawn__range=[
+                        (timezone.now() - timedelta(days=365)),
+                        timezone.now() - timedelta(days=7),
+                    ],
+                ).order_by("-date_drawn")
             # If there are no ALTs over last year, look back 2 years
             if len(ALTs) == 0:
                 ALTs = ALT.objects.filter(
@@ -969,8 +998,6 @@ class ALT(BaseALT):
                 baseline = BaselineALT.objects.create(user=self.user, value=mean_ALT, calculated=True)
                 # Set transaminitis baseline_alt to baseline, process, and save()
                 self.user.transaminitis.baseline_alt = baseline
-            if self.user.transaminitis.value != True:
-                self.user.transaminitis.value = True
             self.user.transaminitis.last_modified = "Behind the scenes"
             self.user.transaminitis.save()
 
@@ -1051,83 +1078,20 @@ class ALT(BaseALT):
 
         ALTs = ALT.objects.filter(user=self.user).order_by("-date_drawn")
 
+        # Check if most recent ALT was abnormal or if it had an associated AST that was abnormal
+        alt1 = ALTs[0]
         for alt_index in range(len(ALTs)):
-            alt1 = ALTs[0]
             alt = ALTs[alt_index]
-            if alt1.high:
-                if alt.high:
+            if alt.normal_lfts() == True:
+                return self.remove_transaminitis(alt=alt, ast=alt.get_AST())
+            else:
+                if alt_index <= (len(ALTs) - 1):
                     if alt1.date_drawn >= alt.date_drawn + timedelta(days=180):
                         self.set_baseline()
                         return True
                     else:
                         continue
-                elif alt.ast:
-                    if alt.ast.high:
-                        if alt1.date_drawn >= alt.date_drawn + timedelta(days=180):
-                            self.set_baseline()
-                            return True
-                        else:
-                            continue
-                elif alt.abnormal_followup:
-                    if alt.abnormal_followup.ast:
-                        if alt.abnormal_followup.ast.high:
-                            if alt1.date_drawn >= alt.abnormal_followup.date_drawn + timedelta(days=180):
-                                self.set_baseline()
-                                return True
-                            else:
-                                continue
-                return remove_transaminitis()
-            elif alt1.ast:
-                if alt1.ast.high:
-                    if alt.high:
-                        if alt1.date_drawn >= alt.date_drawn + timedelta(days=180):
-                            self.set_baseline()
-                            return True
-                        else:
-                            continue
-                    elif alt.ast:
-                        if alt.ast.high:
-                            if alt1.date_drawn >= alt.date_drawn + timedelta(days=180):
-                                self.set_baseline()
-                                return True
-                            else:
-                                continue
-                    elif alt.abnormal_followup:
-                        if alt.abnormal_followup.ast:
-                            if alt.abnormal_followup.ast.high:
-                                if alt1.date_drawn >= alt.abnormal_followup.date_drawn + timedelta(days=180):
-                                    self.set_baseline()
-                                    return True
-                                else:
-                                    continue
-                    return remove_transaminitis()
-            elif alt1.abnormal_followup:
-                if alt1.abnormal_followup.ast:
-                    if alt1.abnormal_followup.ast.high:
-                        if alt.high:
-                            if alt1.date_drawn >= alt.date_drawn + timedelta(days=180):
-                                self.set_baseline()
-                                return True
-                            else:
-                                continue
-                        elif alt.ast:
-                            if alt.ast.high:
-                                if alt1.date_drawn >= alt.date_drawn + timedelta(days=180):
-                                    self.set_baseline()
-                                    return True
-                                else:
-                                    continue
-                        elif alt.abnormal_followup:
-                            if alt.abnormal_followup.ast:
-                                if alt.abnormal_followup.ast.high:
-                                    if alt1.date_drawn >= alt.abnormal_followup.date_drawn + timedelta(days=180):
-                                        self.set_baseline()
-                                        return True
-                                    else:
-                                        continue
-                        return remove_transaminitis()
-            else:
-                return remove_transaminitis()
+                return False
 
 
 class AST(BaseAST):
