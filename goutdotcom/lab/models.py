@@ -858,11 +858,17 @@ class ALT(BaseALT):
         Fetches via date_drawn if available, otherwise created
         returns: AST object or None
         """
+        # Check if ALT has AST
         if hasattr(self, "ast"):
             ast = self.ast
+        # If not, check if ALT is a follow up for an abnormal lab
         elif self.abnormal_followup:
+            # If so, check if the abnormal lab had an AST
             if hasattr(self.abnormal_followup, "ast"):
                 ast = self.abnormal_followup.ast
+            # Otherwise there's no AST
+            else:
+                ast = None
         else:
             ast = None
         return ast
@@ -870,9 +876,8 @@ class ALT(BaseALT):
     def normal_lfts(self):
         """
         Helper function that checks if an ALT has a normal associated AST
-        Also checks if ALT is a follow up on an abnormal ALT
-        If ALT is normal and the original abnormal ALT has a normal associated AST, return True for normal LFTs
-        Because the origina abnormal ALT was likely spurious
+        If ALT is follow up on abnormal ALT, get_AST() will fetch AST from original abnormal
+        If ALT and AST are both normal, returns True. False if not.
         Returns:
             Boolean: True if both normal, False if not
         """
@@ -881,12 +886,6 @@ class ALT(BaseALT):
             if ast.high == False:
                 if self.high == False:
                     return True
-        if self.abnormal_followup:
-            if self.high == False:
-                ast = self.abnormal_followup.get_AST()
-                if self.ast:
-                    if self.ast.high == False:
-                        return True
         return False
 
     def get_baseline(self):
@@ -1001,6 +1000,89 @@ class ALT(BaseALT):
             self.user.transaminitis.last_modified = "Behind the scenes"
             self.user.transaminitis.save()
 
+    def remove_transaminitis(self, alt=None):
+        """
+        Helper function that removes transaminitis and deletes related BaselineALT/AST models
+
+        Args:
+            alt: defaults to self
+
+        Implicit Args:
+            ast: will by definition be present by calling function (diagnose_transaminitis())
+
+        Returns:
+            Bool: False if Transaminitis removed, True if not
+            Modifies related models en route
+        """
+        baseline_alt = self.get_baseline()
+        baseline_ast = self.get_baseline_AST()
+        if alt == None:
+            alt = self
+        ast = self.get_AST()
+        # Check if there is a BaselineALT or BaselineAST
+        if baseline_alt:
+            if baseline_alt.calculated == False:
+                if hasattr(baseline_alt, "modified"):
+                    baseline_alt_date = baseline_alt.modified
+                elif hasattr(baseline_alt, "created"):
+                    baseline_alt_date = baseline_alt.created
+                else:
+                    baseline_alt_date = None
+                if hasattr(alt, "date_drawn"):
+                    alt_date = alt.date_drawn
+                elif hasattr(alt, "modified"):
+                    alt_date = alt.modified
+                elif hasattr(alt, "created"):
+                    alt_date = alt.created
+                else:
+                    alt_date = None
+                if baseline_alt_date and alt_date:
+                    if baseline_alt_date < alt_date:
+                        baseline_alt.delete()
+                        self.user.baselinealt = None
+                        self.user.save()
+            else:
+                baseline_alt.delete()
+                self.user.baselinealt = None
+                self.user.save()
+        # If there's a baselineAST, check if it was modified/created prior to the AST
+        # Delete if so
+        if baseline_ast:
+            if baseline_ast.calculated == False:
+                if hasattr(baseline_ast, "modified"):
+                    baseline_ast_date = baseline_ast.modified
+                elif hasattr(baseline_ast, "created"):
+                    baseline_ast_date = baseline_ast.created
+                else:
+                    baseline_ast_date = None
+                if hasattr(ast, "date_drawn"):
+                    ast_date = ast.date_drawn
+                elif hasattr(ast, "modified"):
+                    ast_date = ast.modified
+                elif hasattr(ast, "created"):
+                    ast_date = ast.created
+                else:
+                    ast_date = None
+                if baseline_ast_date and ast_date:
+                    if baseline_ast_date < ast_date:
+                        baseline_ast.delete()
+                        self.user.baselineast = None
+                        self.user.save()
+            else:
+                baseline_ast.delete()
+                self.user.baselineast = None
+                self.user.save()
+        # If there's no BaselineALT or BaselineAST, there isn't any transaminitis
+        # Modify transaminitis fields and save(), return False
+        if not hasattr(self.user, "baselinealt") and not hasattr(self.user, "baselineast"):
+            if self.user.transaminitis.value == True:
+                self.user.transaminitis.value = False
+                self.user.transaminitis.last_modified = "Behind the scenes"
+                self.user.transaminitis.save()
+            return False
+        else:
+            return True
+
     def diagnose_transaminitis(self):
         """
         Method that will determine if a Patient has chronic transaminitis
@@ -1009,89 +1091,28 @@ class ALT(BaseALT):
 
         Returns: Boolean, but modifies user.transaminitis first
         """
-        baseline_alt = self.get_baseline()
-        baseline_ast = self.get_baseline_AST()
-        ast = self.get_AST()
 
-        def remove_transaminitis(self, alt=self, ast=ast):
-            """
-            Helper function that removes transaminitis and deletes related BaselineALT/AST models
-
-            Args:
-                alt: defaults to self
-                ast: set by attempting to fetch AST with get_AST() method
-
-            Returns:
-                Bool: False if Transaminitis removed, True if not
-                Modifies related models en route
-            """
-            # Check if there is a BaselineALT or BaselineAST
-            if baseline_alt or baseline_ast:
-                # If there's a baselineALT, check if it was modified/created prior to the ALT
-                # Delete if so
-                if baseline_alt:
-                    if baseline_alt.calculated == False:
-                        if baseline_alt.modified:
-                            if baseline_alt.modified < alt.date_drawn:
-                                baseline_alt.delete()
-                        else:
-                            if baseline_alt.created < alt.date_drawn:
-                                baseline_alt.delete()
-                # If there's a baselineAST, check if it was modified/created prior to the AST
-                # Delete if so
-                if self.ast:
-                    if baseline_ast:
-                        if baseline_ast.calculated == False:
-                            if self.normal_lfts():
-                                if baseline_ast.modified:
-                                    if baseline_ast.modified < ast.date_drawn:
-                                        baseline_ast.delete()
-                                else:
-                                    if baseline_ast.created < ast.date_drawn:
-                                        baseline_ast.delete()
-                # If there's no BaselineALT or BaselineAST, there isn't any transaminitis
-                # Modify transaminitis fields and save(), return False
-                if baseline_alt == None and baseline_ast == None:
-                    if self.user.transaminitis.value == True:
-                        self.user.transaminitis.value = False
-                        self.user.transaminitis.last_modified = "Behind the scenes"
-                        self.user.transaminitis.save()
-                    return False
-                # Else return True
-                return True
-            else:
-                if self.user.transaminitis.value == True:
-                    self.user.transaminitis.value = False
-                    self.user.transaminitis.last_modified = "Behind the scenes"
-                    self.user.transaminitis.save()
-                return False
-
-        # Check if User has transaminitis already
-        if self.user.transaminitis.value == True:
-            # Check if LFTs are normal, if so remove transaminitis
-            if self.normal_lfts():
-                return remove_transaminitis(self)
-            # Else, set the baseline
-            else:
-                self.set_baseline()
-                return True
-
+        # Assemble a list of all User's ALTs
         ALTs = ALT.objects.filter(user=self.user).order_by("-date_drawn")
-
-        # Check if most recent ALT was abnormal or if it had an associated AST that was abnormal
-        alt1 = ALTs[0]
+        # Loop over all ALTs
         for alt_index in range(len(ALTs)):
             alt = ALTs[alt_index]
+            # Check if each subsequent ALT normal
             if alt.normal_lfts() == True:
-                return self.remove_transaminitis(alt=alt, ast=alt.get_AST())
+                # Remove transaminitis if so
+                return self.remove_transaminitis(alt=alt)
+            # If ALT is abnormal
             else:
-                if alt_index <= (len(ALTs) - 1):
-                    if alt1.date_drawn >= alt.date_drawn + timedelta(days=180):
-                        self.set_baseline()
-                        return True
-                    else:
-                        continue
-                return False
+                # Check if there is at least 6 months from ALT and most recent abnormal ALT
+                if ALTs[0].date_drawn >= alt.date_drawn + timedelta(days=180):
+                    # If so, set the baseline for transaminitis and return True
+                    self.set_baseline()
+                    return True
+                # If not 6 months, continue iteration
+                else:
+                    continue
+        # Return False if 6 month span of abnormal LFTs not found
+        return False
 
 
 class AST(BaseAST):

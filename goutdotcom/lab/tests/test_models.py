@@ -79,6 +79,8 @@ class TestALTMethods(TestCase):
         assert ALT.__unicode__() == str(ALT.name)
 
     def test_get_AST(self):
+        """Test getting AST in various scenarios"""
+        # Simple 1:1
         self.alt1 = ALTFactory(
             user=self.user,
             value=37,
@@ -93,12 +95,32 @@ class TestALTMethods(TestCase):
         )
         self.ast2 = ASTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt2)
         assert self.alt2.get_AST() == self.ast2
+        # Test returning None when there is no AST
         self.alt3 = ALTFactory(
             user=self.user,
             value=66,
             date_drawn=timezone.now() - timedelta(days=365),
         )
         assert self.alt3.get_AST() == None
+        # Test return AST when ALT is a abnormal_followup
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.alt5 = ALTFactory(
+            user=self.user,
+            value=43,
+            date_drawn=timezone.now() - timedelta(days=379),
+            abnormal_followup=self.alt4,
+        )
+        # Check if get_AST() returns None before 1to1 AST created
+        assert self.alt4.get_AST() == None
+        assert self.alt5.get_AST() == None
+        # Create 1to1 AST and assign to ALT
+        self.ast4 = ASTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt4)
+        assert self.alt4.get_AST() == self.ast4
+        assert self.alt5.get_AST() == self.ast4
 
     def test_normal_lfts(self):
         self.alt1 = ALTFactory(
@@ -287,6 +309,53 @@ class TestALTMethods(TestCase):
         )
         self.alt1.set_baseline()
         assert hasattr(self.user, "baselinealt") == True
+
+    def test_diagnose_transaminitis(self):
+        """Simple test of diagnose_transaminitis method
+        Simple scenarios
+        """
+        self.user.transaminitis.value = False
+        self.user.transaminitis.save()
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        assert self.user.transaminitis.value == False
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=500),
+        )
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=200),
+        )
+        assert self.alt3.diagnose_transaminitis() == True
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        assert self.user.baselinealt.calculated == True
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=22,
+            date_drawn=timezone.now() - timedelta(days=100),
+        )
+        assert self.alt3.diagnose_transaminitis() == True
+        self.ast4 = ASTFactory(
+            user=self.user,
+            value=22,
+            date_drawn=timezone.now() - timedelta(days=100),
+            alt=self.alt4,
+        )
+        assert self.alt4.normal_lfts() == True
+        assert self.alt4.get_baseline()
+        assert self.alt4.get_baseline().calculated == True
+        self.alt4.refresh_from_db()
+        self.alt3.refresh_from_db()
+        assert self.alt4.get_baseline_AST() == None
+        assert self.alt4.diagnose_transaminitis() == False
+        assert self.alt3.diagnose_transaminitis() == False
 
 
 class TestASTMethods(TestCase):
