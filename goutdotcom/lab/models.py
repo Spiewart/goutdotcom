@@ -1003,25 +1003,38 @@ class ALT(BaseALT):
     def remove_transaminitis(self, alt=None):
         """
         Helper function that removes transaminitis and deletes related BaselineALT/AST models
+        Sets User baselinealt and baselineast to None and saves User per Django delete() method
+        ***DOES NOT CHECK 'NORMALCY' OF AST/ALT***
+        ***RELIES ON ALT HAVING PASSED NORMAL_LFTS() METHOD***
 
         Args:
             alt: defaults to self
 
         Implicit Args:
-            ast: will by definition be present by calling function (diagnose_transaminitis())
+            ast: will by definition be present by calling function:
+            diagnose_transaminitis() --->>> normal_lfts())
 
         Returns:
             Bool: False if Transaminitis removed, True if not
             Modifies related models en route
         """
+        # Fetch User's BaselineALT and BaselineAST if they exist
         baseline_alt = self.get_baseline()
         baseline_ast = self.get_baseline_AST()
+        # Set alt to self if no argument declared in method call
         if alt == None:
             alt = self
+        # Try to fetch ALT's 1to1 AST
         ast = self.get_AST()
-        # Check if there is a BaselineALT or BaselineAST
+        # Check if there is a BaselineALT
         if baseline_alt:
+            # Check if BaselineALT is calculated
             if baseline_alt.calculated == False:
+                # If not, check if BaselineALT was modified or created prior to:
+                # ALT date_drawn > modified > created
+                # If so, delete BaselineALT, set User.baselinealt to None
+                # If not, BaselineALT is more recent, is User-entered
+                # Don't modify User MedicalProfile in that context
                 if hasattr(baseline_alt, "modified"):
                     baseline_alt_date = baseline_alt.modified
                 elif hasattr(baseline_alt, "created"):
@@ -1041,12 +1054,12 @@ class ALT(BaseALT):
                         baseline_alt.delete()
                         self.user.baselinealt = None
                         self.user.save()
+            # If BaselineALT is calculated, delete it, set User.baselinealt to None
             else:
                 baseline_alt.delete()
                 self.user.baselinealt = None
                 self.user.save()
-        # If there's a baselineAST, check if it was modified/created prior to the AST
-        # Delete if so
+        # If BaselienAST, process same as Baseline ALT above
         if baseline_ast:
             if baseline_ast.calculated == False:
                 if hasattr(baseline_ast, "modified"):

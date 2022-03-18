@@ -310,6 +310,84 @@ class TestALTMethods(TestCase):
         self.alt1.set_baseline()
         assert hasattr(self.user, "baselinealt") == True
 
+    def remove_transaminitis(self):
+        """
+        Test remove_transaminitis method.
+        Deletes BaselineALT for User.
+        Sets User's Transaminitis value to False
+        """
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=300),
+        )
+        assert self.alt1.remove_ckd() == False
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.baselinealt1 = BaselineALTFactory(
+            user=self.user,
+            value=133,
+            calculated=True,
+        )
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=133,
+            date_drawn=timezone.now() - timedelta(days=290),
+        )
+        assert self.alt2.remove_ckd() == True
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=133,
+            date_drawn=timezone.now() + timedelta(days=290),
+        )
+        assert self.alt3.remove_ckd(alt=self.alt2) == True
+        assert self.alt3.remove_ckd() == False
+        assert self.user.transaminitis.value == False
+        assert self.user.baselinealt == None
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.baselinealt1 = BaselineALTFactory(
+            user=self.user,
+            value=133,
+            calculated=True,
+        )
+        self.baselineast1 = BaselineASTFactory(
+            user=self.user,
+            value=133,
+            calculated=True,
+        )
+        assert self.alt2.remove_ckd() == False
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        assert self.alt3.remove_ckd(alt=self.alt2) == False
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        assert self.alt3.remove_ckd() == False
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        self.ast2 = ASTFactory(
+            user=self.user, value=133, date_drawn=timezone.now() - timedelta(days=290), alt=self.alt2
+        )
+        assert self.alt2.remove_ckd() == False
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        assert self.alt3.remove_ckd(alt=self.alt2) == False
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        self.ast3 = ASTFactory(
+            user=self.user, value=133, date_drawn=timezone.now() + timedelta(days=290), alt=self.alt2
+        )
+        assert self.alt3.remove_ckd(alt=self.alt2) == False
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        assert self.alt3.remove_ckd() == True
+        assert self.user.transaminitis.value == False
+        assert self.user.baselinealt == None
+
     def test_diagnose_transaminitis(self):
         """Simple test of diagnose_transaminitis method
         Simple scenarios
