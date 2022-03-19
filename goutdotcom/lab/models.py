@@ -1025,7 +1025,8 @@ class ALT(BaseALT):
         if alt == None:
             alt = self
         # Try to fetch ALT's 1to1 AST
-        ast = self.get_AST()
+        # Need to call on alt, not self, in case ALT was supplied as method arg
+        ast = alt.get_AST()
         # Check if there is a BaselineALT
         if baseline_alt:
             # Check if BaselineALT is calculated

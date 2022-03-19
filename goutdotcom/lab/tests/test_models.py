@@ -310,12 +310,14 @@ class TestALTMethods(TestCase):
         self.alt1.set_baseline()
         assert hasattr(self.user, "baselinealt") == True
 
-    def remove_transaminitis(self):
+    def test_remove_transaminitis_baseline_calculated(self):
         """
         Test remove_transaminitis method.
-        Deletes BaselineALT for User.
+        In setting of calculated BaselineALT/AST
+        Deletes BaselineALT/AST for User.
         Sets User's Transaminitis value to False
         """
+        # Transaminitis = True, BaselineALT = None
         self.user.transaminitis.value = True
         self.user.transaminitis.save()
         self.alt1 = ALTFactory(
@@ -323,7 +325,9 @@ class TestALTMethods(TestCase):
             value=33,
             date_drawn=timezone.now() - timedelta(days=300),
         )
-        assert self.alt1.remove_ckd() == False
+        assert self.alt1.remove_transaminitis() == False
+        # Transaminitis = True, BaselineALT created/modified after
+        # ALT2 calling remove_ckd()
         self.user.transaminitis.value = True
         self.user.transaminitis.save()
         self.baselinealt1 = BaselineALTFactory(
@@ -336,57 +340,132 @@ class TestALTMethods(TestCase):
             value=133,
             date_drawn=timezone.now() - timedelta(days=290),
         )
-        assert self.alt2.remove_ckd() == True
-        assert self.user.transaminitis.value == True
-        assert self.user.baselinealt
+        assert self.alt2.remove_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        assert hasattr(self.user, "baselinealt") == False
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.baselinealt2 = BaselineALTFactory(
+            user=self.user,
+            value=134,
+            calculated=True,
+        )
         self.alt3 = ALTFactory(
             user=self.user,
-            value=133,
-            date_drawn=timezone.now() + timedelta(days=290),
+            value=134,
+            date_drawn=timezone.now() - timedelta(days=290),
         )
-        assert self.alt3.remove_ckd(alt=self.alt2) == True
-        assert self.alt3.remove_ckd() == False
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=134,
+            date_drawn=timezone.now() - timedelta(days=290),
+            alt=self.alt3,
+        )
+        assert self.alt3.remove_transaminitis() == False
         assert self.user.transaminitis.value == False
-        assert self.user.baselinealt == None
+        assert hasattr(self.user, "baselinealt") == False
+        assert hasattr(self.user, "baselineast") == False
+
+    def test_remove_transaminitis_baseline_not_calculated(self):
+        """
+        Test remove_transaminitis method.
+        In setting of User-defined transaminitis, BaselineALT/AST.calculated == False.
+        Deletes BaselineALT/AST for User.
+        Sets User's Transaminitis value to False
+        """
+        # Transaminitis = True, BaselineALT = None
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=300),
+        )
+        assert self.alt1.remove_transaminitis() == False
+        # Transaminitis = True, BaselineALT created/modified after
+        # ALT2 calling remove_ckd()
         self.user.transaminitis.value = True
         self.user.transaminitis.save()
         self.baselinealt1 = BaselineALTFactory(
             user=self.user,
             value=133,
-            calculated=True,
+            calculated=False,
+        )
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=133,
+            date_drawn=timezone.now() - timedelta(days=290),
+        )
+        assert self.alt2.remove_transaminitis() == True
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == True
+        assert self.user.baselinealt
+        # ALT3 date_drawn after BaselineALT created/modified
+        # remove_transaminitis() remove transaminitis, delete BaselineALT
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=133,
+            date_drawn=timezone.now() + timedelta(days=290),
+        )
+        assert self.alt3.remove_transaminitis(alt=self.alt2) == True
+        assert self.alt3.remove_transaminitis() == False
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == False
+        assert hasattr(self.user, "baselinealt") == False
+        # Create BaselineALT and BaselineAST, both calculated = False
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.baselinealt1 = BaselineALTFactory(
+            user=self.user,
+            value=133,
+            calculated=False,
         )
         self.baselineast1 = BaselineASTFactory(
             user=self.user,
             value=133,
-            calculated=True,
+            calculated=False,
         )
-        assert self.alt2.remove_ckd() == False
+        assert self.alt2.remove_transaminitis() == True
+        self.user.refresh_from_db()
         assert self.user.transaminitis.value == True
         assert self.user.baselinealt
-        assert self.alt3.remove_ckd(alt=self.alt2) == False
+        assert self.alt3.remove_transaminitis(alt=self.alt2) == True
+        self.user.refresh_from_db()
         assert self.user.transaminitis.value == True
         assert self.user.baselinealt
-        assert self.alt3.remove_ckd() == False
+        assert self.alt3.remove_transaminitis() == True
+        self.user.refresh_from_db()
         assert self.user.transaminitis.value == True
-        assert self.user.baselinealt
+        assert self.user.baselineast
+        # BaselineALT should have been deleted via alt3.remove_transaminitis()
+        assert hasattr(self.user, "baselinealt") == False
+        # Create 2nd AST, associated with 2nd ALT created/modified prior to BaselineALT/AST
         self.ast2 = ASTFactory(
             user=self.user, value=133, date_drawn=timezone.now() - timedelta(days=290), alt=self.alt2
         )
-        assert self.alt2.remove_ckd() == False
+        assert self.alt2.remove_transaminitis() == True
+        self.user.refresh_from_db()
         assert self.user.transaminitis.value == True
-        assert self.user.baselinealt
-        assert self.alt3.remove_ckd(alt=self.alt2) == False
+        assert self.user.baselineast
+        assert self.alt3.remove_transaminitis(alt=self.alt2) == True
+        self.user.refresh_from_db()
         assert self.user.transaminitis.value == True
-        assert self.user.baselinealt
+        assert self.user.baselineast
+        # Create 3rd AST, created/modified after BaselineALT/AST
         self.ast3 = ASTFactory(
-            user=self.user, value=133, date_drawn=timezone.now() + timedelta(days=290), alt=self.alt2
+            user=self.user, value=133, date_drawn=timezone.now() + timedelta(days=290), alt=self.alt3
         )
-        assert self.alt3.remove_ckd(alt=self.alt2) == False
+        # remove_transaminitis with arg alt=self.alt2 should still evaluate to True / fail
+        # Because self.alt2 and self.ast2 still older than baseline ALT/AST
+        assert self.alt3.remove_transaminitis(alt=self.alt2) == True
+        self.user.refresh_from_db()
         assert self.user.transaminitis.value == True
-        assert self.user.baselinealt
-        assert self.alt3.remove_ckd() == True
+        assert self.user.baselineast
+        assert self.alt3.remove_transaminitis() == False
+        self.user.refresh_from_db()
         assert self.user.transaminitis.value == False
-        assert self.user.baselinealt == None
+        assert hasattr(self.user, "baselinealt") == False
+        assert hasattr(self.user, "baselineast") == False
 
     def test_diagnose_transaminitis(self):
         """Simple test of diagnose_transaminitis method
