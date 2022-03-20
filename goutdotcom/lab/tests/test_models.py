@@ -471,48 +471,65 @@ class TestALTMethods(TestCase):
         """Simple test of diagnose_transaminitis method
         Simple scenarios
         """
+        # Set up User with transaminitis = False
         self.user.transaminitis.value = False
         self.user.transaminitis.save()
+        # Create normal ALT, disant past
         self.alt1 = ALTFactory(
             user=self.user,
             value=33,
             date_drawn=timezone.now() - timedelta(days=888),
         )
+        # Test that user doesn't get diagnosed with transaminitis
+        # Returns False via remove_transaminitis
+        assert self.alt1.diagnose_transaminitis() == False
         assert self.user.transaminitis.value == False
+        # Create 2nd ALT, abnormal
         self.alt2 = ALTFactory(
             user=self.user,
             value=78,
             date_drawn=timezone.now() - timedelta(days=500),
         )
+        # Test that user doesn't get diagnosed with transaminitis
+        assert self.alt2.diagnose_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        # Create 3rd abnormal ALT
         self.alt3 = ALTFactory(
             user=self.user,
             value=78,
             date_drawn=timezone.now() - timedelta(days=200),
         )
+        # Test that user does get diagnosed with transaminitis
+        # 2 abnormal ALTs > 6 months apart
         assert self.alt3.diagnose_transaminitis() == True
         assert self.user.transaminitis.value == True
-        assert self.user.baselinealt
+        assert hasattr(self.user, "baselinealt") == True
         assert self.user.baselinealt.calculated == True
+        # Create 4th ALT, normal value
         self.alt4 = ALTFactory(
             user=self.user,
             value=22,
             date_drawn=timezone.now() - timedelta(days=100),
         )
+        # Test that User still gets diagnosed with transaminitis
+        # No AST to assure GoutHelper LFTs are totally normal
         assert self.alt3.diagnose_transaminitis() == True
+        assert self.user.transaminitis.value == True
+        assert hasattr(self.user, "baselinealt") == True
+        assert self.user.baselinealt.calculated == True
+        # Create normal AST with alt = 4th ALT
         self.ast4 = ASTFactory(
             user=self.user,
             value=22,
             date_drawn=timezone.now() - timedelta(days=100),
             alt=self.alt4,
         )
+        # ALT4 should now register True for normal_lfts()
         assert self.alt4.normal_lfts() == True
-        assert self.alt4.get_baseline()
-        assert self.alt4.get_baseline().calculated == True
-        self.alt4.refresh_from_db()
-        self.alt3.refresh_from_db()
-        assert self.alt4.get_baseline_AST() == None
+        assert hasattr(self.user, "baselineast") == False
         assert self.alt4.diagnose_transaminitis() == False
-        assert self.alt3.diagnose_transaminitis() == False
+        assert hasattr(self.user, "baselinealt") == False
+        assert hasattr(self.user, "baselineast") == False
 
 
 class TestASTMethods(TestCase):

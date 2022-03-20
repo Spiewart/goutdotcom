@@ -1091,6 +1091,8 @@ class ALT(BaseALT):
         if not hasattr(self.user, "baselinealt") and not hasattr(self.user, "baselineast"):
             if self.user.transaminitis.value == True:
                 self.user.transaminitis.value = False
+                # Remove Transaminitis baseline_alt to prevent data loss
+                self.user.transaminitis.baseline_alt = None
                 self.user.transaminitis.last_modified = "Behind the scenes"
                 self.user.transaminitis.save()
             return False
@@ -1115,6 +1117,21 @@ class ALT(BaseALT):
             if alt.normal_lfts() == True:
                 # Remove transaminitis if so
                 return self.remove_transaminitis(alt=alt)
+            # Check if ALT is independently high (no AST to make normal_lfts() = True)
+            elif alt.high == False:
+                # Check if ALT has an associated high AST
+                ast = alt.get_AST()
+                if ast:
+                    if ast.high == True:
+                        # Check if there is at least 6 months from ALT and most recent abnormal ALT
+                        if ALTs[0].date_drawn >= alt.date_drawn + timedelta(days=180):
+                            # If so, set the baseline for transaminitis and return True
+                            self.set_baseline()
+                            return True
+                # If there is no AST or no high AST:
+                # There isn't enough info to determine LFTs are normal
+                # So continue to iterate back over LFTs to see if transaminitis can be diagnosed
+                continue
             # If ALT is abnormal
             else:
                 # Check if there is at least 6 months from ALT and most recent abnormal ALT
