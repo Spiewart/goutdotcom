@@ -103,6 +103,30 @@ class Lab(TimeStampedModel):
             else:
                 return "H"
 
+    def var_x_high(self, var):
+        """
+        Calculates if a Lab value is higher by a percentage (var).
+        Tries to fetch BaselineLab for User for calculation.
+        Otherwise uses reference_upper for calculation.
+
+        Args:
+            var (Float): Float percentage for calculating where the current Lab value is relative to baseline
+        Returns:
+            bool: True if Lab.value is > var * baseline, False if not
+        """
+        baseline = self.get_baseline()
+
+        if baseline:
+            if self.value > (var * baseline.value):
+                return True
+            else:
+                return False
+        else:
+            if self.value > (var * self.reference_upper):
+                return True
+            else:
+                return False
+
 
 class BaseALT(Lab):
     class Meta:
@@ -919,11 +943,17 @@ class ALT(BaseALT):
         """
         # Assemble list of ALTs for User
         ALTs = ALT.objects.filter(user=self.user).order_by("-date_drawn")
+        # Filter the all_ALTs queryset to exclude values greater than 3 times the upper limit of normal
+        # This will exclude episodes of acute hepatitis in the baseline calculation
+        ALTs_all = []
+        for alt in ALTs:
+            if alt.three_x_high == False:
+                ALTs_all.append(alt)
         # If no ALTs, return None
-        if len(ALTs) == 0:
+        if len(ALTs_all) == 0:
             return None
         # If 1 ALT, that must be the baseline
-        if len(ALTs) == 1:
+        if len(ALTs_all) == 1:
             baseline = self.get_baseline()
             # Check if there's a baseline
             if baseline:
@@ -933,18 +963,18 @@ class ALT(BaseALT):
                 # If not, set baseline to only ALT
                 else:
                     # Check if only ALT is greater than two years old, return None if so
-                    if ALTs[0].date_drawn < timezone.now() - timedelta(days=730):
+                    if ALTs_all[0].date_drawn < timezone.now() - timedelta(days=730):
                         return None
-                    baseline.value = ALTs[0].value
+                    baseline.value = ALTs_all[0].value
                     baseline.save()
                     self.user.transaminitis.last_modified = "Behind the scenes"
                     self.user.transaminitis.save()
             else:
                 # Check if only ALT is greater than two years old, return None if so
-                if ALTs[0].date_drawn < timezone.now() - timedelta(days=730):
+                if ALTs_all[0].date_drawn < timezone.now() - timedelta(days=730):
                     return None
                 baseline = BaselineALT.objects.create(user=self.user, value=ALTs[0].value, calculated=True)
-                baseline.value = ALTs[0].value
+                baseline.value = ALTs_all[0].value
                 baseline.save()
                 self.user.transaminitis.baseline_alt = baseline
                 self.user.transaminitis.last_modified = "Behind the scenes"
@@ -959,8 +989,14 @@ class ALT(BaseALT):
                     timezone.now() - timedelta(days=7),
                 ]
             )
+            # Filter the all_ALTs queryset to exclude values greater than 3 times the upper limit of normal
+            # This will exclude episodes of acute hepatitis in the baseline calculation
+            ALTs_lastsixmonths = []
+            for alt in ALTs:
+                if alt.three_x_high == False:
+                    ALTs_lastsixmonths.append(alt)
             # If there are no ALTs over last 6 months, look back 1 year
-            if len(ALTs) == 0:
+            if len(ALTs_lastsixmonths) == 0:
                 ALTs = ALT.objects.filter(
                     user=self.user,
                     date_drawn__range=[
@@ -968,18 +1004,36 @@ class ALT(BaseALT):
                         timezone.now() - timedelta(days=7),
                     ],
                 ).order_by("-date_drawn")
-            # If there are no ALTs over last year, look back 2 years
-            if len(ALTs) == 0:
-                ALTs = ALT.objects.filter(
-                    user=self.user,
-                    date_drawn__range=[
-                        (timezone.now() - timedelta(days=730)),
-                        timezone.now() - timedelta(days=7),
-                    ],
-                ).order_by("-date_drawn")
-            # If no ALTs over last 2 years, return None
-            if len(ALTs) == 0:
-                return None
+                # Filter the all_ALTs queryset to exclude values greater than 3 times the upper limit of normal
+                # This will exclude episodes of acute hepatitis in the baseline calculation
+                ALTs_lastyear = []
+                for alt in ALTs:
+                    if alt.three_x_high == False:
+                        ALTs_lastyear.append(alt)
+                # If there are no ALTs over last year, look back 2 years
+                if len(ALTs_lastyear) == 0:
+                    ALTs = ALT.objects.filter(
+                        user=self.user,
+                        date_drawn__range=[
+                            (timezone.now() - timedelta(days=730)),
+                            timezone.now() - timedelta(days=7),
+                        ],
+                    ).order_by("-date_drawn")
+                    # Filter the all_ALTs queryset to exclude values greater than 3 times the upper limit of normal
+                    # This will exclude episodes of acute hepatitis in the baseline calculation
+                    ALTs_lasttwoyears = []
+                    for alt in ALTs:
+                        if alt.three_x_high == False:
+                            ALTs_lasttwoyears.append(alt)
+                    # If no ALTs over last 2 years, return None
+                    if len(ALTs_lasttwoyears) == 0:
+                        return None
+                    else:
+                        ALTs = ALTs_lasttwoyears
+                else:
+                    ALTs = ALTs_lastyear
+            else:
+                ALTs = ALTs_lastsixmonths
             # Find mean over last year(s)
             mean_ALT = mean(alt.value for alt in ALTs)
             baseline = self.get_baseline()
@@ -1055,11 +1109,17 @@ class ALT(BaseALT):
                         baseline_alt.delete()
                         self.user.baselinealt = None
                         self.user.save()
+                        self.user.transaminitis.baseline_alt = None
+                        self.user.transaminitis.last_modified = "Behind the scenes"
+                        self.user.transaminitis.save()
             # If BaselineALT is calculated, delete it, set User.baselinealt to None
             else:
                 baseline_alt.delete()
                 self.user.baselinealt = None
                 self.user.save()
+                self.user.transaminitis.baseline_alt = None
+                self.user.transaminitis.last_modified = "Behind the scenes"
+                self.user.transaminitis.save()
         # If BaselienAST, process same as Baseline ALT above
         if baseline_ast:
             if baseline_ast.calculated == False:
@@ -1082,18 +1142,21 @@ class ALT(BaseALT):
                         baseline_ast.delete()
                         self.user.baselineast = None
                         self.user.save()
+                        self.user.transaminitis.baseline_ast = None
+                        self.user.transaminitis.last_modified = "Behind the scenes"
+                        self.user.transaminitis.save()
             else:
                 baseline_ast.delete()
                 self.user.baselineast = None
                 self.user.save()
+                self.user.transaminitis.baseline_slt = None
+                self.user.transaminitis.last_modified = "Behind the scenes"
+                self.user.transaminitis.save()
         # If there's no BaselineALT or BaselineAST, there isn't any transaminitis
         # Modify transaminitis fields and save(), return False
         if not hasattr(self.user, "baselinealt") and not hasattr(self.user, "baselineast"):
             if self.user.transaminitis.value == True:
                 self.user.transaminitis.value = False
-                # Remove Transaminitis baseline_alt to prevent data loss
-                self.user.transaminitis.baseline_alt = None
-                self.user.transaminitis.last_modified = "Behind the scenes"
                 self.user.transaminitis.save()
             return False
         else:
@@ -1109,7 +1172,13 @@ class ALT(BaseALT):
         """
 
         # Assemble a list of all User's ALTs
-        ALTs = ALT.objects.filter(user=self.user).order_by("-date_drawn")
+        ALTs = ALT.objects.filter(
+            user=self.user,
+            date_drawn__range=[
+                (timezone.now() - timedelta(days=730)),
+                timezone.now(),
+            ],
+        ).order_by("-date_drawn")
         # Loop over all ALTs
         for alt_index in range(len(ALTs)):
             alt = ALTs[alt_index]
@@ -1143,7 +1212,59 @@ class ALT(BaseALT):
                 else:
                     continue
         # Return False if 6 month span of abnormal LFTs not found
+        # Do not call remove_transaminitis()
+        # In case User is getting infrequent labs but does have chronic hepatitis
+        # (Would be the case in a patient on stable-dose ULT)
         return False
+
+    def process_high(self):
+        """
+        Function that processes a high ALT.
+        First sees if the User has Transaminitis and a BaselineALT.
+        Then checks if this object is a follow up an abnormal ALT.
+        Returns "urgent" for emergent rise in ALT (acute hepatitis).
+        Will stop ULTPlan.
+        Returns "nonurgent" for close follow-up
+        If high ALT is an abnormal follow up but not "urgent":
+            Recalculates baseline in BaselineALT, checks for Transaminitis otherwise
+        Returns:
+            string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
+        """
+        # Declare baseline for scope
+        self.baseline = None
+        # See if the User meets the definition of Transaminitis (=chronic hepatitis)
+        if self.diagnose_transaminitis() == True:
+            # Try to fetch baseline
+            self.baseline = self.get_baseline()
+        # Check if ALT is a follow up on an abnormal
+        if self.abnormal_followup:
+            # Check if User has BaselineALT (chronic hepatitis)
+            if self.baseline:
+                if self.var_x_high(3):
+                    return "urgent"
+                elif self.var_x_high(2):
+                    return "nonurgent"
+            # If no BaselineALT
+            else:
+                if self.var_x_high(3):
+                    return "urgent"
+                elif self.var_x_high(2):
+                    return "nonurgent"
+        # If ALT isn't a follow up on an abnormal
+        else:
+            # Check if User has BaselineALT
+            if self.baseline:
+                if self.var_x_high(3):
+                    return "urgent"
+                elif self.var_x_high(2):
+                    return "nonurgent"
+            # If no BaselineALT
+            else:
+                if self.var_x_high(3):
+                    return "urgent"
+                elif self.var_x_high(2):
+                    return "nonurgent"
+        return None
 
 
 class AST(BaseAST):
@@ -1161,6 +1282,43 @@ class AST(BaseAST):
             if self.user:
                 # If so, create slug from user and pk
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
+
+    def get_ALT(self):
+        """
+        Method that gets ALT associated with AST
+        Fetches via model instance if available
+        Otherwise looks for whether AST is an abnormal F/U, checks original for associated ALT
+        returns: AST object or None
+        """
+        # Check if AST has ALT
+        if self.alt:
+            alt = self.alt
+        # If not, check if AST is a follow up for an abnormal lab
+        elif self.abnormal_followup:
+            # If so, check if the abnormal lab had an AST
+            if self.abnormal_followup.alt:
+                alt = self.abnormal_followup.alt
+            # Otherwise there's no ALT
+            else:
+                alt = None
+        else:
+            alt = None
+        return alt
+
+    def normal_lfts(self):
+        """
+        Helper function that checks if an AST has a normal associated ALT
+        If AST is follow up on abnormal AST, get_ALT() will fetch ALT from original abnormal
+        If ALT and AST are both normal, returns True. False if not.
+        Returns:
+            Boolean: True if both normal, False if not
+        """
+        alt = self.get_ALT()
+        if alt:
+            if alt.high == False:
+                if self.high == False:
+                    return True
+        return False
 
 
 class Platelet(BasePlatelet):

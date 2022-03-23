@@ -265,7 +265,7 @@ class TestALTMethods(TestCase):
             date_drawn=timezone.now() - timedelta(days=232),
         )
         self.alt1.set_baseline()
-        assert self.user.baselinealt.value == mean([777, 7777])
+        assert self.user.baselinealt.value == 78
         assert self.user.transaminitis.last_modified == "Behind the scenes"
 
     def test_set_baseline_multiple_alt_with_initial_baseline_calculated_false(self):
@@ -414,7 +414,6 @@ class TestALTMethods(TestCase):
         assert hasattr(self.user, "baselinealt") == False
         # Create BaselineALT and BaselineAST, both calculated = False
         self.user.transaminitis.value = True
-        self.user.transaminitis.save()
         self.baselinealt1 = BaselineALTFactory(
             user=self.user,
             value=133,
@@ -425,6 +424,9 @@ class TestALTMethods(TestCase):
             value=133,
             calculated=False,
         )
+        self.user.transaminitis.baseline_alt = self.baselinealt1
+        self.user.transaminitis.baseline_ast = self.baselineast1
+        self.user.transaminitis.save()
         assert self.alt2.remove_transaminitis() == True
         self.user.refresh_from_db()
         assert self.user.transaminitis.value == True
@@ -531,6 +533,108 @@ class TestALTMethods(TestCase):
         assert hasattr(self.user, "baselinealt") == False
         assert hasattr(self.user, "baselineast") == False
 
+    def test_process_high_no_baseline(self):
+        """
+        Test abnormal_high() method
+        No baseline transaminitis or BaselineALT
+        """
+        # Set up User with transaminitis = False
+        self.user.transaminitis.value = False
+        self.user.transaminitis.save()
+        # Create normal ALT, disant past
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        assert self.alt1.process_high() == None
+        # Create trivially high ALT
+        # Check that it processes correctly (None = no alert)
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=67,
+            date_drawn=timezone.now() - timedelta(days=828),
+        )
+        assert self.alt2.high == True
+        assert self.alt2.process_high() == None
+        # Create nonurgently high ALT, check that is processes correctly
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=111,
+            date_drawn=timezone.now() - timedelta(days=788),
+        )
+        assert self.alt3.process_high() == "nonurgent"
+        # Create typical F/U ALT, set ALT3 to abnormal_followup
+        # Value of F/U ALT is normal
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=45,
+            date_drawn=timezone.now() - timedelta(days=768),
+            abnormal_followup=self.alt3,
+        )
+        assert self.alt4.process_high() == None
+        self.alt5 = ALTFactory(
+            user=self.user,
+            value=311,
+            date_drawn=timezone.now() - timedelta(days=708),
+        )
+        assert self.alt5.process_high() == "urgent"
+        assert hasattr(self.user, "baselinealt") == False
+        assert self.user.transaminitis.value == False
+        self.alt6 = ALTFactory(
+            user=self.user,
+            value=145,
+            date_drawn=timezone.now() - timedelta(days=468),
+            abnormal_followup=self.alt3,
+        )
+        assert self.alt6.process_high() == None
+        assert hasattr(self.user, "baselinealt") == True
+        assert self.user.transaminitis.value == True
+
+    def test_process_high_with_baseline(self):
+        """
+        Test abnormal_high() method
+        With baseline transaminitis or BaselineALT
+        """
+        # Set up User with transaminitis = False
+        self.user.transaminitis.value = True
+        self.baselinealt = BaselineALTFactory(
+            user=self.user,
+            value=133,
+            calculated=False,
+        )
+        self.user.transaminitis.baseline_alt = self.baselinealt
+        self.user.transaminitis.save()
+        # Create high ALT but within the range of the User's BaselineALT
+        self.alt1 = ALTFactory(
+            user=self.user,
+            value=98,
+            date_drawn=timezone.now() - timedelta(days=343),
+        )
+        assert self.alt1.process_high() == None
+        self.alt2 = ALTFactory(
+            user=self.user,
+            value=105,
+            date_drawn=timezone.now() - timedelta(days=243),
+        )
+        assert self.alt2.process_high() == None
+        assert self.user.baselinealt.value == 133
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=555,
+            date_drawn=timezone.now() + timedelta(days=2),
+        )
+        assert self.alt3.process_high() == "urgent"
+        assert self.user.baselinealt.value == 133
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=122,
+            date_drawn=timezone.now() + timedelta(days=16),
+            abnormal_followup=self.alt3,
+        )
+        assert self.alt4.process_high() == None
+        assert self.user.baselinealt.value == 133
+
 
 class TestASTMethods(TestCase):
     def setUp(self):
@@ -548,6 +652,103 @@ class TestASTMethods(TestCase):
     def test__unicode__(self):
         AST = ASTFactory(user=self.user)
         assert AST.__unicode__() == str(AST.name)
+
+    def test_get_ALT(self):
+        """Test getting ALT in various scenarios"""
+        # Simple 1:1
+        self.alt1 = ALTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt1,
+        )
+        assert self.ast1.get_ALT() == self.alt1
+        self.alt2 = ALTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt2,
+        )
+        assert self.ast2.get_ALT() == self.alt2
+        # Test returning None when there is no ALT
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        assert self.ast3.get_ALT() == None
+        # Test return ALT when AST is a abnormal_followup
+        self.ast4 = ASTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.ast5 = ASTFactory(
+            user=self.user,
+            value=43,
+            date_drawn=timezone.now() - timedelta(days=379),
+            abnormal_followup=self.ast4,
+        )
+        # Check if get_ALT() returns None before 1to1 ALT created
+        assert self.ast4.get_ALT() == None
+        assert self.ast5.get_ALT() == None
+        # Create 1to1 ALT and assign to AST
+        self.alt4 = ALTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast4.alt = self.alt4
+        self.ast4.save()
+        assert self.ast4.get_ALT() == self.alt4
+        assert self.ast5.get_ALT() == self.alt4
+
+    def test_normal_lfts(self):
+        """
+        Testing test_normal_lfts() method under various scenarios
+        """
+        # Check for normal LFTs
+        self.alt1 = ALTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt1,
+        )
+        assert self.ast1.normal_lfts() == True
+        # Check for abnormal LFTs
+        self.alt2 = ALTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=66,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt2,
+        )
+        assert self.ast2.normal_lfts() == False
+        # Check for high ALT, normal AST
+        self.alt3 = ALTFactory(user=self.user, value=57, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=32,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt3,
+        )
+        assert self.ast3.normal_lfts() == False
+        # Check for very high ALT/AST
+        self.alt4 = ALTFactory(user=self.user, value=277, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast4 = ASTFactory(
+            user=self.user,
+            value=566,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt4,
+        )
+
+        assert self.ast4.normal_lfts() == False
+        # Check for a normal AST without a confirmed normal ALT
+        self.ast5 = ASTFactory(
+            user=self.user,
+            value=26,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        assert self.ast5.normal_lfts() == False
 
 
 class TestPlateletMethods(TestCase):
