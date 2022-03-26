@@ -2,6 +2,13 @@ BOOL_CHOICES = ((True, "Yes"), (False, "No"))
 
 CHF_BOOL_CHOICES = ((True, "Systolic"), (False, "Diastolic"))
 
+FLAG_CHOICES = ((0, "normal"),
+                (1, "trivial"),
+                (2, "nonurgent"),
+                (3, "urgent"),
+                (4, "emergency"),
+                )
+
 FATHER = "Father"
 MOTHER = "Mother"
 SISTER = "Sister"

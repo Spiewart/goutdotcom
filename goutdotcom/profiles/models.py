@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
@@ -122,6 +123,45 @@ class PatientProfile(TimeStampedModel):
     slug = models.SlugField(max_length=200)
     history = HistoricalRecords()
 
+    # Fields for processing high lab values
+    #LFTs
+    lft_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial LFT abnormality calculation", null=False, blank=False)
+    lft_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(2.00), help_text="Percentage for nonurgent LFT abnormality calculation", null=False, blank=False)
+    lft_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(3.00), help_text="Percentage for urgent LFT abnormality calculation", null=False, blank=False)
+    lft_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(5.00), help_text="Percentage for emergency LFT abnormality calculation", null=False, blank=False)
+    #Creatinine
+    creatinine_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial creatinine abnormality calculation", null=False, blank=False)
+    creatinine_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(2.00), help_text="Percentage for trivial creatinine abnormality calculation", null=False, blank=False)
+    creatinine_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(3.00), help_text="Percentage for trivial creatinine abnormality calculation", null=False, blank=False)
+    creatinine_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(5.00), help_text="Percentage for trivial creatinine abnormality calculation", null=False, blank=False)
+    #Platelet
+    platelet_high_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
+    platelet_high_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
+    platelet_high_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
+    platelet_high_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
+    platelet_low_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
+    platelet_low_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
+    platelet_low_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
+    platelet_low_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
+    #WBC
+    wbc_high_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high WBC abnormality calculation", null=False, blank=False)
+    wbc_high_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high WBC abnormality calculation", null=False, blank=False)
+    wbc_high_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high WBC abnormality calculation", null=False, blank=False)
+    wbc_high_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high WBC abnormality calculation", null=False, blank=False)
+    wbc_low_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low WBC abnormality calculation", null=False, blank=False)
+    wbc_low_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low WBC abnormality calculation", null=False, blank=False)
+    wbc_low_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low WBC abnormality calculation", null=False, blank=False)
+    wbc_low_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low WBC abnormality calculation", null=False, blank=False)
+    #Hemoglobin
+    hemoglobin_high_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high hemoglobin abnormality calculation", null=False, blank=False)
+    hemoglobin_high_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high hemoglobin abnormality calculation", null=False, blank=False)
+    hemoglobin_high_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high hemoglobin abnormality calculation", null=False, blank=False)
+    hemoglobin_high_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high hemoglobin abnormality calculation", null=False, blank=False)
+    hemoglobin_low_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low hemoglobin abnormality calculation", null=False, blank=False)
+    hemoglobin_low_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low hemoglobin abnormality calculation", null=False, blank=False)
+    hemoglobin_low_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low hemoglobin abnormality calculation", null=False, blank=False)
+    hemoglobin_low_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low hemoglobin abnormality calculation", null=False, blank=False)
+
     @property
     def age(self):
         if self.date_of_birth:
@@ -168,7 +208,7 @@ class PatientProfile(TimeStampedModel):
 
     # post_save() signal to create PatientProfile if User selected role="Patient" at signup
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def save_user_provider_profile(sender, instance, **kwargs):
+    def save_user_patient_profile(sender, instance, **kwargs):
         # Check if User instance Role is Patient
         if instance.role == "PATIENT":
             # Check if Patient has PatientProfile, save() if so, otherwise create() and assign User to Patient

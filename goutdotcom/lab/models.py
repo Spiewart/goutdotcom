@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from decimal import *
+from decimal import Decimal
 from statistics import mean
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.fields import BooleanField
 from django.urls import reverse
@@ -26,6 +26,33 @@ class Lab(TimeStampedModel):
     def class_name(self):
         return self.__class__.__name__
 
+    class Flag(models.IntegerChoices):
+        """
+        class to describe Lab.flag field choices and interpretation the Lab.value.
+        Will be set by process_high() or process_low() method.
+        """
+
+        # Lab is normal, continue as normal, default value
+        NORMAL = 0
+        # Lab.value is high or low, but not of clinical consequence
+        # Continue ULTPlan as usual
+        TRIVIAL = 1
+        # Lab.value is non-urgently abnormal.
+        # Will not pause ULTPlan
+        NONURGENT = 2
+        # Lab.value is urgently abnormal.
+        # WILL PAUSE ULTPLAN
+        URGENT = 3
+        # Lab.value is emergently abnormal.
+        # WILL PAUSE ULPLAN
+        # WILL RECOMMEND SEEKING IN PERSON MEDICAL CONSULTATION
+        EMERGENCY = 4
+        # Lab.value is close to normal.
+        # Set when a Lab is a follow-up (has abnormal_followup field)
+        ERROR = 5
+        # Lab.value is still abnormal but is improving from the last abnormal check.
+        IMPROVING = 6
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -34,6 +61,9 @@ class Lab(TimeStampedModel):
     abnormal_followup = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, default=None)
     history = HistoricalRecords(inherit=True)
     slug = models.SlugField(max_length=200, null=True, blank=True)
+    flag = models.IntegerField(
+        choices=Flag.choices, default=0, validators=[MinValueValidator(0), MaxValueValidator(6)], null=True, blank=True
+    )
 
     class Meta:
         abstract = True
@@ -103,6 +133,29 @@ class Lab(TimeStampedModel):
             else:
                 return "H"
 
+    @property
+    def show_flag(self):
+        """
+        Function that displays the Lab's flag attribute.
+        Returns: string
+        """
+        if self.flag == 0:
+            return None
+        elif self.flag == 1:
+            return "trivial"
+        elif self.flag == 2:
+            return "nonurgent"
+        elif self.flag == 3:
+            return "urgent"
+        elif self.flag == 4:
+            return "emergency"
+        elif self.flag == 5:
+            return "error"
+        elif self.flag == 6:
+            return "improving"
+        else:
+            return None
+
     def var_x_high(self, var):
         """
         Calculates if a Lab value is higher by a percentage (var).
@@ -126,6 +179,129 @@ class Lab(TimeStampedModel):
                 return True
             else:
                 return False
+
+    def get_baseline(self):
+        """
+        Method that gets a User's Baseline for any Lab
+        Returns: BaselineLab or none
+        """
+        return getattr(self.user, "baseline" + self.class_name().lower(), None)
+
+    def get_labcheck(self):
+        """
+        Method that gets LabCheck associated with Lab
+        returns: LabCheck object or None
+        """
+        # Check if Lab has LabCheck
+        return getattr(self, "labcheck", None)
+
+    def process_high(self):
+        """
+        Function that processes a high Lab.
+        Checks if this object is a follow up an abnormal Lab.
+        Returns "urgent" or "emergency" for emergent rise in Lab.
+        Will stop ULTPlan. "emergency" will prompt a User seek immediate medical attention.
+        Returns "nonurgent" for close follow-up, "trivial" for a small elevation that doesn't require immediate follow up.
+        If high Lab is an abnormal follow up but not "urgent":
+            Recalculates baseline in BaselineLab, checks for associated MedicalProfile object (CKD, transaminitis, leukopenia, etc.)
+        Returns:
+            string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
+        """
+        # Assign percentages for processing high/low for scope
+        trivial = None
+        nonurgent = None
+        urgent = None
+        emergency = None
+
+        # Check model to set percentages on which to process high values
+        # Pulled from PatientProfile, which will automatically be created with default values
+        if self.class_name() == "ALT" or self.class_name() == "AST":
+            trivial = self.user.patientprofile.lft_trivial
+            nonurgent = self.user.patientprofile.lft_nonurgent
+            urgent = self.user.patientprofile.lft_urgent
+            emergency = self.user.patientprofile.lft_emergency
+        elif self.class_name() == "creatinine":
+            trivial = self.user.patientprofile.creatinine_trivial
+            nonurgent = self.user.patientprofile.creatinine_nonurgent
+            urgent = self.user.patientprofile.creatinine_urgent
+            emergency = self.user.patientprofile.creatinine_emergency
+        elif self.class_name() == "WBC":
+            trivial = self.user.patientprofile.wbc_high_trivial
+            nonurgent = self.user.patientprofile.wbc_high_nonurgent
+            urgent = self.user.patientprofile.wbc_high_urgent
+            emergency = self.user.patientprofile.wbc_high_emergency
+        elif self.class_name() == "platelet":
+            trivial = self.user.patientprofile.platelet_high_trivial
+            nonurgent = self.user.patientprofile.platelet_high_nonurgent
+            urgent = self.user.patientprofile.platelet_high_urgent
+            emergency = self.user.patientprofile.platelet_high_emergency
+        elif self.class_name() == "hemoglobin":
+            trivial = self.user.patientprofile.hemoglobin_high_trivial
+            nonurgent = self.user.patientprofile.hemoglobin_high_nonurgent
+            urgent = self.user.patientprofile.hemoglobin_high_urgent
+            emergency = self.user.patientprofile.hemoglobin_high_emergency
+
+        # Declare baseline for scope
+        self.baseline = None
+        # See if the User meets the definition of Transaminitis (=chronic hepatitis)
+        if self.diagnose_transaminitis() == True:
+            # Try to fetch baseline
+            self.baseline = self.get_baseline()
+        # Check if Lab is a follow up on an abnormal
+        if self.abnormal_followup:
+            # Emergency (flag=4) values will not flag a follow up lab
+            # Will instead recommend user see medical attention
+            # Otherwise:
+            # If follow-up Lab at or below User's baseline, the original abnormality was likely an error
+            if self.var_x_high(1) == False:
+                self.abnormal_followup.flag = 5
+                self.abnormal_followup.save()
+                # Will return None at end of method
+            # If follow-up is still 3x the upper limit of normal or User's baseline
+            # Trigger emergency
+            # This would mean 2 Labs sequentially that are > 100, potentially higher
+            if self.var_x_high(urgent):
+                self.flag = 4
+                self.save()
+                return "emergency"
+            else:
+                # If the abnormal original was "urgent"
+                # Check if the follow up isn't 2.5x the baseline
+                # If not, save Lab.flag as improving
+                if self.abnormal_followup.flag == 3:
+                    self.flag = 6
+                    self.save()
+                    return "improving"
+                # Else the abnormal original was "nonurgent" flag=2
+                # If still 2x the baseline
+                # Mark as urgent (Lab.flag=3)
+                else:
+                    if self.var_x_high(nonurgent):
+                        self.flag = 3
+                        self.save()
+                        return "urgent"
+                    else:
+                        self.flag = 6
+                        self.save()
+                        return "improving"
+        # If Lab isn't a follow up on an abnormal
+        else:
+            if self.var_x_high(emergency):
+                self.flag = 4
+                self.save()
+                return "emergency"
+            elif self.var_x_high(urgent):
+                self.flag = 3
+                self.save()
+                return "urgent"
+            elif self.var_x_high(nonurgent):
+                self.flag = 2
+                self.save()
+                return "nonurgent"
+            elif self.var_x_high(trivial):
+                self.flag = 1
+                self.save()
+        return None
 
 
 class BaseALT(Lab):
@@ -912,16 +1088,6 @@ class ALT(BaseALT):
                     return True
         return False
 
-    def get_baseline(self):
-        """
-        Method that gets a User's baseline ALT
-        Returns: BaselineALT or none
-        """
-        if hasattr(self.user, "baselinealt"):
-            return self.user.baselinealt
-        else:
-            return None
-
     def get_baseline_AST(self):
         """
         Method that gets a User's baseline AST
@@ -986,7 +1152,7 @@ class ALT(BaseALT):
             ALTs = ALTs.filter(
                 date_drawn__range=[
                     (timezone.now() - timedelta(days=180)),
-                    timezone.now() - timedelta(days=7),
+                    timezone.now(),
                 ]
             )
             # Filter the all_ALTs queryset to exclude values greater than 3 times the upper limit of normal
@@ -1001,7 +1167,7 @@ class ALT(BaseALT):
                     user=self.user,
                     date_drawn__range=[
                         (timezone.now() - timedelta(days=365)),
-                        timezone.now() - timedelta(days=7),
+                        timezone.now(),
                     ],
                 ).order_by("-date_drawn")
                 # Filter the all_ALTs queryset to exclude values greater than 3 times the upper limit of normal
@@ -1016,7 +1182,7 @@ class ALT(BaseALT):
                         user=self.user,
                         date_drawn__range=[
                             (timezone.now() - timedelta(days=730)),
-                            timezone.now() - timedelta(days=7),
+                            timezone.now(),
                         ],
                     ).order_by("-date_drawn")
                     # Filter the all_ALTs queryset to exclude values greater than 3 times the upper limit of normal
@@ -1149,7 +1315,7 @@ class ALT(BaseALT):
                 baseline_ast.delete()
                 self.user.baselineast = None
                 self.user.save()
-                self.user.transaminitis.baseline_slt = None
+                self.user.transaminitis.baseline_alt = None
                 self.user.transaminitis.last_modified = "Behind the scenes"
                 self.user.transaminitis.save()
         # If there's no BaselineALT or BaselineAST, there isn't any transaminitis
@@ -1217,56 +1383,6 @@ class ALT(BaseALT):
         # (Would be the case in a patient on stable-dose ULT)
         return False
 
-    def process_high(self):
-        """
-        Function that processes a high ALT.
-        First sees if the User has Transaminitis and a BaselineALT.
-        Then checks if this object is a follow up an abnormal ALT.
-        Returns "urgent" for emergent rise in ALT (acute hepatitis).
-        Will stop ULTPlan.
-        Returns "nonurgent" for close follow-up
-        If high ALT is an abnormal follow up but not "urgent":
-            Recalculates baseline in BaselineALT, checks for Transaminitis otherwise
-        Returns:
-            string or nothing: returns "urgent" if urgent LabCheck follow up required, nonurgent if non-urgent required
-        """
-        # Declare baseline for scope
-        self.baseline = None
-        # See if the User meets the definition of Transaminitis (=chronic hepatitis)
-        if self.diagnose_transaminitis() == True:
-            # Try to fetch baseline
-            self.baseline = self.get_baseline()
-        # Check if ALT is a follow up on an abnormal
-        if self.abnormal_followup:
-            # Check if User has BaselineALT (chronic hepatitis)
-            if self.baseline:
-                if self.var_x_high(3):
-                    return "urgent"
-                elif self.var_x_high(2):
-                    return "nonurgent"
-            # If no BaselineALT
-            else:
-                if self.var_x_high(3):
-                    return "urgent"
-                elif self.var_x_high(2):
-                    return "nonurgent"
-        # If ALT isn't a follow up on an abnormal
-        else:
-            # Check if User has BaselineALT
-            if self.baseline:
-                if self.var_x_high(3):
-                    return "urgent"
-                elif self.var_x_high(2):
-                    return "nonurgent"
-            # If no BaselineALT
-            else:
-                if self.var_x_high(3):
-                    return "urgent"
-                elif self.var_x_high(2):
-                    return "nonurgent"
-        return None
-
-
 class AST(BaseAST):
     alt = models.OneToOneField(ALT, on_delete=models.SET_NULL, blank=True, null=True)
     # Creates date_drawn (=today) if not specified by form
@@ -1318,6 +1434,309 @@ class AST(BaseAST):
             if alt.high == False:
                 if self.high == False:
                     return True
+        return False
+
+    def get_baseline_ALT(self):
+        """
+        Method that gets a User's baseline ALT
+        Returns: BaselineALT or none
+        """
+        if hasattr(self.user, "baselinealt"):
+            return self.user.baselinealt
+        else:
+            return None
+
+    def set_baseline(self):
+        """
+        Method that sets a User's BaselineAST
+        Also modifies User's Transaminitis to reflect BaselineAST
+        ***WILL NOT MODIFY A USER-SET BASELINE (baseline.calculated == False)***
+
+        Returns:
+            Nothing or None, modifies related data
+        """
+        # Assemble list of ASTs for User
+        ASTs = AST.objects.filter(user=self.user).order_by("-date_drawn")
+        # Filter the all_ASTs queryset to exclude values greater than 3 times the upper limit of normal
+        # This will exclude episodes of acute hepatitis in the baseline calculation
+        ASTs_all = []
+        for ast in ASTs:
+            if ast.three_x_high == False:
+                ASTs_all.append(ast)
+        # If no ASTs, return None
+        if len(ASTs_all) == 0:
+            return None
+        # If 1 AST, that must be the baseline
+        if len(ASTs_all) == 1:
+            solo_AST = ASTs_all[0]
+            baseline = self.get_baseline()
+            # Check if there's a baseline
+            if baseline:
+                # If the baseline is User-entered, don't change it
+                if baseline.calculated == False:
+                    return None
+                # If not, set baseline to only AST
+                else:
+                    # Check if only AST is greater than two years old, return None if so
+                    if solo_AST.date_drawn < timezone.now() - timedelta(days=730):
+                        return None
+                    # Otherwise set BaselineAST to the single AST value
+                    baseline.value = solo_AST.value
+                    baseline.save()
+                    self.user.transaminitis.last_modified = "Behind the scenes"
+                    self.user.transaminitis.save()
+            # If there's no BaselineAST
+            else:
+                # Check if only AST is greater than two years old, return None if so
+                if solo_AST.date_drawn < timezone.now() - timedelta(days=730):
+                    return None
+                # Otherwise create BaselineAST
+                # Value equal to the only AST in ASTs_all
+                baseline = BaselineAST.objects.create(user=self.user, value=solo_AST.value, calculated=True)
+                baseline.value = solo_AST.value
+                baseline.save()
+                # Set Transaminitis to true, associate BaselineAST
+                self.user.transaminitis.baseline_ast = baseline
+                self.user.transaminitis.last_modified = "Behind the scenes"
+                self.user.transaminitis.save()
+        else:
+            # Else assemble list of ASTs from t-180 days
+            # Based on method for establishing BaselineCreatinine
+            # Adjusted for 6 month definition of chronic hepatitis
+            ASTs = ASTs.filter(
+                date_drawn__range=[
+                    (timezone.now() - timedelta(days=180)),
+                    timezone.now(),
+                ]
+            )
+            # Filter the ASTs queryset to exclude values greater than 3 times the upper limit of normal
+            # This will exclude episodes of acute hepatitis in the baseline calculation
+            ASTs_lastsixmonths = []
+            for ast in ASTs:
+                if ast.three_x_high == False:
+                    ASTs_lastsixmonths.append(ast)
+            # If there are no ASTs over last 6 months, look back 1 year
+            if len(ASTs_lastsixmonths) == 0:
+                ASTs = AST.objects.filter(
+                    user=self.user,
+                    date_drawn__range=[
+                        (timezone.now() - timedelta(days=365)),
+                        timezone.now(),
+                    ],
+                ).order_by("-date_drawn")
+                # Filter the all_ASTs queryset to exclude values greater than 3 times the upper limit of normal
+                # This will exclude episodes of acute hepatitis in the baseline calculation
+                ASTs_lastyear = []
+                for ast in ASTs:
+                    if ast.three_x_high == False:
+                        ASTs_lastyear.append(ast)
+                # If there are no ASTs over last year, look back 2 years
+                if len(ASTs_lastyear) == 0:
+                    ASTs = AST.objects.filter(
+                        user=self.user,
+                        date_drawn__range=[
+                            (timezone.now() - timedelta(days=730)),
+                            timezone.now(),
+                        ],
+                    ).order_by("-date_drawn")
+                    # Filter the all_ASTs queryset to exclude values greater than 3 times the upper limit of normal
+                    # This will exclude episodes of acute hepatitis in the baseline calculation
+                    ASTs_lasttwoyears = []
+                    for ast in ASTs:
+                        if ast.three_x_high == False:
+                            ASTs_lasttwoyears.append(ast)
+                    # If no ASTs over last 2 years, return None
+                    if len(ASTs_lasttwoyears) == 0:
+                        return None
+                    else:
+                        ASTs = ASTs_lasttwoyears
+                else:
+                    ASTs = ASTs_lastyear
+            else:
+                ASTs = ASTs_lastsixmonths
+            # Find mean over last year(s)
+            mean_AST = mean(ast.value for ast in ASTs)
+            baseline = self.get_baseline()
+            # Check if there's a baseline already
+            if baseline:
+                # If it's User-entered, don't change it
+                if baseline.calculated == False:
+                    return None
+                # Otherwise set mean AST to baseline
+                else:
+                    baseline.value = mean_AST
+                    baseline.save()
+            # If no BaselineAST, create new one
+            else:
+                baseline = BaselineAST.objects.create(user=self.user, value=mean_AST, calculated=True)
+                # Set transaminitis baseline_ast to baseline, process, and save()
+                self.user.transaminitis.baseline_ast = baseline
+            self.user.transaminitis.last_modified = "Behind the scenes"
+            self.user.transaminitis.save()
+
+    def remove_transaminitis(self, ast=None):
+        """
+        Helper function that removes transaminitis and deletes related BaselineALT/AST models
+        Sets User baselinealt and baselineast to None and saves User per Django delete() method
+        ***DOES NOT CHECK 'NORMALCY' OF AST/ALT***
+        ***RELIES ON AST HAVING PASSED NORMAL_LFTS() METHOD***
+
+        Args:
+            ast: defaults to self
+
+        Implicit Args:
+            alt: will by definition be present by calling function:
+            diagnose_transaminitis() --->>> normal_lfts())
+
+        Returns:
+            Bool: False if Transaminitis removed, True if not
+            Modifies related models en route
+        """
+        # Fetch User's BaselineAST and BaselineALT if they exist
+        baseline_ast = self.get_baseline()
+        baseline_alt = self.get_baseline_ALT()
+        # Set ast to self if no argument declared in method call
+        if ast == None:
+            ast = self
+        # Try to fetch AST's 1to1 ALT
+        # Need to call on ast, not self, in case AST was supplied as method arg
+        alt = ast.get_ALT()
+        # Check if there is a BaselineAST
+        if baseline_ast:
+            # Check if BaselineAST is calculated
+            if baseline_ast.calculated == False:
+                # If not, check if BaselineAST was modified or created prior to:
+                # AST date_drawn > modified > created
+                # If so, delete BaselineAST, set User.baselineast to None
+                # If not, BaselineAST is more recent, is User-entered
+                # Don't modify User MedicalProfile in that context
+                if hasattr(baseline_ast, "modified"):
+                    baseline_ast_date = baseline_ast.modified
+                elif hasattr(baseline_ast, "created"):
+                    baseline_ast_date = baseline_ast.created
+                else:
+                    baseline_ast_date = None
+                if hasattr(ast, "date_drawn"):
+                    ast_date = ast.date_drawn
+                elif hasattr(ast, "modified"):
+                    ast_date = ast.modified
+                elif hasattr(ast, "created"):
+                    ast_date = ast.created
+                else:
+                    ast_date = None
+                if baseline_ast_date and ast_date:
+                    if baseline_ast_date < ast_date:
+                        baseline_ast.delete()
+                        self.user.baselineast = None
+                        self.user.save()
+                        self.user.transaminitis.baseline_ast = None
+                        self.user.transaminitis.last_modified = "Behind the scenes"
+                        self.user.transaminitis.save()
+            # If BaselineAST is calculated, delete it, set User.baselineast to None
+            else:
+                baseline_ast.delete()
+                self.user.baselineast = None
+                self.user.save()
+                self.user.transaminitis.baseline_ast = None
+                self.user.transaminitis.last_modified = "Behind the scenes"
+                self.user.transaminitis.save()
+        # If BaselineALT, process same as Baseline AST above
+        if baseline_alt:
+            if baseline_alt.calculated == False:
+                if hasattr(baseline_alt, "modified"):
+                    baseline_alt_date = baseline_alt.modified
+                elif hasattr(baseline_alt, "created"):
+                    baseline_alt_date = baseline_alt.created
+                else:
+                    baseline_alt_date = None
+                if hasattr(alt, "date_drawn"):
+                    alt_date = alt.date_drawn
+                elif hasattr(alt, "modified"):
+                    alt_date = alt.modified
+                elif hasattr(alt, "created"):
+                    alt_date = alt.created
+                else:
+                    alt_date = None
+                if baseline_alt_date and alt_date:
+                    if baseline_alt_date < alt_date:
+                        baseline_alt.delete()
+                        self.user.baselinealt = None
+                        self.user.save()
+                        self.user.transaminitis.baseline_alt = None
+                        self.user.transaminitis.last_modified = "Behind the scenes"
+                        self.user.transaminitis.save()
+            else:
+                baseline_alt.delete()
+                self.user.baselinealt = None
+                self.user.save()
+                self.user.transaminitis.baseline_ast = None
+                self.user.transaminitis.last_modified = "Behind the scenes"
+                self.user.transaminitis.save()
+        # If there's no BaselineALT or BaselineAST, there isn't any transaminitis
+        # Modify transaminitis fields and save(), return False
+        if not hasattr(self.user, "baselinealt") and not hasattr(self.user, "baselineast"):
+            if self.user.transaminitis.value == True:
+                self.user.transaminitis.value = False
+                # Need to change last_modified again here in the event that Transaminitis is removed but no BaselineALT/AST is removed above
+                self.user.transaminitis.last_modified = "Behind the scenes"
+                self.user.transaminitis.save()
+            return False
+        else:
+            return True
+
+    def diagnose_transaminitis(self):
+        """
+        Method that will determine if a Patient has chronic transaminitis
+        Checks for persistently abnormal liver function (ALT, AST) for 180 days or longer
+        Any normal ALT/AST will result in False return
+
+        Returns: Boolean, but modifies user.transaminitis first
+        """
+
+        # Assemble a list of all User's ASTs over last 2 years
+        ASTs = AST.objects.filter(
+            user=self.user,
+            date_drawn__range=[
+                (timezone.now() - timedelta(days=730)),
+                timezone.now(),
+            ],
+        ).order_by("-date_drawn")
+        # Loop over all ASTs
+        for ast_index in range(len(ASTs)):
+            ast = ASTs[ast_index]
+            # Check if each subsequent AST normal
+            if ast.normal_lfts() == True:
+                # Remove transaminitis if so
+                return self.remove_transaminitis(ast=ast)
+            # Check if AST is independently high (no ALT to make normal_lfts() = True)
+            elif ast.high == False:
+                # Check if AST has an associated high ALT
+                alt = ast.get_ALT()
+                if alt:
+                    if alt.high == True:
+                        # Check if there is at least 6 months from AST and most recent abnormal AST
+                        if ASTs[0].date_drawn >= ast.date_drawn + timedelta(days=180):
+                            # If so, set the baseline for transaminitis and return True
+                            self.set_baseline()
+                            return True
+                # If there is no ALT or no high ALT:
+                # There isn't enough info to determine LFTs are normal
+                # So continue to iterate back over LFTs to see if transaminitis can be diagnosed
+                continue
+            # If AST is abnormal
+            else:
+                # Check if there is at least 6 months from AST and most recent abnormal AST
+                if ASTs[0].date_drawn >= ast.date_drawn + timedelta(days=180):
+                    # If so, set the baseline for transaminitis and return True
+                    self.set_baseline()
+                    return True
+                # If not 6 months, continue iteration
+                else:
+                    continue
+        # Return False if 6 month span of abnormal LFTs not found
+        # Do not call remove_transaminitis()
+        # In case User is getting infrequent labs but does have chronic hepatitis
+        # (Would be the case in a patient on stable-dose ULT)
         return False
 
 
@@ -1561,13 +1980,13 @@ class LabCheck(TimeStampedModel):
     platelet = models.OneToOneField(Platelet, on_delete=models.CASCADE, null=True, blank=True, default=None)
     wbc = models.OneToOneField(WBC, on_delete=models.CASCADE, null=True, blank=True, default=None)
     urate = models.OneToOneField(Urate, on_delete=models.CASCADE, null=True, blank=True, default=None)
-
-    due = models.DateField(
+    abnormal_followup = models.OneToOneField("self", on_delete=models.CASCADE, null=True, blank=True, default=None)
+    due = models.DateTimeField(
         help_text="When is this lab check due?",
-        default=(datetime.today().date() + timedelta(days=42)),
+        default=(timezone.now() + timedelta(days=42)),
     )
     completed = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this lab check completed?", default=False)
-    completed_date = models.DateField(
+    completed_date = models.DateTimeField(
         help_text="When was this lab check completed?",
         blank=True,
         null=True,
@@ -1588,17 +2007,21 @@ class LabCheck(TimeStampedModel):
 
     @property
     def delinquent(self):
-        if datetime.today().date() >= self.due - self.ultplan.delinquent_lab_interval:
-            return True
-        else:
-            return True
+        """
+        Checks if a LabCheck is delinquently overdue
+        Used to pause ULTPlan
+
+        Returns: Boolean, True is delinquent, False if not
+        """
+        return timezone.now() >= self.due - self.ultplan.delinquent_lab_interval
 
     @property
     def overdue(self):
-        if datetime.today().date() >= self.due:
-            return True
-        elif datetime.today().date() < self.due:
-            return False
+        """
+        Checks if the LabCheck is overdue
+        Returns: Boolean, True if overdue, False if not
+        """
+        return timezone.now() >= self.due
 
     def check_completed_labs(self):
         """
@@ -1631,6 +2054,15 @@ class LabCheck(TimeStampedModel):
         # Return None if LabCheck not completed
         else:
             return None
+
+    def get_labcheck(self):
+        """
+        Method that gets LabCheck associated with LabCheck
+        self will be 1to1 with LabCheck.abnormal_followup
+        returns: LabCheck object or None
+        """
+        # Check if Lab has LabCheck
+        return getattr(self, "labcheck", None)
 
     def __str__(self):
         if self.completed == True:

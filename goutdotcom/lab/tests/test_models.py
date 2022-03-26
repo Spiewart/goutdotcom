@@ -180,12 +180,6 @@ class TestALTMethods(TestCase):
             value=37,
             date_drawn=timezone.now() - timedelta(days=365),
         )
-        self.ast1 = ASTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365), alt=self.alt1)
-        assert self.alt1.get_baseline() == None
-        self.baseline = BaselineALTFactory(
-            user=self.user,
-            value=37,
-        )
         self.baselineAST = BaselineASTFactory(
             user=self.user,
             value=37,
@@ -572,10 +566,10 @@ class TestALTMethods(TestCase):
             date_drawn=timezone.now() - timedelta(days=768),
             abnormal_followup=self.alt3,
         )
-        assert self.alt4.process_high() == None
+        assert self.alt4.process_high() == "improving"
         self.alt5 = ALTFactory(
             user=self.user,
-            value=311,
+            value=211,
             date_drawn=timezone.now() - timedelta(days=708),
         )
         assert self.alt5.process_high() == "urgent"
@@ -587,7 +581,7 @@ class TestALTMethods(TestCase):
             date_drawn=timezone.now() - timedelta(days=468),
             abnormal_followup=self.alt3,
         )
-        assert self.alt6.process_high() == None
+        assert self.alt6.process_high() == "improving"
         assert hasattr(self.user, "baselinealt") == True
         assert self.user.transaminitis.value == True
 
@@ -632,7 +626,7 @@ class TestALTMethods(TestCase):
             date_drawn=timezone.now() + timedelta(days=16),
             abnormal_followup=self.alt3,
         )
-        assert self.alt4.process_high() == None
+        assert self.alt4.process_high() == "improving"
         assert self.user.baselinealt.value == 133
 
 
@@ -749,6 +743,573 @@ class TestASTMethods(TestCase):
             date_drawn=timezone.now() - timedelta(days=365),
         )
         assert self.ast5.normal_lfts() == False
+
+    def test_get_baseline(self):
+        """
+        Testing get_baseline() method to fetch User's BaselineAST
+        """
+        self.alt1 = ALTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt1,
+        )
+        assert self.ast1.get_baseline() == None
+        self.baseline = BaselineASTFactory(
+            user=self.user,
+            value=37,
+        )
+        assert self.ast1.get_baseline() == self.baseline
+
+    def test_get_baseline_ALT(self):
+        """
+        Test get_baseline_ALT() method to get AST's associated ALT.
+        """
+        self.alt1 = ALTFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=365))
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=37,
+            date_drawn=timezone.now() - timedelta(days=365),
+            alt=self.alt1,
+        )
+        self.baselineALT = BaselineALTFactory(
+            user=self.user,
+            value=37,
+        )
+        assert self.ast1.get_baseline_ALT() == self.baselineALT
+
+    def test_set_baseline_one_threexhigh_AST(self):
+        """
+        Test set_baseline() method with single AST which is 3x the ULN
+        """
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=788,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        assert self.ast1.get_baseline() == None
+        self.ast1.set_baseline()
+        assert self.ast1.get_baseline() == None
+
+    def test_set_baseline_no_initial_baseline(self):
+        """
+        Test set_baseline() method with single AST, no BaselineAST
+        """
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        assert self.ast1.get_baseline() == None
+        self.ast1.set_baseline()
+        assert self.ast1.get_baseline() == self.user.baselineast
+        assert self.user.baselineast.value == 78
+
+    def test_set_baseline_single_ast_initial_baseline_false(self):
+        """
+        Test set_baseline() method with single AST
+        Baseline is set by User (calculated=False by default)
+        Thus should set_baseline() should not change BaselineAST
+        """
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=(timezone.now() + timedelta(days=3)),
+        )
+        self.user.baselineast = BaselineASTFactory(
+            user=self.user,
+            value=98,
+        )
+        assert self.ast1.get_baseline() == self.user.baselineast
+        self.ast1.set_baseline()
+        assert self.ast1.get_baseline() == self.user.baselineast
+        assert self.user.baselineast.value == 98
+        assert self.user.transaminitis.value == True
+
+    def test_set_baseline_single_ast_initial_baseline_true(self):
+        """
+        Test set_baseline() method with a single AST, preexisting BaselineAST
+        BaselineAST is calculated
+        Thus should be overwritten by set_baseline()
+        """
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=365),
+        )
+        self.user.transaminitis.value = True
+        self.user.baselineast = BaselineASTFactory(
+            user=self.user,
+            value=98,
+            calculated=True,
+        )
+        assert self.ast1.get_baseline() == self.user.baselineast
+        self.ast1.set_baseline()
+        assert self.ast1.get_baseline() == self.user.baselineast
+        assert self.user.baselineast.value == 78
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+
+    def test_set_baseline_multiple_ast_no_initial_baseline(self):
+        """
+        Test set_baseline() method with multiples ASTs, no preexisting BaselineAST
+        """
+        # Create very distant AST
+        # Greater than 2 years in past, won't be used for Baseline
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        self.ast1.set_baseline()
+        assert hasattr(self.user, "baselineast") == False
+        # Create high AST within 2 years prior
+        # Will be used to set baseline
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=530),
+        )
+        self.ast2.set_baseline()
+        assert self.user.baselineast.value == 78
+        assert self.user.transaminitis.value == True
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert self.user.transaminitis.baseline_ast == self.user.baselineast
+        # Create very high AST
+        # Greater than 3x the upper limit of normal, won't be used for calculating BaselineAST
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=777,
+            date_drawn=timezone.now() - timedelta(days=300),
+        )
+        # Create another very high AST, won't be used for calculating BaselineAST
+        self.ast4 = ASTFactory(
+            user=self.user,
+            value=7777,
+            date_drawn=timezone.now() - timedelta(days=232),
+        )
+        self.ast4.set_baseline()
+        assert self.user.baselineast.value == 78
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        # Create high AST, not > 3x ULN, will be used for calculating BaselineAST
+        self.ast5 = ASTFactory(
+            user=self.user,
+            value=98,
+            date_drawn=timezone.now() - timedelta(days=132),
+        )
+        self.ast5.set_baseline()
+        # BaselineAST should be set to 98 because it was drawn in the last 6 months
+        # Won't look back farther to 1 or 2 years, thus avoids prior ASTs for calculation
+        assert self.user.baselineast.value == 98
+
+    def test_set_baseline_multiple_ast_with_initial_baseline_calculated_false(self):
+        """
+        Test set_baseline() method with multiple ASTs, User-set initial BaselineAST
+        BaselineAST won't be modified by set_baseline() due to calculated=False
+        """
+        # Create high AST, no BaselineAST created yet
+        # Initial AST is > 2 years prior, won't be used for setting BaselineAST
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        self.ast1.set_baseline()
+        assert hasattr(self.user, "baselineast") == False
+        self.ast1andahalf = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=722),
+        )
+        self.ast1andahalf.set_baseline()
+        assert hasattr(self.user, "baselineast") == True
+        assert self.user.baselineast.calculated == True
+        assert self.user.baselineast.value == 78
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        # Set User's BaselineAST value and set calculated to False, then save()
+        # set_baseline() should not change BaselineAST due to calculated=False
+        self.user.baselineast.value = 95
+        self.user.baselineast.calculated = False
+        self.user.baselineast.save()
+        self.user.transaminitis.last_modified = "MedicalProfile"
+        self.user.transaminitis.save()
+        assert self.user.transaminitis.value == True
+        self.ast1.set_baseline()
+        assert self.user.baselineast.value == 95
+        assert self.user.transaminitis.last_modified == "MedicalProfile"
+        # Create second AST that is high
+        # Still won't allow set_baseline() due to calculated=False
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=530),
+        )
+        self.ast2.set_baseline()
+        assert hasattr(self.user, "baselineast") == True
+        assert self.user.baselineast.value == 95
+        assert self.user.transaminitis.last_modified == "MedicalProfile"
+
+    def test_remove_transaminitis_baseline_calculated(self):
+        """
+        Test remove_transaminitis method.
+        In setting of calculated BaselineALT/AST
+        Deletes BaselineALT/AST for User.
+        Sets User's Transaminitis value to False
+        """
+        # Transaminitis = True, BaselineAST = None
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=300),
+        )
+        assert self.ast1.remove_transaminitis() == False
+        assert self.user.transaminitis.baseline_ast == None
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert hasattr(self.user, "baselineast") == False
+        # Transaminitis = True, BaselineAST created/modified after
+        # AST2 calling remove_ckd()
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.baselineast1 = BaselineASTFactory(
+            user=self.user,
+            value=133,
+            calculated=True,
+        )
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=133,
+            date_drawn=timezone.now() - timedelta(days=290),
+        )
+        assert self.ast2.remove_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        assert self.user.transaminitis.baseline_ast == None
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert hasattr(self.user, "baselineast") == False
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.baselineast2 = BaselineASTFactory(
+            user=self.user,
+            value=134,
+            calculated=True,
+        )
+        self.alt3 = ALTFactory(
+            user=self.user,
+            value=134,
+            date_drawn=timezone.now() - timedelta(days=290),
+        )
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=134,
+            date_drawn=timezone.now() - timedelta(days=290),
+            alt=self.alt3,
+        )
+        assert self.ast3.remove_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        assert self.user.transaminitis.baseline_ast == None
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert hasattr(self.user, "baselinealt") == False
+        assert hasattr(self.user, "baselineast") == False
+
+    def test_remove_transaminitis_baseline_not_calculated(self):
+        """
+        Test remove_transaminitis method.
+        In setting of User-defined transaminitis, BaselineALT/AST.calculated == False.
+        Deletes BaselineALT/AST for User.
+        Sets User's Transaminitis value to False
+        """
+        # Transaminitis = True, BaselineAST = None
+        self.user.transaminitis.value = True
+        self.user.transaminitis.save()
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=300),
+        )
+        assert self.ast1.remove_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        assert self.user.transaminitis.baseline_ast == None
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert hasattr(self.user, "baselineast") == False
+        # Transaminitis = True, BaselineAST created/modified after
+        # AST2 calling remove_transaminitis()
+        self.baselineast1 = BaselineASTFactory(
+            user=self.user,
+            value=133,
+            calculated=False,
+        )
+        self.user.transaminitis.value = True
+        self.user.transaminitis.last_modified = "MedicalProfile"
+        self.user.transaminitis.baseline_ast = self.baselineast1
+        self.user.transaminitis.save()
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=133,
+            date_drawn=timezone.now() - timedelta(days=290),
+        )
+        assert self.ast2.remove_transaminitis() == True
+        assert self.user.transaminitis.value == True
+        assert self.user.transaminitis.baseline_ast
+        assert self.user.baselineast
+        assert self.user.baselineast.value == 133
+        # AST3 date_drawn after BaselineAST created/modified
+        # remove_transaminitis() remove transaminitis, delete BaselineALT
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=133,
+            date_drawn=timezone.now() + timedelta(days=290),
+        )
+        assert self.ast3.remove_transaminitis(ast=self.ast2) == True
+        assert self.ast3.remove_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert self.user.transaminitis.baseline_ast == None
+        assert hasattr(self.user, "baselineast") == False
+        # Create BaselineALT and BaselineAST, both calculated = False
+        self.baselinealt1 = BaselineALTFactory(
+            user=self.user,
+            value=133,
+            calculated=False,
+        )
+        self.baselineast1 = BaselineASTFactory(
+            user=self.user,
+            value=133,
+            calculated=False,
+        )
+        self.user.transaminitis.value = True
+        self.user.transaminitis.baseline_alt = self.baselinealt1
+        self.user.transaminitis.baseline_ast = self.baselineast1
+        self.user.transaminitis.last_modified = "MedicalProfile"
+        self.user.transaminitis.save()
+        assert self.ast2.remove_transaminitis() == True
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == True
+        assert self.user.baselineast
+        assert self.ast3.remove_transaminitis(ast=self.ast2) == True
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == True
+        assert self.user.baselineast
+        assert self.ast3.remove_transaminitis() == True
+        self.user.refresh_from_db()
+        # Transaminitis should still be True because BaselineALT is still present
+        assert self.user.transaminitis.value == True
+        # BaselineAST should have not have been deleted via ast3.remove_transaminitis()
+        assert hasattr(self.user, "baselineast") == False
+        assert hasattr(self.user, "baselinealt") == True
+        # Create 2nd AST, associated with 2nd ALT created/modified prior to BaselineALT/AST
+        self.alt2 = ALTFactory(user=self.user, value=133, date_drawn=timezone.now() - timedelta(days=290))
+        self.ast2.alt = self.alt2
+        self.ast2.save()
+        assert self.ast2.remove_transaminitis() == True
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == True
+        assert hasattr(self.user, "baselineast") == False
+        assert hasattr(self.user, "baselinealt") == True
+        assert self.ast3.remove_transaminitis(ast=self.ast2) == True
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == True
+        assert hasattr(self.user, "baselineast") == False
+        assert hasattr(self.user, "baselinealt") == True
+        # Create 3rd ALT, created/modified after BaselineALT/AST
+        self.alt3 = ALTFactory(user=self.user, value=133, date_drawn=timezone.now() + timedelta(days=290))
+        self.ast3.alt = self.alt3
+        self.ast3.save()
+        # remove_transaminitis with arg ast=self.ast2 should still evaluate to True / fail
+        # Because self.ast2 and self.alt2 still older than baseline ALT/AST
+        assert self.ast3.remove_transaminitis(ast=self.ast2) == True
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == True
+        assert hasattr(self.user, "baselineast") == False
+        assert hasattr(self.user, "baselinealt") == True
+        # remove_transaminitis called on ast3 should now return False, delete related fields
+        assert self.ast3.remove_transaminitis() == False
+        self.user.refresh_from_db()
+        assert self.user.transaminitis.value == False
+        assert self.user.transaminitis.baseline_ast == None
+        assert self.user.transaminitis.baseline_alt == None
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert hasattr(self.user, "baselinealt") == False
+        assert hasattr(self.user, "baselineast") == False
+
+    def test_diagnose_transaminitis(self):
+        """
+        Test of diagnose_transaminitis() method
+        Simple scenarios
+        """
+        # Set up User with transaminitis = False
+        self.user.transaminitis.value = False
+        self.user.transaminitis.save()
+        # Create normal ALT, disant past
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        # Test that user doesn't get diagnosed with transaminitis
+        assert self.ast1.diagnose_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        # Create 2nd AST, abnormal
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=500),
+        )
+        # Test that user doesn't get diagnosed with transaminitis
+        assert self.ast2.diagnose_transaminitis() == False
+        assert self.user.transaminitis.value == False
+        # Create 3rd abnormal AST
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=78,
+            date_drawn=timezone.now() - timedelta(days=200),
+        )
+        # Test that user does get diagnosed with transaminitis
+        # Last 2 abnormal ASTs > 6 months apart
+        assert self.ast3.diagnose_transaminitis() == True
+        assert self.user.transaminitis.value == True
+        assert hasattr(self.user, "baselineast") == True
+        assert self.user.transaminitis.baseline_ast
+        assert self.user.baselineast.calculated == True
+        # Create 4th AST, normal value
+        self.ast4 = ASTFactory(
+            user=self.user,
+            value=22,
+            date_drawn=timezone.now() - timedelta(days=100),
+        )
+        # Test that User still gets diagnosed with transaminitis
+        # No ALT to assure GoutHelper LFTs are totally normal
+        assert self.ast4.diagnose_transaminitis() == True
+        assert self.user.transaminitis.value == True
+        assert hasattr(self.user, "baselineast") == True
+        assert self.user.baselineast.calculated == True
+        # Create normal ALT with ast4.alt = ALT
+        self.alt4 = ALTFactory(
+            user=self.user,
+            value=22,
+            date_drawn=timezone.now() - timedelta(days=100),
+        )
+        self.ast4.alt = self.alt4
+        self.ast4.save()
+        # AST4 should now register True for normal_lfts()
+        assert self.ast4.normal_lfts() == True
+        assert hasattr(self.user, "baselinealt") == False
+        assert self.ast4.diagnose_transaminitis() == False
+        assert hasattr(self.user, "baselinealt") == False
+        assert hasattr(self.user, "baselineast") == False
+        assert self.user.transaminitis.baseline_ast == None
+
+    def test_process_high_no_baseline(self):
+        """
+        Test process_high() method
+        No baseline transaminitis or BaselineAST
+        """
+        # Set up User with transaminitis = False
+        self.user.transaminitis.value = False
+        self.user.transaminitis.save()
+        # Create normal AST, disant past
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=33,
+            date_drawn=timezone.now() - timedelta(days=888),
+        )
+        assert self.ast1.process_high() == None
+        # Create trivially high AST
+        # Check that it processes correctly (None = no alert)
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=67,
+            date_drawn=timezone.now() - timedelta(days=828),
+        )
+        assert self.ast2.high == True
+        assert self.ast2.process_high() == None
+        # Create nonurgently high AST, check that is processes correctly
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=111,
+            date_drawn=timezone.now() - timedelta(days=788),
+        )
+        assert self.ast3.process_high() == "nonurgent"
+        # Create typical F/U AST, set AST3 to abnormal_followup
+        # Value of F/U AST is normal
+        self.ast4 = ASTFactory(
+            user=self.user,
+            value=45,
+            date_drawn=timezone.now() - timedelta(days=768),
+            abnormal_followup=self.ast3,
+        )
+        assert self.ast4.process_high() == "improving"
+        # Create abnormal AST within last 2 years
+        self.ast5 = ASTFactory(
+            user=self.user,
+            value=311,
+            date_drawn=timezone.now() - timedelta(days=708),
+        )
+        assert self.ast5.process_high() == "emergency"
+        assert hasattr(self.user, "baselineast") == False
+        assert self.user.transaminitis.value == False
+        # Another abnormal high AST within last 2 years
+        self.ast6 = ASTFactory(
+            user=self.user,
+            value=110,
+            date_drawn=timezone.now() - timedelta(days=468),
+            abnormal_followup=self.ast5,
+        )
+        assert self.ast6.process_high() == "improving"
+        assert hasattr(self.user, "baselineast") == True
+        assert self.user.transaminitis.value == True
+        assert self.user.transaminitis.last_modified == "Behind the scenes"
+        assert self.user.transaminitis.baseline_ast == self.user.baselineast
+        assert self.user.transaminitis.baseline_ast.value == 110
+
+    def test_process_high_with_baseline(self):
+        """
+        Test abnormal_high() method
+        With baseline transaminitis or BaselineAST
+        """
+        # Set up User with transaminitis = False
+        self.user.transaminitis.value = True
+        self.baselineast = BaselineASTFactory(
+            user=self.user,
+            value=133,
+            calculated=False,
+        )
+        self.user.transaminitis.baseline_ast = self.baselineast
+        self.user.transaminitis.save()
+        # Create high ALT but within the range of the User's BaselineAST
+        self.ast1 = ASTFactory(
+            user=self.user,
+            value=98,
+            date_drawn=timezone.now() - timedelta(days=343),
+        )
+        assert self.ast1.process_high() == None
+        self.ast2 = ASTFactory(
+            user=self.user,
+            value=105,
+            date_drawn=timezone.now() - timedelta(days=243),
+        )
+        # Check that BaselineAST value isn't changing with multiple ASTs prior
+        assert self.ast2.process_high() == None
+        assert self.user.baselineast.value == 133
+        # Create very high AST drawn after BaselineAST
+        self.ast3 = ASTFactory(
+            user=self.user,
+            value=555,
+            date_drawn=timezone.now() + timedelta(days=2),
+        )
+        assert self.ast3.process_high() == "urgent"
+        assert self.user.baselineast.value == 133
+        # Create F/U AST
+        self.ast4 = ASTFactory(
+            user=self.user,
+            value=122,
+            date_drawn=timezone.now() + timedelta(days=16),
+            abnormal_followup=self.ast3,
+        )
+        # F/U AST should flag as improving in process_high()
+        assert self.ast4.process_high() == "improving"
+        # Should also not change the User-set baseline
+        assert self.user.baselineast.value == 133
 
 
 class TestPlateletMethods(TestCase):
