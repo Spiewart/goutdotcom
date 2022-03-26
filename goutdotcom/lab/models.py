@@ -49,9 +49,13 @@ class Lab(TimeStampedModel):
         EMERGENCY = 4
         # Lab.value is close to normal.
         # Set when a Lab is a follow-up (has abnormal_followup field)
-        ERROR = 5
+        RESOLVED = 5
         # Lab.value is still abnormal but is improving from the last abnormal check.
-        IMPROVING = 6
+        # Improved enough to restart ULTPlan without further rechecks
+        IMPROVING_RESTART = 6
+        # Lab.value is still abnormal but is improving from the last abnormal check.
+        # Still serious enough to warrant recheck prior to restarting
+        IMPROVING_RECHECK = 7
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -62,7 +66,7 @@ class Lab(TimeStampedModel):
     history = HistoricalRecords(inherit=True)
     slug = models.SlugField(max_length=200, null=True, blank=True)
     flag = models.IntegerField(
-        choices=Flag.choices, default=0, validators=[MinValueValidator(0), MaxValueValidator(6)], null=True, blank=True
+        choices=Flag.choices, default=0, validators=[MinValueValidator(0), MaxValueValidator(7)], null=True, blank=True
     )
 
     class Meta:
@@ -150,9 +154,11 @@ class Lab(TimeStampedModel):
         elif self.flag == 4:
             return "emergency"
         elif self.flag == 5:
-            return "error"
+            return "resolved"
         elif self.flag == 6:
-            return "improving"
+            return "improving_restart"
+        elif self.flag == 7:
+            return "improving_recheck"
         else:
             return None
 
@@ -266,12 +272,18 @@ class Lab(TimeStampedModel):
                 return "emergency"
             else:
                 # If the abnormal original was "urgent"
-                # Check if the follow up isn't 2.5x the baseline
-                # If not, save Lab.flag as improving
                 if self.abnormal_followup.flag == 3:
-                    self.flag = 6
-                    self.save()
-                    return "improving"
+                    # Check if the follow up isn't 2x the baseline
+                    # If not, save Lab.flag as improving and restart ULTPlan
+                    if self.var_x_high(nonurgent) == False:
+                        self.flag = 6
+                        self.save()
+                        return "improving_restart"
+                    # Else the Lab is improving, but not enough to restart the ULTPlan yet
+                    else:
+                        self.flag = 7
+                        self.save()
+                        return "improving_recheck"
                 # Else the abnormal original was "nonurgent" flag=2
                 # If still 2x the baseline
                 # Mark as urgent (Lab.flag=3)
@@ -283,7 +295,7 @@ class Lab(TimeStampedModel):
                     else:
                         self.flag = 6
                         self.save()
-                        return "improving"
+                        return "improving_restart"
         # If Lab isn't a follow up on an abnormal
         else:
             if self.var_x_high(emergency):
@@ -1113,7 +1125,7 @@ class ALT(BaseALT):
         # This will exclude episodes of acute hepatitis in the baseline calculation
         ALTs_all = []
         for alt in ALTs:
-            if alt.three_x_high == False:
+            if alt.var_x_high(self.user.patientprofile.lft_nonurgent) == False:
                 ALTs_all.append(alt)
         # If no ALTs, return None
         if len(ALTs_all) == 0:
@@ -1159,7 +1171,7 @@ class ALT(BaseALT):
             # This will exclude episodes of acute hepatitis in the baseline calculation
             ALTs_lastsixmonths = []
             for alt in ALTs:
-                if alt.three_x_high == False:
+                if alt.var_x_high(self.user.patientprofile.lft_nonurgent) == False:
                     ALTs_lastsixmonths.append(alt)
             # If there are no ALTs over last 6 months, look back 1 year
             if len(ALTs_lastsixmonths) == 0:
@@ -1174,7 +1186,7 @@ class ALT(BaseALT):
                 # This will exclude episodes of acute hepatitis in the baseline calculation
                 ALTs_lastyear = []
                 for alt in ALTs:
-                    if alt.three_x_high == False:
+                    if alt.var_x_high(self.user.patientprofile.lft_nonurgent) == False:
                         ALTs_lastyear.append(alt)
                 # If there are no ALTs over last year, look back 2 years
                 if len(ALTs_lastyear) == 0:
@@ -1189,7 +1201,7 @@ class ALT(BaseALT):
                     # This will exclude episodes of acute hepatitis in the baseline calculation
                     ALTs_lasttwoyears = []
                     for alt in ALTs:
-                        if alt.three_x_high == False:
+                        if alt.var_x_high(self.user.patientprofile.lft_nonurgent) == False:
                             ALTs_lasttwoyears.append(alt)
                     # If no ALTs over last 2 years, return None
                     if len(ALTs_lasttwoyears) == 0:
@@ -1382,6 +1394,7 @@ class ALT(BaseALT):
         # In case User is getting infrequent labs but does have chronic hepatitis
         # (Would be the case in a patient on stable-dose ULT)
         return False
+
 
 class AST(BaseAST):
     alt = models.OneToOneField(ALT, on_delete=models.SET_NULL, blank=True, null=True)

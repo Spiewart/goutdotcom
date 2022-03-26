@@ -566,24 +566,31 @@ class TestALTMethods(TestCase):
             date_drawn=timezone.now() - timedelta(days=768),
             abnormal_followup=self.alt3,
         )
-        assert self.alt4.process_high() == "improving"
+        assert self.alt4.process_high() == "improving_restart"
         self.alt5 = ALTFactory(
             user=self.user,
             value=211,
             date_drawn=timezone.now() - timedelta(days=708),
         )
         assert self.alt5.process_high() == "urgent"
+        assert self.alt5.flag == 3
         assert hasattr(self.user, "baselinealt") == False
         assert self.user.transaminitis.value == False
         self.alt6 = ALTFactory(
             user=self.user,
             value=145,
             date_drawn=timezone.now() - timedelta(days=468),
-            abnormal_followup=self.alt3,
+            abnormal_followup=self.alt5,
         )
-        assert self.alt6.process_high() == "improving"
-        assert hasattr(self.user, "baselinealt") == True
-        assert self.user.transaminitis.value == True
+        assert self.alt6.process_high() == "improving_recheck"
+        # self.alt6.diagnose_transaminitis()
+        assert hasattr(self.user, "baselinealt") == False
+        self.alt7 = ALTFactory(
+            user=self.user,
+            value=115,
+            date_drawn=timezone.now() - timedelta(days=350),
+        )
+        assert self.alt7.process_high() == "nonurgent"
 
     def test_process_high_with_baseline(self):
         """
@@ -626,7 +633,7 @@ class TestALTMethods(TestCase):
             date_drawn=timezone.now() + timedelta(days=16),
             abnormal_followup=self.alt3,
         )
-        assert self.alt4.process_high() == "improving"
+        assert self.alt4.process_high() == "improving_restart"
         assert self.user.baselinealt.value == 133
 
 
@@ -1238,7 +1245,7 @@ class TestASTMethods(TestCase):
             date_drawn=timezone.now() - timedelta(days=768),
             abnormal_followup=self.ast3,
         )
-        assert self.ast4.process_high() == "improving"
+        assert self.ast4.process_high() == "improving_restart"
         # Create abnormal AST within last 2 years
         self.ast5 = ASTFactory(
             user=self.user,
@@ -1255,7 +1262,7 @@ class TestASTMethods(TestCase):
             date_drawn=timezone.now() - timedelta(days=468),
             abnormal_followup=self.ast5,
         )
-        assert self.ast6.process_high() == "improving"
+        assert self.ast6.process_high() == "improving_restart"
         assert hasattr(self.user, "baselineast") == True
         assert self.user.transaminitis.value == True
         assert self.user.transaminitis.last_modified == "Behind the scenes"
@@ -1306,8 +1313,8 @@ class TestASTMethods(TestCase):
             date_drawn=timezone.now() + timedelta(days=16),
             abnormal_followup=self.ast3,
         )
-        # F/U AST should flag as improving in process_high()
-        assert self.ast4.process_high() == "improving"
+        # F/U AST should flag as improving_restart in process_high()
+        assert self.ast4.process_high() == "improving_restart"
         # Should also not change the User-set baseline
         assert self.user.baselineast.value == 133
 
