@@ -450,17 +450,6 @@ class BaseCreatinine(Lab):
         else:
             return None
 
-    def get_baseline(self):
-        """
-        Method that gets a User's baseline
-        Returns: BaselineCreatinine or none
-        """
-        try:
-            baseline = BaselineCreatinine.objects.get(user=self.user)
-        except BaselineCreatinine.DoesNotExist:
-            baseline = None
-        return baseline
-
     def set_baseline(self):
         """
         Method that sets a User's BaselineCreatinine
@@ -522,7 +511,7 @@ class BaseCreatinine(Lab):
             if len(creatinines) == 0:
                 return None
             # Find mean over last year(s)
-            mean_creatinine = mean(creatinine.value for creatinine in creatinines)
+            mean_creatinine = Decimal(mean(creatinine.value for creatinine in creatinines))
             baseline = self.get_baseline()
             if baseline:
                 if baseline.calculated == False:
@@ -661,15 +650,10 @@ class BaseCreatinine(Lab):
         baseline = self.get_baseline()
 
         if baseline:
-            if self.value > (Decimal(var) * baseline.value):
-                return True
-            else:
-                return False
+            return self.value > (Decimal(var) * baseline.value)
+
         else:
-            if self.value > (Decimal(var) * self.reference_upper):
-                return True
-            else:
-                return False
+            return self.value > (Decimal(var) * self.reference_upper)
 
     def process_high(self):
         """
@@ -746,21 +730,6 @@ class BasePlatelet(Lab):
     name = "platelet"
     reference_lower = models.IntegerField(default=LOWER_LIMIT, help_text="Lower limit of normal values for platelets")
     reference_upper = models.IntegerField(default=UPPER_LIMIT, help_text="Upper limit of normal values for platelets")
-
-    def get_baseline(self):
-        """Method that fetches the User's baseline Platelet value.
-        Returns baseline Platelet value if so.
-        Else returns None.
-        """
-        if self.user.thrombocytopenia.baseline:
-            return self.user.thrombocytopenia.baseline
-        if self.user.thrombocytosis.baseline:
-            return self.user.thrombocytosis.baseline
-        try:
-            self.baseline = Platelet.objects.filter(user=self.user).get(baseline=True).value
-        except:
-            self.baseline = None
-        return self.baseline
 
     def process_high(self, labcheck, labchecks):
         """Function that processes a high Platelet.
@@ -900,17 +869,6 @@ class BaseWBC(Lab):
     reference_upper = models.DecimalField(
         max_digits=3, decimal_places=1, default=UPPER_LIMIT, help_text="Upper limit of normal values for WBC"
     )
-
-    def get_baseline(self):
-        """Method that fetches the User's baseline WBC value.
-        Returns baseline WBC value if so.
-        Else returns None.
-        """
-        try:
-            self.baseline = Platelet.objects.filter(user=self.user).get(baseline=True).values("value")
-        except:
-            self.baseline = None
-        return self.baseline
 
     def process_high(self, labcheck, labchecks):
         """Function that processes a high WBC.
@@ -1767,6 +1725,122 @@ class Platelet(BasePlatelet):
             if self.user:
                 # If so, create slug from user and pk
                 self.slug = slugify(self.user.username) + "-" + str(self.id)
+
+    def set_baseline(self):
+        """
+        Method that sets a User's BaselinePlatelet value
+        """
+        baseline = self.get_baseline()
+
+        platelets = Platelet.objects.filter(user=self.user).order_by("-date_drawn")
+        # If no Platelets, return None
+        if len(platelets) == 0:
+            return None
+        # If 1 Platelet, that must be the baseline
+        if len(platelets) == 1:
+            solo_platelet = platelets[0]
+            baseline = self.get_baseline()
+            # Check if there's a baseline
+            if baseline:
+                # If the baseline is User-entered, don't change it
+                if baseline.calculated == False:
+                    return None
+                # If not, set baseline to only Platelet
+                else:
+                    # Check if only Platelet is greater than two years old, return None if so
+                    if solo_platelet.date_drawn < timezone.now() - timedelta(days=730):
+                        return None
+                    # Otherwise set BaselinePlatelet to the single Platelet value
+                    baseline.value = solo_platelet.value
+                    baseline.save()
+                    return baseline
+            # If there's no BaselinePlatelet
+            else:
+                # Check if only Platelet is greater than two years old, return None if so
+                if solo_platelet.date_drawn < timezone.now() - timedelta(days=730):
+                    return None
+                # Otherwise create BaselinePlatelet
+                # Value equal to the only Platelet
+                baseline = BaselinePlatelet.objects.create(user=self.user, value=solo_platelet.value, calculated=True)
+                # Return the BaselinePlatelet so it can be set to User's Thrombocytopenia/cytosis via their respective diagnose() methods
+                return baseline
+        else:
+            # Else assemble list of Platelets from t-180 days
+            # Not based on any formal methodology (I couldn't find any)
+            platelets = platelets.filter(
+                date_drawn__range=[
+                    (timezone.now() - timedelta(days=180)),
+                    timezone.now(),
+                ]
+            )
+            # If there are no Platelets over last 6 months, look back 1 year
+            if len(platelets) == 0:
+                platelets = Platelet.objects.filter(
+                    user=self.user,
+                    date_drawn__range=[
+                        (timezone.now() - timedelta(days=365)),
+                        timezone.now(),
+                    ],
+                ).order_by("-date_drawn")
+                # If there are no Platelets over last year, look back 2 years
+                if len(platelets) == 0:
+                    platelets = Platelet.objects.filter(
+                        user=self.user,
+                        date_drawn__range=[
+                            (timezone.now() - timedelta(days=730)),
+                            timezone.now(),
+                        ],
+                    ).order_by("-date_drawn")
+                    # If no Platelets over last 2 years, return None
+                    if len(platelets) == 0:
+                        return None
+            # Find mean over last 6 months / year(s)
+            mean_platelet = mean(platelet.value for platelet in platelets)
+            # Check if there's a baseline already
+            if baseline:
+                # If it's User-entered, don't change it
+                if baseline.calculated == False:
+                    return None
+                # Otherwise set mean Platelet to baseline
+                else:
+                    baseline.value = mean_platelet
+                    baseline.save()
+                    return baseline
+            # If no BaselinePlatelet, create new one
+            else:
+                baseline = BaselinePlatelet.objects.create(user=self.user, value=mean_platelet, calculated=True)
+                # Return the BaselinePlatelet so it can be set to User's Thrombocytopenia/cytosis via their respective diagnose() methods
+                return baseline
+
+    def remove_thrombocytopenia(self):
+        """
+        Method that changes User's Thrombocytopenia.value to False
+        Deletes User's BaselinePlatelet object
+        """
+        pass
+
+    def diagnose_thrombocytopenia(self):
+        """
+        Method that diagnoses a User's Thrombocytopenia
+        Changes Thrombocytopenia.value to True if so
+        Sets BaselinePlatelet value via set_baseline() method
+        """
+        pass
+
+    def remove_thrombocytosis(self):
+        """
+        Method that changes a User's Thrombocytosis.value to False
+        Deletes User's BaselinePlatelet object
+        """
+        pass
+
+    def diagnose_thrombocytosis(self):
+        """
+        Method that diagnoses a User's Thrombocytosis
+        Changes Thrombocytosis.value to True if so
+        Sets BaselinePlatelet.value via set_baseline() method
+        """
+        pass
 
 
 class BaselinePlatelet(BasePlatelet):

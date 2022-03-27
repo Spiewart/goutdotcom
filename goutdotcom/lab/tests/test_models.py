@@ -23,6 +23,7 @@ from .factories import (
     BaselineALTFactory,
     BaselineASTFactory,
     BaselineCreatinineFactory,
+    BaselinePlateletFactory,
     CreatinineFactory,
     HemoglobinFactory,
     PlateletFactory,
@@ -1336,6 +1337,41 @@ class TestPlateletMethods(TestCase):
         platelet = PlateletFactory(user=self.user)
         assert platelet.__unicode__() == str(platelet.name)
 
+    def test_set_baseline_no_baseline(self):
+        """Test setting BaselinePlatelet in various scenarios"""
+        # Create Platelet older than 2 years, should not set any BaselinePlatelet
+        self.platelet1 = PlateletFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=731))
+        assert self.platelet1.set_baseline() == None
+        assert hasattr(self.user, "baselineplatelet") == False
+        self.platelet2 = PlateletFactory(user=self.user, value=39, date_drawn=timezone.now() - timedelta(days=550))
+        assert self.platelet2.set_baseline() == self.user.baselineplatelet
+        assert hasattr(self.user, "baselineplatelet") == True
+        assert self.user.baselineplatelet.value == 39
+        self.platelet3 = PlateletFactory(user=self.user, value=41, date_drawn=timezone.now() - timedelta(days=500))
+        assert self.platelet3.set_baseline() == self.user.baselineplatelet
+        assert self.user.baselineplatelet.value == 40
+        self.platelet4 = PlateletFactory(user=self.user, value=50, date_drawn=timezone.now() - timedelta(days=350))
+        assert self.platelet4.set_baseline() == self.user.baselineplatelet
+        assert self.user.baselineplatelet.value == 50
+        self.platelet5 = PlateletFactory(user=self.user, value=60, date_drawn=timezone.now() - timedelta(days=250))
+        assert self.platelet5.set_baseline() == self.user.baselineplatelet
+        assert self.user.baselineplatelet.value == 55
+        self.platelet6 = PlateletFactory(user=self.user, value=80, date_drawn=timezone.now() - timedelta(days=171))
+        assert self.platelet6.set_baseline() == self.user.baselineplatelet
+        assert self.user.baselineplatelet.value == 80
+        self.platelet7 = PlateletFactory(user=self.user, value=90, date_drawn=timezone.now() - timedelta(days=71))
+        assert self.platelet7.set_baseline() == self.user.baselineplatelet
+        assert self.user.baselineplatelet.value == 85
+
+    def test_set_baseline_with_baseline(self):
+        """Test setting BaselinePlatelet in various scenarios. User-set BaselinePlatelet.value"""
+        # Create BaselinePlatelet that is set by User (calculated = False)
+        self.baselineplatelet = BaselinePlateletFactory(user=self.user, value=39, calculated=False)
+        self.platelet1 = PlateletFactory(user=self.user, value=56, date_drawn=timezone.now() - timedelta(days=75))
+        assert self.platelet1.set_baseline() == None
+        assert hasattr(self.user, "baselineplatelet") == True
+        assert self.user.baselineplatelet.value == 39
+
 
 class TestWBCMethods(TestCase):
     def setUp(self):
@@ -1564,11 +1600,13 @@ class TestCreatinineMethods(TestCase):
         With CKD and User-entered initial baseline
         """
         self.user.ckd.value = True
-        self.user.ckd.baseline = BaselineCreatinineFactory(user=self.user, value=Decimal(1.9))
+        self.user.ckd.baseline = BaselineCreatinineFactory(
+            user=self.user, value=round(Decimal(1.9), 2), calculated=False
+        )
         self.user.ckd.stage = self.user.ckd.baseline.stage_calculator()
         self.user.ckd.save()
         assert self.user.ckd.value == True
-        assert self.user.baselinecreatinine.value == Decimal(1.9)
+        assert self.user.baselinecreatinine.value == round(Decimal(1.9), 2)
         assert self.user.ckd.stage == 3 or self.user.ckd.stage == 4
         self.creatinine1 = CreatinineFactory(
             user=self.user,
@@ -1578,6 +1616,9 @@ class TestCreatinineMethods(TestCase):
         assert self.creatinine1.diagnose_ckd() == True
         assert self.user.ckd.value == True
         assert len(Creatinine.objects.filter(user=self.user)) == 1
+        print(self.creatinine1.get_baseline())
+        print(type(self.creatinine1.get_baseline().value))
+        print(type(self.user.baselinecreatinine.value))
         assert self.creatinine1.get_baseline().value == round(Decimal(1.9), 2)
         self.creatinine2 = CreatinineFactory(
             user=self.user,
