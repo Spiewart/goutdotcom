@@ -1823,7 +1823,7 @@ class Platelet(BasePlatelet):
         # If User has BaselinePlatelet
         if baseline:
             # If BaselinePlatelet is set by User
-            if baseline.calculated == False:
+            if baseline.low and baseline.calculated == False:
                 # Compare BaselinePlatelet.modified>created to >>>
                 # Platelet.date_drawn>modified>created
                 if hasattr(baseline, "modified"):
@@ -1852,7 +1852,7 @@ class Platelet(BasePlatelet):
                         self.user.thrombocytopenia.last_modified = "Behind the scenes"
                         self.user.thrombocytopenia.save()
             # If BaselinePlatelet is calculated, remove it
-            else:
+            elif baseline.low:
                 baseline.delete()
                 self.user.baselineplatelet = None
                 self.user.save()
@@ -1876,7 +1876,35 @@ class Platelet(BasePlatelet):
         Changes Thrombocytopenia.value to True if so
         Sets BaselinePlatelet value via set_baseline() method
         """
-        pass
+        # Assemble a list of all User's Platelets
+        platelets = Platelet.objects.filter(
+            user=self.user,
+            date_drawn__range=[
+                (timezone.now() - timedelta(days=730)),
+                timezone.now(),
+            ],
+        ).order_by("-date_drawn")
+        # Loop over all Platelets
+        for platelet_index in range(len(platelets)):
+            platelet = platelets[platelet_index]
+            # If value wasn't low, call remove_thrombocytopenia()
+            if platelet.low == False:
+                return platelet.remove_thrombocytopenia()
+            else:
+                # If Platelets are 3 months apart and continuously low >>>
+                if platelets[0].date_drawn >= platelet.date_drawn + timedelta(days=90):
+                    # set BasSlinePlatelet
+                    # Modify Thrombocytopenia to True
+                    baseline = self.set_baseline()
+                    self.user.thrombocytopenia.value = True
+                    self.user.thrombocytopenia.last_modified = "Behind the scenes"
+                    self.user.thrombocytopenia.baseline_platelet = baseline
+                    self.user.thrombocytopenia.save()
+                    return True
+                # If not, keep iterating back in time (through the list)
+                continue
+        # If no Platelets continuously low 3 months apart, return False
+        return False
 
     def remove_thrombocytosis(self):
         """
