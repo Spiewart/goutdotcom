@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from decimal import Decimal
+from math import ceil
 from statistics import mean
 
 from django.conf import settings
@@ -1063,10 +1064,7 @@ class ALT(BaseALT):
         Method that gets a User's baseline AST
         Returns: BaselineAST or none
         """
-        if hasattr(self.user, "baselineast"):
-            return self.user.baselineast
-        else:
-            return None
+        return getattr(self.user, "baselineast", None)
 
     def set_baseline(self):
         """
@@ -1795,7 +1793,8 @@ class Platelet(BasePlatelet):
                     if len(platelets) == 0:
                         return None
             # Find mean over last 6 months / year(s)
-            mean_platelet = mean(platelet.value for platelet in platelets)
+            # Need to call ceil() to produce an integer and ensure consistent behavior
+            mean_platelet = ceil(mean(platelet.value for platelet in platelets))
             # Check if there's a baseline already
             if baseline:
                 # If it's User-entered, don't change it
@@ -1816,8 +1815,60 @@ class Platelet(BasePlatelet):
         """
         Method that changes User's Thrombocytopenia.value to False
         Deletes User's BaselinePlatelet object
+        returns: False if thrombocytopenia removed, True if not
         """
-        pass
+        # Fetch User's BaselienPlatelet
+        baseline = self.get_baseline()
+
+        # If User has BaselinePlatelet
+        if baseline:
+            # If BaselinePlatelet is set by User
+            if baseline.calculated == False:
+                # Compare BaselinePlatelet.modified>created to >>>
+                # Platelet.date_drawn>modified>created
+                if hasattr(baseline, "modified"):
+                    baseline_date = baseline.modified
+                elif hasattr(baseline, "created"):
+                    baseline_date = baseline.created
+                else:
+                    baseline_date = None
+                if hasattr(self, "date_drawn"):
+                    platelet_date = self.date_drawn
+                elif hasattr(self, "modified"):
+                    platelet_date = self.modified
+                elif hasattr(self, "created"):
+                    platelet_date = self.created
+                else:
+                    platelet_date = None
+                # If there is a BaselinePlatelet date and Platelet date, compare
+                if baseline_date and platelet_date:
+                    # If Platelet date newer than BaselinePlatelet date >>>
+                    # Remove BaselinePlatelet
+                    if baseline_date < platelet_date:
+                        baseline.delete()
+                        self.user.baselineplatelet = None
+                        self.user.save()
+                        self.user.thrombocytopenia.baseline_platelet = None
+                        self.user.thrombocytopenia.last_modified = "Behind the scenes"
+                        self.user.thrombocytopenia.save()
+            # If BaselinePlatelet is calculated, remove it
+            else:
+                baseline.delete()
+                self.user.baselineplatelet = None
+                self.user.save()
+                self.user.thrombocytopenia.baseline_platelet = None
+                self.user.thrombocytopenia.last_modified = "Behind the scenes"
+                self.user.thrombocytopenia.save()
+        # If there's no BaselinePlatelet >>>
+        # Modify thrombocytopenia fields, save(), and return False
+        if hasattr(self.user, "baselineplatelet") == False:
+            if self.user.thrombocytopenia.value == True:
+                self.user.thrombocytopenia.value = False
+                self.user.thrombocytopenia.save()
+            return False
+        # Else return True
+        else:
+            return True
 
     def diagnose_thrombocytopenia(self):
         """
@@ -1829,10 +1880,62 @@ class Platelet(BasePlatelet):
 
     def remove_thrombocytosis(self):
         """
-        Method that changes a User's Thrombocytosis.value to False
+        Method that changes User's Thrombocytosis.value to False
         Deletes User's BaselinePlatelet object
+        returns: False if thrombocytosis removed, True if not
         """
-        pass
+        # Fetch User's BaselienPlatelet
+        baseline = self.get_baseline()
+
+        # If User has BaselinePlatelet
+        if baseline:
+            # If BaselinePlatelet is set by User
+            if baseline.calculated == False:
+                # Compare BaselinePlatelet.modified>created to >>>
+                # Platelet.date_drawn>modified>created
+                if hasattr(baseline, "modified"):
+                    baseline_date = baseline.modified
+                elif hasattr(baseline, "created"):
+                    baseline_date = baseline.created
+                else:
+                    baseline_date = None
+                if hasattr(self, "date_drawn"):
+                    platelet_date = self.date_drawn
+                elif hasattr(self, "modified"):
+                    platelet_date = self.modified
+                elif hasattr(self, "created"):
+                    platelet_date = self.created
+                else:
+                    platelet_date = None
+                # If there is a BaselinePlatelet date and Platelet date, compare
+                if baseline_date and platelet_date:
+                    # If Platelet date newer than BaselinePlatelet date >>>
+                    # Remove BaselinePlatelet
+                    if baseline_date < platelet_date:
+                        baseline.delete()
+                        self.user.baselineplatelet = None
+                        self.user.save()
+                        self.user.thrombocytosis.baseline_platelet = None
+                        self.user.thrombocytosis.last_modified = "Behind the scenes"
+                        self.user.thrombocytosis.save()
+            # If BaselinePlatelet is calculated, remove it
+            else:
+                baseline.delete()
+                self.user.baselineplatelet = None
+                self.user.save()
+                self.user.thrombocytosis.baseline_platelet = None
+                self.user.thrombocytosis.last_modified = "Behind the scenes"
+                self.user.thrombocytosis.save()
+        # If there's no BaselinePlatelet >>>
+        # Modify thrombocytosis fields, save(), and return False
+        if hasattr(self.user, "baselineplatelet") == False:
+            if self.user.thrombocytosis.value == True:
+                self.user.thrombocytosis.value = False
+                self.user.thrombocytosis.save()
+            return False
+        # Else return True
+        else:
+            return True
 
     def diagnose_thrombocytosis(self):
         """
