@@ -1396,10 +1396,10 @@ class TestPlateletMethods(TestCase):
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 39
         self.user.thrombocytopenia.value = True
-        self.user.thrombocytopenia.baseline_platelet = self.user.baselineplatelet
+        self.user.thrombocytopenia.baseline = self.user.baselineplatelet
         self.user.thrombocytopenia.save()
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 39
+        assert self.user.thrombocytopenia.baseline.value == 39
         self.platelet2 = PlateletFactory(user=self.user, value=40, date_drawn=timezone.now() - timedelta(days=340))
         # Test remove_thrombocytopenia() from 2nd Platelet
         self.platelet2.remove_thrombocytopenia()
@@ -1411,10 +1411,10 @@ class TestPlateletMethods(TestCase):
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 41
         self.user.thrombocytopenia.value = True
-        self.user.thrombocytopenia.baseline_platelet = self.user.baselineplatelet
+        self.user.thrombocytopenia.baseline = self.user.baselineplatelet
         self.user.thrombocytopenia.save()
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 41
+        assert self.user.thrombocytopenia.baseline.value == 41
         self.platelet3.remove_thrombocytopenia()
         assert self.user.thrombocytopenia.value == False
         assert hasattr(self.user, "baselineplatelet") == False
@@ -1429,21 +1429,21 @@ class TestPlateletMethods(TestCase):
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 39
         self.user.thrombocytopenia.value = True
-        self.user.thrombocytopenia.baseline_platelet = self.user.baselineplatelet
+        self.user.thrombocytopenia.baseline = self.user.baselineplatelet
         self.user.thrombocytopenia.save()
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 39
+        assert self.user.thrombocytopenia.baseline.value == 39
         self.platelet1.remove_thrombocytopenia()
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 39
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 39
+        assert self.user.thrombocytopenia.baseline.value == 39
         # Create Platelet in future
         self.platelet2 = PlateletFactory(user=self.user, value=56, date_drawn=timezone.now() + timedelta(days=75))
         self.platelet2.remove_thrombocytopenia()
         assert hasattr(self.user, "baselineplatelet") == False
         assert self.user.thrombocytopenia.value == False
-        assert self.user.thrombocytopenia.baseline_platelet == None
+        assert self.user.thrombocytopenia.baseline == None
 
     def test_remove_thrombocytosis_no_baseline(self):
         """Test remove_thrombocytosis() in various scenarios"""
@@ -1453,10 +1453,10 @@ class TestPlateletMethods(TestCase):
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 666
         self.user.thrombocytosis.value = True
-        self.user.thrombocytosis.baseline_platelet = self.user.baselineplatelet
+        self.user.thrombocytosis.baseline = self.user.baselineplatelet
         self.user.thrombocytosis.save()
         assert self.user.thrombocytosis.value == True
-        assert self.user.thrombocytosis.baseline_platelet.value == 666
+        assert self.user.thrombocytosis.baseline.value == 666
         self.platelet2 = PlateletFactory(user=self.user, value=840, date_drawn=timezone.now() - timedelta(days=340))
         # Test remove_thrombocytosis() from 2nd Platelet
         self.platelet2.remove_thrombocytosis()
@@ -1468,10 +1468,10 @@ class TestPlateletMethods(TestCase):
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 800
         self.user.thrombocytosis.value = True
-        self.user.thrombocytosis.baseline_platelet = self.user.baselineplatelet
+        self.user.thrombocytosis.baseline = self.user.baselineplatelet
         self.user.thrombocytosis.save()
         assert self.user.thrombocytosis.value == True
-        assert self.user.thrombocytosis.baseline_platelet.value == 800
+        assert self.user.thrombocytosis.baseline.value == 800
         self.platelet3.remove_thrombocytosis()
         assert self.user.thrombocytosis.value == False
         assert hasattr(self.user, "baselineplatelet") == False
@@ -1486,21 +1486,21 @@ class TestPlateletMethods(TestCase):
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 750
         self.user.thrombocytosis.value = True
-        self.user.thrombocytosis.baseline_platelet = self.user.baselineplatelet
+        self.user.thrombocytosis.baseline = self.user.baselineplatelet
         self.user.thrombocytosis.save()
         assert self.user.thrombocytosis.value == True
-        assert self.user.thrombocytosis.baseline_platelet.value == 750
+        assert self.user.thrombocytosis.baseline.value == 750
         self.platelet1.remove_thrombocytosis()
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 750
         assert self.user.thrombocytosis.value == True
-        assert self.user.thrombocytosis.baseline_platelet.value == 750
+        assert self.user.thrombocytosis.baseline.value == 750
         # Create Platelet in future
         self.platelet2 = PlateletFactory(user=self.user, value=725, date_drawn=timezone.now() + timedelta(days=75))
         self.platelet2.remove_thrombocytosis()
         assert hasattr(self.user, "baselineplatelet") == False
         assert self.user.thrombocytosis.value == False
-        assert self.user.thrombocytosis.baseline_platelet == None
+        assert self.user.thrombocytosis.baseline == None
 
     def test_diagnose_thrombocytopenia_no_baseline(self):
         """
@@ -1513,27 +1513,27 @@ class TestPlateletMethods(TestCase):
         assert self.platelet2.diagnose_thrombocytopenia() == False
         assert self.user.thrombocytopenia.value == False
         assert hasattr(self.user, "baselineplatelet") == False
-        assert hasattr(self.user.thrombocytopenia, "baseline_platelet") == False
+        assert self.user.thrombocytopenia.baseline == None
         # Create 3rd Platelet within 2 years
         self.platelet3 = PlateletFactory(user=self.user, value=49, date_drawn=timezone.now() - timedelta(days=720))
         assert self.platelet2.diagnose_thrombocytopenia() == False
         assert self.user.thrombocytopenia.value == False
         assert hasattr(self.user, "baselineplatelet") == False
-        assert hasattr(self.user.thrombocytopenia, "baseline_platelet") == False
+        assert self.user.thrombocytopenia.baseline == None
         # Create 4th Platelet within last 2 years but not 3 months from the last previously high Platelet
         self.platelet4 = PlateletFactory(user=self.user, value=59, date_drawn=timezone.now() - timedelta(days=701))
         assert self.platelet4.diagnose_thrombocytopenia() == False
         assert self.user.thrombocytopenia.value == False
         assert hasattr(self.user, "baselineplatelet") == False
-        assert hasattr(self.user.thrombocytopenia, "baseline_platelet") == False
+        assert self.user.thrombocytopenia.baseline == None
         # Create 5th Platelet within 2 years and greater than 3 months from the last previous low Platelet
         self.platelet5 = PlateletFactory(user=self.user, value=69, date_drawn=timezone.now() - timedelta(days=601))
         assert self.platelet5.diagnose_thrombocytopenia() == True
         assert self.user.thrombocytopenia.value == True
         assert hasattr(self.user, "baselineplatelet") == True
-        assert hasattr(self.user.thrombocytopenia, "baseline_platelet") == True
-        assert self.user.thrombocytopenia.baseline_platelet == self.user.baselineplatelet
-        assert self.user.thrombocytopenia.baseline_platelet.value == 59
+        assert self.user.thrombocytopenia.baseline
+        assert self.user.thrombocytopenia.baseline == self.user.baselineplatelet
+        assert self.user.thrombocytopenia.baseline.value == 59
         assert self.user.thrombocytopenia.last_modified == "Behind the scenes"
         # Create 6th Platelet within 2 years but normal, should prompt undiagnosing Thrombocytopenia
         self.platelet6 = PlateletFactory(user=self.user, value=169, date_drawn=timezone.now() - timedelta(days=501))
@@ -1545,50 +1545,52 @@ class TestPlateletMethods(TestCase):
         self.user.refresh_from_db()
         assert hasattr(self.user, "baselineplatelet") == False
         assert self.user.thrombocytopenia.value == False
-        assert hasattr(self.user.thrombocytopenia, "baseline_platelet") == False
+        assert self.user.thrombocytopenia.baseline == None
         assert self.user.thrombocytopenia.last_modified == "Behind the scenes"
 
     def test_diagnose_thrombocytopenia_with_baseline(self):
         """Test diagnose_thrombocytosis in various scenarios. User-set BaselinePlatelet.value"""
         # Create BaselinePlatelet that is set by User (calculated = False)
         self.baselineplatelet = BaselinePlateletFactory(user=self.user, value=140, calculated=False)
-        # Create Platelet in past year
-        self.platelet1 = PlateletFactory(user=self.user, value=180, date_drawn=timezone.now() - timedelta(days=175))
+        # Create normal Platelet in past year
+        self.platelet1 = PlateletFactory(user=self.user, value=190, date_drawn=timezone.now() - timedelta(days=275))
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 140
         self.user.thrombocytopenia.value = True
-        self.user.thrombocytopenia.baseline_platelet = self.user.baselineplatelet
+        self.user.thrombocytopenia.baseline = self.user.baselineplatelet
         self.user.thrombocytopenia.save()
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 140
+        assert self.user.thrombocytopenia.baseline.value == 140
+        # Check to make sure diagnose_thrombocytopenia() doesn't return False and change Thrombocytopenia
+        # Thrombocytopenia is User-set, unless remove_thrombocytopenia is called on a Platelet after BaselinePlatelet was set >>>
+        # Won't modify anything
         assert self.platelet1.diagnose_thrombocytopenia() == True
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 140
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 140
+        assert self.user.thrombocytopenia.baseline.value == 140
         # Create 2nd Platelet in past year, 3 months apart from first Platelet
-        self.platelet2 = PlateletFactory(user=self.user, value=100, date_drawn=timezone.now() - timedelta(days=45))
+        self.platelet2 = PlateletFactory(user=self.user, value=100, date_drawn=timezone.now() - timedelta(days=145))
         assert self.platelet2.diagnose_thrombocytopenia() == True
-        # User's BaselinePlatelet value should be overwritten
+        # User's BaselinePlatelet value should not be overwritten
         assert hasattr(self.user, "baselineplatelet") == True
         assert self.user.baselineplatelet.value == 140
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 140
-        # Create 3rd Platelet in in future, thrombocytopenia should now overwrite
+        assert self.user.thrombocytopenia.baseline.value == 140
+        # Create 3rd Platelet in past year, 3 months apart from 2nd, thrombocytopenia should now overwrite
         self.platelet3 = PlateletFactory(user=self.user, value=100, date_drawn=timezone.now() - timedelta(days=45))
         assert self.platelet3.diagnose_thrombocytopenia() == True
         assert hasattr(self.user, "baselineplatelet") == True
-        assert self.user.baselineplatelet.value == 100
+        assert self.user.baselineplatelet.value == 140
         assert self.user.thrombocytopenia.value == True
-        assert self.user.thrombocytopenia.baseline_platelet.value == 100
+        assert self.user.thrombocytopenia.baseline.value == 140
         # Create 4th Platelet in in future, thrombocytopenia should now overwrite
-        self.platelet4 = PlateletFactory(user=self.user, value=190, date_drawn=timezone.now() - timedelta(days=145))
-        assert self.platelet4.diagnose_thrombocytopenia() == False
-        assert hasattr(self.user, "baselineplatelet") == False
-        assert self.user.thrombocytopenia.value == False
-        assert self.user.thrombocytopenia.baseline_platelet.value == None
-        print(self.user.thrombocytopenia.baseline_platelet)
-
+        self.platelet4 = PlateletFactory(user=self.user, value=190, date_drawn=timezone.now() - timedelta(days=5))
+        assert self.platelet4.diagnose_thrombocytopenia() == True
+        assert hasattr(self.user, "baselineplatelet") == True
+        assert self.user.thrombocytopenia.value == True
+        assert self.user.thrombocytopenia.baseline.value == 140
+        ### NEED TO WRITE TEST FOR PLATELET DRAWN AHEAD OF BASELINEPLATELET CREATED/MODIFIED
 
 class TestWBCMethods(TestCase):
     def setUp(self):

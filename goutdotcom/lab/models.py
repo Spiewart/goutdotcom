@@ -1848,7 +1848,7 @@ class Platelet(BasePlatelet):
                         baseline.delete()
                         self.user.baselineplatelet = None
                         self.user.save()
-                        self.user.thrombocytopenia.baseline_platelet = None
+                        self.user.thrombocytopenia.baseline = None
                         self.user.thrombocytopenia.last_modified = "Behind the scenes"
                         self.user.thrombocytopenia.save()
             # If BaselinePlatelet is calculated, remove it
@@ -1856,7 +1856,7 @@ class Platelet(BasePlatelet):
                 baseline.delete()
                 self.user.baselineplatelet = None
                 self.user.save()
-                self.user.thrombocytopenia.baseline_platelet = None
+                self.user.thrombocytopenia.baseline = None
                 self.user.thrombocytopenia.last_modified = "Behind the scenes"
                 self.user.thrombocytopenia.save()
         # If there's no BaselinePlatelet >>>
@@ -1893,13 +1893,15 @@ class Platelet(BasePlatelet):
             else:
                 # If Platelets are 3 months apart and continuously low >>>
                 if platelets[0].date_drawn >= platelet.date_drawn + timedelta(days=90):
-                    # set BasSlinePlatelet
+                    # set BaselinePlatelet
                     # Modify Thrombocytopenia to True
                     baseline = self.set_baseline()
-                    self.user.thrombocytopenia.value = True
-                    self.user.thrombocytopenia.last_modified = "Behind the scenes"
-                    self.user.thrombocytopenia.baseline_platelet = baseline
-                    self.user.thrombocytopenia.save()
+                    # Check if Baseline isn't None (for instance, with User-set BaselinePlatelet)
+                    if baseline:
+                        self.user.thrombocytopenia.value = True
+                        self.user.thrombocytopenia.last_modified = "Behind the scenes"
+                        self.user.thrombocytopenia.baseline = baseline
+                        self.user.thrombocytopenia.save()
                     return True
                 # If not, keep iterating back in time (through the list)
                 continue
@@ -1943,7 +1945,7 @@ class Platelet(BasePlatelet):
                         baseline.delete()
                         self.user.baselineplatelet = None
                         self.user.save()
-                        self.user.thrombocytosis.baseline_platelet = None
+                        self.user.thrombocytosis.baseline = None
                         self.user.thrombocytosis.last_modified = "Behind the scenes"
                         self.user.thrombocytosis.save()
             # If BaselinePlatelet is calculated, remove it
@@ -1951,7 +1953,7 @@ class Platelet(BasePlatelet):
                 baseline.delete()
                 self.user.baselineplatelet = None
                 self.user.save()
-                self.user.thrombocytosis.baseline_platelet = None
+                self.user.thrombocytosis.baseline= None
                 self.user.thrombocytosis.last_modified = "Behind the scenes"
                 self.user.thrombocytosis.save()
         # If there's no BaselinePlatelet >>>
