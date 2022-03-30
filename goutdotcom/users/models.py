@@ -1,8 +1,11 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+from ..ultplan.models import ULTPlan
 
 
 class User(AbstractUser):
@@ -54,6 +57,14 @@ class Patient(User):
             return self.patientprofile
         except self.patientprofile.DoesNotExist:
             return None
+
+    @property
+    def ultplan(self):
+        try:
+            ultplan = ULTPlan.objects.get(user=self, active=True)
+        except ObjectDoesNotExist:
+            ultplan = None
+        return ultplan
 
 
 class ProviderManager(BaseUserManager):

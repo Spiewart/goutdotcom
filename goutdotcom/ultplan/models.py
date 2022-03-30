@@ -7,7 +7,6 @@ from django.utils.text import slugify
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
-
 from ..lab.models import (
     ALT,
     AST,
@@ -22,7 +21,15 @@ from .choices import BOOL_CHOICES
 
 
 class ULTPlan(TimeStampedModel):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    active = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this ULTPlan active?", default=True)
+    pause = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this ULTPlan on pause?", default=False)
+    emergency = models.BooleanField(choices=BOOL_CHOICES, help_text="Has this ULTPLan been paused for an emergency?", default=False)
+    inactive = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this ULTPlan inactive?", default=False)
+    titrating = models.BooleanField(
+        choices=BOOL_CHOICES, help_text="Is this ULTPlan still in the titration phase?", default=True
+    )
+    last_titration = models.DateField(help_text="When was the ULT dose last titrated?", null=True, blank=True)
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -55,13 +62,13 @@ class ULTPlan(TimeStampedModel):
         verbose_name="Delinquent Lab Check Interval",
         default=timedelta(days=21),
     )
-    titrating = models.BooleanField(
-        choices=BOOL_CHOICES, help_text="Is this ULTPlan still in the titration phase?", default=True
-    )
-    last_titration = models.DateField(help_text="When was the ULT dose last titrated?", null=True, blank=True)
-    pause = models.BooleanField(choices=BOOL_CHOICES, help_text="Is this ULTPlan on pause?", default=False)
     history = HistoricalRecords()
     slug = models.SlugField(max_length=200, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user'], condition=models.Q(active=True), name='user_active_ultplan')
+        ]
 
     def save(self, *args, **kwargs):
         if not self.id:

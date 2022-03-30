@@ -140,9 +140,9 @@ class PatientProfile(TimeStampedModel):
     platelet_high_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.75), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
     platelet_high_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(2.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
     platelet_low_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
-    platelet_low_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
-    platelet_low_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
-    platelet_low_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
+    platelet_low_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(0.75), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
+    platelet_low_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(0.5), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
+    platelet_low_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(0.25), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
     #WBC
     wbc_high_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high WBC abnormality calculation", null=False, blank=False)
     wbc_high_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high WBC abnormality calculation", null=False, blank=False)

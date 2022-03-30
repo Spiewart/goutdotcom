@@ -51,12 +51,34 @@ class Lab(TimeStampedModel):
         # Lab.value is close to normal.
         # Set when a Lab is a follow-up (has abnormal_followup field)
         RESOLVED = 5
-        # Lab.value is still abnormal but is improving from the last abnormal check.
-        # Improved enough to restart ULTPlan without further rechecks
-        IMPROVING_RESTART = 6
-        # Lab.value is still abnormal but is improving from the last abnormal check.
-        # Still serious enough to warrant recheck prior to restarting
-        IMPROVING_RECHECK = 7
+        # Lab.value is stable from the last abnormal check
+        STABLE = 6
+        # Lab.value is improving from the last abnormal check.
+        IMPROVING = 7
+
+    class Action(models.IntegerChoices):
+        """
+        Class to describe Lab.action field choices and action taken on abnormal Lab.
+        Will be set by process_high() or process_low() method.
+        """
+
+        # Continue the ULTPlan as normal
+        CONTINUE = 0
+        # Recheck the Lab non-urgently
+        # Meant for a non-urgent lab abnormality
+        RECHECK = 1
+        # Pause the ULTPlan and recheck the Lab urgently
+        # Meant for a serious but non-emergent lab abnormality
+        PAUSE = 2
+        # Change the ULTPlan
+        # Will also prompt inactivation of current ULTPlan in order to create a new active one
+        ### TO DO: BUILD ULTPLAN change() METHOD ###
+        CHANGE = 3
+        # Pause the ULTPLan for an emergency, meant to be resumed or the ULTPlan stopped
+        ### TO DO: BUILD ULTPLAN RESUME() and INACTIVATE() METHODS ###
+        EMERGENCY = 4
+        # Permanently discontinue ULTPlan
+        INACTIVATE = 5
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -68,6 +90,13 @@ class Lab(TimeStampedModel):
     slug = models.SlugField(max_length=200, null=True, blank=True)
     flag = models.IntegerField(
         choices=Flag.choices, default=0, validators=[MinValueValidator(0), MaxValueValidator(7)], null=True, blank=True
+    )
+    action = models.IntegerField(
+        choices=Action.choices,
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(5)],
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -145,7 +174,7 @@ class Lab(TimeStampedModel):
         Returns: string
         """
         if self.flag == 0:
-            return None
+            return "normal"
         elif self.flag == 1:
             return "trivial"
         elif self.flag == 2:
@@ -157,9 +186,30 @@ class Lab(TimeStampedModel):
         elif self.flag == 5:
             return "resolved"
         elif self.flag == 6:
-            return "improving_restart"
+            return "stable"
         elif self.flag == 7:
-            return "improving_recheck"
+            return "improving"
+        else:
+            return None
+
+    @property
+    def show_action(self):
+        """
+        Function that displays the Lab's flag attribute.
+        Returns: string
+        """
+        if self.flag == 0:
+            return "continue"
+        elif self.flag == 1:
+            return "recheck"
+        elif self.flag == 2:
+            return "pause"
+        elif self.flag == 3:
+            return "change"
+        elif self.flag == 4:
+            return "emergency"
+        elif self.flag == 5:
+            return "inactivate"
         else:
             return None
 
@@ -1955,7 +2005,7 @@ class Platelet(BasePlatelet):
                 baseline.delete()
                 self.user.baselineplatelet = None
                 self.user.save()
-                self.user.thrombocytosis.baseline= None
+                self.user.thrombocytosis.baseline = None
                 self.user.thrombocytosis.last_modified = "Behind the scenes"
                 self.user.thrombocytosis.save()
         # If there's no BaselinePlatelet >>>
@@ -2012,11 +2062,11 @@ class Platelet(BasePlatelet):
     def process_high(self):
         """
         Function that processes a high Platelet.
+        Will diagnose Thrombocytosis via diagnose_thrombocytosis() method.
         Checks if this object is a follow up an abnormal Platelet.
         Never returns "nonurgent", "urgent", or "emergency" or stop ULTPlan.
         Returns "trivial" for elevation or "error".
-        If high Lab is an abnormal follow up:
-            Recalculates baseline in BaselineLab, checks for associated MedicalProfile Thrombocytosis object.
+
         Returns:
             string or nothing: returns "trivial", "error" or None
         """
@@ -2027,15 +2077,97 @@ class Platelet(BasePlatelet):
         urgent = self.user.patientprofile.platelet_high_urgent
         emergency = self.user.patientprofile.platelet_high_emergency
 
-        # Declare baseline for scope
-        self.baseline = None
         # Call diagnose_thrombocytosis, will set BaselinePlatelet if appropriate
         self.diagnose_thrombocytosis()
         # If BaselinePlatelet set above, var_x_high will use it for processing
         if self.var_x_high(trivial):
             self.flag = 1
+            self.action = 0
             self.save()
-        return None
+        return self.show_action
+
+    def process_low(self):
+        """
+        Function that processes a low Platelet.
+        Will diagnose Thrombocytopenia via diagnose_thrombocytopenia() method.
+        Checks if this object is a follow up an abnormal Platelet.
+        Can return "trivial, "nonurgent", "urgent", or "emergency", the latter 2 will stop ULTPlan.
+        If low Platelet is an abnormal follow up, processes differently.
+        Returns:
+            string or nothing: string is one of the Flag options
+        """
+        # Assign trivial % to process low Platelet
+        # Pulled from PatientProfile
+        trivial = self.user.patientprofile.platelet_low_trivial
+        nonurgent = self.user.patientprofile.platelet_low_nonurgent
+        urgent = self.user.patientprofile.platelet_low_urgent
+        emergency = self.user.patientprofile.platelet_low_emergency
+
+        # Call diagnose_thrombocytosis, will set BaselinePlatelet if appropriate
+        self.diagnose_thrombocytosis()
+        # If BaselinePlatelet set above, var_x_high will use it for processing
+        # If Platelet is a follow up on an abnormal Platelet
+        if self.abnormal_followup:
+            # If follow-up Platelet at or below User's baseline, the original abnormality was likely an error
+            if self.var_x_high(trivial) == False:
+                self.flag = 5
+                self.action = 0
+                self.save()
+
+                # Return at end of method (None)
+            # If follow-up is 50% the baseline or lower limit of normal: Platelet is still very low and/or getting worse
+            if self.var_x_high(urgent):
+                # If getting worse or at emergency level, trigger emergency
+                if self.abnormal_followup.flag == 2 or self.var_x_high(emergency) or self.value < 10:
+                    self.flag = 4
+                    self.action = 5
+                    self.save()
+                    return self.show_flag
+                # Otherwise the abnormal lab was also "urgent" and the Platelet value is stable
+                else:
+                    self.flag = 9
+                    self.save()
+                    return "stable_restart"
+            # If abnormal_followup was not urgent, it must have been nonurgent
+            else:
+                # If initial Platelet was "urgent" and now is not, must be improving and
+                if self.abnormal_followup.flag == 3:
+                    self.flag = 6
+                    self.save()
+                    return "improving_restart"
+                if self.var_x_high(nonurgent):
+                    self.flag = 8
+                    self.save()
+                    return "stable_continue"
+                else:
+                    self.flag = 6
+                    self.save()
+                    return "improving_continue"
+
+        # If Platelet isn't a follow up on an abnormal Platelet
+        else:
+            # Emergency values will not flag a follow up Platelet check
+            # Will instead recommend User seek medical attention
+            # Emergency Pause ULTPlan (will have to be removed by Provider or User)
+            if self.var_x_low(emergency) or self.value < 10:
+                self.flag = 4
+                self.action = 4
+                self.save()
+            # Urgent values will prompt a recheck
+            elif self.var_x_low(urgent):
+                self.flag = 3
+                self.action = 1
+                self.save()
+            elif self.var_x_low(nonurgent):
+                self.flag = 2
+                self.action = 0
+                self.save()
+            elif self.var_x_low(trivial):
+                self.flag = 1
+                self.action = 0
+                self.save()
+            return self.action
+
 
 class BaselinePlatelet(BasePlatelet):
     creator = models.ForeignKey(
