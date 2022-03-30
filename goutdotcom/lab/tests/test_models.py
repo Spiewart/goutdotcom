@@ -1679,6 +1679,54 @@ class TestPlateletMethods(TestCase):
         assert self.user.thrombocytosis.baseline.value == 540
         ### NEED TO WRITE TEST FOR PLATELET DRAWN AHEAD OF BASELINEPLATELET CREATED/MODIFIED
 
+    def test_process_high_no_baseline(self):
+        """Test processing a high Platelet value. Should basically only ever return None and set Platelet flag=1 (trivial)."""
+        self.platelet1 = PlateletFactory(user=self.user, value=400, date_drawn=timezone.now() - timedelta(days=275))
+        assert self.platelet1.high == False
+        assert self.platelet1.process_high() == None
+        assert self.platelet1.flag == 0
+        assert self.user.thrombocytosis.value == False
+        assert hasattr(self.user, "baselineplatelet") == False
+        self.platelet2 = PlateletFactory(user=self.user, value=590, date_drawn=timezone.now() - timedelta(days=175))
+        assert self.platelet2.high == True
+        assert self.platelet2.process_high() == None
+        assert self.platelet2.flag == 1
+        assert self.user.thrombocytosis.value == False
+        assert hasattr(self.user, "baselineplatelet") == False
+        # 2nd high Platelet 3 months or more from last should prompt diagnosis of Thrombocytopenia and setting BaselinePlatelet
+        self.platelet3 = PlateletFactory(user=self.user, value=690, date_drawn=timezone.now() - timedelta(days=25))
+        assert self.platelet3.high == True
+        assert self.platelet3.process_high() == None
+        assert self.platelet3.flag == 1
+        assert self.user.thrombocytosis.value == True
+        assert hasattr(self.user, "baselineplatelet") == True
+        assert self.user.thrombocytosis.baseline.value == 640
+
+    def test_process_high_with_baseline(self):
+        """Test processing a high Platelet value with User-set BaselinePlatelet and Thrombocytosis. Should basically only ever return None and set Platelet flag=1 (trivial)."""
+        self.baselineplatelet = BaselinePlateletFactory(user=self.user, value=550, calculated=False)
+        self.user.thrombocytosis.value = True
+        self.user.thrombocytosis.baseline = self.baselineplatelet
+        self.user.thrombocytosis.save()
+        self.platelet1 = PlateletFactory(user=self.user, value=400, date_drawn=timezone.now() - timedelta(days=275))
+        assert self.platelet1.high == False
+        assert self.platelet1.process_high() == None
+        assert self.platelet1.flag == 0
+        assert self.user.thrombocytosis.value == True
+        assert self.user.thrombocytosis.baseline.value == 550
+        self.platelet2 = PlateletFactory(user=self.user, value=540, date_drawn=timezone.now() - timedelta(days=175))
+        assert self.platelet2.high == True
+        assert self.platelet2.process_high() == None
+        assert self.platelet2.flag == 0
+        assert self.user.thrombocytosis.value == True
+        assert self.user.thrombocytosis.baseline.value == 550
+        self.platelet3 = PlateletFactory(user=self.user, value=590, date_drawn=timezone.now() - timedelta(days=175))
+        assert self.platelet3.high == True
+        assert self.platelet3.process_high() == None
+        assert self.platelet3.flag == 1
+        assert self.user.thrombocytosis.value == True
+        assert self.user.thrombocytosis.baseline.value == 550
+
 
 class TestWBCMethods(TestCase):
     def setUp(self):

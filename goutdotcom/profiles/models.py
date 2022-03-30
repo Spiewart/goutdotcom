@@ -45,7 +45,6 @@ from ..history.models import (
     UrateKidneyStones,
     XOIInteractions,
 )
-
 from ..users.models import models
 from ..vitals.models import Height, Weight
 from .choices import races, sexes
@@ -135,10 +134,11 @@ class PatientProfile(TimeStampedModel):
     creatinine_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(3.00), help_text="Percentage for trivial creatinine abnormality calculation", null=False, blank=False)
     creatinine_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(5.00), help_text="Percentage for trivial creatinine abnormality calculation", null=False, blank=False)
     #Platelet
+    # High Platelet will never trigger anything other than a "trivial" response from process_high(), thus other non/urgent and emergency criteria not required
     platelet_high_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
-    platelet_high_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
-    platelet_high_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
-    platelet_high_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
+    platelet_high_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.5), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
+    platelet_high_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.75), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
+    platelet_high_emergency = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(2.00), help_text="Percentage for trivial high platelet abnormality calculation", null=False, blank=False)
     platelet_low_trivial = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
     platelet_low_nonurgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)
     platelet_low_urgent = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(1.00), help_text="Percentage for trivial low platelet abnormality calculation", null=False, blank=False)

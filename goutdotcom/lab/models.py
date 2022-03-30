@@ -2020,10 +2020,8 @@ class Platelet(BasePlatelet):
         Returns:
             string or nothing: returns "trivial", "error" or None
         """
-        # Assign percentages for processing high/low for scope
-        # Check model to set percentages on which to process high values
-        # Pulled from PatientProfile, which will automatically be created with default values
-
+        # Assign trivial % to process high Platelet
+        # Pulled from PatientProfile
         trivial = self.user.patientprofile.platelet_high_trivial
         nonurgent = self.user.patientprofile.platelet_high_nonurgent
         urgent = self.user.patientprofile.platelet_high_urgent
@@ -2031,58 +2029,12 @@ class Platelet(BasePlatelet):
 
         # Declare baseline for scope
         self.baseline = None
-        # See if the User meets the definition of Thrombocytosis (=chronic elevation of Platelets)
-        if self.diagnose_thrombocytosis() == True:
-            # Try to fetch baseline
-            self.baseline = self.get_baseline()
-        # Check if Lab is a follow up on an abnormal
-        if self.abnormal_followup:
-            # Emergency (flag=4) values will not flag a follow up lab
-            # Will instead recommend user see medical attention
-            # Otherwise:
-            # If follow-up Lab at or below User's baseline, the original abnormality was likely an error
-            if self.var_x_high(1) == False:
-                self.abnormal_followup.flag = 5
-                self.abnormal_followup.save()
-                # Will return None at end of method
-            # If follow-up is still 3x the upper limit of normal or User's baseline
-            # Trigger emergency
-            # This would mean 2 Labs sequentially that are > 100, potentially higher
-            if self.var_x_high(urgent):
-                self.flag = 4
-                self.save()
-                return "emergency"
-            else:
-                # If the abnormal original was "urgent"
-                if self.abnormal_followup.flag == 3:
-                    # Check if the follow up isn't 2x the baseline
-                    # If not, save Lab.flag as improving and restart ULTPlan
-                    if self.var_x_high(nonurgent) == False:
-                        self.flag = 6
-                        self.save()
-                        return "improving_restart"
-                    # Else the Lab is improving, but not enough to restart the ULTPlan yet
-                    else:
-                        self.flag = 7
-                        self.save()
-                        return "improving_recheck"
-                # Else the abnormal original was "nonurgent" flag=2
-                # If still 2x the baseline
-                # Mark as urgent (Lab.flag=3)
-                else:
-                    if self.var_x_high(nonurgent):
-                        self.flag = 3
-                        self.save()
-                        return "urgent"
-                    else:
-                        self.flag = 6
-                        self.save()
-                        return "improving_restart"
-        # If Lab isn't a follow up on an abnormal
-        else:
-            if self.var_x_high(trivial):
-                self.flag = 1
-                self.save()
+        # Call diagnose_thrombocytosis, will set BaselinePlatelet if appropriate
+        self.diagnose_thrombocytosis()
+        # If BaselinePlatelet set above, var_x_high will use it for processing
+        if self.var_x_high(trivial):
+            self.flag = 1
+            self.save()
         return None
 
 class BaselinePlatelet(BasePlatelet):
