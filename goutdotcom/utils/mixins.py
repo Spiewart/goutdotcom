@@ -85,10 +85,13 @@ class PatientProviderMixin:
                 # Else raise 404
                 raise PermissionDenied
         else:
-            if self.object.creator == self.request.user:
-                return super().get(request, *args, **kwargs)
+            if self.object.creator:
+                if self.object.creator == self.request.user:
+                    return super().get(request, *args, **kwargs)
+                else:
+                    raise PermissionDenied
             else:
-                raise PermissionDenied
+                return super().get(request, *args, **kwargs)
 
 
 class PatientProviderUserMixin:

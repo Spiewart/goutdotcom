@@ -43,7 +43,14 @@ from ..lab.forms import (
     BaselinePlateletForm,
     BaselineWBCForm,
 )
-from ..lab.models import BaselineCreatinine
+from ..lab.models import (
+    BaselineALT,
+    BaselineAST,
+    BaselineCreatinine,
+    BaselineHemoglobin,
+    BaselinePlatelet,
+    BaselineWBC,
+)
 from ..utils.mixins import PatientProviderMixin
 from ..vitals.forms import HeightForm, WeightForm
 from .forms import (
@@ -322,7 +329,7 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
                 context["hemoglobin_polycythemia_form"] = self.hemoglobin_form_class(
                     instance=BaselineHemoglobin(), prefix="hemoglobin_polycythemia"
                 )
-            if self.object.anemie.baseline:
+            if self.object.anemia.baseline:
                 context["hemoglobin_anemia_form"] = self.hemoglobin_form_class(
                     instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
                 )
@@ -425,22 +432,38 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         diabetes_form = self.diabetes_form_class(request.POST, instance=self.object.diabetes)
         erosions_form = self.erosions_form_class(request.POST, instance=self.object.erosions)
         heartattack_form = self.heartattack_form_class(request.POST, instance=self.object.heartattack)
+        # Check if Anemia object has a BaselineHemoglobin, instantiate form with it as baseline if so
         if self.object.anemia.baseline:
             hemoglobin_anemia_form = self.hemoglobin_form_class(
                 request.POST, instance=self.object.anemia.baseline, prefix="hemoglobin_anemia"
             )
+        # Otherwise, check if the User has a BaselineHemoglobin, instantiate form with that if so
         else:
-            hemoglobin_anemia_form = self.hemoglobin_form_class(
-                request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_anemia"
-            )
+            if hasattr(self.object.user, "baselinehemoglobin"):
+                hemoglobin_anemia_form = self.hemoglobin_form_class(
+                    request.POST, instance=self.object.user.baselinehemoglobin, prefix="hemoglobin_anemia"
+                )
+            # If no BaselineHemoglobin, instantiate form with new un-save()'d BaselineHemoglobin
+            else:
+                hemoglobin_anemia_form = self.hemoglobin_form_class(
+                    request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_anemia"
+                )
+        # Check if Polycythemia object has a BaselineHemoglobin, instantiate form with it as baseline if so
         if self.object.polycythemia.baseline:
             hemoglobin_polycythemia_form = self.hemoglobin_form_class(
                 request.POST, instance=self.object.polycythemia.baseline, prefix="hemoglobin_polycythemia"
             )
+        # Otherwise, check if the User has a BaselineHemoglobin, instantiate form with that if so
         else:
-            hemoglobin_polycythemia_form = self.hemoglobin_form_class(
-                request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_polycythemia"
-            )
+            if hasattr(self.object.user, "baselinehemoglobin"):
+                hemoglobin_polycythemia_form = self.hemoglobin_form_class(
+                    request.POST, instance=self.object.user.baselinehemoglobin, prefix="hemoglobin_polycythemia"
+                )
+            # If no BaselineHemoglobin, instantiate form with new un-save()'d BaselineHemoglobin
+            else:
+                hemoglobin_polycythemia_form = self.hemoglobin_form_class(
+                    request.POST, instance=BaselineHemoglobin(), prefix="hemoglobin_polycythemia"
+                )
         hypertension_form = self.hypertension_form_class(request.POST, instance=self.object.hypertension)
         hyperuricemia_form = self.hyperuricemia_form_class(request.POST, instance=self.object.hyperuricemia)
         IBD_form = self.IBD_form_class(request.POST, instance=self.object.IBD)
@@ -448,22 +471,38 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         leukopenia_form = self.leukopenia_form_class(request.POST, instance=self.object.leukopenia)
         organ_transplant_form = self.organ_transplant_form_class(request.POST, instance=self.object.organ_transplant)
         osteoporosis_form = self.osteoporosis_form_class(request.POST, instance=self.object.osteoporosis)
+        # Check if Thrombocytosis object has a BaselinePlatelet, instantiate form with it as baseline if so
         if self.object.thrombocytosis.baseline:
             platelet_thrombocytosis_form = self.platelet_form_class(
                 request.POST, instance=self.object.thrombocytosis.baseline, prefix="platelet_thrombocytosis"
             )
+        # Otherwise, check if the User has a BaselinePlatelet instantiate form with that if so
         else:
-            platelet_thrombocytosis_form = self.platelet_form_class(
-                request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytosis"
-            )
+            if hasattr(self.object.user, "baselineplatelet"):
+                platelet_thrombocytosis_form = self.platelet_form_class(
+                    request.POST, instance=self.object.user.baselineplatelet, prefix="platelet_thrombocytosis"
+                )
+            # If no BaselinePlatelet, instantiate form with new un-save()'d BaselinePlatelet
+            else:
+                platelet_thrombocytosis_form = self.platelet_form_class(
+                    request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytosis"
+                )
+        # Check if Thrombocytopenia object has a BaselinePlatelet, instantiate form with it as baseline if so
         if self.object.thrombocytopenia.baseline:
             platelet_thrombocytopenia_form = self.platelet_form_class(
                 request.POST, instance=self.object.thrombocytopenia.baseline, prefix="platelet_thrombocytopenia"
             )
+        # Otherwise, check if the User has a BaselinePlatelet instantiate form with that if so
         else:
-            platelet_thrombocytopenia_form = self.platelet_form_class(
-                request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytopenia"
-            )
+            if hasattr(self.object.user, "baselineplatelet"):
+                platelet_thrombocytopenia_form = self.platelet_form_class(
+                    request.POST, instance=self.object.user.baselineplatelet, prefix="platelet_thrombocytopenia"
+                )
+            # If no BaselinePlatelet, instantiate form with new un-save()'d BaselinePlatelet
+            else:
+                platelet_thrombocytopenia_form = self.platelet_form_class(
+                    request.POST, instance=BaselinePlatelet(), prefix="platelet_thrombocytopenia"
+                )
         polycythemia_form = self.polycythemia_form_class(request.POST, instance=self.object.polycythemia)
         stroke_form = self.stroke_form_class(request.POST, instance=self.object.stroke)
         thrombocytosis_form = self.thrombocytosis_form_class(request.POST, instance=self.object.thrombocytosis)
@@ -473,19 +512,36 @@ class MedicalProfileUpdate(LoginRequiredMixin, PatientProviderMixin, UserDetailR
         urate_kidney_stones_form = self.urate_kidney_stone_form_class(
             request.POST, instance=self.object.urate_kidney_stones
         )
+        # Check if Leukocytosis object has a BaselineWBC, instantiate form with it as baseline if so
         if self.object.leukocytosis.baseline:
             wbc_leukocytosis_form = self.wbc_form_class(
                 request.POST, instance=self.object.leukocytosis.baseline, prefix="wbc_leukocytosis"
             )
         else:
-            wbc_leukocytosis_form = self.wbc_form_class(request.POST, instance=BaselineWBC(), prefix="wbc_leukocytosis")
+            # Otherwise, check if the User has a BaselineWBC instantiate form with that if so
+            if hasattr(self.object.user, "baselinewbc"):
+                wbc_leukocytosis_form = self.wbc_form_class(
+                    request.POST, instance=self.object.user.baselinewbc, prefix="wbc_leukocytosis"
+                )
+            # If no BaselineWBC, instantiate form with new un-save()'d BaselineWBC
+            else:
+                wbc_leukocytosis_form = self.wbc_form_class(
+                    request.POST, instance=BaselineWBC(), prefix="wbc_leukocytosis"
+                )
+        # Check if Leukopenia object has a BaselineWBC, instantiate form with it as baseline if so
         if self.object.leukopenia.baseline:
             wbc_leukopenia_form = self.wbc_form_class(
                 request.POST, instance=self.object.leukopenia.baseline, prefix="wbc_leukopenia"
             )
         else:
-            wbc_leukopenia_form = self.wbc_form_class(request.POST, instance=BaselineWBC(), prefix="wbc_leukopenia")
-
+            # Otherwise, check if the User has a BaselineWBC instantiate form with that if so
+            if hasattr(self.object.user, "baselinewbc"):
+                wbc_leukopenia_form = self.wbc_form_class(
+                    request.POST, instance=self.object.user.baselinewbc, prefix="wbc_leukopenia"
+                )
+            # If no BaselineWBC, instantiate form with new un-save()'d BaselineWBC
+            else:
+                wbc_leukopenia_form = self.wbc_form_class(request.POST, instance=BaselineWBC(), prefix="wbc_leukopenia")
         if (
             form.is_valid()
             and alt_form.is_valid()

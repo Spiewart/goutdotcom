@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.fields import BooleanField, IntegerField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -694,6 +696,30 @@ class Leukopenia(MedicalHistory):
     baseline = models.OneToOneField("lab.BaselineWBC", on_delete=models.SET_NULL, null=True, blank=True)
 
 
+# post_save() signal to mark Leukopenia as False if Leukocytosis is True
+@receiver(post_save, sender=Leukocytosis)
+def save_user_leukocytosis(sender, instance, **kwargs):
+    # Check if User Leukocytosis is True
+    if instance.value == True:
+        # Set Leukocytosis value to False, baseline to None
+        instance.user.leukopenia.value = False
+        instance.user.leukopenia.baseline = None
+        instance.user.leukopenia.last_modified = "Behind the scenes"
+        instance.user.leukopenia.save()
+
+
+# post_save() signal to mark Leukocytosis as False if Leukopenia is True
+@receiver(post_save, sender=Leukopenia)
+def save_user_leukopenia(sender, instance, **kwargs):
+    # Check if User Leukopenia is True
+    if instance.value == True:
+        # Set Leukocytosis value to False, baseline to None
+        instance.user.leukocytosis.value = False
+        instance.user.leukocytosis.baseline = None
+        instance.user.leukocytosis.last_modified = "Behind the scenes"
+        instance.user.leukocytosis.save()
+
+
 class OrganTransplant(MedicalHistory):
     organ = MultiSelectField(
         choices=ORGAN_CHOICES,
@@ -743,6 +769,30 @@ class Polycythemia(MedicalHistory):
         blank=True,
     )
     baseline = models.OneToOneField("lab.BaselineHemoglobin", on_delete=models.SET_NULL, null=True, blank=True)
+
+
+# post_save() signal to mark Polycythemia as False if Anemia is True
+@receiver(post_save, sender=Anemia)
+def save_user_anemia(sender, instance, **kwargs):
+    # Check if User Anemia is True
+    if instance.value == True:
+        # Set Polycythemia value to False, baseline to None
+        instance.user.polycythemia.value = False
+        instance.user.polycythemia.baseline = None
+        instance.user.polycythemia.last_modified = "Behind the scenes"
+        instance.user.polycythemia.save()
+
+
+# post_save() signal to mark Anemia as False if Polycythemia is True
+@receiver(post_save, sender=Polycythemia)
+def save_user_polycythemia(sender, instance, **kwargs):
+    # Check if User Polycythemia is True
+    if instance.value == True:
+        # Set Anemia value to False, baseline to None
+        instance.user.anemia.value = False
+        instance.user.anemia.baseline = None
+        instance.user.anemia.last_modified = "Behind the scenes"
+        instance.user.anemia.save()
 
 
 class PVD(MedicalHistory):
@@ -807,6 +857,30 @@ class Thrombocytosis(MedicalHistory):
     baseline = models.OneToOneField("lab.BaselinePlatelet", on_delete=models.SET_NULL, null=True, blank=True)
 
 
+# post_save() signal to mark Thrombocytopenia as False if Thrombocytosis is True
+@receiver(post_save, sender=Thrombocytosis)
+def save_user_thrombocytosis(sender, instance, **kwargs):
+    # Check if User Thrombocytosis is True
+    if instance.value == True:
+        # Set Thrombocytopenia value to False, baseline to None
+        instance.user.thrombocytopenia.value = False
+        instance.user.thrombocytopenia.baseline = None
+        instance.user.thrombocytopenia.last_modified = "Behind the scenes"
+        instance.user.thrombocytopenia.save()
+
+
+# post_save() signal to mark Thrombocytosis as False if Thrombocytopenia is True
+@receiver(post_save, sender=Thrombocytopenia)
+def save_user_thrombocytopenia(sender, instance, **kwargs):
+    # Check if User Thrombocytopenia is True
+    if instance.value == True:
+        # Set Thrombocytosis value to False, baseline to None
+        instance.user.thrombocytosis.value = False
+        instance.user.thrombocytosis.baseline = None
+        instance.user.thrombocytosis.last_modified = "Behind the scenes"
+        instance.user.thrombocytosis.save()
+
+
 class Tophi(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     name = "tophi"
@@ -836,7 +910,7 @@ class Transaminitis(MedicalHistory):
     )
     baseline_alt = models.OneToOneField("lab.BaselineALT", on_delete=models.SET_NULL, null=True, blank=True)
     baseline_ast = models.OneToOneField("lab.BaselineAST", on_delete=models.SET_NULL, null=True, blank=True)
-    
+
 
 class UrateKidneyStones(MedicalHistory):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)

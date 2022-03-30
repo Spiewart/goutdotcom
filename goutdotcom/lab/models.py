@@ -1872,9 +1872,11 @@ class Platelet(BasePlatelet):
 
     def diagnose_thrombocytopenia(self):
         """
-        Method that diagnoses a User's Thrombocytopenia
-        Changes Thrombocytopenia.value to True if so
-        Sets BaselinePlatelet value via set_baseline() method
+        Method that un/diagnoses a User's Thrombocytopenia
+        Changes Thrombocytopenia.value to True/False
+        Sets or removes BaselinePlatelet value via >>>
+        set_baseline() or remove_thrombocytopenia() methods
+
         """
         # Assemble a list of all User's Platelets
         platelets = Platelet.objects.filter(
@@ -1969,12 +1971,119 @@ class Platelet(BasePlatelet):
 
     def diagnose_thrombocytosis(self):
         """
-        Method that diagnoses a User's Thrombocytosis
-        Changes Thrombocytosis.value to True if so
-        Sets BaselinePlatelet.value via set_baseline() method
-        """
-        pass
+        Method that un/diagnoses a User's Thrombocytosis
+        Changes Thrombocytosis.value to True/False
+        Sets or removes BaselinePlatelet value via >>>
+        set_baseline() or remove_thrombocytosis() methods
 
+        """
+        # Assemble a list of all User's Platelets for last 2 years
+        platelets = Platelet.objects.filter(
+            user=self.user,
+            date_drawn__range=[
+                (timezone.now() - timedelta(days=730)),
+                timezone.now(),
+            ],
+        ).order_by("-date_drawn")
+        # Loop over all Platelets
+        for platelet_index in range(len(platelets)):
+            platelet = platelets[platelet_index]
+            # If value wasn't low, call remove_thrombocytosis()
+            if platelet.high == False:
+                return platelet.remove_thrombocytosis()
+            else:
+                # If Platelets are 3 months apart and continuously high >>>
+                if platelets[0].date_drawn >= platelet.date_drawn + timedelta(days=90):
+                    # set BaselinePlatelet
+                    # Modify Thrombocytosis to True
+                    baseline = self.set_baseline()
+                    # Check if Baseline isn't None (for instance, with User-set BaselinePlatelet)
+                    if baseline:
+                        self.user.thrombocytosis.value = True
+                        self.user.thrombocytosis.last_modified = "Behind the scenes"
+                        self.user.thrombocytosis.baseline = baseline
+                        self.user.thrombocytosis.save()
+                    return True
+                # If not, keep iterating back in time (through the list)
+                continue
+        # If no Platelets continuously high 3 months apart, return False
+        return False
+
+    def process_high(self):
+        """
+        Function that processes a high Platelet.
+        Checks if this object is a follow up an abnormal Platelet.
+        Never returns "nonurgent", "urgent", or "emergency" or stop ULTPlan.
+        Returns "trivial" for elevation or "error".
+        If high Lab is an abnormal follow up:
+            Recalculates baseline in BaselineLab, checks for associated MedicalProfile Thrombocytosis object.
+        Returns:
+            string or nothing: returns "trivial", "error" or None
+        """
+        # Assign percentages for processing high/low for scope
+        # Check model to set percentages on which to process high values
+        # Pulled from PatientProfile, which will automatically be created with default values
+
+        trivial = self.user.patientprofile.platelet_high_trivial
+        nonurgent = self.user.patientprofile.platelet_high_nonurgent
+        urgent = self.user.patientprofile.platelet_high_urgent
+        emergency = self.user.patientprofile.platelet_high_emergency
+
+        # Declare baseline for scope
+        self.baseline = None
+        # See if the User meets the definition of Thrombocytosis (=chronic elevation of Platelets)
+        if self.diagnose_thrombocytosis() == True:
+            # Try to fetch baseline
+            self.baseline = self.get_baseline()
+        # Check if Lab is a follow up on an abnormal
+        if self.abnormal_followup:
+            # Emergency (flag=4) values will not flag a follow up lab
+            # Will instead recommend user see medical attention
+            # Otherwise:
+            # If follow-up Lab at or below User's baseline, the original abnormality was likely an error
+            if self.var_x_high(1) == False:
+                self.abnormal_followup.flag = 5
+                self.abnormal_followup.save()
+                # Will return None at end of method
+            # If follow-up is still 3x the upper limit of normal or User's baseline
+            # Trigger emergency
+            # This would mean 2 Labs sequentially that are > 100, potentially higher
+            if self.var_x_high(urgent):
+                self.flag = 4
+                self.save()
+                return "emergency"
+            else:
+                # If the abnormal original was "urgent"
+                if self.abnormal_followup.flag == 3:
+                    # Check if the follow up isn't 2x the baseline
+                    # If not, save Lab.flag as improving and restart ULTPlan
+                    if self.var_x_high(nonurgent) == False:
+                        self.flag = 6
+                        self.save()
+                        return "improving_restart"
+                    # Else the Lab is improving, but not enough to restart the ULTPlan yet
+                    else:
+                        self.flag = 7
+                        self.save()
+                        return "improving_recheck"
+                # Else the abnormal original was "nonurgent" flag=2
+                # If still 2x the baseline
+                # Mark as urgent (Lab.flag=3)
+                else:
+                    if self.var_x_high(nonurgent):
+                        self.flag = 3
+                        self.save()
+                        return "urgent"
+                    else:
+                        self.flag = 6
+                        self.save()
+                        return "improving_restart"
+        # If Lab isn't a follow up on an abnormal
+        else:
+            if self.var_x_high(trivial):
+                self.flag = 1
+                self.save()
+        return None
 
 class BaselinePlatelet(BasePlatelet):
     creator = models.ForeignKey(

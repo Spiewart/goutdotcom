@@ -54,6 +54,7 @@ class BaselineALTForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaselineALTForm, self).__init__(*args, **kwargs)
+        self.fields["value"].required = False
         self.fields["value"].label = "ALT"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -99,6 +100,7 @@ class BaselineASTForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaselineASTForm, self).__init__(*args, **kwargs)
+        self.fields["value"].required = False
         self.fields["value"].label = "AST"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -144,6 +146,7 @@ class BaselineCreatinineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaselineCreatinineForm, self).__init__(*args, **kwargs)
+        self.fields["value"].required = False
         self.fields["value"].label = "Creatinine"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -189,6 +192,7 @@ class BaselineHemoglobinForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaselineHemoglobinForm, self).__init__(*args, **kwargs)
+        self.fields["value"].required = False
         self.fields["value"].label = "Baseline Hemoglobin"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -252,6 +256,7 @@ class BaselinePlateletForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaselinePlateletForm, self).__init__(*args, **kwargs)
+        self.fields["value"].required = False
         self.fields["value"].label = "Platelets"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -297,6 +302,7 @@ class BaselineWBCForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaselineWBCForm, self).__init__(*args, **kwargs)
+        self.fields["value"].required = False
         self.fields["value"].label = "WBC"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
