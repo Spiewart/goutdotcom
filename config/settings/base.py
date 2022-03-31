@@ -265,8 +265,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_SIGNUP_FORM_CLASS = "users.forms.SignupForm"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "goutdotcom.users.adapters.AccountAdapter"
+# Disable new users signup
+# look at users/adapter.py
+ACCOUNT_ADAPTER = "users.adapter.NoNewUsersAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "goutdotcom.users.adapters.SocialAccountAdapter"
 

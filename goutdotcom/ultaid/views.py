@@ -70,8 +70,8 @@ class ULTAidCreate(PatientProviderCreateMixin, ProfileMixin, SuccessMessageMixin
                 form.instance.need = False
             # If user is not authenticated and created a ULTAid from a ULT, use ULT CKD instance instead of making new one, removed forms in form via Kwargs and layout objects
             if self.request.user.is_authenticated == False:
-                if form.instance.ult.ckd.value == False:
-                    form.instance.ckd = form.instance.ult.ckd
+                if self.ult.ckd.value == False:
+                    form.instance.ckd = self.ult.ckd
         if self.request.user.is_authenticated:
             form.instance.creator = self.request.user
         if self.user:
