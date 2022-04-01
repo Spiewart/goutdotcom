@@ -1,9 +1,9 @@
-$background-color: rgb(211, 208, 45);
+$background-color: rgba(255, 255, 255, 0.719);
 $background-color-sub: rgba(170, 168, 19, 0.726);
-$content-color: rgba(5, 50, 148, 0.863);
+$content-color: rgba(255, 255, 255, 0.863);
 $h1-container-color: $background-color;
-$content-text-color: rgb(231, 231, 231);
-$border-color: rgb(231, 231, 231);
+$text-color: rgb(43, 43, 43);
+$border-color: rgb(51, 49, 49);
 $active-button-color: rgba(180, 1, 224, 0.678);
 
 // Body Main Style
@@ -25,7 +25,7 @@ body {
 .profile-container {
   background-color: $content-color;
   padding: 20px;
-  color: $content-text-color;
+  color: $text-color;
 
   .accordion-button {
     width: 100%;
@@ -53,7 +53,7 @@ body {
   .btn {
     background-color: $background-color;
     border-color: $border-color;
-    color: $content-color;
+    color: $text-color;
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 5px;
@@ -67,7 +67,7 @@ body {
 
   .active,.btn:hover {
     background-color: $active-button-color;
-    color: $border-color;
+    color: $text-color;
   };
 
   ol, ul {
@@ -82,10 +82,10 @@ body {
 .content-container {
   background-color: $content-color;
   padding: 20px;
-  color: $content-text-color;
+  color: $text-color;
 
   h1,h2 {
-    color: $background-color;
+    color: $text-color;
     padding: 0px;
     margin: 0px;
     margin-bottom: 5px;
@@ -114,7 +114,7 @@ body {
 
   .active, .btn:hover {
     background-color: $active-button-color;
-    color: $border-color;
+    color: $text-color;
   };
 
   .content-item {
@@ -158,14 +158,16 @@ body {
   };
 }
 
-// For FlareAid, ULTAid, ULT create/update forms
-.aidcreateupdate-form {
+// For Forms
+.form {
   background-color: $content-color;
   padding: 20px;
-  color: $content-text-color;
+  color: $text-color;
+  border-color: $border-color;
+  border-width: 2px;
 
   h1, h2 {
-    color: $background-color;
+    color: $text-color;
     padding: 0px;
     margin: 0px;
     margin-bottom: 5px;
@@ -181,7 +183,7 @@ body {
   .btn {
     background-color: $background-color;
     border-color: $border-color;
-    color: $content-color;
+    color: $text-color;
   }
 
   .button {
@@ -191,12 +193,18 @@ body {
 
   .active, .btn:hover {
     background-color: $active-button-color;
-    color: $border-color;
+    color: $text-color;
   };
 
   .form-group {
     margin: 0px;
     padding: 0px;
+  };
+  label[for="id_CKD-stage_0"] {
+    text-indent: 23px;
+  };
+  #hint_id_CKD-stage {
+    text-indent: 23px;
   };
 }
 
@@ -239,9 +247,8 @@ body {
 
 .card {
   background: $content-color;
-  width: 18rem;
   height: 100%;
-  color: $background-color;
+  color: $text-color;
   border-color: $border-color;
   border-width: 2px;
 }
@@ -253,7 +260,7 @@ body {
 
 .active, .btn:hover {
   background-color: $content-color;
-  color: $background-color;
+  color: $text-color;
 }
 
 .asteriskField {

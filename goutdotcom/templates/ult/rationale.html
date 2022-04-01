@@ -75,7 +75,7 @@ unknown
     no-brainer (conditional recommendation).</p>
     <h3><u>Chronic Kidney Disease</u>:
     {% if object.ckd.value == True %}
-    present
+    present {% if object.ckd.stage %}, stage {{ object.ckd.stage }}{% endif %}
     {% elif object.ckd.value == False %}
     absent
     {% else %}

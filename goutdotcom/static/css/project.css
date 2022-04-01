@@ -1,6 +1,6 @@
 body {
-  background-color: #d3d02d;
-  color: rgba(5, 50, 148, 0.863); }
+  background-color: rgba(255, 255, 255, 0.719);
+  color: rgba(255, 255, 255, 0.863); }
 
 @media screen and (max-width: 600px) {
   h1 {
@@ -9,28 +9,28 @@ body {
     font-size: 20px; } }
 
 .profile-container {
-  background-color: rgba(5, 50, 148, 0.863);
+  background-color: rgba(255, 255, 255, 0.863);
   padding: 20px;
-  color: #e7e7e7; }
+  color: #2b2b2b; }
   .profile-container .accordion-button {
     width: 100%;
-    background-color: #d3d02d;
-    color: rgba(5, 50, 148, 0.863);
-    border-color: #e7e7e7; }
+    background-color: rgba(255, 255, 255, 0.719);
+    color: rgba(255, 255, 255, 0.863);
+    border-color: #333131; }
   .profile-container .accordion-body {
-    background-color: #e7e7e7;
-    color: rgba(5, 50, 148, 0.863); }
+    background-color: #333131;
+    color: rgba(255, 255, 255, 0.863); }
   .profile-container li, .profile-container ul {
     display: block; }
   .profile-container h1, .profile-container h2 {
-    color: #d3d02d;
+    color: rgba(255, 255, 255, 0.719);
     padding: 0px;
     margin: 0px;
     font-weight: bold; }
   .profile-container .btn {
-    background-color: #d3d02d;
-    border-color: #e7e7e7;
-    color: rgba(5, 50, 148, 0.863);
+    background-color: rgba(255, 255, 255, 0.719);
+    border-color: #333131;
+    color: #2b2b2b;
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 5px;
@@ -42,18 +42,18 @@ body {
     float: right; }
   .profile-container .active, .profile-container .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: #e7e7e7; }
+    color: #2b2b2b; }
   .profile-container ol, .profile-container ul {
     padding-left: 10px; }
   .profile-container #edited {
     text-align: right; }
 
 .content-container {
-  background-color: rgba(5, 50, 148, 0.863);
+  background-color: rgba(255, 255, 255, 0.863);
   padding: 20px;
-  color: #e7e7e7; }
+  color: #2b2b2b; }
   .content-container h1, .content-container h2 {
-    color: #d3d02d;
+    color: #2b2b2b;
     padding: 0px;
     margin: 0px;
     margin-bottom: 5px;
@@ -63,9 +63,9 @@ body {
     margin: 0px;
     margin-bottom: 5px; }
   .content-container .btn {
-    background-color: #d3d02d;
-    border-color: #e7e7e7;
-    color: rgba(5, 50, 148, 0.863);
+    background-color: rgba(255, 255, 255, 0.719);
+    border-color: #333131;
+    color: rgba(255, 255, 255, 0.863);
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 5px;
@@ -76,9 +76,9 @@ body {
     float: right; }
   .content-container .active, .content-container .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: #e7e7e7; }
+    color: #2b2b2b; }
   .content-container .content-item {
-    border-color: #e7e7e7;
+    border-color: #333131;
     border-width: 2px; }
   .content-container .content-item ul {
     list-style-type: none; }
@@ -106,33 +106,39 @@ body {
         -ms-flex-align: center;
             align-items: center; }
 
-.aidcreateupdate-form {
-  background-color: rgba(5, 50, 148, 0.863);
+.form {
+  background-color: rgba(255, 255, 255, 0.863);
   padding: 20px;
-  color: #e7e7e7; }
-  .aidcreateupdate-form h1, .aidcreateupdate-form h2 {
-    color: #d3d02d;
+  color: #2b2b2b;
+  border-color: #333131;
+  border-width: 2px; }
+  .form h1, .form h2 {
+    color: #2b2b2b;
     padding: 0px;
     margin: 0px;
     margin-bottom: 5px;
     font-weight: bold; }
-  .aidcreateupdate-form hr {
+  .form hr {
     padding: 0px;
     margin-top: 5px;
     margin-bottom: 5px; }
-  .aidcreateupdate-form .btn {
-    background-color: #d3d02d;
-    border-color: #e7e7e7;
-    color: rgba(5, 50, 148, 0.863); }
-  .aidcreateupdate-form .button {
+  .form .btn {
+    background-color: rgba(255, 255, 255, 0.719);
+    border-color: #333131;
+    color: #2b2b2b; }
+  .form .button {
     margin-top: 5px;
     padding: 10px; }
-  .aidcreateupdate-form .active, .aidcreateupdate-form .btn:hover {
+  .form .active, .form .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: #e7e7e7; }
-  .aidcreateupdate-form .form-group {
+    color: #2b2b2b; }
+  .form .form-group {
     margin: 0px;
     padding: 0px; }
+  .form label[for="id_CKD-stage_0"] {
+    text-indent: 23px; }
+  .form #hint_id_CKD-stage {
+    text-indent: 23px; }
 
 .homepage #homepage-jumbotron {
   text-align: center;
@@ -143,7 +149,7 @@ body {
   background-repeat: no-repeat;
   margin-bottom: 0px;
   max-height: 300px;
-  color: #d3d02d; }
+  color: rgba(255, 255, 255, 0.719); }
   .homepage #homepage-jumbotron container-fluid {
     background-color: transparent;
     padding: 0px;
@@ -161,21 +167,19 @@ body {
     font-size: 20px; } }
 
 .card {
-  background: rgba(5, 50, 148, 0.863);
-  width: 288px;
-  width: 18rem;
+  background: rgba(255, 255, 255, 0.863);
   height: 100%;
-  color: #d3d02d;
-  border-color: #e7e7e7;
+  color: #2b2b2b;
+  border-color: #333131;
   border-width: 2px; }
 
 .btn {
-  background-color: rgba(5, 50, 148, 0.863);
-  border-color: #e7e7e7; }
+  background-color: rgba(255, 255, 255, 0.863);
+  border-color: #333131; }
 
 .active, .btn:hover {
-  background-color: rgba(5, 50, 148, 0.863);
-  color: #d3d02d; }
+  background-color: rgba(255, 255, 255, 0.863);
+  color: #2b2b2b; }
 
 .asteriskField {
   display: none; }

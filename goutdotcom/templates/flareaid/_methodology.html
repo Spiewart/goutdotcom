@@ -99,7 +99,7 @@
       </p>
   <p>Not all NSAID contraindications are <i>absolute</i> contraindications, but we would need more
     information before considering them and this should best be done via consulting with your doctor.</p>
-  {% elif object.heartattack.value == False and object.stroke.value == False and object.ibd.value == False and object.anticoagulation.value == False and object.CKD.value == False and object.bleed.value == False %}
+  {% elif object.heartattack.value == False and object.stroke.value == False and object.ibd.value == False and object.anticoagulation.value == False and object.ckd.value == False and object.bleed.value == False %}
   <p>You indicated you don't have any relative or absolute contraindications to non-steroidal antiinflammatory drugs
     (<a href="{% url 'treatment:about-NSAIDs' %}">NSAID</a>s). That's great, because they are very effective for
     gout flares.</p>
@@ -144,7 +144,7 @@
     must be used cautiously in patients with CKD. It also has several medication interactions including: <a
       href="https://en.wikipedia.org/wiki/Simvastatin" target="_blank">simvastatin</a>, <a
       href="https://en.wikipedia.org/wiki/Clarithromycin" target="_blank">clarithromycin</a>, <a
-      href="https://en.wikipedia.org/wiki/Diltiazem#cite_note-dilt-inhibit1-20" target="_blank">diltiazem</a>.</p>
+      href="https://en.wikipedia.org/wiki/Diltiazem" target="_blank">diltiazem</a>.</p>
   {% endif %}
 {% endif %}
 

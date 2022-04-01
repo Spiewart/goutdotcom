@@ -1,29 +1,28 @@
   <section class="p-0 text-center">
-    <div class="row">
-      <div class="col">
-        <div class="card-group">
-          <div class="card text-center" id="card-homepage">
-            <div class="card-header">
-              <h2><b>Flares</b></h2>
-            </div>
-            <a href="{% url 'flareaid:create' %}">
-              <img class="card-img-top" src="../static/images/flare_forweb.jpg" alt="Card image cap">
-            </a>
-          </div>
-          <div class="card text-center" id="card-homepage">
-            <div class="card-header">
-              <h2><b>Prevention</b></h2>
-            </div>
-            <a href="{% url 'ult:create' %}">
-              <img class="card-img-top" src="../static/images/MSUcrystals_forweb.jpg" alt="Card image cap">
-            </a>
-          </div>
-          <div class="card text-center" id="card-homepage">
-            <div class="card-header">
-              <h2><b>Blog</b></h2>
-            </div>
-            <img class="card-img-top" src="../static/images/goutart_forweb.jpg" alt="Card image cap">
-          </div>
+    <div class="card-deck">
+      <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Flares</h2>
+            <h6 class="card-subtitle mb-2 text-muted">Are the worst</h6>
+            <p class="card-text">You can treat and learn how to prevent them.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'flare:create' %}" class="card-link">Diagnosis</a>
+            <a href="{% url 'flareaid:create' %}" class="card-link">Treatment</a>
+            <a href="{% url 'flare:about' %}" class="card-link">About</a>
         </div>
       </div>
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">ULT</h2>
+          <h6 class="card-subtitle mb-2 text-muted">Urate-lowering Therapy</h6>
+          <p class="card-text">Medication to rid yourself of gout.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'ult:create' %}" class="card-link">Need it?</a>
+            <a href="{% url 'ultaid:create' %}" class="card-link">Make a Plan</a>
+            <a href="{% url 'treatment:about-ult' %}" class="card-link">About</a>
+        </div>
+      </div>
+    </div>
   </section>

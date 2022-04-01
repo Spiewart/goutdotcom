@@ -8,10 +8,14 @@
         style="float: right;">Recalculate</a>
       <h1>ULTAid {{ object.created|date }}</h1>
     {% endif %}
-  {% else %}
+{% else %}
     <a class="btn btn-primary btn-lg" href="{% url 'ultaid:create' %}" role="button" style="float: right;">Recalculate</a>
+  {% if object.slug %}
     <h1>{{ object.slug }}'s ULTAid</h1>
+  {% else %}
+    <h1>ULTAid {{ object.created }}</h1>
   {% endif %}
+{% endif %}
 <div class="row">
   <div class="col">
     {% if object.decision_aid|get_key:'want' == False %}
