@@ -2108,12 +2108,40 @@ class Platelet(BasePlatelet):
         # If BaselinePlatelet set above, var_x_high will use it for processing
         # If Platelet is a follow up on an abnormal Platelet
         if self.abnormal_followup:
+            if self.abnormal_followup.flag == 3:
+                if self.var_x_high(urgent):
+                    # 2 urgent low platelets in a row should flag emergency
+                    self.flag = 4
+                    self.action = 5
+                    self.save()
+                elif self.var_x_high(trivial):
+                    # If urgent then trivial or nonurgent, low Platelet is improving
+                    self.flag = 7
+                    self.action = 0
+                    self.save()
+                else:
+                    # If urgent then normal, it was probably an error
+                    self.flag = 5
+                    self.action = 0
+                    self.save()
+                # Return self.action for processing
+                return self.action
+            elif self.abnormal_followup.flag == 2:
+                if self.var_x_high(urgent):
+                    # 2 urgent low platelets in a row should flag emergency
+                    self.flag = 4
+                    self.action = 5
+                    self.save()
+            elif self.abnormal_followup.flag == 6:
+
+            elif self.abnormal_followup.flag = 7:
+
+
             # If follow-up Platelet at or below User's baseline, the original abnormality was likely an error
             if self.var_x_high(trivial) == False:
                 self.flag = 5
                 self.action = 0
                 self.save()
-
                 # Return at end of method (None)
             # If follow-up is 50% the baseline or lower limit of normal: Platelet is still very low and/or getting worse
             if self.var_x_high(urgent):
@@ -2135,7 +2163,7 @@ class Platelet(BasePlatelet):
                     self.flag = 6
                     self.save()
                     return "improving_restart"
-                if self.var_x_high(nonurgent):
+                elif self.var_x_high(nonurgent):
                     self.flag = 8
                     self.save()
                     return "stable_continue"
