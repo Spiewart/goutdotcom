@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.views.generic.base import TemplateView
+from rules.contrib.views import AutoPermissionRequiredMixin
 
 from ..history.forms import (
     AnginaForm,
@@ -34,7 +35,7 @@ class AboutFlares(TemplateView):
     template_name = "flare/about.html"
 
 
-class FlareDetail(PatientProviderMixin, DetailView):
+class FlareDetail(PatientProviderMixin, AutoPermissionRequiredMixin, DetailView):
     model = Flare
 
 

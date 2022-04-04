@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "datetimewidget",
     "multiselectfield",
+    "rules.apps.AutodiscoverRulesConfig",
     "simple_history",
 ]
 
@@ -99,6 +100,7 @@ MIGRATION_MODULES = {"sites": "goutdotcom.contrib.sites.migrations"}
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
+    "rules.permissions.ObjectPermissionBackend",
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]

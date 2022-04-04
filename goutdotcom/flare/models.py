@@ -1,16 +1,19 @@
+import rules
 from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.utils.text import format_lazy, slugify
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
+from rules.contrib.models import RulesModelBase, RulesModelMixin
 
 from ..history.models import CHF, PVD, Angina, HeartAttack, Hypertension, Stroke
 from ..lab.models import Urate
 from .choices import *
+from .rules import is_patient
 
 
-class Flare(TimeStampedModel):
+class Flare(RulesModelMixin, TimeStampedModel, metaclass=RulesModelBase):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -160,6 +163,9 @@ class Flare(TimeStampedModel):
 
     class Meta:
         ordering = ["created"]
+        rules_permissions = {
+            "read": is_patient,
+        }
 
     def get_absolute_url(self):
         if self.slug:
