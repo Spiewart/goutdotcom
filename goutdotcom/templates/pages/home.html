@@ -1,60 +1,57 @@
+{% extends "base.html" %}
 {% load static i18n %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <title>{% block title %}Gouthelper{% endblock title %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A site for all things gout." />
-  <meta name="author" content="Dave Ewart" />
-  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
-  {% block css %}
-  <!-- Latest compiled and minified Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
-  <!-- Your stuff: Third-party CSS libraries go here -->
-  <!-- This file stores project-specific CSS -->
-  <link href="{% static 'css/project.min.css' %}" rel="stylesheet" />
-  {% endblock %}
-  <!-- Le javascript
-    ================================================== -->
-  {# Placed at the top of the document so pages load faster with defer #}
-  {% block javascript %}
-  <!-- Bootstrap JS and its dependencies-->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous">
-  </script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
-  </script>
-  <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-  </script>
-  <!-- Your stuff: Third-party javascript libraries go here -->
-  <!-- place project specific Javascript in this file -->
-  <script defer src="{% static 'js/project.js' %}"></script>
-  {% endblock javascript %}
-</head>
-
-<body class="homepage">
-  {% include 'navbar.html' %}
+  {% block header %}
+    <header class="page-header header container-fluid" id="homepage-header">
+      <div class="overlay"></div>
+      <div class="description">
+        <h1>Welcome to Gouthelper!</h1>
+        <p>A site for all things gout.</p>
+        <button class="btn btn-outline-secondary btn-lg">Tell Me More!</button>
+      </div>
+    </header>
+  {% endblock header %}
 
   {% block content %}
-  <main class="container-fluid">
-    {% include 'pages/home_cards.html' %}
-  </main>
+    <main class="container-fluid" id="homepage-main">
+      <div class="container features">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <h3 class="feature-title">Flares</h3>
+            <img src="{% static '/images/goutart_forweb.jpg' %}" class="img-fluid">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum quam odio, quis placerat ante
+              luctus eu. Sed aliquet dolor id sapien rutrum, id vulputate quam iaculis.</p>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <h3 class="feature-title">ULT</h3>
+            <img src="{% static '/images/flare_forweb.jpg' %}"" class=img-fluid>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum quam odio, quis placerat ante
+              luctus eu. Sed aliquet dolor id sapien rutrum, id vulputate quam iaculis.</p>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-12">
+           <h3 class="feature-title">Lorem ipsum</h3>
+           <img src="{% static '/images/flare_forweb.jpg' %}"" class=img-fluid>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum quam odio, quis placerat ante
+              luctus eu. Sed aliquet dolor id sapien rutrum, id vulputate quam iaculis.</p>
+          </div>
+        </div>
+      </div>
+
+      {% include 'pages/home_cards.html' %}
+
+    </main>
   {% endblock content %}
   {% block modal %}
   {% endblock modal %}
   {% block inline_javascript %}
-  {#Script tags with only code, no src (defer by default) #}
+    <script>
+      $(document).ready(function () {
+        $('.header').height($(window).height());
+      })
+    </script>
   {% endblock inline_javascript %}
-</body>
 
-</html>
+
+
+

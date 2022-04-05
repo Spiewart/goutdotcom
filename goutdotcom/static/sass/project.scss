@@ -7,6 +7,8 @@ $border-color: rgb(51, 49, 49);
 $active-button-color: rgba(180, 1, 224, 0.678);
 
 // Body Main Style
+
+
 body {
   background-color: $background-color;
   color: $content-color;
@@ -208,32 +210,69 @@ body {
   };
 }
 
-.homepage {
-  #homepage-jumbotron {
-    text-align: center;
-    background-image: url("../images/TabMSU.jpg");
-    background-color: #000000;
+#homepage-header {
+    background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
     background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    margin-bottom: 0px;
-    max-height: 300px;
-    color: $background-color;
+    background-position: center;
+    position: relative;
 
-    container-fluid {
-      background-color: transparent;
-      padding: 0px;
-      opacity: 0%;
+    .overlay {
+        position: absolute;
+        min-height: 100%;
+        min-width: 100%;
+        left: 0;
+        top: 0;
+        background: rgba(0, 0, 0, 0.6);
+    }
+    .description {
+      left: 50%;
+      position: absolute;
+      top: 45%;
+      transform: translate(-50%, -55%);
+      text-align: center;
+    }
+    .description h1 {
+      color: #6ab446;
+    }
+    .description p {
+      color: #fff;
+      font-size: 1.3rem;
+      line-height: 1.5;
+    }
+    .description button {
+    border:1px solid #6ab446;
+    background:#6ab446;
+    border-radius: 0;
+    color:#fff;
+    }
+    .description button:hover {
+      border:1px solid #fff;
+        background:#fff;
+        color:#000;
+    }
+}
 
-    };
-
-    h1, h2 {
-      padding: 0px;
-      margin: 0px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    };
+#homepage-main {
+  .features {
+    margin: 4em auto;
+    padding: 1em;
+    position: relative;
   }
+  .feature-title {
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .features img {
+    -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    margin-bottom: 16px;
+  }
+}
+
   @media screen and (max-width: 650px) {
     h1 {
       font-size: 70px;

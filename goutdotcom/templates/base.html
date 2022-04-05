@@ -54,8 +54,11 @@
 
   <body>
     {% block navbar %}
-    {% include "navbar.html" %}
+      {% include "navbar.html" %}
     {% endblock navbar %}
+
+    {% block header %}{% endblock header %}
+
 
     <div class="container-fluid">
       {% if messages %} {% for message in messages %}

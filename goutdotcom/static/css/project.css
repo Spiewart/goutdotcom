@@ -140,30 +140,64 @@ body {
   .form #hint_id_CKD-stage {
     text-indent: 23px; }
 
-.homepage #homepage-jumbotron {
-  text-align: center;
-  background-image: url("../images/TabMSU.jpg");
-  background-color: #000000;
+#homepage-header {
+  background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
   background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  margin-bottom: 0px;
-  max-height: 300px;
-  color: rgba(255, 255, 255, 0.719); }
-  .homepage #homepage-jumbotron container-fluid {
-    background-color: transparent;
-    padding: 0px;
-    opacity: 0%; }
-  .homepage #homepage-jumbotron h1, .homepage #homepage-jumbotron h2 {
-    padding: 0px;
-    margin: 0px;
-    margin-bottom: 5px;
-    font-weight: bold; }
+  background-position: center;
+  position: relative; }
+  #homepage-header .overlay {
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.6); }
+  #homepage-header .description {
+    left: 50%;
+    position: absolute;
+    top: 45%;
+    -webkit-transform: translate(-50%, -55%);
+            transform: translate(-50%, -55%);
+    text-align: center; }
+  #homepage-header .description h1 {
+    color: #6ab446; }
+  #homepage-header .description p {
+    color: #fff;
+    font-size: 20.8px;
+    font-size: 1.3rem;
+    line-height: 1.5; }
+  #homepage-header .description button {
+    border: 1px solid #6ab446;
+    background: #6ab446;
+    border-radius: 0;
+    color: #fff; }
+  #homepage-header .description button:hover {
+    border: 1px solid #fff;
+    background: #fff;
+    color: #000; }
+
+#homepage-main .features {
+  margin: 4em auto;
+  padding: 1em;
+  position: relative; }
+
+#homepage-main .feature-title {
+  color: #333;
+  font-size: 20.8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase; }
+
+#homepage-main .features img {
+  -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+  margin-bottom: 16px; }
 
 @media screen and (max-width: 650px) {
-  .homepage h1 {
+  #homepage-main h1 {
     font-size: 70px; }
-  .homepage h2 {
+  #homepage-main h2 {
     font-size: 20px; } }
 
 .card {
