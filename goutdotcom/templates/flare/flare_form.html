@@ -60,16 +60,14 @@ New Flare
     mono_vs_poly.call($("#id_firstmtp_1-value").get(0));
     $("#id_firstmtp_2").change(mono_vs_poly);
     mono_vs_poly.call($("#id_firstmtp_2-value").get(0));
-  });
-  jQuery(function ($) {
-    var path = window.location.href;
-    $('li a').each(function () {
-      if (this.href === path) {
-        $(this).addClass('active');
-      } else {
-        $(this).removeClass('active');
-      }
-    });
+    // checks if Flare.onset is answered, if so, displays duration field
+    $("#id_onset_1").change(symptoms);
+    symptoms.call($("#id_onset_1").get(0));
+    $("#id_onset_2").change(symptoms);
+    symptoms.call($("#id_onset_2").get(0));
+    // If duration field has a value, displays erythema field
+    $("#id_duration").change(symptoms);
+    symptoms.call($("#id_duration").get(0));
   });
 </script>
 {% endblock inline_javascript %}

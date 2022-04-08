@@ -2,7 +2,7 @@
 /* User Dashboard JS */
 // Function that checks the value of an accordion field and changes the color of the accordion button if value == True or == False
 
-/* Profiles app JS */
+/* ProfilesApp JS */
 /* MedicalProfile model JS */
 // function that checks whether or not leukocytosis is checked and hides/shows WBC, leukopenia fields as appropriate
 function leukocytosis_checker() {
@@ -560,7 +560,8 @@ function check_ckd() {
   }
 }
 
-/* FLAREapp JS flare_form.html */
+/* FlareApp JS flare_form.html */
+/* Manages Location of Flare form fields */
 function mono_vs_poly() {
   if ($('#id_monoarticular_1').is(":checked")) {
     $('#div_id_firstmtp').show();
@@ -612,8 +613,29 @@ function mono_vs_poly() {
   }
 }
 
+/* Manages Symptoms of Flare form fields */
+function symptoms() {
+  if ($('#id_onset_1').is(":checked")) {
+    $('#div_id_duration').show();
+    if($('#id_duration').val()){
+      $('#div_id_redness').show();
+    } else {
+      $('#div_id_redness').hide();
+    }
+  } else if ($('#id_onset_2').is(":checked")) {
+    $('#div_id_duration').show();
+      if($('#id_duration').val()){
+        $('#div_id_redness').show();
+      } else {
+        $('#div_id_redness').hide();
+      }
+  } else {
+    $('#div_id_duration').hide();
+    $('#div_id_redness').hide();
+  }
+}
 
-/* FlareAid app JS */
+/* FlareAidApp JS */
 // Function that loads on FlareAid Create page, hides all fields other than the first (perfect_health)
 function flare_aid_initial() {
   if ($('#id_anticoagulation-value').is(":checked")) {
@@ -704,79 +726,8 @@ function flare_aid_dialysis () {
     $('#id_CKD-dialysis').prop("checked", false);
   }
 }
-/* Flare app JS */
-// Long if / else if function displaying appropriate HTML form elements for Flare model Create and Update views
-// THIS LIKELY CAN BE DONE MORE INTELLIGENTLY BROKEN UP INTO SMALLER FUNCTIONS
-function urate_decider() {
-  if ($('#urate-decision').val() == "No") {
-    $('#urate-decision-div').hide();
-    $('#urate-logged-div').hide();
-    $('#urate-desire-div').hide();
-    $('#flare-no-urate-button').show();
-  }
-  else if ($('#urate-decision').val() == "Yes") {
-    if ($('#urate-logged').val() == "Yes") {
-      $('#urate-logged-div').hide();
-      $('#flare-no-urate-button').show();
-      $('#flare-with-urate-button').hide();
-      $('#urate-desire-div').hide();
-    }
-    else if ($('#urate-logged').val() == "No") {
-      if ($('#urate-desire').val() == "No") {
-        $('#urate-desire-div').hide();
-        $('#flare-no-urate-button').show();
-        $('#flare-with-urate-button').hide();
-      }
-      else if ($('#urate-desire').val() == "Yes") {
-        $('#urate-desire-div').hide();
-        $('#flare-no-urate-button').hide();
-        $('#flare-with-urate-button').show();
-      }
-      else {
-        $('#urate-logged-div').hide();
-        $('#urate-desire-div').show();
-        $('#flare-no-urate-button').hide();
-        $('#flare-with-urate-button').hide();
-      }
-    }
-    else {
-      $('#urate-decision-div').hide();
-      $('#urate-logged-div').show();
-      $('#flare-no-urate-button').hide();
-      $('#flare-with-urate-button').hide();
-    }
-  }
-  else {
-    $('#urate-logged-div').hide();
-    $('#urate-desire-div').hide();
-  }
-}
 
-// STILL NEEDED?
-function treatment_log() {
-  if ($('#treatment-decision').val() == "Yes") {
-    $('#treatment-logged').show();
-  }
-  else if ($('#treatment-decision').val() == "No") {
-    $('#treatment-logged').hide();
-  }
-  else {
-    $('#treatment-logged').hide();
-    $('#treatment-desire').hide();
-  }
-}
-
-// STILL NEEDED?
-function treatment_decider() {
-  if ($('#treatment-logged').val() == "Yes") {
-    $('#treatment-desire').show();
-  }
-  else if ($('#treatment-logged').val() == "No") {
-    $('#treatment-desire').hide();
-  }
-}
-
-/* PPxAid app JS */
+/* PPxAidApp JS */
 // Function that loads on PPxAid Create page, hides all fields other than the first (perfect_health)
 function ppx_aid_initial() {
   if ($('#id_anticoagulation-value').is(":checked")) {
