@@ -1,6 +1,27 @@
 body {
-  background-color: rgba(255, 255, 255, 0.719);
-  color: rgba(255, 255, 255, 0.863); }
+  padding: 0;
+  margin: 0;
+  background: rgba(0, 5, 53, 0.863);
+  background-color: rgba(253, 237, 237, 0.913); }
+
+.navbar {
+  background: rgba(253, 237, 237, 0.913); }
+
+.nav-link,
+.navbar-brand {
+  color: rgba(0, 5, 53, 0.863);
+  cursor: pointer; }
+
+.nav-link {
+  margin-right: 1em !important; }
+
+.nav-link:hover {
+  color: #000; }
+
+.navbar-collapse {
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end; }
 
 @media screen and (max-width: 600px) {
   h1 {
@@ -9,28 +30,28 @@ body {
     font-size: 20px; } }
 
 .profile-container {
-  background-color: rgba(255, 255, 255, 0.863);
+  background-color: rgba(0, 5, 53, 0.863);
   padding: 20px;
-  color: #2b2b2b; }
+  color: rgba(0, 5, 53, 0.863); }
   .profile-container .accordion-button {
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.719);
-    color: rgba(255, 255, 255, 0.863);
+    background-color: rgba(253, 237, 237, 0.913);
+    color: rgba(0, 5, 53, 0.863);
     border-color: #333131; }
   .profile-container .accordion-body {
     background-color: #333131;
-    color: rgba(255, 255, 255, 0.863); }
+    color: rgba(0, 5, 53, 0.863); }
   .profile-container li, .profile-container ul {
     display: block; }
   .profile-container h1, .profile-container h2 {
-    color: rgba(255, 255, 255, 0.719);
+    color: rgba(253, 237, 237, 0.913);
     padding: 0px;
     margin: 0px;
     font-weight: bold; }
   .profile-container .btn {
-    background-color: rgba(255, 255, 255, 0.719);
+    background-color: rgba(253, 237, 237, 0.913);
     border-color: #333131;
-    color: #2b2b2b;
+    color: rgba(0, 5, 53, 0.863);
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 5px;
@@ -42,18 +63,18 @@ body {
     float: right; }
   .profile-container .active, .profile-container .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: #2b2b2b; }
+    color: rgba(0, 5, 53, 0.863); }
   .profile-container ol, .profile-container ul {
     padding-left: 10px; }
   .profile-container #edited {
     text-align: right; }
 
 .content-container {
-  background-color: rgba(255, 255, 255, 0.863);
+  background-color: rgba(0, 5, 53, 0.863);
   padding: 20px;
-  color: #2b2b2b; }
+  color: rgba(0, 5, 53, 0.863); }
   .content-container h1, .content-container h2 {
-    color: #2b2b2b;
+    color: rgba(0, 5, 53, 0.863);
     padding: 0px;
     margin: 0px;
     margin-bottom: 5px;
@@ -63,9 +84,9 @@ body {
     margin: 0px;
     margin-bottom: 5px; }
   .content-container .btn {
-    background-color: rgba(255, 255, 255, 0.719);
+    background-color: rgba(253, 237, 237, 0.913);
     border-color: #333131;
-    color: rgba(255, 255, 255, 0.863);
+    color: rgba(0, 5, 53, 0.863);
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 5px;
@@ -76,7 +97,7 @@ body {
     float: right; }
   .content-container .active, .content-container .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: #2b2b2b; }
+    color: rgba(0, 5, 53, 0.863); }
   .content-container .content-item {
     border-color: #333131;
     border-width: 2px; }
@@ -107,13 +128,13 @@ body {
             align-items: center; }
 
 .form {
-  background-color: rgba(255, 255, 255, 0.863);
+  background-color: rgba(0, 5, 53, 0.863);
   padding: 20px;
-  color: #2b2b2b;
+  color: rgba(0, 5, 53, 0.863);
   border-color: #333131;
   border-width: 2px; }
   .form h1, .form h2 {
-    color: #2b2b2b;
+    color: rgba(0, 5, 53, 0.863);
     padding: 0px;
     margin: 0px;
     margin-bottom: 5px;
@@ -121,17 +142,18 @@ body {
   .form hr {
     padding: 0px;
     margin-top: 5px;
-    margin-bottom: 5px; }
+    margin-bottom: 5px;
+    border: 1px solid rgba(0, 5, 53, 0.863); }
   .form .btn {
-    background-color: rgba(255, 255, 255, 0.719);
+    background-color: rgba(253, 237, 237, 0.913);
     border-color: #333131;
-    color: #2b2b2b; }
+    color: rgba(0, 5, 53, 0.863); }
   .form .button {
     margin-top: 5px;
     padding: 10px; }
   .form .active, .form .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);
-    color: #2b2b2b; }
+    color: rgba(0, 5, 53, 0.863); }
   .form .form-group {
     margin: 0px;
     padding: 0px; }
@@ -140,18 +162,26 @@ body {
   .form #hint_id_CKD-stage {
     text-indent: 23px; }
 
+.header {
+  margin: 0;
+  border-top: 0px; }
+
 #homepage-header {
   background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
   background-size: cover;
   background-position: center;
-  position: relative; }
+  position: relative;
+  margin: 0;
+  padding: 0; }
   #homepage-header .overlay {
     position: absolute;
     min-height: 100%;
     min-width: 100%;
     left: 0;
     top: 0;
-    background: rgba(0, 0, 0, 0.6); }
+    background: rgba(0, 0, 0, 0.6);
+    margin: 0;
+    padding: 0; }
   #homepage-header .description {
     left: 50%;
     position: absolute;
@@ -194,26 +224,49 @@ body {
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
   margin-bottom: 16px; }
 
+#homepage-main .features .form-control,
+#homepage-main .features input {
+  border-radius: 0; }
+
+#homepage-main .features .btn {
+  background-color: #589b37;
+  border: 1px solid #589b37;
+  color: #fff;
+  margin-top: 20px; }
+
+#homepage-main .features .btn:hover {
+  background-color: #333;
+  border: 1px solid #333; }
+
+.page-footer {
+  background-color: rgba(253, 237, 237, 0.913);
+  color: #ccc;
+  padding: 60px 0 30px; }
+
+.footer-copyright {
+  color: #666;
+  padding: 40px 0; }
+
 @media screen and (max-width: 650px) {
-  #homepage-main h1 {
+  h1 {
     font-size: 70px; }
-  #homepage-main h2 {
+  h2 {
     font-size: 20px; } }
 
 .card {
-  background: rgba(255, 255, 255, 0.863);
+  background: rgba(0, 5, 53, 0.863);
   height: 100%;
-  color: #2b2b2b;
+  color: rgba(0, 5, 53, 0.863);
   border-color: #333131;
   border-width: 2px; }
 
 .btn {
-  background-color: rgba(255, 255, 255, 0.863);
+  background-color: rgba(0, 5, 53, 0.863);
   border-color: #333131; }
 
 .active, .btn:hover {
-  background-color: rgba(255, 255, 255, 0.863);
-  color: #2b2b2b; }
+  background-color: rgba(0, 5, 53, 0.863);
+  color: rgba(0, 5, 53, 0.863); }
 
 .asteriskField {
   display: none; }

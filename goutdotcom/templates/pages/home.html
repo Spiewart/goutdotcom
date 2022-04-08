@@ -18,22 +18,27 @@
           <div class="col-lg-4 col-md-4 col-sm-12">
             <h3 class="feature-title">Flares</h3>
             <img src="{% static '/images/goutart_forweb.jpg' %}" class="img-fluid">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum quam odio, quis placerat ante
-              luctus eu. Sed aliquet dolor id sapien rutrum, id vulputate quam iaculis.</p>
+            <p>Flares will eat your joints alive (and everything around them). Get some information on gout flares or, even better, a treatment recommendation.</p>
           </div>
 
           <div class="col-lg-4 col-md-4 col-sm-12">
-            <h3 class="feature-title">ULT</h3>
+            <h3 class="feature-title">Prevention</h3>
             <img src="{% static '/images/flare_forweb.jpg' %}"" class=img-fluid>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum quam odio, quis placerat ante
-              luctus eu. Sed aliquet dolor id sapien rutrum, id vulputate quam iaculis.</p>
+            <p>If gout is getting you down, you do not need to live with it. Medicine for gout is <u>very</u> effective.</p>
           </div>
 
           <div class="col-lg-4 col-md-4 col-sm-12">
-           <h3 class="feature-title">Lorem ipsum</h3>
-           <img src="{% static '/images/flare_forweb.jpg' %}"" class=img-fluid>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum quam odio, quis placerat ante
-              luctus eu. Sed aliquet dolor id sapien rutrum, id vulputate quam iaculis.</p>
+            <h3 class="feature-title">Get in Touch!</h3>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Name" name="">
+            </div>
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="Email Address" name="email">
+            </div>
+            <div class="form-group">
+              <textarea class="form-control" rows="4"></textarea>
+            </div>
+            <input type="submit" class="btn btn-secondary btn-block" value="Send" name="">
           </div>
         </div>
       </div>
@@ -42,6 +47,25 @@
 
     </main>
   {% endblock content %}
+  {% block footer %}
+    <footer class="page-footer" id="homepage-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-12">
+            <h6 class="text-uppercase font-weight-bold">Disclaimer</h6>
+            <p>Gouthelper is meant as a quasi-experimental guide. If you have real medical problems, you should see a doctor. This is not a substitute for real medical advice.</p>
+            <h6 class="text-uppercase font-weight-bold">Questions/Comments</h6>
+            <p>If you have questions, comments, or suggestions for improvement, please get in touch with us.</p>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <h6 class="text-uppercase font-weight-bold">Contact</h6>
+            <p>Land of 10,000 urate crystals
+              <br />info@gouthelper.com
+          </div>
+          <div>
+            <div class="footer-copyright text-center">© 2020 Copyright: MyWebsite.com</div>
+    </footer>
+  {% endblock footer %}
   {% block modal %}
   {% endblock modal %}
   {% block inline_javascript %}

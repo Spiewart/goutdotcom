@@ -54,110 +54,191 @@ class FlareForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 "",
-                HTML(
-                    """
-                    <h2>Location</h2>
-                    """
-                ),
-                "monoarticular",
-                "firstmtp",
-                InlineCheckboxes("location"),
-                HTML(
-                    """
-                    <hr size="6" color="white">
-                    """
-                ),
-                HTML(
-                    """
-                    <h2>Symptoms</h2>
-                    """
-                ),
-                "onset",
-                HTML(
-                    """
-                    <hr size="6" color="white">
-                    """
-                ),
-                "duration",
-                HTML(
-                    """
-                    <hr size="6" color="white">
-                    """
-                ),
-                "redness",
-                HTML(
-                    """
-                    <hr size="6" color="white">
-                    """
+                Div(
+                    Div(
+                        HTML(
+                            """
+                            <h2>Location</h2>
+                            """
+                        ),
+                        css_class="col-auto",
+                    ),
+                    Div(
+                        "monoarticular",
+                        css_class="col",
+                    ),
+                    Div(
+                        "firstmtp",
+                        css_class="col",
+                    ),
+                    Div(
+                        InlineCheckboxes("location"),
+                        css_class="col",
+                    ),
+                    css_class="row",
                 ),
                 HTML(
                     """
-                    <h2>History</h2>
-                    """
-                ),
-                "male",
-                HTML(
-                    """
-                    <hr size="6" color="white">
-                    """
-                ),
-                "prior_gout",
-                HTML(
-                    """
-                    <hr size="6" color="white">
-                    """
-                ),
-                HTML(
-                    """
-                    {% load crispy_forms_tags %}
-                    {% crispy urate_form %}
-                    """
-                ),
-                HTML(
-                    """
-                    <hr size="6" color="white">
+                    <hr size="6" color="dark">
                     """
                 ),
                 Div(
-                    HTML(
-                        """
-                        <span>Do you have any cardiac disease(s) or equivalents?</span>
-                        """
+                    Div(
+                        HTML(
+                            """
+                            <h2>Symptoms</h2>
+                            """
+                        ),
+                        css_class="col-auto",
                     ),
-                    css_id="cardiacdiseases",
+                    Div(
+                        "onset",
+                        css_class="col",
+                    ),
+                    Div(
+                        "duration",
+                        css_class="col",
+                    ),
+                    Div(
+                        "redness",
+                        css_class="col",
+                    ),
+                    css_class="row",
                 ),
                 HTML(
                     """
-                    {% load crispy_forms_tags %}
-                    {% crispy angina_form %}
-                    {% crispy hypertension_form %}
-                    {% crispy heartattack_form %}
-                    {% crispy CHF_form %}
-                    {% crispy stroke_form %}
-                    {% crispy PVD_form %}
+                    <hr size="6" color="dark">
                     """
+                ),
+                Div(
+                    Div(
+                        HTML(
+                            """
+                            <h2>History</h2>
+                            """
+                        ),
+                        css_class="col-auto",
+                    ),
+                    Div(
+                        "male",
+                        css_class="col",
+                    ),
+                    Div(
+                        "prior_gout",
+                        css_class="col",
+                    ),
+                    Div(
+                        HTML(
+                            """
+                            {% load crispy_forms_tags %}
+                            {% crispy urate_form %}
+                            """
+                        ),
+                        css_class="col",
+                    ),
+                    css_class="row",
                 ),
                 HTML(
                     """
-                    <hr size="6" color="white">
+                    <hr size="6" color="dark">
                     """
+                ),
+                Div(
+                    Div(
+                        HTML(
+                            """
+                        <h2>Cardiovascular Disease</h2>
+                        """
+                        ),
+                        css_id="cardiacdiseases",
+                        css_class="col-auto",
+                    ),
+                    Div(
+                        HTML(
+                            """
+                            {% load crispy_forms_tags %}
+                            {% crispy angina_form %}
+                            """
+                        ),
+                        css_class="col",
+                    ),
+                    Div(
+                        HTML(
+                            """
+                            {% load crispy_forms_tags %}
+                            {% crispy hypertension_form %}
+                            """
+                        ),
+                        css_class="col",
+                    ),
+                    Div(
+                        HTML(
+                            """
+                            {% load crispy_forms_tags %}
+                            {% crispy heartattack_form %}
+                            """
+                        ),
+                        css_class="col",
+                    ),
+                    Div(
+                        HTML(
+                            """
+                            {% load crispy_forms_tags %}
+                            {% crispy CHF_form %}
+                            """
+                        ),
+                        css_class="col",
+                    ),
+                    Div(
+                        HTML(
+                            """
+                            {% load crispy_forms_tags %}
+                            {% crispy stroke_form %}
+                            """
+                        ),
+                        css_class="col",
+                    ),
+                    Div(
+                        HTML(
+                            """
+                            {% load crispy_forms_tags %}
+                            {% crispy PVD_form %}
+                            """
+                        ),
+                        css_class="col",
+                    ),
+                    css_class="row",
                 ),
                 HTML(
                     """
-                    <h2>Treatment</h2>
+                    <hr size="6" color="dark">
                     """
                 ),
-                InlineCheckboxes("treatment"),
+                Div(
+                    Div(
+                        HTML(
+                            """
+                            <h2>Treatment</h2>
+                            """
+                        ),
+                        css_class="col-auto",
+                    ),
+                    Div(
+                        InlineCheckboxes("treatment"),
+                        css_class="col",
+                    ),
+                    css_class="row",
+                ),
                 HTML(
                     """
-                    <hr size="6" color="white">
+                    <hr size="6">
                     """
                 ),
             ),
         )
         # Check if there is a gender associated with Flare (and creating User's profile) and hide male field if so, value will be set in the view
         # Set initial value to False so as to avoid leaving required field blank
-        # Also have to remove white line for style by layout[index]
+        # Also have to remove dark line for style by layout[index]
         if self.gender:
             self.fields["male"].widget = HiddenInput()
             self.initial["male"] = False

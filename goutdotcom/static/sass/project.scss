@@ -1,18 +1,36 @@
-$background-color: rgba(255, 255, 255, 0.719);
+$background-color: rgba(253, 237, 237, 0.913);
 $background-color-sub: rgba(170, 168, 19, 0.726);
-$content-color: rgba(255, 255, 255, 0.863);
+$content-color: rgba(0, 5, 53, 0.863);
 $h1-container-color: $background-color;
-$text-color: rgb(43, 43, 43);
+$text-color: rgba(0, 5, 53, 0.863);
 $border-color: rgb(51, 49, 49);
 $active-button-color: rgba(180, 1, 224, 0.678);
 
-// Body Main Style
-
-
+// Site-wide CSS
 body {
-  background-color: $background-color;
-  color: $content-color;
+    padding: 0;
+    margin: 0;
+    background: $text-color;
+    background-color: $background-color;
 }
+.navbar {
+    background: $background-color;
+}
+.nav-link,
+.navbar-brand {
+    color: $text-color;
+    cursor: pointer;
+}
+.nav-link {
+    margin-right: 1em !important;
+}
+.nav-link:hover {
+    color: #000;
+}
+.navbar-collapse {
+    justify-content: flex-end;
+}
+
 
 @media screen and (max-width: 600px) {
   h1 {
@@ -180,6 +198,7 @@ body {
     padding: 0px;
     margin-top: 5px;
     margin-bottom: 5px;
+    border: 1px solid $text-color;
   }
 
   .btn {
@@ -210,11 +229,20 @@ body {
   };
 }
 
+
+.header {
+  margin: 0;
+  border-top: 0px;
+}
+
+// Homepage-specific stuff
 #homepage-header {
     background-image: url("../images/MSU_Crystals_1920x1280_forweb.jpg");
     background-size: cover;
     background-position: center;
     position: relative;
+    margin: 0;
+    padding: 0;
 
     .overlay {
         position: absolute;
@@ -223,6 +251,8 @@ body {
         left: 0;
         top: 0;
         background: rgba(0, 0, 0, 0.6);
+        margin: 0;
+        padding: 0;
     }
     .description {
       left: 50%;
@@ -271,18 +301,43 @@ body {
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
     margin-bottom: 16px;
   }
-}
-
-  @media screen and (max-width: 650px) {
-    h1 {
-      font-size: 70px;
-    }
-
-    h2 {
-      font-size: 20px;
-    }
+  .features .form-control,
+  .features input {
+    border-radius: 0;
+  }
+  .features .btn {
+      background-color: #589b37;
+      border: 1px solid #589b37;
+      color: #fff;
+      margin-top: 20px;
+  }
+  .features .btn:hover {
+      background-color: #333;
+      border: 1px solid #333;
   }
 }
+
+// Footer stuff
+.page-footer {
+  background-color: $background-color;
+  color: #ccc;
+  padding: 60px 0 30px;
+}
+.footer-copyright {
+    color: #666;
+    padding: 40px 0;
+}
+
+@media screen and (max-width: 650px) {
+  h1 {
+    font-size: 70px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
+
 
 .card {
   background: $content-color;

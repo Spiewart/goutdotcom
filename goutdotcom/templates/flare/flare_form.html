@@ -1,4 +1,4 @@
-{% extends "base_form.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 
 {% block title %}
@@ -10,14 +10,18 @@ New Flare
 {% endblock %}
 
 {% block header %}
-{% if form.instance.pk %}
-<h1 class="content-heading">Update Flare</h1>
-{% else %}
-<h1 class="content-heading">New Flare</h1>
-{% endif %}
+  <header class="page-header header container-fluid">
+      <div class="description">
+        {% if form.instance.pk %}
+        </h1>Update Flare</>
+        {% else %}
+        <h1>New Flare</h1>
+        {% endif %}
+      </div>
+  </header>
 {% endblock header %}
 
-{% block form %}
+{% block content %}
   {% if form.instance.pk %}
     {% if view.kwargs.username or view.kwargs.slug %}
     <form class="form-horizontal" method="post" action="{% url 'flare:update' view.kwargs.slug %}">
@@ -41,7 +45,7 @@ New Flare
         </form>
     {% endif %}
   {% endif %}
-{% endblock form %}
+{% endblock content %}
 
 {% block inline_javascript %}
 <script>
