@@ -19,6 +19,7 @@ class FlareAdmin(admin.ModelAdmin):
         "CHF",
         "stroke",
         "PVD",
+        "ongoing",
         "duration",
         "treatment",
         "urate",

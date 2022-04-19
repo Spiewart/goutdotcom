@@ -179,6 +179,32 @@ body {
 }
 
 // For Forms
+.form-header {
+    h1 {
+    color: $text-color;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  };
+}
+
+.form-submit-button {
+  margin-bottom: 3px;
+}
+
+.form-horizontal {
+  legend {
+    margin-left: -0.6em;
+  };
+  hr {
+    padding: 0px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid $text-color;
+  }
+}
+
 .form {
   background-color: $content-color;
   padding: 20px;
@@ -209,6 +235,7 @@ body {
 
   .button {
     margin-top: 5px;
+    margin-bottom: 5px;
     padding: 10px;
   };
 

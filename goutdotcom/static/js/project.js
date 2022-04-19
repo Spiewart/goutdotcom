@@ -566,27 +566,8 @@ function mono_vs_poly() {
   if ($('#id_monoarticular_1').is(":checked")) {
     $('#div_id_firstmtp').show();
     if ($('#id_firstmtp_1').is(":checked")) {
-    $('#div_id_location').hide();
-    $('#id_location_1').prop("checked", false);
-    $('#id_location_2').prop("checked", false);
-    $('#id_location_3').prop("checked", false);
-    $('#id_location_4').prop("checked", false);
-    $('#id_location_5').prop("checked", false);
-    $('#id_location_6').prop("checked", false);
-    $('#id_location_7').prop("checked", false);
-    $('#id_location_8').prop("checked", false);
-    $('#id_location_9').prop("checked", false);
-    $('#id_location_10').prop("checked", false);
-    $('#id_location_11').prop("checked", false);
-    $('#id_location_12').prop("checked", false);
-    $('#id_location_13').prop("checked", false);
-    $('#id_location_14').prop("checked", false);
-    $('#id_location_15').prop("checked", false);
-    $('#id_location_16').prop("checked", false);
-    } else if ($('#id_firstmtp_2').is(":checked")){
-      $('#div_id_location').show();
-    } else {
       $('#div_id_location').hide();
+      $('#symptoms').show();
       $('#id_location_1').prop("checked", false);
       $('#id_location_2').prop("checked", false);
       $('#id_location_3').prop("checked", false);
@@ -603,13 +584,43 @@ function mono_vs_poly() {
       $('#id_location_14').prop("checked", false);
       $('#id_location_15').prop("checked", false);
       $('#id_location_16').prop("checked", false);
+    } else if ($('#id_firstmtp_2').is(":checked")) {
+      $('#div_id_location').show();
+      $('#symptoms').show();
+    } else {
+        $('#div_id_location').hide();
+        $('#symptoms').hide();
+        $('#id_location_1').prop("checked", false);
+        $('#id_location_2').prop("checked", false);
+        $('#id_location_3').prop("checked", false);
+        $('#id_location_4').prop("checked", false);
+        $('#id_location_5').prop("checked", false);
+        $('#id_location_6').prop("checked", false);
+        $('#id_location_7').prop("checked", false);
+        $('#id_location_8').prop("checked", false);
+        $('#id_location_9').prop("checked", false);
+        $('#id_location_10').prop("checked", false);
+        $('#id_location_11').prop("checked", false);
+        $('#id_location_12').prop("checked", false);
+        $('#id_location_13').prop("checked", false);
+        $('#id_location_14').prop("checked", false);
+        $('#id_location_15').prop("checked", false);
+        $('#id_location_16').prop("checked", false);
     }
   } else if ($('#id_monoarticular_2').is(":checked")) {
     $('#div_id_firstmtp').show();
     $('#div_id_location').show();
+    if ($('#id_firstmtp_1').is(":checked")) {
+      $('#symptoms').show();
+    } else if ($('#id_firstmtp_2').is(":checked")) {
+      $('#symptoms').show();
+    } else {
+      $('#symptoms').hide();
+    }
   } else {
     $('#div_id_firstmtp').hide();
     $('#div_id_location').hide();
+    $('#symptoms').hide();
   }
 }
 
@@ -617,21 +628,85 @@ function mono_vs_poly() {
 function symptoms() {
   if ($('#id_onset_1').is(":checked")) {
     $('#div_id_duration').show();
-    if($('#id_duration').val()){
+    if($('#id_duration').val()) {
       $('#div_id_redness').show();
+      if ($('#id_redness_1').is(":checked")) {
+        $('#history').show();
+      } else if ($('#id_redness_2').is(":checked")) {
+        $('#history').show();
+      } else {
+        $('#history').hide();
+      }
     } else {
       $('#div_id_redness').hide();
+      $('#history').hide();
     }
   } else if ($('#id_onset_2').is(":checked")) {
     $('#div_id_duration').show();
-      if($('#id_duration').val()){
+      if($('#id_duration').val()) {
         $('#div_id_redness').show();
+        if ($('#id_redness_1').is(":checked")) {
+          $('#history').show();
+        } else if ($('#id_redness_2').is(":checked")) {
+          $('#history').show();
+        } else {
+          $('#history').hide();
+        }
       } else {
         $('#div_id_redness').hide();
+        $('#history').hide();
       }
   } else {
     $('#div_id_duration').hide();
     $('#div_id_redness').hide();
+    $('#history').hide();
+  }
+}
+
+/* Manages History of Flare form fields */
+function history() {
+  if ($('#id_male_1').is(":checked")) {
+    $('#div_id_prior_gout').show();
+    if($('#id_prior_gout_1').is(":checked")) {
+      $('#urate_fields').show();
+      $('#cardiacdiseases').show();
+      $('#treatment').show();
+      $('#submit-flare').show();
+    } else if($('#id_prior_gout_2').is(":checked")) {
+        $('#urate_fields').show();
+        $('#cardiacdiseases').show();
+        $('#treatment').show();
+        $('#submit-flare').show();
+    } else {
+      $('#urate_fields').hide();
+      $('#cardiacdiseases').hide();
+      $('#treatment').hide();
+      $('#submit-flare').hide();
+    }
+  } else if ($('#id_male_2').is(":checked")) {
+    $('#div_id_prior_gout').show();
+      if($('#id_prior_gout_1').is(":checked")) {
+        $('#urate_fields').show();
+        $('#cardiacdiseases').show();
+        $('#treatment').show();
+        $('#submit-flare').show();
+      } else if($('#id_prior_gout_2').is(":checked")) {
+        $('#urate_fields').show();
+        $('#cardiacdiseases').show();
+        $('#treatment').show();
+        $('#submit-flare').show();
+      } else {
+        $('#urate_fields').hide();
+        $('#cardiacdiseases').hide();
+        $('#treatment').hide();
+        $('#submit-flare').hide();
+      }
+  } else {
+    $('#div_id_prior_gout').hide();
+    $('#urate_fields').hide();
+    $('#cardiacdiseases').hide();
+    $('#treatment').hide();
+    $('#submit-flare').hide();
   }
 }
 

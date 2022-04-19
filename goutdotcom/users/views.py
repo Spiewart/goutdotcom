@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
-    PermissionRequiredMixin,
     UserPassesTestMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin

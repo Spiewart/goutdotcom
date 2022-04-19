@@ -1,5 +1,3 @@
-import datetime
-
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Fieldset, Layout
 from django import forms

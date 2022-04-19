@@ -127,6 +127,25 @@ body {
         -ms-flex-align: center;
             align-items: center; }
 
+.form-header h1 {
+  color: rgba(0, 5, 53, 0.863);
+  padding: 0px;
+  margin: 0px;
+  margin-bottom: 5px;
+  font-weight: bold; }
+
+.form-submit-button {
+  margin-bottom: 3px; }
+
+.form-horizontal legend {
+  margin-left: -0.6em; }
+
+.form-horizontal hr {
+  padding: 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid rgba(0, 5, 53, 0.863); }
+
 .form {
   background-color: rgba(0, 5, 53, 0.863);
   padding: 20px;
@@ -150,6 +169,7 @@ body {
     color: rgba(0, 5, 53, 0.863); }
   .form .button {
     margin-top: 5px;
+    margin-bottom: 5px;
     padding: 10px; }
   .form .active, .form .btn:hover {
     background-color: rgba(180, 1, 224, 0.678);

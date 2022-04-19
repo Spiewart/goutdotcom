@@ -38,14 +38,15 @@ class FlareForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.gender = kwargs.pop("gender", None)
         super(FlareForm, self).__init__(*args, **kwargs)
-        self.fields["firstmtp"].label = "Was the flare in the base of the big toe?"
+        self.fields["firstmtp"].label = "Was it in the big toe?"
         self.fields["location"].label = "Joints involved"
-        self.fields["monoarticular"].label = "Was it only in one joint?"
-        self.fields["male"].label = "Sex: are you male (biologically)?"
-        self.fields["onset"].label = "Rapid onset: did the symptoms start and reach maximum intensity in a day or less?"
-        self.fields["prior_gout"].label = "Gout history: have you had gout or symptoms suggestive of gout before?"
-        self.fields["redness"].label = "Erythema (redness): as the skin above the affected joint red and angry looking?"
-        self.fields["treatment"].label = "Did you treat your gout flare with anything?"
+        self.fields["location"].help_text = None
+        self.fields["monoarticular"].label = "Only one joint?"
+        self.fields["male"].label = "Male (biologically)?"
+        self.fields["onset"].label = "Symptoms start and peak in a day or less?"
+        self.fields["prior_gout"].label = "Had gout before?"
+        self.fields["redness"].label = "Is the skin around the painful joint(s) red?"
+        self.fields["treatment"].label = "Take anything for the symptoms?"
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -55,184 +56,222 @@ class FlareForm(forms.ModelForm):
             Fieldset(
                 "",
                 Div(
-                    Div(
-                        HTML(
-                            """
-                            <h2>Location</h2>
-                            """
-                        ),
-                        css_class="col-auto",
-                    ),
-                    Div(
-                        "monoarticular",
-                        css_class="col",
-                    ),
-                    Div(
-                        "firstmtp",
-                        css_class="col",
-                    ),
-                    Div(
-                        InlineCheckboxes("location"),
-                        css_class="col",
-                    ),
-                    css_class="row",
-                ),
-                HTML(
-                    """
-                    <hr size="6" color="dark">
-                    """
-                ),
-                Div(
-                    Div(
-                        HTML(
-                            """
-                            <h2>Symptoms</h2>
-                            """
-                        ),
-                        css_class="col-auto",
-                    ),
-                    Div(
-                        "onset",
-                        css_class="col",
-                    ),
-                    Div(
-                        "duration",
-                        css_class="col",
-                    ),
-                    Div(
-                        "redness",
-                        css_class="col",
-                    ),
-                    css_class="row",
-                ),
-                HTML(
-                    """
-                    <hr size="6" color="dark">
-                    """
-                ),
-                Div(
-                    Div(
-                        HTML(
-                            """
-                            <h2>History</h2>
-                            """
-                        ),
-                        css_class="col-auto",
-                    ),
-                    Div(
-                        "male",
-                        css_class="col",
-                    ),
-                    Div(
-                        "prior_gout",
-                        css_class="col",
-                    ),
-                    Div(
-                        HTML(
-                            """
-                            {% load crispy_forms_tags %}
-                            {% crispy urate_form %}
-                            """
-                        ),
-                        css_class="col",
-                    ),
-                    css_class="row",
-                ),
-                HTML(
-                    """
-                    <hr size="6" color="dark">
-                    """
-                ),
-                Div(
-                    Div(
-                        HTML(
-                            """
-                        <h2>Cardiovascular Disease</h2>
+                    HTML(
                         """
-                        ),
-                        css_id="cardiacdiseases",
-                        css_class="col-auto",
+                        <hr size="6" color="dark">
+                        """
                     ),
                     Div(
-                        HTML(
-                            """
-                            {% load crispy_forms_tags %}
-                            {% crispy angina_form %}
-                            """
+                        Div(
+                            HTML(
+                                """
+                                <legend>Location</legend>
+                                """
+                            ),
+                            css_class="col-auto",
                         ),
-                        css_class="col",
+                        css_id="row",
                     ),
                     Div(
-                        HTML(
-                            """
-                            {% load crispy_forms_tags %}
-                            {% crispy hypertension_form %}
-                            """
+                        Div(
+                            "monoarticular",
+                            css_class="col-auto",
                         ),
-                        css_class="col",
-                    ),
-                    Div(
-                        HTML(
-                            """
-                            {% load crispy_forms_tags %}
-                            {% crispy heartattack_form %}
-                            """
+                        Div(
+                            "firstmtp",
+                            css_class="col-auto",
                         ),
-                        css_class="col",
-                    ),
-                    Div(
-                        HTML(
-                            """
-                            {% load crispy_forms_tags %}
-                            {% crispy CHF_form %}
-                            """
+                        Div(
+                            InlineCheckboxes("location"),
+                            css_class="col",
                         ),
-                        css_class="col",
+                        css_class="row",
                     ),
-                    Div(
-                        HTML(
-                            """
-                            {% load crispy_forms_tags %}
-                            {% crispy stroke_form %}
-                            """
-                        ),
-                        css_class="col",
+                    HTML(
+                        """
+                        <hr size="6" color="dark">
+                        """
                     ),
-                    Div(
-                        HTML(
-                            """
-                            {% load crispy_forms_tags %}
-                            {% crispy PVD_form %}
-                            """
-                        ),
-                        css_class="col",
-                    ),
-                    css_class="row",
-                ),
-                HTML(
-                    """
-                    <hr size="6" color="dark">
-                    """
+                    css_id="location",
                 ),
                 Div(
                     Div(
-                        HTML(
-                            """
-                            <h2>Treatment</h2>
-                            """
+                        Div(
+                            HTML(
+                                """
+                                <legend>Symptoms</legend>
+                                """
+                            ),
+                            css_class="col-auto",
                         ),
-                        css_class="col-auto",
+                        css_id="row",
                     ),
                     Div(
-                        InlineCheckboxes("treatment"),
-                        css_class="col",
+                        Div(
+                            "onset",
+                            css_class="col",
+                        ),
+                        Div(
+                            "ongoing",
+                            css_class="col",
+                        ),
+                        Div(
+                            "duration",
+                            css_class="col",
+                        ),
+                        Div(
+                            "redness",
+                            css_class="col",
+                        ),
+                        css_class="row",
                     ),
-                    css_class="row",
+                    HTML(
+                        """
+                            <hr size="6" color="dark">
+                            """
+                    ),
+                    css_id="symptoms",
                 ),
-                HTML(
-                    """
-                    <hr size="6">
-                    """
+                Div(
+                    Div(
+                        Div(
+                            HTML(
+                                """
+                                <legend>History</legend>
+                                """
+                            ),
+                            css_class="col-auto",
+                        ),
+                        css_id="row",
+                    ),
+                    Div(
+                        Div(
+                            "male",
+                            css_class="col",
+                        ),
+                        Div(
+                            "prior_gout",
+                            css_class="col",
+                        ),
+                        Div(
+                            HTML(
+                                """
+                                {% load crispy_forms_tags %}
+                                {% crispy urate_form %}
+                                """
+                            ),
+                            css_class="col",
+                        ),
+                        css_class="row",
+                    ),
+                    HTML(
+                        """
+                        <hr size="6" color="dark">
+                        """
+                    ),
+                    css_id="history",
+                ),
+                Div(
+                    Div(
+                        Div(
+                            HTML(
+                                """
+                                <legend>Cardiovascular Disease</legend>
+                                """
+                            ),
+                            css_class="col-auto",
+                        ),
+                        css_id="row",
+                    ),
+                    Div(
+                        Div(
+                            HTML(
+                                """
+                                {% load crispy_forms_tags %}
+                                {% crispy angina_form %}
+                                """
+                            ),
+                            css_class="col",
+                        ),
+                        Div(
+                            HTML(
+                                """
+                                {% load crispy_forms_tags %}
+                                {% crispy hypertension_form %}
+                                """
+                            ),
+                            css_class="col",
+                        ),
+                        Div(
+                            HTML(
+                                """
+                                {% load crispy_forms_tags %}
+                                {% crispy heartattack_form %}
+                                """
+                            ),
+                            css_class="col",
+                        ),
+                        Div(
+                            HTML(
+                                """
+                                {% load crispy_forms_tags %}
+                                {% crispy CHF_form %}
+                                """
+                            ),
+                            css_class="col",
+                        ),
+                        Div(
+                            HTML(
+                                """
+                                {% load crispy_forms_tags %}
+                                {% crispy stroke_form %}
+                                """
+                            ),
+                            css_class="col",
+                        ),
+                        Div(
+                            HTML(
+                                """
+                                {% load crispy_forms_tags %}
+                                {% crispy PVD_form %}
+                                """
+                            ),
+                            css_class="col",
+                        ),
+                        css_class="row",
+                    ),
+                    HTML(
+                        """
+                        <hr size="6" color="dark">
+                        """
+                    ),
+                    css_id="cardiacdiseases",
+                ),
+                Div(
+                    Div(
+                        Div(
+                            HTML(
+                                """
+                                <legend>Treatment</legend>
+                                """
+                            ),
+                            css_class="col-auto",
+                        ),
+                        css_id="row",
+                    ),
+                    Div(
+                        Div(
+                            InlineCheckboxes("treatment"),
+                            css_class="col",
+                        ),
+                        css_class="row",
+                    ),
+                    HTML(
+                        """
+                        <hr size="6" color="dark">
+                        """
+                    ),
+                    css_id="treatment",
                 ),
             ),
         )

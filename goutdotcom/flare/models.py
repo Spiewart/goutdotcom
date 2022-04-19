@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
-from django.utils.text import format_lazy, slugify
+from django.utils.text import format_lazy
+from django.utils.safestring import mark_safe
 from django_extensions.db.models import TimeStampedModel
 from multiselectfield import MultiSelectField
 
@@ -123,16 +124,25 @@ class Flare(TimeStampedModel):
     urate = models.OneToOneField(
         Urate,
         on_delete=models.CASCADE,
-        help_text="Did you get your uric acid checked at the time of your flare?",
+        help_text=mark_safe("Was the <a href='https://en.wikipedia.org/wiki/Mercaptopurine' target='_blank'>uric acid</a> checked during the flare?",
         blank=True,
         null=True,
+    )
+
+    ongoing = models.BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name="ongoing",
+        help_text="Is the flare still active (causing symptoms)?",
+        default=False,
+        null=True,
+        blank=True,
     )
 
     duration = models.CharField(
         max_length=60,
         choices=DURATION_CHOICES,
         verbose_name="Symptom Duration",
-        help_text="How long did your symptoms last?",
+        help_text="How long did the flare symptoms last?",
         null=True,
         blank=True,
     )
